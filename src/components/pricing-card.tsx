@@ -400,7 +400,6 @@ export default function PricingCard({
           ],
       });
       console.error("Supabase client info:", {
-        supabaseUrl: supabase.supabaseUrl,
         hasAuth: !!supabase.auth,
       });
 
