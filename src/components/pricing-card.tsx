@@ -309,10 +309,15 @@ export default function PricingCard({
         console.log("Invoking Edge Function:", "create-checkout");
         console.log("Payload:", checkoutPayload);
 
+        // Get the user's access token for authorization
+        const { data: { session } } = await supabase.auth.getSession();
+        const accessToken = session?.access_token;
+
         const { data, error } = await supabase.functions.invoke(
           "create-checkout",
           {
             body: checkoutPayload,
+            headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : undefined,
           },
         );
 
