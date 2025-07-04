@@ -61,7 +61,7 @@ export default async function ResetPassword(props: {
             </div>
 
             <SubmitButton
-              formAction={resetPasswordAction}
+              formAction={async (formData) => { await resetPasswordAction(formData); }}
               pendingText="Resetting password..."
               className="w-full"
             >
