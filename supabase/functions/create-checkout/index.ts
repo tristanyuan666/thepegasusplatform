@@ -15,13 +15,15 @@ const stripe = new Stripe(stripeKey, {
 
 // Initialize Supabase
 const supabaseUrl = Deno.env.get("NEXT_PUBLIC_SUPABASE_URL");
-const supabaseServiceKey = Deno.env.get("NEXT_PUBLIC_SUPABASE_ANON_KEY");
+const projectServiceRoleKey = Deno.env.get("PROJECT_SERVICE_ROLE_KEY");
 
-if (!supabaseUrl || !supabaseServiceKey) {
-  throw new Error("Supabase environment variables are required");
+if (!supabaseUrl || !projectServiceRoleKey) {
+  throw new Error(
+    "Supabase URL and PROJECT_SERVICE_ROLE_KEY environment variables are required",
+  );
 }
 
-const supabase = createClient(supabaseUrl, supabaseServiceKey);
+const supabase = createClient(supabaseUrl, projectServiceRoleKey);
 
 Deno.serve(async (req) => {
   console.log("=== EDGE FUNCTION CALLED ===");
