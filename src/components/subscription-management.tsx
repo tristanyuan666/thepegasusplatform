@@ -261,8 +261,9 @@ export default function SubscriptionManagement({
     } catch (error) {
       console.error("Error canceling subscription:", error);
       alert(
-        error.message ||
-          "Failed to cancel subscription. Please try again or contact support.",
+        error instanceof Error
+          ? error.message
+          : "Failed to cancel subscription. Please try again or contact support."
       );
     } finally {
       setIsLoading(false);
