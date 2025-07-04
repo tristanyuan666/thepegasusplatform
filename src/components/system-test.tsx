@@ -2108,7 +2108,7 @@ export default function SystemTest({ user }: SystemTestProps) {
             const hasAuthSystem = !authError;
 
             // Test if we can access Supabase URL
-            const supabaseUrl = client.supabaseUrl;
+            const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
             const hasValidUrl = supabaseUrl && supabaseUrl.includes("supabase");
 
             return {
