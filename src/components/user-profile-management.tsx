@@ -488,7 +488,7 @@ export default function UserProfileManagement({
                     </Label>
                     <Input
                       id={platform}
-                      value={url}
+                      value={String(url)}
                       onChange={(e) =>
                         handleSocialLinkChange(platform, e.target.value)
                       }
