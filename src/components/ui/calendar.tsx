@@ -58,7 +58,7 @@ function Calendar({
           } else if (orientation === "right") {
             return <ChevronRightIcon className="h-4 w-4" {...props} />;
           } else {
-            return null;
+            return <span style={{ display: 'none' }} />;
           }
         },
       }}
