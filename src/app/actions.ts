@@ -3,6 +3,7 @@
 import { encodedRedirect } from "@/utils/utils";
 import { redirect } from "next/navigation";
 import { createClient } from "@/supabase/server";
+import { AuthError } from "@supabase/supabase-js";
 
 export const signUpAction = async (formData: FormData) => {
   const email = formData.get("email")?.toString();
@@ -165,7 +166,7 @@ export const signInAction = async (formData: FormData) => {
       console.error("Error details:", {
         message: error.message,
         status: error.status,
-        code: error.__isAuthError ? "AuthError" : "Unknown",
+        code: error instanceof AuthError ? "AuthError" : "Unknown",
       });
 
       // Handle specific Supabase auth errors with user-friendly messages
