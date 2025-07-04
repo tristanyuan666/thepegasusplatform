@@ -229,17 +229,17 @@ export default function EnhancedCursor({ className }: EnhancedCursorProps) {
           target.tagName === "SELECT" ||
           target.role === "button" ||
           target.classList?.contains("cursor-pointer") ||
-          target.closest("button") ||
-          target.closest("a") ||
-          target.closest('[role="button"]') ||
-          target.closest(".cursor-pointer") ||
-          target.closest("[data-pricing-card]") ||
-          target.closest("[data-interactive]") ||
-          target.closest(".pricing-card") ||
-          target.closest(".hover-target") ||
-          target.closest(".interactive-element") ||
-          target.closest("[data-pricing-button]") ||
-          target.closest(".magnetic") ||
+          !!target.closest("button") ||
+          !!target.closest("a") ||
+          !!target.closest('[role="button"]') ||
+          !!target.closest(".cursor-pointer") ||
+          !!target.closest("[data-pricing-card]") ||
+          !!target.closest("[data-interactive]") ||
+          !!target.closest(".pricing-card") ||
+          !!target.closest(".hover-target") ||
+          !!target.closest(".interactive-element") ||
+          !!target.closest("[data-pricing-button]") ||
+          !!target.closest(".magnetic") ||
           target.hasAttribute("data-interactive") ||
           window.getComputedStyle(target).cursor === "pointer";
 
