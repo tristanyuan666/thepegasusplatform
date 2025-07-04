@@ -297,7 +297,7 @@ export default function EnhancedCursor({ className }: EnhancedCursorProps) {
           document.documentElement.classList.remove("cursor-hidden");
         }
 
-        if (animationFrameId && window.cancelAnimationFrame) {
+        if (animationFrameId && typeof window !== "undefined" && typeof window.cancelAnimationFrame === "function") {
           cancelAnimationFrame(animationFrameId);
         }
         if (typeof document !== "undefined") {
