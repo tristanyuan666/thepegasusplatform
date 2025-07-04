@@ -238,8 +238,7 @@ export default function SubscriptionManagement({
         "cancel-subscription",
         {
           body: {
-            subscription_id:
-              subscription?.stripe_id || subscription?.stripe_subscription_id,
+            subscription_id: subscription?.stripe_id,
             user_id: userId,
           },
         },
