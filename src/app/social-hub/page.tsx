@@ -1,6 +1,5 @@
 import { createClient } from "@/supabase/server";
 import { redirect } from "next/navigation";
-import SocialPlatformHub from "@/components/social-platform-hub";
 import DashboardNavbar from "@/components/dashboard-navbar";
 
 export default async function SocialHubPage() {
@@ -16,7 +15,7 @@ export default async function SocialHubPage() {
   return (
     <>
       <DashboardNavbar />
-      <SocialPlatformHub />
+      {/* SocialPlatformHub component is not implemented */}
     </>
   );
 }
