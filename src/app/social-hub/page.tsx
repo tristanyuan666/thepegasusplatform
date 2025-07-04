@@ -1,4 +1,4 @@
-import { createClient } from "../../src/supabase/server";
+import { createClient } from "@/supabase/server";
 import { redirect } from "next/navigation";
 import SocialPlatformHub from "@/components/social-platform-hub";
 import DashboardNavbar from "@/components/dashboard-navbar";

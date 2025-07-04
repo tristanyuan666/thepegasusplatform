@@ -21,7 +21,7 @@ import {
   Zap,
 } from "lucide-react";
 import { createClient } from "../../supabase/client";
-import { createClient as createServerClient } from "../supabase/server";
+import { createClient as createServerClient } from "@/supabase/server";
 
 interface TestResult {
   name: string;

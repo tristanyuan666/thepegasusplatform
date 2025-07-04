@@ -1,4 +1,4 @@
-import { createClient } from "../../src/supabase/server";
+import { createClient } from "@/supabase/server";
 import SystemTest from "@/components/system-test";
 import DashboardNavbar from "@/components/dashboard-navbar";
 
