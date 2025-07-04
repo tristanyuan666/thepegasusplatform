@@ -94,7 +94,7 @@ export default function EnhancedCursor({ className }: EnhancedCursorProps) {
         try {
           await waitForHydration();
 
-          if (window?.requestAnimationFrame) {
+          if (typeof window !== "undefined" && typeof window.requestAnimationFrame === "function") {
             rafId = requestAnimationFrame(() => {
               try {
                 // Check if desktop and set initial state
