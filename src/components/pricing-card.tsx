@@ -124,16 +124,16 @@ const defaultPlans: PricingPlan[] = [
 // Define Stripe price IDs at component level to avoid scope issues
 const STRIPE_PRICE_IDS = {
   creator: {
-    monthly: "price_1RgakoG8nQMivkW3R0JFwmJy",
-    yearly: "price_1Rgai1G8nQMivkW3mxA1kHIe",
+    monthly: "price_1Rh3S7LeoLZGglHRHPRlr4RI",
+    yearly: "price_1Rh3U9LeoLZGglHRbqneuTk2",
   },
   influencer: {
-    monthly: "price_1Rgal0G8nQMivkW3g8YmtDlL",
-    yearly: "price_1RgajbG8nQMivkW3XfXkFRNQ",
+    monthly: "price_1Rh3SiLeoLZGglHRj64UxKdu",
+    yearly: "price_1Rh3V9LeoLZGglHRdsfQV0Ie",
   },
   superstar: {
-    monthly: "price_1RgalBG8nQMivkW3Kh6jWNfI",
-    yearly: "price_1RgakEG8nQMivkW311Yl782m",
+    monthly: "price_1Rh3TXLeoLZGglHRNGJnnOU3",
+    yearly: "price_1Rh3VpLeoLZGglHRv5hz3YR3",
   },
 };
 

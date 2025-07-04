@@ -245,12 +245,12 @@ export default function PaymentTestPage() {
       );
 
       const priceIds = [
-        "price_1RgakoG8nQMivkW3R0JFwmJy", // Creator Monthly
-        "price_1Rgai1G8nQMivkW3mxA1kHIe", // Creator Annual
-        "price_1Rgal0G8nQMivkW3g8YmtDlL", // Influencer Monthly
-        "price_1RgajbG8nQMivkW3XfXkFRNQ", // Influencer Annual
-        "price_1RgalBG8nQMivkW3Kh6jWNfI", // Superstar Monthly
-        "price_1RgakEG8nQMivkW311Yl782m", // Superstar Annual
+        "price_1Rh3S7LeoLZGglHRHPRlr4RI", // Creator Monthly
+        "price_1Rh3U9LeoLZGglHRbqneuTk2", // Creator Annual
+        "price_1Rh3SiLeoLZGglHRj64UxKdu", // Influencer Monthly
+        "price_1Rh3V9LeoLZGglHRdsfQV0Ie", // Influencer Annual
+        "price_1Rh3TXLeoLZGglHRNGJnnOU3", // Superstar Monthly
+        "price_1Rh3VpLeoLZGglHRv5hz3YR3", // Superstar Annual
       ];
 
       if (stripeData?.prices) {
