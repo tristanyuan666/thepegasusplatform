@@ -116,6 +116,7 @@ export default async function Dashboard({
                 <PlatformConnections
                   userId={user.id}
                   connections={socialConnections}
+                  onConnectionUpdate={() => {}}
                 />
               </Suspense>
             </TabsContent>
