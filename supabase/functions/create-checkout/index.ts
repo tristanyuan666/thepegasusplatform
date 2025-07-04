@@ -14,8 +14,8 @@ const stripe = new Stripe(stripeKey, {
 });
 
 // Initialize Supabase
-const supabaseUrl = Deno.env.get("SUPABASE_URL");
-const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_KEY");
+const supabaseUrl = Deno.env.get("NEXT_PUBLIC_SUPABASE_URL");
+const supabaseServiceKey = Deno.env.get("NEXT_PUBLIC_SUPABASE_ANON_KEY");
 
 if (!supabaseUrl || !supabaseServiceKey) {
   throw new Error("Supabase environment variables are required");
@@ -94,8 +94,8 @@ Deno.serve(async (req) => {
           timestamp: new Date().toISOString(),
           environment_check: {
             stripe_key_exists: !!Deno.env.get("STRIPE_SECRET_KEY"),
-            supabase_url_exists: !!Deno.env.get("SUPABASE_URL"),
-            supabase_service_key_exists: !!Deno.env.get("SUPABASE_SERVICE_KEY"),
+            supabase_url_exists: !!Deno.env.get("NEXT_PUBLIC_SUPABASE_URL"),
+            supabase_service_key_exists: !!Deno.env.get("NEXT_PUBLIC_SUPABASE_ANON_KEY"),
           },
         }),
         {
@@ -260,8 +260,8 @@ Deno.serve(async (req) => {
       function_name: "create-checkout",
       environment_check: {
         stripe_key_exists: !!Deno.env.get("STRIPE_SECRET_KEY"),
-        supabase_url_exists: !!Deno.env.get("SUPABASE_URL"),
-        supabase_service_key_exists: !!Deno.env.get("SUPABASE_SERVICE_KEY"),
+        supabase_url_exists: !!Deno.env.get("NEXT_PUBLIC_SUPABASE_URL"),
+        supabase_service_key_exists: !!Deno.env.get("NEXT_PUBLIC_SUPABASE_ANON_KEY"),
       },
     };
 
