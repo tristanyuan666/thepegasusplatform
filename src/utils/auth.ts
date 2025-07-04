@@ -1,4 +1,4 @@
-import { createClient } from "../../supabase/server";
+import { createClient } from "../supabase/server";
 import { User } from "@supabase/supabase-js";
 
 export interface UserProfile {

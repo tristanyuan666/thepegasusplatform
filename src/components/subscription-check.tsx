@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { createClient } from "../../supabase/server";
+import { createClient } from "../supabase/server";
 import { getUserSubscription, getSubscriptionTier } from "@/utils/auth";
 
 interface SubscriptionCheckProps {
