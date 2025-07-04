@@ -52,12 +52,15 @@ function Calendar({
         ...classNames,
       }}
       components={{
-        Chevron: ({ orientation, ...props }: { orientation: "left" | "right" | "up" | "down" }) =>
-          orientation === "left" ? (
-            <ChevronLeftIcon className="h-4 w-4" {...props} />
-          ) : (
-            <ChevronRightIcon className="h-4 w-4" {...props} />
-          ),
+        Chevron: ({ orientation, ...props }: { orientation?: "left" | "right" | "up" | "down"; className?: string; size?: number; disabled?: boolean }) => {
+          if (orientation === "left") {
+            return <ChevronLeftIcon className="h-4 w-4" {...props} />;
+          } else if (orientation === "right") {
+            return <ChevronRightIcon className="h-4 w-4" {...props} />;
+          } else {
+            return null;
+          }
+        },
       }}
       {...props}
     />
