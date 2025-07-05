@@ -237,60 +237,51 @@ export default function PaymentTestPage() {
         );
       }
 
-      // Test 6: Price ID Validation
+      // Test 6: Variant ID Validation
       updateTestResult(
-        "Price Validation",
+        "Variant Validation",
         "pending",
-        "Validating Stripe price IDs...",
+        "Validating Lemon Squeezy variant IDs...",
       );
 
-      const priceIds = [
-        "price_1Rh3S7LeoLZGglHRHPRlr4RI", // Creator Monthly
-        "price_1Rh3U9LeoLZGglHRbqneuTk2", // Creator Annual
-        "price_1Rh3SiLeoLZGglHRj64UxKdu", // Influencer Monthly
-        "price_1Rh3V9LeoLZGglHRdsfQV0Ie", // Influencer Annual
-        "price_1Rh3TXLeoLZGglHRNGJnnOU3", // Superstar Monthly
-        "price_1Rh3VpLeoLZGglHRv5hz3YR3", // Superstar Annual
+      const variantIds = [
+        "123456", // Creator Monthly - Replace with actual IDs
+        "123457", // Creator Annual
+        "123458", // Influencer Monthly
+        "123459", // Influencer Annual
+        "123460", // Superstar Monthly
+        "123461", // Superstar Annual
       ];
 
-      if (stripeData?.prices) {
-        const validPrices = priceIds.filter((id) =>
-          stripeData.prices.some((p: any) => p.id === id && p.active),
-        );
+      // For Lemon Squeezy, we'll just validate that the variant IDs are configured
+      const configuredVariants = variantIds.filter((id) => id !== "123456" && id !== "123457" && id !== "123458" && id !== "123459" && id !== "123460" && id !== "123461");
 
-        if (validPrices.length === priceIds.length) {
+      if (configuredVariants.length === variantIds.length) {
+        updateTestResult(
+          "Variant Validation",
+          "success",
+          `All ${variantIds.length} variant IDs are configured`,
+        );
+              } else {
           updateTestResult(
-            "Price Validation",
-            "success",
-            `All ${priceIds.length} price IDs are valid and active`,
-          );
-        } else {
-          updateTestResult(
-            "Price Validation",
+            "Variant Validation",
             "error",
-            `Only ${validPrices.length}/${priceIds.length} price IDs are valid. Missing: ${priceIds.filter((id) => !validPrices.includes(id)).join(", ")}`,
+            `Please replace placeholder variant IDs with actual Lemon Squeezy variant IDs`,
           );
         }
-      } else {
-        updateTestResult(
-          "Price Validation",
-          "error",
-          "Could not retrieve price data from Stripe",
-        );
-      }
 
       // Test 7: Checkout Function Test
       updateTestResult(
         "Checkout Function",
         "pending",
-        "Testing checkout function...",
+        "Testing Lemon Squeezy checkout function...",
       );
 
       const { data: checkoutData, error: checkoutError } =
         await supabase.functions.invoke("create-checkout", {
           body: {
             test_mode: true,
-            price_id: paymentTestData?.price_id,
+            variant_id: paymentTestData?.variant_id,
             user_id: paymentTestData?.user_id,
             customer_email: paymentTestData?.email,
             plan_name: paymentTestData?.plan_name,
@@ -336,26 +327,26 @@ export default function PaymentTestPage() {
     }
 
     const confirmed = confirm(
-      "This will create a REAL Stripe checkout session. Are you sure you want to proceed? You can cancel on the Stripe checkout page.",
+      "This will create a REAL Lemon Squeezy checkout session. Are you sure you want to proceed? You can cancel on the Lemon Squeezy checkout page.",
     );
 
     if (!confirmed) return;
 
     try {
-      const { data, error } = await supabase.functions.invoke(
-        "create-checkout",
-        {
-          body: {
-            price_id: paymentTestData.price_id,
-            user_id: paymentTestData.user_id,
-            customer_email: paymentTestData.email,
-            plan_name: paymentTestData.plan_name,
-            billing_cycle: paymentTestData.billing_cycle,
-            return_url: `${window.location.origin}/success`,
-            cancel_url: `${window.location.origin}/test-payment?cancelled=true`,
+              const { data, error } = await supabase.functions.invoke(
+          "create-checkout",
+          {
+            body: {
+              variant_id: paymentTestData.variant_id,
+              user_id: paymentTestData.user_id,
+              customer_email: paymentTestData.email,
+              plan_name: paymentTestData.plan_name,
+              billing_cycle: paymentTestData.billing_cycle,
+              return_url: `${window.location.origin}/success`,
+              cancel_url: `${window.location.origin}/test-payment?cancelled=true`,
+            },
           },
-        },
-      );
+        );
 
       if (error) {
         alert(`Checkout error: ${error.message}`);
@@ -562,7 +553,7 @@ export default function PaymentTestPage() {
                 <div>
                   <h4 className="font-medium">Update Environment Variables</h4>
                   <p className="text-sm text-gray-600">
-                    Ensure STRIPE_SECRET_KEY and STRIPE_WEBHOOK_SECRET are
+                    Ensure LEMON_SQUEEZY_API_KEY and LEMON_SQUEEZY_WEBHOOK_SECRET are
                     updated
                   </p>
                 </div>
@@ -573,7 +564,7 @@ export default function PaymentTestPage() {
                   2
                 </div>
                 <div>
-                  <h4 className="font-medium">Configure Stripe Webhook</h4>
+                  <h4 className="font-medium">Configure Lemon Squeezy Webhook</h4>
                   <p className="text-sm text-gray-600">
                     Set webhook URL to:{" "}
                     <code className="bg-gray-100 px-1 rounded">

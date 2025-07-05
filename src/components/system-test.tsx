@@ -964,13 +964,13 @@ export default function SystemTest({ user }: SystemTestProps) {
         },
       },
       {
-        name: "Stripe Payment Integration Test",
+        name: "Lemon Squeezy Payment Integration Test",
         test: async () => {
           try {
             if (typeof window === "undefined" || !document.querySelector) {
               return {
                 success: true,
-                message: "Stripe test skipped on server",
+                message: "Lemon Squeezy test skipped on server",
               };
             }
 
@@ -987,16 +987,16 @@ export default function SystemTest({ user }: SystemTestProps) {
                 text.includes("buy now")
               );
             });
-            const stripeElements = document.querySelectorAll(
-              "[data-stripe], .stripe-element",
+            const lemonsqueezyElements = document.querySelectorAll(
+              "[data-lemonsqueezy], .lemonsqueezy-element",
             );
             const checkoutButtons = document.querySelectorAll(
               'button[onclick*="checkout"], button[data-checkout]',
             );
 
-            // Check if Stripe is loaded
-            const hasStripe =
-              typeof window !== "undefined" && (window as any).Stripe;
+            // Check if Lemon Squeezy is loaded
+            const hasLemonSqueezy =
+              typeof window !== "undefined" && (window as any).LemonSqueezy;
 
             return {
               success: pricingButtons.length > 0,
@@ -1004,7 +1004,7 @@ export default function SystemTest({ user }: SystemTestProps) {
                 pricingButtons.length > 0
                   ? "Payment buttons available"
                   : "Payment integration not found",
-              details: `Pricing Buttons: ${pricingButtons.length}, Stripe Elements: ${stripeElements.length}, Checkout Buttons: ${checkoutButtons.length}, Stripe Loaded: ${hasStripe}`,
+              details: `Pricing Buttons: ${pricingButtons.length}, Lemon Squeezy Elements: ${lemonsqueezyElements.length}, Checkout Buttons: ${checkoutButtons.length}, Lemon Squeezy Loaded: ${hasLemonSqueezy}`,
             };
           } catch (error) {
             return {

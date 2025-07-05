@@ -198,21 +198,15 @@ export default function SubscriptionManagement({
   const handleManageBilling = async () => {
     setIsManagingBilling(true);
     try {
-      // Create Stripe customer portal session
-      const { data, error } = await supabase.functions.invoke(
-        "create-portal-session",
-        {
-          body: {
-            customer_id: subscription?.customer_id || subscription?.stripe_id,
-            return_url: window.location.href,
-          },
-        },
-      );
-
-      if (error) throw error;
-
-      if (data?.url) {
-        window.location.href = data.url;
+      // For Lemon Squeezy, redirect to the customer portal URL
+      // You'll need to implement this based on your Lemon Squeezy setup
+      const customerPortalUrl = `https://app.lemonsqueezy.com/billing?customer=${subscription?.lemonsqueezy_customer_id}`;
+      
+      if (customerPortalUrl) {
+        window.location.href = customerPortalUrl;
+      } else {
+        // Fallback to pricing page
+        window.location.href = "/pricing";
       }
     } catch (error) {
       console.error("Error creating portal session:", error);
