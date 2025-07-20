@@ -615,7 +615,7 @@ export default function PricingCard({
               data-interactive="true"
               data-pricing-button="true"
               data-checkout-button="true"
-              data-lemonsqueezy-button="true"
+              data-stripe-checkout="true"
               data-button="true"
               aria-label={`Subscribe to ${safePlan.name} plan`}
             >

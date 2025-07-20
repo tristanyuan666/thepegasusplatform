@@ -11,11 +11,11 @@ if (!supabaseUrl || !supabaseServiceKey) {
 
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-// Lemon Squeezy webhook secret
-const LEMON_SQUEEZY_WEBHOOK_SECRET = Deno.env.get("LEMON_SQUEEZY_WEBHOOK_SECRET");
+// Stripe webhook secret
+const STRIPE_WEBHOOK_SECRET = Deno.env.get("STRIPE_WEBHOOK_SECRET");
 
-if (!LEMON_SQUEEZY_WEBHOOK_SECRET) {
-  throw new Error("LEMON_SQUEEZY_WEBHOOK_SECRET environment variable is required");
+if (!STRIPE_WEBHOOK_SECRET) {
+  throw new Error("STRIPE_WEBHOOK_SECRET environment variable is required");
 }
 
 Deno.serve(async (req) => {
@@ -57,10 +57,10 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Verify the signature (Lemon Squeezy uses HMAC SHA256)
+    // Verify the signature (Stripe uses HMAC SHA256)
     const crypto = await import("https://deno.land/std@0.177.0/crypto/mod.ts");
     const encoder = new TextEncoder();
-    const key = encoder.encode(LEMON_SQUEEZY_WEBHOOK_SECRET);
+    const key = encoder.encode(STRIPE_WEBHOOK_SECRET);
     const message = encoder.encode(rawBody);
     
     const hmacKey = await crypto.hmacKey("sha256", key);
@@ -84,35 +84,35 @@ Deno.serve(async (req) => {
     const webhookData = JSON.parse(rawBody);
     console.log("Webhook data:", JSON.stringify(webhookData, null, 2));
 
-    const eventName = webhookData.meta?.event_name;
-    const eventData = webhookData.data;
+    const eventName = webhookData.type;
+    const eventData = webhookData.data.object;
 
-    console.log("Processing event:", eventName);
+    console.log("Processing Stripe event:", eventName);
 
-    // Handle different webhook events
+    // Handle different Stripe webhook events
     switch (eventName) {
-      case "order_created":
-        await handleOrderCreated(supabase, eventData);
+      case "checkout.session.completed":
+        await handleCheckoutCompleted(supabase, eventData);
         break;
-      case "subscription_created":
+      case "customer.subscription.created":
         await handleSubscriptionCreated(supabase, eventData);
         break;
-      case "subscription_updated":
+      case "customer.subscription.updated":
         await handleSubscriptionUpdated(supabase, eventData);
         break;
-      case "subscription_cancelled":
+      case "customer.subscription.deleted":
         await handleSubscriptionCancelled(supabase, eventData);
         break;
       default:
-        console.log("Unhandled event:", eventName);
+        console.log("Unhandled Stripe event:", eventName);
     }
 
     // Store webhook event for tracking
     try {
       await supabase.from("webhook_events").insert({
         event_type: eventName,
-        type: "lemonsqueezy",
-        stripe_event_id: webhookData.meta?.event_name || "unknown",
+        type: "stripe",
+        stripe_event_id: webhookData.id || "unknown",
         data: webhookData,
         created_at: new Date().toISOString(),
       });
@@ -142,19 +142,16 @@ Deno.serve(async (req) => {
   }
 });
 
-async function handleOrderCreated(supabaseClient: any, eventData: any) {
-  console.log("Handling order created:", eventData.id);
-  
-  const order = eventData.attributes;
-  const customData = order.custom_data || {};
+async function handleCheckoutCompleted(supabaseClient: any, eventData: any) {
+  console.log("Handling checkout completed:", eventData.id);
   
   // Update checkout session status
   await supabaseClient
     .from("checkout_sessions")
     .update({
       status: "completed",
-      amount: order.total,
-      currency: order.currency,
+      amount: eventData.amount_total,
+      currency: eventData.currency,
       completed_at: new Date().toISOString(),
     })
     .eq("session_id", eventData.id);
@@ -163,23 +160,20 @@ async function handleOrderCreated(supabaseClient: any, eventData: any) {
 async function handleSubscriptionCreated(supabaseClient: any, eventData: any) {
   console.log("Handling subscription created:", eventData.id);
   
-  const subscription = eventData.attributes;
-  const customData = subscription.custom_data || {};
-  
   // Create or update subscription in database
   await supabaseClient
     .from("subscriptions")
     .upsert({
       stripe_id: eventData.id,
-      user_id: customData.user_id,
-      status: subscription.status,
-      plan_name: customData.plan_name || "Unknown Plan",
-      billing_cycle: customData.billing_cycle || "monthly",
-      current_period_start: subscription.renews_at,
-      current_period_end: subscription.renews_at,
-      cancel_at_period_end: false,
+      user_id: eventData.metadata?.user_id,
+      status: eventData.status,
+      plan_name: eventData.metadata?.plan_name || "Unknown Plan",
+      billing_cycle: eventData.metadata?.billing_cycle || "monthly",
+      current_period_start: eventData.current_period_start,
+      current_period_end: eventData.current_period_end,
+      cancel_at_period_end: eventData.cancel_at_period_end,
       metadata: {
-        ...customData,
+        ...eventData.metadata,
         subscription_id: eventData.id,
         created_at: new Date().toISOString(),
       },
@@ -191,19 +185,16 @@ async function handleSubscriptionCreated(supabaseClient: any, eventData: any) {
 async function handleSubscriptionUpdated(supabaseClient: any, eventData: any) {
   console.log("Handling subscription updated:", eventData.id);
   
-  const subscription = eventData.attributes;
-  const customData = subscription.custom_data || {};
-  
   // Update subscription in database
   await supabaseClient
     .from("subscriptions")
     .update({
-      status: subscription.status,
-      current_period_start: subscription.renews_at,
-      current_period_end: subscription.renews_at,
-      cancel_at_period_end: subscription.cancelled,
+      status: eventData.status,
+      current_period_start: eventData.current_period_start,
+      current_period_end: eventData.current_period_end,
+      cancel_at_period_end: eventData.cancel_at_period_end,
       metadata: {
-        ...customData,
+        ...eventData.metadata,
         subscription_id: eventData.id,
         updated_at: new Date().toISOString(),
       },
@@ -213,8 +204,6 @@ async function handleSubscriptionUpdated(supabaseClient: any, eventData: any) {
 
 async function handleSubscriptionCancelled(supabaseClient: any, eventData: any) {
   console.log("Handling subscription cancelled:", eventData.id);
-  
-  const subscription = eventData.attributes;
   
   // Update subscription status in database
   await supabaseClient

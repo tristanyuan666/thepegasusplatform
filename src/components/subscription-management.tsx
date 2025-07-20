@@ -200,7 +200,7 @@ export default function SubscriptionManagement({
     try {
       // For Lemon Squeezy, redirect to the customer portal URL
       // You'll need to implement this based on your Lemon Squeezy setup
-      const customerPortalUrl = `https://app.lemonsqueezy.com/billing?customer=${subscription?.lemonsqueezy_customer_id}`;
+      const customerPortalUrl = `/api/create-portal-session?customer_id=${subscription?.stripe_customer_id}`;
       
       if (customerPortalUrl) {
         window.location.href = customerPortalUrl;

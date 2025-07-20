@@ -987,16 +987,16 @@ export default function SystemTest({ user }: SystemTestProps) {
                 text.includes("buy now")
               );
             });
-            const lemonsqueezyElements = document.querySelectorAll(
-              "[data-lemonsqueezy], .lemonsqueezy-element",
-            );
+                const stripeElements = document.querySelectorAll(
+      "[data-stripe], .stripe-element",
+    );
             const checkoutButtons = document.querySelectorAll(
               'button[onclick*="checkout"], button[data-checkout]',
             );
 
             // Check if Lemon Squeezy is loaded
-            const hasLemonSqueezy =
-              typeof window !== "undefined" && (window as any).LemonSqueezy;
+                const hasStripe =
+      typeof window !== "undefined" && (window as any).Stripe;
 
             return {
               success: pricingButtons.length > 0,
@@ -1004,7 +1004,7 @@ export default function SystemTest({ user }: SystemTestProps) {
                 pricingButtons.length > 0
                   ? "Payment buttons available"
                   : "Payment integration not found",
-              details: `Pricing Buttons: ${pricingButtons.length}, Lemon Squeezy Elements: ${lemonsqueezyElements.length}, Checkout Buttons: ${checkoutButtons.length}, Lemon Squeezy Loaded: ${hasLemonSqueezy}`,
+                              details: `Pricing Buttons: ${pricingButtons.length}, Stripe Elements: ${stripeElements.length}, Checkout Buttons: ${checkoutButtons.length}, Stripe Loaded: ${hasStripe}`,
             };
           } catch (error) {
             return {

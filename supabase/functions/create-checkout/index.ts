@@ -1,5 +1,6 @@
 import { corsHeaders } from "@shared/cors.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import Stripe from "https://esm.sh/stripe@14.28.0";
 
 // Initialize Supabase
 const supabaseUrl = Deno.env.get("NEXT_PUBLIC_SUPABASE_URL");
@@ -11,12 +12,11 @@ if (!supabaseUrl || !supabaseServiceKey) {
 
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-// Lemon Squeezy configuration
-const LEMON_SQUEEZY_API_KEY = Deno.env.get("LEMON_SQUEEZY_API_KEY");
-const LEMON_SQUEEZY_STORE_ID = Deno.env.get("LEMON_SQUEEZY_STORE_ID");
+// Stripe configuration
+const STRIPE_SECRET_KEY = Deno.env.get("STRIPE_SECRET_KEY");
 
-if (!LEMON_SQUEEZY_API_KEY || !LEMON_SQUEEZY_STORE_ID) {
-  throw new Error("Lemon Squeezy environment variables are required");
+if (!STRIPE_SECRET_KEY) {
+  throw new Error("Stripe environment variables are required");
 }
 
 Deno.serve(async (req) => {
@@ -85,12 +85,11 @@ Deno.serve(async (req) => {
       return new Response(
         JSON.stringify({
           success: true,
-          message: "Lemon Squeezy Edge Function is working! Test mode enabled.",
+          message: "Stripe Edge Function is working! Test mode enabled.",
           test_mode: true,
           timestamp: new Date().toISOString(),
           environment_check: {
-            lemon_squeezy_key_exists: !!Deno.env.get("LEMON_SQUEEZY_API_KEY"),
-            lemon_squeezy_store_exists: !!Deno.env.get("LEMON_SQUEEZY_STORE_ID"),
+            stripe_secret_key_exists: !!Deno.env.get("STRIPE_SECRET_KEY"),
             supabase_url_exists: !!Deno.env.get("NEXT_PUBLIC_SUPABASE_URL"),
             supabase_service_key_exists: !!Deno.env.get("NEXT_PUBLIC_SUPABASE_ANON_KEY"),
           },
@@ -107,64 +106,39 @@ Deno.serve(async (req) => {
     const successUrl = return_url || `${baseUrl}/success`;
     const cancelUrl = cancel_url || `${baseUrl}/pricing?cancelled=true`;
 
-    console.log("Creating Lemon Squeezy checkout...");
+    console.log("Creating Stripe checkout session...");
 
-    // Create Lemon Squeezy checkout
-    const checkoutResponse = await fetch("https://api.lemonsqueezy.com/v1/checkouts", {
-      method: "POST",
-      headers: {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${LEMON_SQUEEZY_API_KEY}`,
-      },
-      body: JSON.stringify({
-        data: {
-          type: "checkouts",
-          attributes: {
-            store_id: parseInt(LEMON_SQUEEZY_STORE_ID),
-            variant_id: parseInt(variant_id),
-            custom_price: null,
-            product_options: {
-              enabled: true,
-              redirect_url: successUrl,
-              receipt_button_text: "Go to Dashboard",
-              receipt_link_url: `${baseUrl}/dashboard`,
-            },
-            checkout_options: {
-              embed: false,
-              media: false,
-              logo: false,
-            },
-            checkout_data: {
-              email: customer_email,
-              custom: {
-                user_id: user_id,
-                plan_name: plan_name || "Unknown Plan",
-                billing_cycle: billing_cycle || "monthly",
-                ...metadata,
-              },
-            },
-            expires_at: null,
-          },
-        },
-      }),
+    // Create Stripe checkout session
+    const stripe = new Stripe(STRIPE_SECRET_KEY, {
+      apiVersion: "2024-12-18.acacia",
     });
 
-    if (!checkoutResponse.ok) {
-      const errorData = await checkoutResponse.json();
-      console.error("Lemon Squeezy API error:", errorData);
-      throw new Error(`Lemon Squeezy API error: ${errorData.errors?.[0]?.detail || 'Unknown error'}`);
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: [
+        {
+          price: variant_id, // Use variant_id as Stripe price ID
+          quantity: 1,
+        },
+      ],
+      mode: "subscription",
+      success_url: successUrl,
+      cancel_url: cancelUrl,
+      customer_email: customer_email,
+      metadata: {
+        user_id: user_id,
+        plan_name: plan_name || "Unknown Plan",
+        billing_cycle: billing_cycle || "monthly",
+        ...metadata,
+      },
+    });
+
+    if (!session || !session.url) {
+      throw new Error("No checkout URL returned from Stripe");
     }
 
-    const checkoutData = await checkoutResponse.json();
-    console.log("Lemon Squeezy checkout created:", checkoutData);
-
-    const checkoutUrl = checkoutData.data.attributes.url;
-    const checkoutId = checkoutData.data.id;
-
-    if (!checkoutUrl) {
-      throw new Error("No checkout URL returned from Lemon Squeezy");
-    }
+    const checkoutUrl = session.url;
+    const checkoutId = session.id;
 
     // Store checkout session in database for tracking
     try {
@@ -192,7 +166,7 @@ Deno.serve(async (req) => {
       created: new Date().toISOString(),
     };
 
-    console.log("=== LEMON SQUEEZY CHECKOUT SUCCESS ===");
+    console.log("=== STRIPE CHECKOUT SUCCESS ===");
     console.log("Response:", response);
 
     return new Response(JSON.stringify(response), {
@@ -200,7 +174,7 @@ Deno.serve(async (req) => {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error) {
-    console.error("=== LEMON SQUEEZY CHECKOUT ERROR ===");
+    console.error("=== STRIPE CHECKOUT ERROR ===");
     console.error("Error type:", typeof error);
     console.error("Error:", error);
     console.error(
@@ -216,9 +190,9 @@ Deno.serve(async (req) => {
       console.error("Error message:", errorMessage);
 
       // Handle specific error types
-      if (error.message.includes("variant")) {
+      if (error.message.includes("price")) {
         statusCode = 400;
-        errorMessage = "Invalid variant configuration";
+        errorMessage = "Invalid price configuration";
       } else if (error.message.includes("customer")) {
         statusCode = 400;
         errorMessage = "Invalid customer information";
@@ -238,8 +212,7 @@ Deno.serve(async (req) => {
       details: error instanceof Error ? error.message : "Unknown error",
       function_name: "create-checkout",
       environment_check: {
-        lemon_squeezy_key_exists: !!Deno.env.get("LEMON_SQUEEZY_API_KEY"),
-        lemon_squeezy_store_exists: !!Deno.env.get("LEMON_SQUEEZY_STORE_ID"),
+        stripe_secret_key_exists: !!Deno.env.get("STRIPE_SECRET_KEY"),
         supabase_url_exists: !!Deno.env.get("NEXT_PUBLIC_SUPABASE_URL"),
         supabase_service_key_exists: !!Deno.env.get("NEXT_PUBLIC_SUPABASE_ANON_KEY"),
       },

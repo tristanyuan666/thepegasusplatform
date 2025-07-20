@@ -38,9 +38,9 @@ export interface SubscriptionData {
   usage_limits: any;
   billing_history: any;
   // Lemon Squeezy fields
-  lemonsqueezy_subscription_id: string | null;
-  lemonsqueezy_customer_id: string | null;
-  lemonsqueezy_order_id: string | null;
+  stripe_subscription_id: string | null;
+  stripe_customer_id: string | null;
+  stripe_payment_intent_id: string | null;
   created_at: string;
   updated_at: string;
 }
