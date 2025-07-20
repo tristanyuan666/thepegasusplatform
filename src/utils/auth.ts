@@ -37,6 +37,10 @@ export interface SubscriptionData {
   features_used: any;
   usage_limits: any;
   billing_history: any;
+  // Lemon Squeezy fields
+  lemonsqueezy_subscription_id: string | null;
+  lemonsqueezy_customer_id: string | null;
+  lemonsqueezy_order_id: string | null;
   created_at: string;
   updated_at: string;
 }

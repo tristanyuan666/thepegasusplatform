@@ -30,7 +30,7 @@ interface PaymentTestData {
   user_id: string;
   email: string;
   plan_name: string;
-  price_id: string;
+  variant_id: string;
   billing_cycle: string;
 }
 
@@ -53,7 +53,7 @@ export default function PaymentTestPage() {
           user_id: user.id,
           email: user.email || "test@example.com",
           plan_name: "Creator",
-          price_id: "price_1RgakoG8nQMivkW3R0JFwmJy", // Creator Monthly
+          variant_id: "123456", // Creator Monthly variant ID
           billing_cycle: "monthly",
         });
       }
@@ -472,8 +472,8 @@ export default function PaymentTestPage() {
                     {paymentTestData.billing_cycle}
                   </div>
                   <div>
-                    <span className="font-medium">Price ID:</span>{" "}
-                    {paymentTestData.price_id}
+                    <span className="font-medium">Variant ID:</span>{" "}
+                    {paymentTestData.variant_id}
                   </div>
                   <div>
                     <span className="font-medium">Email:</span>{" "}
