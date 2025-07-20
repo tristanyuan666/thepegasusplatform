@@ -28,6 +28,9 @@ import {
   Verified,
 } from "lucide-react";
 
+// Force dynamic rendering for pages that use Supabase
+export const dynamic = 'force-dynamic';
+
 interface FAQItemProps {
   question: string;
   answer: string;
@@ -342,9 +345,16 @@ export default function PricingPage({ searchParams }: PricingPageProps) {
   const [showWelcomeMessage, setShowWelcomeMessage] = useState(false);
   const [showVerifiedMessage, setShowVerifiedMessage] = useState(false);
   const [user, setUser] = useState<any>(null);
-  const supabase = createClient();
+  const [supabase, setSupabase] = useState<any>(null);
 
   useEffect(() => {
+    // Initialize Supabase client only on the client side
+    setSupabase(createClient());
+  }, []);
+
+  useEffect(() => {
+    if (!supabase) return;
+    
     const getUser = async () => {
       const {
         data: { user },
@@ -352,7 +362,7 @@ export default function PricingPage({ searchParams }: PricingPageProps) {
       setUser(user);
     };
     getUser();
-  }, []);
+  }, [supabase]);
 
   // Show welcome or verification messages
   useState(() => {

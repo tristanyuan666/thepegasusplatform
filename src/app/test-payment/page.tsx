@@ -19,6 +19,9 @@ import {
   ExternalLink,
 } from "lucide-react";
 
+// Force dynamic rendering for pages that use Supabase
+export const dynamic = 'force-dynamic';
+
 interface TestResult {
   name: string;
   status: "pending" | "success" | "error";
@@ -40,9 +43,16 @@ export default function PaymentTestPage() {
   const [isRunningTests, setIsRunningTests] = useState(false);
   const [paymentTestData, setPaymentTestData] =
     useState<PaymentTestData | null>(null);
-  const supabase = createClient();
+  const [supabase, setSupabase] = useState<any>(null);
 
   useEffect(() => {
+    // Initialize Supabase client only on the client side
+    setSupabase(createClient());
+  }, []);
+
+  useEffect(() => {
+    if (!supabase) return;
+    
     const getUser = async () => {
       const {
         data: { user },
@@ -59,7 +69,7 @@ export default function PaymentTestPage() {
       }
     };
     getUser();
-  }, []);
+  }, [supabase]);
 
   const updateTestResult = (
     name: string,
@@ -81,6 +91,11 @@ export default function PaymentTestPage() {
   };
 
   const runComprehensiveTest = async () => {
+    if (!supabase) {
+      alert("Supabase client not initialized");
+      return;
+    }
+    
     if (!user) {
       alert("Please sign in first to run payment tests");
       return;

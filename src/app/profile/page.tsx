@@ -4,6 +4,9 @@ import UserProfileManagement from "@/components/user-profile-management";
 import DashboardNavbar from "@/components/dashboard-navbar";
 import { getUserProfile } from "@/utils/auth";
 
+// Force dynamic rendering for authenticated pages
+export const dynamic = 'force-dynamic';
+
 export default async function ProfilePage() {
   const supabase = await createClient();
 

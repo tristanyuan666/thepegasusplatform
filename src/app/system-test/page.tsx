@@ -2,6 +2,9 @@ import { createClient } from "@/supabase/server";
 import SystemTest from "@/components/system-test";
 import DashboardNavbar from "@/components/dashboard-navbar";
 
+// Force dynamic rendering for authenticated pages
+export const dynamic = 'force-dynamic';
+
 export default async function SystemTestPage() {
   const supabase = await createClient();
   const {

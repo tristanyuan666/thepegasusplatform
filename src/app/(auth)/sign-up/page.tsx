@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "../../../../supabase/client";
@@ -23,6 +23,9 @@ import {
 import PegasusLogo from "@/components/pegasus-logo";
 import LoadingSpinner from "@/components/loading-spinner";
 
+// Force dynamic rendering for pages that use Supabase
+export const dynamic = 'force-dynamic';
+
 export default function SignUpPage() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -34,8 +37,13 @@ export default function SignUpPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [supabase, setSupabase] = useState<any>(null);
   const router = useRouter();
-  const supabase = createClient();
+
+  useEffect(() => {
+    // Initialize Supabase client only on the client side
+    setSupabase(createClient());
+  }, []);
 
   const validateForm = () => {
     if (!fullName.trim()) {
@@ -77,6 +85,11 @@ export default function SignUpPage() {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!supabase) {
+      setError("Supabase client not initialized");
+      return;
+    }
 
     if (!validateForm()) return;
 

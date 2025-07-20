@@ -16,6 +16,9 @@ import SubscriptionManagement from "@/components/subscription-management";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Suspense } from "react";
 
+// Force dynamic rendering for authenticated pages
+export const dynamic = 'force-dynamic';
+
 function LoadingSpinner() {
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center">

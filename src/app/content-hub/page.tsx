@@ -4,6 +4,9 @@ import ContentCreationHub from "@/components/content-creation-hub";
 import DashboardNavbar from "@/components/dashboard-navbar";
 import { getUserSubscription, getSubscriptionTier } from "@/utils/auth";
 
+// Force dynamic rendering for authenticated pages
+export const dynamic = 'force-dynamic';
+
 export default async function ContentHubPage() {
   const supabase = await createClient();
   const {

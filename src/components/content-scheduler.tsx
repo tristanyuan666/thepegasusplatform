@@ -152,7 +152,7 @@ export default function ContentScheduler({
 
       // Organize content by date for calendar view
       const organized: Record<string, ContentItem[]> = {};
-      (data || []).forEach((item) => {
+      (data || []).forEach((item: ContentItem) => {
         if (item.scheduled_for) {
           const dateKey = new Date(item.scheduled_for).toDateString();
           if (!organized[dateKey]) organized[dateKey] = [];

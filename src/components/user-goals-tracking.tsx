@@ -189,7 +189,7 @@ export default function UserGoalsTracking({
       if (error) throw error;
 
       // Transform goals and calculate progress
-      const transformedGoals: Goal[] = (data || []).map((goal) => {
+      const transformedGoals: Goal[] = (data || []).map((goal: UserGoal) => {
         const targetDate = goal.target_date ? new Date(goal.target_date) : null;
         const now = new Date();
         const daysLeft = targetDate

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import Script from "next/script";
 import EnhancedCursor from "@/components/enhanced-cursor";
@@ -9,11 +9,15 @@ import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
+
 export const metadata: Metadata = {
   title: "Pegasus - AI Fame Creator & Influencer Manager",
   description:
     "Transform into a viral sensation with AI-powered content creation and growth tools. Build, grow, and monetize your social media presence with premium AI features.",
-  viewport: "width=device-width, initial-scale=1",
   keywords:
     "AI content creation, social media growth, influencer tools, viral content, content creator, social media automation",
   authors: [{ name: "Pegasus AI" }],
