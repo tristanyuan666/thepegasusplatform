@@ -228,9 +228,19 @@ export default function PricingCard({
   // Ensure price object exists with defaults
   const priceData = safePlan.price;
 
-  const currentPrice = isYearly ? priceData.yearly : priceData.monthly;
-  const monthlyPrice = isYearly ? priceData.yearly / 12 : priceData.monthly;
-  const displayPrice = Math.floor(monthlyPrice);
+  // Helper to round to .99
+  function to99(n: number) {
+    return Math.floor(n) + 0.99;
+  }
+
+  // Calculate current and original prices
+  const currentPrice = isYearly ? to99(priceData.yearly) : to99(priceData.monthly);
+  const originalPrice = to99(currentPrice * 2);
+
+  // For annual, calculate per month price (ending in .99)
+  const perMonthAnnual = isYearly ? to99(currentPrice / 12) : null;
+
+  // Calculate savings
   const savings =
     isYearly && priceData.monthly > 0
       ? Math.round(
@@ -239,10 +249,6 @@ export default function PricingCard({
             100,
         )
       : 0;
-
-  // Calculate original price (double, ending in .99)
-  const originalPrice = (currentPrice * 2).toFixed(2);
-  const originalPriceDisplay = originalPrice.replace(/\d+\.(\d{2})$/, (m, cents) => cents === "00" ? ".99" : m);
 
   // Use displayPrice directly to avoid hydration issues
 
@@ -518,14 +524,14 @@ export default function PricingCard({
                 ${currentPrice.toFixed(2)}
               </span>
               <span className="text-lg text-gray-400 line-through">
-                ${originalPriceDisplay}
+                ${originalPrice.toFixed(2)}
               </span>
               <span className="ml-2 px-2 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full animate-pulse">
                 50% OFF
               </span>
             </div>
             <span className="text-xs text-gray-500">
-              {isYearly ? "/year" : "/month"}
+              {isYearly ? `/year (${perMonthAnnual?.toFixed(2)}/mo)` : "/month"}
             </span>
           </div>
 
