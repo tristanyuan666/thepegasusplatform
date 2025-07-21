@@ -3,7 +3,8 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 // Initialize Supabase
 const supabaseUrl = Deno.env.get("NEXT_PUBLIC_SUPABASE_URL");
-const supabaseServiceKey = Deno.env.get("NEXT_PUBLIC_SUPABASE_ANON_KEY");
+// Use SERVICE_ROLE_KEY for full DB permissions (not ANON_KEY)
+const supabaseServiceKey = Deno.env.get("SERVICE_ROLE_KEY");
 
 if (!supabaseUrl || !supabaseServiceKey) {
   throw new Error("Supabase environment variables are required");

@@ -185,6 +185,33 @@ export default function Navbar({ user = null }: NavbarProps) {
     }
   }, [currentUser]);
 
+  // Force refresh subscription status after payment or navigation
+  useEffect(() => {
+    const handleUrlChange = () => {
+      if (window.location.pathname === "/success" || window.location.pathname === "/dashboard") {
+        if (currentUser) {
+          (async () => {
+            const { data } = await supabase
+              .from("subscriptions")
+              .select("*")
+              .eq("user_id", currentUser.id)
+              .eq("status", "active")
+              .maybeSingle();
+            setHasActiveSubscription(!!data);
+          })();
+        }
+      }
+    };
+    window.addEventListener("popstate", handleUrlChange);
+    window.addEventListener("pushstate", handleUrlChange);
+    window.addEventListener("replacestate", handleUrlChange);
+    return () => {
+      window.removeEventListener("popstate", handleUrlChange);
+      window.removeEventListener("pushstate", handleUrlChange);
+      window.removeEventListener("replacestate", handleUrlChange);
+    };
+  }, [currentUser, supabase]);
+
   return (
     <nav
       className={`w-full fixed top-0 z-50 py-2 transition-all duration-300 ${

@@ -83,21 +83,49 @@ Deno.serve(async (req) => {
       .from("subscriptions")
       .select("*")
       .eq("user_id", user_id)
-      .eq("plan_name", plan_name)
-      .eq("billing_cycle", billing_cycle)
       .eq("status", "active")
       .maybeSingle();
+
+    // Helper to determine plan tier order
+    function getTierOrder(planName) {
+      if (!planName) return 0;
+      const name = planName.toLowerCase();
+      if (name.includes("creator")) return 1;
+      if (name.includes("influencer")) return 2;
+      if (name.includes("superstar")) return 3;
+      return 0;
+    }
+
     if (existingSub) {
-      return new Response(
-        JSON.stringify({
-          error: `You already have an active ${plan_name} (${billing_cycle}) subscription.`,
-          success: false,
-        }),
-        {
-          status: 400,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        },
-      );
+      const existingTier = getTierOrder(existingSub.plan_name);
+      const requestedTier = getTierOrder(plan_name);
+      if (
+        existingTier === requestedTier &&
+        existingSub.billing_cycle === billing_cycle
+      ) {
+        return new Response(
+          JSON.stringify({
+            error: `You already have an active ${plan_name} (${billing_cycle}) subscription.`,
+            success: false,
+          }),
+          {
+            status: 400,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          },
+        );
+      } else if (existingTier > requestedTier) {
+        return new Response(
+          JSON.stringify({
+            error: `You already have a higher-tier plan (${existingSub.plan_name}). Downgrades are not allowed through this flow.`,
+            success: false,
+          }),
+          {
+            status: 400,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          },
+        );
+      }
+      // If requestedTier > existingTier, allow upgrade (optionally cancel old sub in Stripe)
     }
 
     // Handle test mode - return success without creating actual checkout
