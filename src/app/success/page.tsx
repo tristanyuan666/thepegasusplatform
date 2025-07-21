@@ -43,6 +43,7 @@ function SuccessContent() {
   const [billing, setBilling] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [needsSignIn, setNeedsSignIn] = useState(false);
+  const [redirecting, setRedirecting] = useState(false);
 
   useEffect(() => {
     const fetchPlan = async () => {
@@ -81,6 +82,15 @@ function SuccessContent() {
     // eslint-disable-next-line
   }, []);
 
+  useEffect(() => {
+    if (!loading && !needsSignIn && plan && billing) {
+      setTimeout(() => {
+        setRedirecting(true);
+        window.location.href = "/dashboard";
+      }, 3000);
+    }
+  }, [loading, needsSignIn, plan, billing]);
+
   // Show a loading spinner if loading
   if (loading) {
     return (
@@ -96,6 +106,15 @@ function SuccessContent() {
         <h2 className="text-2xl font-bold mb-4 text-blue-700">Payment Successful!</h2>
         <p className="mb-4 text-gray-700">Your payment was successful, but you need to sign in to access your features.</p>
         <a href="/sign-in" className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition">Sign In</a>
+      </div>
+    );
+  }
+
+  if (redirecting) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center p-8">
+        <h2 className="text-2xl font-bold mb-4 text-blue-700">Redirecting to your Dashboard…</h2>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" />
       </div>
     );
   }
