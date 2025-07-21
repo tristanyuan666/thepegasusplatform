@@ -159,7 +159,6 @@ async function handleCheckoutCompleted(supabaseClient: any, eventData: any) {
 
 async function handleSubscriptionCreated(supabaseClient: any, eventData: any) {
   console.log("Handling subscription created:", eventData.id);
-  
   // Create or update subscription in database
   await supabaseClient
     .from("subscriptions")
@@ -180,11 +179,25 @@ async function handleSubscriptionCreated(supabaseClient: any, eventData: any) {
     }, {
       onConflict: "stripe_id"
     });
+
+  // Update user profile/role/features
+  if (eventData.metadata?.user_id) {
+    await supabaseClient
+      .from("users")
+      .update({
+        plan: eventData.metadata?.plan_name || "Unknown Plan",
+        plan_status: eventData.status,
+        plan_billing: eventData.metadata?.billing_cycle || "monthly",
+        plan_period_end: eventData.current_period_end,
+        is_active: eventData.status === "active",
+        updated_at: new Date().toISOString(),
+      })
+      .eq("user_id", eventData.metadata.user_id);
+  }
 }
 
 async function handleSubscriptionUpdated(supabaseClient: any, eventData: any) {
   console.log("Handling subscription updated:", eventData.id);
-  
   // Update subscription in database
   await supabaseClient
     .from("subscriptions")
@@ -200,6 +213,21 @@ async function handleSubscriptionUpdated(supabaseClient: any, eventData: any) {
       },
     })
     .eq("stripe_id", eventData.id);
+
+  // Update user profile/role/features
+  if (eventData.metadata?.user_id) {
+    await supabaseClient
+      .from("users")
+      .update({
+        plan: eventData.metadata?.plan_name || "Unknown Plan",
+        plan_status: eventData.status,
+        plan_billing: eventData.metadata?.billing_cycle || "monthly",
+        plan_period_end: eventData.current_period_end,
+        is_active: eventData.status === "active",
+        updated_at: new Date().toISOString(),
+      })
+      .eq("user_id", eventData.metadata.user_id);
+  }
 }
 
 async function handleSubscriptionCancelled(supabaseClient: any, eventData: any) {

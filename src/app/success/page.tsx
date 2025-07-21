@@ -20,6 +20,10 @@ import {
 import Navbar from "@/components/navbar";
 import { Suspense } from "react";
 
+function capitalize(str: string) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
 function SuccessContent() {
   // Get URL parameters for plan details
   const searchParams =
@@ -61,21 +65,17 @@ function SuccessContent() {
   const currentPlan =
     planDetails[plan as keyof typeof planDetails] || planDetails.creator;
 
+  // Format billing period
+  let billingDisplay = billing;
+  if (billing === "annual" || billing === "yearly") billingDisplay = "Annual";
+  else if (billing === "monthly") billingDisplay = "Monthly";
+  else billingDisplay = capitalize(billing);
+
   return (
     <>
       <Navbar />
       <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
         <div className="max-w-2xl w-full">
-          {/* Success Animation */}
-          <div className="text-center mb-8">
-            <div className="relative inline-block">
-              <div className="absolute inset-0 bg-green-400 rounded-full blur-xl opacity-30 animate-pulse" />
-              <div className="relative bg-white rounded-full p-6 shadow-2xl">
-                <CheckCircle2 className="h-16 w-16 text-green-500 mx-auto animate-bounce" />
-              </div>
-            </div>
-          </div>
-
           {/* Main Success Card */}
           <Card className="glass-premium border-0 shadow-2xl">
             <CardHeader className="text-center pb-4">
@@ -171,7 +171,7 @@ function SuccessContent() {
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-gray-600">Plan:</span>
                   <span className="font-medium text-gray-900">
-                    {currentPlan.name} ({billing})
+                    {currentPlan.name} ({billingDisplay})
                   </span>
                 </div>
                 <div className="flex items-center justify-between text-sm mt-2">
@@ -195,7 +195,7 @@ function SuccessContent() {
                   </Link>
                 </Button>
                 <Button asChild variant="outline" className="flex-1">
-                  <Link href="/" className="flex items-center gap-2">
+                  <Link href="/features/ai-content" className="flex items-center gap-2">
                     <Star className="w-4 h-4" />
                     Explore Features
                   </Link>

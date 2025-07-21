@@ -78,6 +78,28 @@ Deno.serve(async (req) => {
       );
     }
 
+    // Prevent duplicate purchases: check for active subscription
+    const { data: existingSub, error: subError } = await supabase
+      .from("subscriptions")
+      .select("*")
+      .eq("user_id", user_id)
+      .eq("plan_name", plan_name)
+      .eq("billing_cycle", billing_cycle)
+      .eq("status", "active")
+      .maybeSingle();
+    if (existingSub) {
+      return new Response(
+        JSON.stringify({
+          error: `You already have an active ${plan_name} (${billing_cycle}) subscription.`,
+          success: false,
+        }),
+        {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
+      );
+    }
+
     // Handle test mode - return success without creating actual checkout
     if (test_mode) {
       console.log("Test mode detected - returning mock success response");
