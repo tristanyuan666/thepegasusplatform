@@ -238,7 +238,8 @@ export default function PricingCard({
   const originalPrice = to99(currentPrice * 2);
 
   // For annual, calculate per month price (ending in .99)
-  const perMonthAnnual = isYearly ? to99(currentPrice / 12) : null;
+  const perMonthAnnual = isYearly ? to99(priceData.yearly / 12) : null;
+  const originalPerMonthAnnual = isYearly ? to99((priceData.yearly / 12) * 2) : null;
 
   // Calculate savings
   const savings =
@@ -521,18 +522,21 @@ export default function PricingCard({
           <div className="flex flex-col items-center mb-6">
             <div className="flex items-center gap-2 mb-2">
               <span className="text-3xl font-bold text-gray-900">
-                ${currentPrice.toFixed(2)}
+                {isYearly ? `$${perMonthAnnual?.toFixed(2)}` : `$${currentPrice.toFixed(2)}`}
               </span>
               <span className="text-lg text-gray-400 line-through">
-                ${originalPrice.toFixed(2)}
+                {isYearly ? `$${originalPerMonthAnnual?.toFixed(2)}` : `$${originalPrice.toFixed(2)}`}
               </span>
               <span className="ml-2 px-2 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full animate-pulse">
                 50% OFF
               </span>
             </div>
             <span className="text-xs text-gray-500">
-              {isYearly ? `/year (${perMonthAnnual?.toFixed(2)}/mo)` : "/month"}
+              {isYearly ? `/month` : "/month"}
             </span>
+            {isYearly && (
+              <span className="text-xs text-gray-400 mt-1">Billed annually at ${currentPrice.toFixed(2)}</span>
+            )}
           </div>
 
           {/* Features */}
