@@ -240,6 +240,10 @@ export default function PricingCard({
         )
       : 0;
 
+  // Calculate original price (double, ending in .99)
+  const originalPrice = (currentPrice * 2).toFixed(2);
+  const originalPriceDisplay = originalPrice.replace(/\d+\.(\d{2})$/, (m, cents) => cents === "00" ? ".99" : m);
+
   // Use displayPrice directly to avoid hydration issues
 
   const handleCheckout = async () => {
@@ -507,29 +511,22 @@ export default function PricingCard({
             </div>
           </div>
 
-          {/* Pricing */}
-          <div className="mb-6">
-            <div className="flex items-baseline gap-1 mb-2 flex-wrap">
-              <span className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900">
-                ${displayPrice}
+          {/* Price Section */}
+          <div className="flex flex-col items-center mb-6">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-3xl font-bold text-gray-900">
+                ${currentPrice.toFixed(2)}
               </span>
-              <span className="text-lg md:text-xl font-medium text-gray-600">
-                .99
+              <span className="text-lg text-gray-400 line-through">
+                ${originalPriceDisplay}
               </span>
-              <div className="flex flex-col ml-1">
-                <span className="text-gray-600 text-xs">/month</span>
-                {isYearly && savings > 0 && (
-                  <span className="text-green-600 text-xs font-medium">
-                    Save {savings}%
-                  </span>
-                )}
-              </div>
+              <span className="ml-2 px-2 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full animate-pulse">
+                50% OFF
+              </span>
             </div>
-            {isYearly && (
-              <p className="text-gray-600 text-xs">
-                Billed annually (${currentPrice})
-              </p>
-            )}
+            <span className="text-xs text-gray-500">
+              {isYearly ? "/year" : "/month"}
+            </span>
           </div>
 
           {/* Features */}
