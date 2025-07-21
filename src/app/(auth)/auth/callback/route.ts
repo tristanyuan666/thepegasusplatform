@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
   const type = searchParams.get("type"); // signup, recovery, etc.
 
   // Use production domain consistently
-  const currentDomain = "https://epic-raman6-4uxp6.view-3.tempo-dev.app";
+  const currentDomain = process.env.NEXT_PUBLIC_BASE_URL || "https://thepegasus.ca";
 
   console.log("Auth callback received:", {
     code: code ? "present" : "missing",

@@ -75,7 +75,15 @@
 @layer base {
   * {
     @apply border-border;
+    box-sizing: border-box;
   }
+  
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
   body {
     @apply bg-white text-gray-900;
     font-feature-settings:
@@ -85,8 +93,27 @@
     font-size: 14px;
     line-height: 1.6;
     font-weight: 400;
+    overflow-x: hidden;
+    text-rendering: optimizeLegibility;
   }
 
+  /* Performance Optimizations */
+  img, video, canvas, svg {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+  
+  /* Reduce motion for users who prefer it */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+  
   /* Enhanced Mobile Optimizations */
   @media (max-width: 768px) {
     body {

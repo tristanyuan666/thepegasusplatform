@@ -200,6 +200,7 @@ export default function EnhancedCursor({ className }: EnhancedCursorProps) {
       if (!isMoving && typeof window !== "undefined" && typeof window.requestAnimationFrame === "function") {
         isMoving = true;
         animationFrameId = requestAnimationFrame(() => {
+          // Use transform3d for hardware acceleration
           setPosition({ x: e.clientX, y: e.clientY });
           setIsVisible(true);
           isMoving = false;
@@ -337,9 +338,8 @@ export default function EnhancedCursor({ className }: EnhancedCursorProps) {
       <div
         className={cn(
           "enhanced-cursor custom-cursor fixed pointer-events-none transition-all duration-150 ease-out",
-          "w-8 h-8 rounded-full border-2 border-blue-500/80 bg-blue-500/10",
+          "w-6 h-6 rounded-full border-2 border-blue-500/80 bg-blue-500/10",
           "backdrop-blur-sm shadow-lg shadow-blue-500/30",
-          "transform -translate-x-1/2 -translate-y-1/2",
           isVisible ? "opacity-100 visible" : "opacity-0 invisible",
           isHovering &&
             "scale-150 border-blue-600 bg-blue-600/20 shadow-blue-600/50",
@@ -347,12 +347,10 @@ export default function EnhancedCursor({ className }: EnhancedCursorProps) {
           className,
         )}
         style={{
-          left: `${position.x}px`,
-          top: `${position.y}px`,
+          transform: `translate3d(${position.x}px, ${position.y}px, 0) translate(-50%, -50%)`,
           zIndex: 9999999,
-          willChange: "transform, opacity",
+          willChange: "transform",
           backfaceVisibility: "hidden",
-          perspective: 1000,
           position: "fixed",
           display: isVisible ? "block" : "none",
         }}
@@ -362,19 +360,16 @@ export default function EnhancedCursor({ className }: EnhancedCursorProps) {
       <div
         className={cn(
           "enhanced-cursor custom-cursor fixed pointer-events-none transition-all duration-200 ease-out",
-          "w-2 h-2 rounded-full bg-blue-500/60",
-          "transform -translate-x-1/2 -translate-y-1/2",
+          "w-1.5 h-1.5 rounded-full bg-blue-500/60",
           isVisible ? "opacity-100 visible" : "opacity-0 invisible",
           isHovering && "scale-150 bg-blue-600/80",
           isClicking && "scale-50",
         )}
         style={{
-          left: `${position.x}px`,
-          top: `${position.y}px`,
+          transform: `translate3d(${position.x}px, ${position.y}px, 0) translate(-50%, -50%)`,
           zIndex: 9999998,
-          willChange: "transform, opacity",
+          willChange: "transform",
           backfaceVisibility: "hidden",
-          perspective: 1000,
           position: "fixed",
           display: isVisible ? "block" : "none",
         }}

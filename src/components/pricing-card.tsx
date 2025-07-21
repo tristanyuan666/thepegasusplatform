@@ -121,19 +121,19 @@ const defaultPlans: PricingPlan[] = [
   },
 ];
 
-// Define Lemon Squeezy variant IDs at component level
-const LEMON_SQUEEZY_VARIANT_IDS = {
+// Define Stripe price IDs at component level
+const STRIPE_PRICE_IDS = {
   creator: {
-    monthly: "123456", // Replace with your actual Lemon Squeezy variant IDs
-    yearly: "123457",
+    monthly: "price_1RnBOY4Qsqtj5fxtmeZvp9hD", // Creator Monthly
+    yearly: "price_1RnBQl4Qsqtj5fxtlUBgr5DV", // Creator Annual
   },
   influencer: {
-    monthly: "123458",
-    yearly: "123459",
+    monthly: "price_1RnBPS4Qsqtj5fxtbip0cUVO", // Influencer Monthly
+    yearly: "price_1RnBRW4Qsqtj5fxtCjfe7jRC", // Influencer Annual
   },
   superstar: {
-    monthly: "123460",
-    yearly: "123461",
+    monthly: "price_1RnBQ74Qsqtj5fxtQCMxGyjd", // Superstar Monthly
+    yearly: "price_1RnBRx4Qsqtj5fxt7pSn1ltF", // Superstar Annual
   },
 };
 
@@ -270,15 +270,15 @@ export default function PricingCard({
         const returnUrl = `${baseUrl}/success?plan=${safePlan.id}&billing=${isYearly ? "yearly" : "monthly"}`;
         const cancelUrl = `${baseUrl}/pricing?cancelled=true`;
 
-        // Use the component-level LEMON_SQUEEZY_VARIANT_IDS constant
-        const variantId =
-          LEMON_SQUEEZY_VARIANT_IDS[safePlan.id as keyof typeof LEMON_SQUEEZY_VARIANT_IDS]?.[
+            // Use the component-level STRIPE_PRICE_IDS constant
+    const priceId =
+      STRIPE_PRICE_IDS[safePlan.id as keyof typeof STRIPE_PRICE_IDS]?.[
             isYearly ? "yearly" : "monthly"
           ];
 
-        if (!variantId) {
+        if (!priceId) {
           throw new Error(
-            `Variant configuration not found for ${safePlan.name} (${isYearly ? "yearly" : "monthly"})`,
+            `Price configuration not found for ${safePlan.name} (${isYearly ? "yearly" : "monthly"})`,
           );
         }
 
@@ -289,7 +289,7 @@ export default function PricingCard({
         }
 
         const checkoutPayload = {
-          variant_id: variantId,
+          price_id: priceId,
           user_id: user.id,
           return_url: returnUrl,
           cancel_url: cancelUrl,
@@ -346,7 +346,7 @@ export default function PricingCard({
 
         if (!data.url) {
           console.error("No checkout URL in response:", data);
-          throw new Error("No checkout URL received from Lemon Squeezy");
+          throw new Error("No checkout URL received from Stripe");
         }
 
         // Track checkout initiation for analytics
@@ -399,8 +399,8 @@ export default function PricingCard({
         planId: safePlan.id,
         planName: safePlan.name,
         isYearly,
-        variantId:
-          LEMON_SQUEEZY_VARIANT_IDS[safePlan.id as keyof typeof LEMON_SQUEEZY_VARIANT_IDS]?.[
+        priceId:
+          STRIPE_PRICE_IDS[safePlan.id as keyof typeof STRIPE_PRICE_IDS]?.[
             isYearly ? "yearly" : "monthly"
           ],
       });

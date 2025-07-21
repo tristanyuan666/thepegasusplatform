@@ -1,4 +1,4 @@
-import { corsHeaders } from "@shared/cors.ts";
+import { corsHeaders } from "../_shared/cors.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 // Initialize Supabase
@@ -19,7 +19,7 @@ if (!STRIPE_WEBHOOK_SECRET) {
 }
 
 Deno.serve(async (req) => {
-  console.log("=== LEMON SQUEEZY WEBHOOK CALLED ===");
+  console.log("=== STRIPE WEBHOOK CALLED ===");
   console.log("Method:", req.method);
   console.log("Headers:", Object.fromEntries(req.headers.entries()));
 

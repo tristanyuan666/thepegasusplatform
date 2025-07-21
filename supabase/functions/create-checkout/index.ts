@@ -1,10 +1,9 @@
-import { corsHeaders } from "@shared/cors.ts";
+import { corsHeaders } from "../_shared/cors.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
-import Stripe from "https://esm.sh/stripe@14.28.0";
 
 // Initialize Supabase
 const supabaseUrl = Deno.env.get("NEXT_PUBLIC_SUPABASE_URL");
-const supabaseServiceKey = Deno.env.get("NEXT_PUBLIC_SUPABASE_ANON_KEY");
+const supabaseServiceKey = Deno.env.get("SERVICE_ROLE_KEY");
 
 if (!supabaseUrl || !supabaseServiceKey) {
   throw new Error("Supabase environment variables are required");
@@ -20,7 +19,7 @@ if (!STRIPE_SECRET_KEY) {
 }
 
 Deno.serve(async (req) => {
-  console.log("=== LEMON SQUEEZY CHECKOUT FUNCTION CALLED ===");
+  console.log("=== STRIPE CHECKOUT FUNCTION CALLED ===");
   console.log("Method:", req.method);
   console.log("Headers:", Object.fromEntries(req.headers.entries()));
 
@@ -46,7 +45,7 @@ Deno.serve(async (req) => {
   }
 
   try {
-    console.log("=== LEMON SQUEEZY CHECKOUT REQUEST START ===");
+    console.log("=== STRIPE CHECKOUT REQUEST START ===");
 
     // Parse request body
     const body = await req.json();
@@ -54,7 +53,7 @@ Deno.serve(async (req) => {
 
     // Extract required parameters
     const {
-      variant_id,
+      price_id,
       user_id,
       return_url,
       cancel_url,
@@ -66,10 +65,10 @@ Deno.serve(async (req) => {
     } = body;
 
     // Validate required fields
-    if (!variant_id || !user_id) {
+    if (!price_id || !user_id) {
       return new Response(
         JSON.stringify({
-          error: "Missing required fields: variant_id and user_id are required",
+          error: "Missing required fields: price_id and user_id are required",
           success: false,
         }),
         {
@@ -91,7 +90,7 @@ Deno.serve(async (req) => {
           environment_check: {
             stripe_secret_key_exists: !!Deno.env.get("STRIPE_SECRET_KEY"),
             supabase_url_exists: !!Deno.env.get("NEXT_PUBLIC_SUPABASE_URL"),
-            supabase_service_key_exists: !!Deno.env.get("NEXT_PUBLIC_SUPABASE_ANON_KEY"),
+            supabase_service_key_exists: !!Deno.env.get("SERVICE_ROLE_KEY"),
           },
         }),
         {
@@ -102,36 +101,41 @@ Deno.serve(async (req) => {
     }
 
     // Set up URLs
-    const baseUrl = "https://epic-raman6-4uxp6.view-3.tempo-dev.app";
+    const baseUrl = "https://thepegasus.ca";
     const successUrl = return_url || `${baseUrl}/success`;
     const cancelUrl = cancel_url || `${baseUrl}/pricing?cancelled=true`;
 
     console.log("Creating Stripe checkout session...");
 
-    // Create Stripe checkout session
-    const stripe = new Stripe(STRIPE_SECRET_KEY, {
-      apiVersion: "2024-12-18.acacia",
+    // Create Stripe checkout session using fetch API
+    const stripeResponse = await fetch("https://api.stripe.com/v1/checkout/sessions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${STRIPE_SECRET_KEY}`,
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Stripe-Version": "2024-12-18.acacia",
+      },
+      body: new URLSearchParams({
+        "payment_method_types[]": "card",
+        "line_items[0][price]": price_id,
+        "line_items[0][quantity]": "1",
+        mode: "subscription",
+        success_url: successUrl,
+        cancel_url: cancelUrl,
+        customer_email: customer_email,
+        "metadata[user_id]": user_id,
+        "metadata[plan_name]": plan_name || "Unknown Plan",
+        "metadata[billing_cycle]": billing_cycle || "monthly",
+      }),
     });
 
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
-      line_items: [
-        {
-          price: variant_id, // Use variant_id as Stripe price ID
-          quantity: 1,
-        },
-      ],
-      mode: "subscription",
-      success_url: successUrl,
-      cancel_url: cancelUrl,
-      customer_email: customer_email,
-      metadata: {
-        user_id: user_id,
-        plan_name: plan_name || "Unknown Plan",
-        billing_cycle: billing_cycle || "monthly",
-        ...metadata,
-      },
-    });
+    if (!stripeResponse.ok) {
+      const errorData = await stripeResponse.text();
+      console.error("Stripe API error:", errorData);
+      throw new Error(`Stripe API error: ${stripeResponse.status} ${errorData}`);
+    }
+
+    const session = await stripeResponse.json();
 
     if (!session || !session.url) {
       throw new Error("No checkout URL returned from Stripe");
@@ -145,7 +149,7 @@ Deno.serve(async (req) => {
       await supabase.from("checkout_sessions").insert({
         session_id: checkoutId,
         user_id: user_id,
-        price_id: variant_id,
+        price_id: price_id,
         plan_name: plan_name || "Unknown Plan",
         billing_cycle: billing_cycle || "monthly",
         amount: null, // Will be updated when webhook is received
@@ -173,6 +177,7 @@ Deno.serve(async (req) => {
       status: 200,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
+
   } catch (error) {
     console.error("=== STRIPE CHECKOUT ERROR ===");
     console.error("Error type:", typeof error);
@@ -214,7 +219,7 @@ Deno.serve(async (req) => {
       environment_check: {
         stripe_secret_key_exists: !!Deno.env.get("STRIPE_SECRET_KEY"),
         supabase_url_exists: !!Deno.env.get("NEXT_PUBLIC_SUPABASE_URL"),
-        supabase_service_key_exists: !!Deno.env.get("NEXT_PUBLIC_SUPABASE_ANON_KEY"),
+        supabase_service_key_exists: !!Deno.env.get("SERVICE_ROLE_KEY"),
       },
     };
 

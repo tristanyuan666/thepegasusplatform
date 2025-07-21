@@ -51,7 +51,7 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link
           rel="canonical"
-          href="https://epic-raman6-4uxp6.view-3.tempo-dev.app"
+          href="https://thepegasus.ca"
         />
         <meta
           name="description"
@@ -74,7 +74,7 @@ export default function RootLayout({
         <meta property="og:type" content="website" />
         <meta
           property="og:url"
-          content="https://epic-raman6-4uxp6.view-3.tempo-dev.app"
+          content="https://thepegasus.ca"
         />
         <meta property="og:site_name" content="Pegasus AI" />
         <meta name="twitter:card" content="summary_large_image" />
