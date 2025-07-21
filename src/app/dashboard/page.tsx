@@ -15,6 +15,8 @@ import PlatformConnections from "@/components/platform-connections";
 import SubscriptionManagement from "@/components/subscription-management";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Suspense } from "react";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 // Force dynamic rendering for authenticated pages
 export const dynamic = 'force-dynamic';
@@ -69,9 +71,37 @@ export default async function Dashboard({
 
   const activeTab = searchParams.tab || "home";
 
+  // Add plan banner
+  const planName = subscription?.plan_name || "Unknown";
+  const planStatus = subscription?.status || "inactive";
+  const planBilling = subscription?.billing_cycle || "monthly";
+  const planPeriodEnd = subscription?.current_period_end
+    ? new Date(subscription.current_period_end * 1000).toLocaleDateString()
+    : null;
+
   return (
     <>
       <DashboardNavbar />
+      {/* Plan Banner */}
+      <div className="w-full bg-gradient-to-r from-blue-50 to-purple-50 border-b border-blue-100 py-4 px-4 flex flex-col md:flex-row items-center justify-between gap-2">
+        <div className="flex flex-col md:flex-row items-center gap-2">
+          <span className="text-sm md:text-base font-semibold text-blue-800">
+            Current Plan:
+            <span className="ml-2 text-blue-900 font-bold">
+              {planName} ({planBilling})
+            </span>
+          </span>
+          <span className={`ml-2 px-2 py-1 rounded-full text-xs font-bold ${planStatus === "active" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
+            {planStatus === "active" ? "Active" : "Inactive"}
+          </span>
+          {planPeriodEnd && (
+            <span className="ml-2 text-xs text-gray-600">Valid until {planPeriodEnd}</span>
+          )}
+        </div>
+        <Button asChild variant="outline" className="text-xs font-semibold">
+          <Link href="/pricing?upgrade=true">Manage Subscription</Link>
+        </Button>
+      </div>
       <div className="min-h-screen bg-gray-50">
         <div className="container mx-auto px-6 py-8">
           <Tabs defaultValue={activeTab} className="space-y-6">
