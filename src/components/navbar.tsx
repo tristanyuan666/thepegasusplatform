@@ -169,6 +169,22 @@ export default function Navbar({ user = null }: NavbarProps) {
     },
   ];
 
+  // Determine if user has active subscription (for button logic)
+  const [hasActiveSubscription, setHasActiveSubscription] = useState(false);
+  useEffect(() => {
+    if (currentUser) {
+      (async () => {
+        const { data } = await supabase
+          .from("subscriptions")
+          .select("*")
+          .eq("user_id", currentUser.id)
+          .eq("status", "active")
+          .maybeSingle();
+        setHasActiveSubscription(!!data);
+      })();
+    }
+  }, [currentUser]);
+
   return (
     <nav
       className={`w-full fixed top-0 z-50 py-2 transition-all duration-300 ${
@@ -353,15 +369,29 @@ export default function Navbar({ user = null }: NavbarProps) {
           <div className="hidden lg:flex gap-3 items-center">
             {currentUser ? (
               <>
-                <Link href="/dashboard" aria-label="Go to Dashboard">
-                  <Button
-                    className="premium-button text-xs px-3 py-1.5 hover-target interactive-element button"
-                    data-interactive="true"
-                    data-button="true"
-                  >
-                    <span>Dashboard</span>
-                  </Button>
-                </Link>
+                {hasActiveSubscription ? (
+                  <Link href="/dashboard" aria-label="Go to Dashboard">
+                    <Button
+                      className="premium-button text-xs px-3 py-1.5 hover-target interactive-element button"
+                      data-interactive="true"
+                      data-button="true"
+                    >
+                      <span>Dashboard</span>
+                    </Button>
+                  </Link>
+                ) : (
+                  <Link href="/pricing" aria-label="Get Started with Pricing">
+                    <Button
+                      className="premium-button text-xs px-3 py-1.5 hover-target interactive-element pricing-nav pricing-link button"
+                      data-interactive="true"
+                      data-pricing-nav="true"
+                      data-pricing-link="true"
+                      data-button="true"
+                    >
+                      <span>Get Started</span>
+                    </Button>
+                  </Link>
+                )}
                 <UserProfile />
               </>
             ) : (
@@ -375,7 +405,7 @@ export default function Navbar({ user = null }: NavbarProps) {
                 >
                   Sign In
                 </Link>
-                <Link href="/pricing" aria-label="Get Started with Pricing">
+                <Link href="/sign-up" aria-label="Sign Up">
                   <Button
                     className="premium-button text-xs px-3 py-1.5 hover-target interactive-element pricing-nav pricing-link button"
                     data-interactive="true"
@@ -383,7 +413,7 @@ export default function Navbar({ user = null }: NavbarProps) {
                     data-pricing-link="true"
                     data-button="true"
                   >
-                    <span>Get Started</span>
+                    <span>Sign Up</span>
                   </Button>
                 </Link>
               </>
@@ -458,14 +488,28 @@ export default function Navbar({ user = null }: NavbarProps) {
               <div className="flex flex-col gap-3 pt-4 border-t border-gray-200">
                 {currentUser ? (
                   <>
-                    <Link href="/dashboard" aria-label="Go to Dashboard">
-                      <Button
-                        className="w-full premium-button text-sm py-2 hover-target interactive-element"
-                        data-interactive="true"
-                      >
-                        <span>Dashboard</span>
-                      </Button>
-                    </Link>
+                    {hasActiveSubscription ? (
+                      <Link href="/dashboard" aria-label="Go to Dashboard">
+                        <Button
+                          className="w-full premium-button text-sm py-2 hover-target interactive-element"
+                          data-interactive="true"
+                        >
+                          <span>Dashboard</span>
+                        </Button>
+                      </Link>
+                    ) : (
+                      <Link href="/pricing" aria-label="Get Started with Pricing">
+                        <Button
+                          className="w-full premium-button text-sm py-2 hover-target interactive-element button pricing-nav pricing-link"
+                          data-interactive="true"
+                          data-button="true"
+                          data-pricing-nav="true"
+                          data-pricing-link="true"
+                        >
+                          <span>Get Started</span>
+                        </Button>
+                      </Link>
+                    )}
                     <div className="px-3">
                       <UserProfile />
                     </div>
@@ -482,7 +526,7 @@ export default function Navbar({ user = null }: NavbarProps) {
                         Sign In
                       </Button>
                     </Link>
-                    <Link href="/pricing" aria-label="Get Started with Pricing">
+                    <Link href="/sign-up" aria-label="Sign Up">
                       <Button
                         className="w-full premium-button text-sm py-2 hover-target interactive-element button pricing-nav pricing-link"
                         data-interactive="true"
@@ -490,7 +534,7 @@ export default function Navbar({ user = null }: NavbarProps) {
                         data-pricing-nav="true"
                         data-pricing-link="true"
                       >
-                        <span>Get Started</span>
+                        <span>Sign Up</span>
                       </Button>
                     </Link>
                   </>

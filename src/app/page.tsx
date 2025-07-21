@@ -1,7 +1,8 @@
 import Hero from "@/components/hero";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
-import TestimonialCarousel from "@/components/testimonial-carousel";
+import { Suspense, lazy } from "react";
+const TestimonialCarousel = lazy(() => import("@/components/testimonial-carousel"));
 import {
   CheckCircle2,
   Users,
@@ -537,8 +538,9 @@ export default function Home() {
               presence
             </p>
           </div>
-
-          <TestimonialCarousel />
+          <Suspense fallback={<div className="min-h-[300px] flex items-center justify-center">Loading testimonials…</div>}>
+            <TestimonialCarousel />
+          </Suspense>
         </div>
       </section>
 

@@ -345,6 +345,7 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
             src={testimonial.avatar}
             alt={testimonial.name}
             className="w-10 h-10 rounded-full object-cover border-2 border-blue-200"
+            loading="lazy"
           />
           {testimonial.verified && (
             <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
