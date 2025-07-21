@@ -182,17 +182,29 @@ async function handleSubscriptionCreated(supabaseClient: any, eventData: any) {
 
   // Update user profile/role/features
   if (eventData.metadata?.user_id) {
-    await supabaseClient
+    const { data: user, error: userError } = await supabaseClient
       .from("users")
-      .update({
-        plan: eventData.metadata?.plan_name || "Unknown Plan",
-        plan_status: eventData.status,
-        plan_billing: eventData.metadata?.billing_cycle || "monthly",
-        plan_period_end: eventData.current_period_end,
-        is_active: eventData.status === "active",
-        updated_at: new Date().toISOString(),
-      })
-      .eq("user_id", eventData.metadata.user_id);
+      .select("*")
+      .eq("user_id", eventData.metadata.user_id)
+      .maybeSingle();
+    if (!user || userError) {
+      console.error("User not found for subscription webhook:", eventData.metadata.user_id, userError);
+    } else {
+      await supabaseClient
+        .from("users")
+        .update({
+          plan: eventData.metadata?.plan_name || "Unknown Plan",
+          plan_status: eventData.status,
+          plan_billing: eventData.metadata?.billing_cycle || "monthly",
+          plan_period_end: eventData.current_period_end,
+          is_active: eventData.status === "active",
+          updated_at: new Date().toISOString(),
+        })
+        .eq("user_id", eventData.metadata.user_id);
+      console.log("User plan updated for:", eventData.metadata.user_id, eventData.metadata?.plan_name, eventData.status);
+    }
+  } else {
+    console.error("No user_id in subscription metadata:", eventData);
   }
 }
 
@@ -216,17 +228,29 @@ async function handleSubscriptionUpdated(supabaseClient: any, eventData: any) {
 
   // Update user profile/role/features
   if (eventData.metadata?.user_id) {
-    await supabaseClient
+    const { data: user, error: userError } = await supabaseClient
       .from("users")
-      .update({
-        plan: eventData.metadata?.plan_name || "Unknown Plan",
-        plan_status: eventData.status,
-        plan_billing: eventData.metadata?.billing_cycle || "monthly",
-        plan_period_end: eventData.current_period_end,
-        is_active: eventData.status === "active",
-        updated_at: new Date().toISOString(),
-      })
-      .eq("user_id", eventData.metadata.user_id);
+      .select("*")
+      .eq("user_id", eventData.metadata.user_id)
+      .maybeSingle();
+    if (!user || userError) {
+      console.error("User not found for subscription update webhook:", eventData.metadata.user_id, userError);
+    } else {
+      await supabaseClient
+        .from("users")
+        .update({
+          plan: eventData.metadata?.plan_name || "Unknown Plan",
+          plan_status: eventData.status,
+          plan_billing: eventData.metadata?.billing_cycle || "monthly",
+          plan_period_end: eventData.current_period_end,
+          is_active: eventData.status === "active",
+          updated_at: new Date().toISOString(),
+        })
+        .eq("user_id", eventData.metadata.user_id);
+      console.log("User plan updated for:", eventData.metadata.user_id, eventData.metadata?.plan_name, eventData.status);
+    }
+  } else {
+    console.error("No user_id in subscription update metadata:", eventData);
   }
 }
 
