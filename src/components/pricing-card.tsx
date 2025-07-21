@@ -266,7 +266,7 @@ export default function PricingCard({
         await onCheckout(safePlan.id, isYearly);
       } else {
         // Checkout logic
-        const baseUrl = "https://epic-raman6-4uxp6.view-3.tempo-dev.app";
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://thepegasus.ca";
         const returnUrl = `${baseUrl}/success?plan=${safePlan.id}&billing=${isYearly ? "yearly" : "monthly"}`;
         const cancelUrl = `${baseUrl}/pricing?cancelled=true`;
 

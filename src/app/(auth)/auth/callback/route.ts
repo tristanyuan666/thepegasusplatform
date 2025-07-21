@@ -134,7 +134,13 @@ export async function GET(request: NextRequest) {
           ? new URL(redirect_to, currentDomain).searchParams.get("plan")
           : null;
 
-        // Always redirect to pricing page after email verification
+        // Check if there's a specific redirect_to parameter
+        if (redirect_to) {
+          console.log("Redirecting to specified redirect_to:", redirect_to);
+          return NextResponse.redirect(new URL(redirect_to, currentDomain));
+        }
+
+        // Default redirect to pricing page after email verification
         console.log(
           "Email verification successful, redirecting to pricing page",
         );
@@ -149,12 +155,7 @@ export async function GET(request: NextRequest) {
         // Continue with default redirect
       }
 
-      // Default redirect logic
-      if (redirect_to) {
-        console.log("Redirecting to specified redirect_to:", redirect_to);
-        return NextResponse.redirect(new URL(redirect_to, currentDomain));
-      }
-
+      // Fallback redirect logic
       console.log("Redirecting to default next:", next);
       return NextResponse.redirect(new URL(next, currentDomain));
     } catch (error) {

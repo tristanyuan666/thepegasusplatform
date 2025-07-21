@@ -41,7 +41,7 @@ export const signUpAction = async (formData: FormData) => {
           full_name: fullName,
           email: email,
         },
-        emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || "https://epic-raman6-4uxp6.view-3.tempo-dev.app"}/auth/callback?type=signup&redirect_to=/email-verified`,
+        emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || "https://thepegasus.ca"}/auth/callback?type=signup&redirect_to=/email-verified`,
       },
     });
 
@@ -323,7 +323,7 @@ export const forgotPasswordAction = async (formData: FormData) => {
   }
 
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || "https://epic-raman6-4uxp6.view-3.tempo-dev.app"}/auth/callback?type=recovery&redirect_to=/dashboard/reset-password`,
+    redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || "https://thepegasus.ca"}/auth/callback?type=recovery&redirect_to=/dashboard/reset-password`,
   });
 
   if (error) {

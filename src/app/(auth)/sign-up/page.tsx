@@ -97,7 +97,7 @@ export default function SignUpPage() {
     setError(null);
 
     try {
-      const currentDomain = "https://epic-raman6-4uxp6.view-3.tempo-dev.app";
+      const currentDomain = process.env.NEXT_PUBLIC_BASE_URL || "https://thepegasus.ca";
 
       const { data, error: signUpError } = await supabase.auth.signUp({
         email: email.trim(),

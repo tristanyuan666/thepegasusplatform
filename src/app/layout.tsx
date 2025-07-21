@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://epic-raman6-4uxp6.view-3.tempo-dev.app",
+    url: "https://thepegasus.ca",
     siteName: "Pegasus AI",
     title: "Pegasus - AI Fame Creator & Influencer Manager",
     description:

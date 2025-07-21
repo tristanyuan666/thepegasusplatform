@@ -24,7 +24,7 @@ export default function SocialLogin({
       const currentDomain =
         typeof window !== "undefined"
           ? window.location.origin
-          : "https://epic-raman6-4uxp6.view-3.tempo-dev.app";
+          : "https://thepegasus.ca";
 
       console.log("Attempting Google OAuth login...");
 

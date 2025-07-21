@@ -583,7 +583,7 @@ export default function PaymentTestPage() {
                   <p className="text-sm text-gray-600">
                     Set webhook URL to:{" "}
                     <code className="bg-gray-100 px-1 rounded">
-                      https://epic-raman6-4uxp6.view-3.tempo-dev.app/functions/v1/payments-webhook
+                      https://yspxekwltklhlfshhghp.supabase.co/functions/v1/payments-webhook
                     </code>
                   </p>
                 </div>
