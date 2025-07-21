@@ -29,23 +29,34 @@ function capitalize(str: string) {
 }
 
 function SuccessContent() {
-  // Get URL parameters for plan details
+  // Get URL parameters for plan details and session
   const searchParams =
     typeof window !== "undefined"
       ? new URLSearchParams(window.location.search)
       : null;
   const urlPlan = searchParams?.get("plan") || "creator";
   const urlBilling = searchParams?.get("billing") || "monthly";
+  const accessToken = searchParams?.get("access_token");
+  const refreshToken = searchParams?.get("refresh_token");
 
   const [plan, setPlan] = useState<string | null>(null);
   const [billing, setBilling] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [needsSignIn, setNeedsSignIn] = useState(false);
 
   useEffect(() => {
     const fetchPlan = async () => {
       const supabase = createClient();
+      // Restore session if tokens are present
+      if (accessToken && refreshToken) {
+        await supabase.auth.setSession({
+          access_token: accessToken,
+          refresh_token: refreshToken,
+        });
+      }
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
+        setNeedsSignIn(true);
         setPlan(urlPlan);
         setBilling(urlBilling);
         setLoading(false);
@@ -75,6 +86,16 @@ function SuccessContent() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" />
+      </div>
+    );
+  }
+
+  if (needsSignIn) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center p-8">
+        <h2 className="text-2xl font-bold mb-4 text-blue-700">Payment Successful!</h2>
+        <p className="mb-4 text-gray-700">Your payment was successful, but you need to sign in to access your features.</p>
+        <a href="/sign-in" className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition">Sign In</a>
       </div>
     );
   }

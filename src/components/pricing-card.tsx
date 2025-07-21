@@ -424,6 +424,35 @@ export default function PricingCard({
     }
   };
 
+  // Fetch user's current active plan and billing cycle
+  const [userPlan, setUserPlan] = useState<string | null>(null);
+  const [userBilling, setUserBilling] = useState<string | null>(null);
+  useEffect(() => {
+    if (!user) return;
+    (async () => {
+      const { data: sub } = await supabase
+        .from("subscriptions")
+        .select("plan_name,billing_cycle,status")
+        .eq("user_id", user.id)
+        .eq("status", "active")
+        .maybeSingle();
+      if (sub) {
+        setUserPlan(sub.plan_name?.toLowerCase() || null);
+        setUserBilling(sub.billing_cycle?.toLowerCase() || null);
+      }
+    })();
+    // eslint-disable-next-line
+  }, [user]);
+
+  // Determine button state
+  const isCurrentPlan =
+    userPlan === safePlan.id &&
+    userBilling === (isYearly ? "yearly" : "monthly");
+  const isUpgrade =
+    userPlan &&
+    ["creator", "influencer", "superstar"].indexOf(safePlan.id) >
+      ["creator", "influencer", "superstar"].indexOf(userPlan);
+
   return (
     <div
       className={`relative group transition-all duration-500 magnetic preview-hover pricing-card hover-target interactive-element ${
@@ -606,12 +635,16 @@ export default function PricingCard({
           <div className="space-y-2">
             <Button
               onClick={handleCheckout}
-              disabled={isLoading}
+              disabled={isLoading || isCurrentPlan}
               className={`w-full py-3 text-sm font-bold transition-all duration-300 magnetic interactive-element hover-target pricing-button checkout-button stripe-button button ${
                 safePlan.popular
                   ? `bg-gradient-to-r ${safePlan.gradient} hover:shadow-premium-lg text-white`
                   : "bg-gray-800 hover:bg-gray-700 text-white"
-              } ${isLoading ? "opacity-50 cursor-not-allowed" : "hover:scale-105"}`}
+              } ${
+                isLoading || isCurrentPlan
+                  ? "opacity-50 cursor-not-allowed"
+                  : "hover:scale-105"
+              }`}
               data-interactive="true"
               data-pricing-button="true"
               data-checkout-button="true"
@@ -623,6 +656,10 @@ export default function PricingCard({
                 <ButtonLoadingSpinner text="Processing..." />
               ) : paymentError ? (
                 <span className="text-sm">Retry Payment</span>
+              ) : isCurrentPlan ? (
+                <span className="text-sm">Current Plan</span>
+              ) : isUpgrade ? (
+                <span className="text-sm">Upgrade</span>
               ) : safePlan.popular ? (
                 <span className="text-sm">Start Building Fame</span>
               ) : (
