@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   CheckCircle2,
   Crown,
@@ -19,6 +20,7 @@ import {
 } from "@/components/ui/card";
 import Navbar from "@/components/navbar";
 import { Suspense } from "react";
+import { createClient } from "@/supabase/client";
 
 function capitalize(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1);
@@ -30,9 +32,52 @@ function SuccessContent() {
     typeof window !== "undefined"
       ? new URLSearchParams(window.location.search)
       : null;
-  const plan = searchParams?.get("plan") || "starter";
-  const billing = searchParams?.get("billing") || "monthly";
+  const urlPlan = searchParams?.get("plan") || "creator";
+  const urlBilling = searchParams?.get("billing") || "monthly";
 
+  const [plan, setPlan] = useState<string | null>(null);
+  const [billing, setBilling] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPlan = async () => {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        setPlan(urlPlan);
+        setBilling(urlBilling);
+        setLoading(false);
+        return;
+      }
+      const { data: sub } = await supabase
+        .from("subscriptions")
+        .select("plan_name,billing_cycle,status")
+        .eq("user_id", user.id)
+        .eq("status", "active")
+        .maybeSingle();
+      if (sub) {
+        setPlan(sub.plan_name?.toLowerCase() || urlPlan);
+        setBilling(sub.billing_cycle?.toLowerCase() || urlBilling);
+      } else {
+        setPlan(urlPlan);
+        setBilling(urlBilling);
+      }
+      setLoading(false);
+    };
+    fetchPlan();
+    // eslint-disable-next-line
+  }, []);
+
+  // Show a loading spinner if loading
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" />
+      </div>
+    );
+  }
+
+  // Use plan and billing from state
   const planDetails = {
     creator: {
       name: "Creator",
@@ -48,6 +93,10 @@ function SuccessContent() {
         "Unlimited AI Posts",
         "All Platforms",
         "Viral Score Predictor",
+        "Growth Engine",
+        "Monetization Suite",
+        "Advanced Analytics",
+        "Priority Support",
       ],
     },
     superstar: {
@@ -58,6 +107,9 @@ function SuccessContent() {
         "Everything in Influencer",
         "Custom Branding",
         "Dedicated Manager",
+        "API Access",
+        "Team Collaboration",
+        "White Label",
       ],
     },
   };
@@ -69,12 +121,13 @@ function SuccessContent() {
   let billingDisplay = billing;
   if (billing === "annual" || billing === "yearly") billingDisplay = "Annual";
   else if (billing === "monthly") billingDisplay = "Monthly";
-  else billingDisplay = capitalize(billing);
+  else if (billing) billingDisplay = billing.charAt(0).toUpperCase() + billing.slice(1);
+  else billingDisplay = "";
 
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
+      <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4 mt-20 md:mt-24">
         <div className="max-w-2xl w-full">
           {/* Main Success Card */}
           <Card className="glass-premium border-0 shadow-2xl">
