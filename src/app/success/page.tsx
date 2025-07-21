@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/card";
 import Navbar from "@/components/navbar";
 import { Suspense } from "react";
-import { createClient } from "@/supabase/client";
+import { createClient } from "../../../supabase/client";
 
 function capitalize(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1);
