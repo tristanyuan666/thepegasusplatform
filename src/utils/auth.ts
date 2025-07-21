@@ -34,6 +34,7 @@ export interface SubscriptionData {
   currency: string | null;
   interval: string | null;
   plan_name: string | null;
+  billing_cycle?: string | null;
   features_used: any;
   usage_limits: any;
   billing_history: any;
