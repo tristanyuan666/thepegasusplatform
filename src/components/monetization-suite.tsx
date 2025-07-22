@@ -32,11 +32,13 @@ import {
   Lock,
 } from "lucide-react";
 import { useSubscriptionCheck } from "@/components/subscription-check";
+import { FeatureAccess } from "@/utils/feature-access";
 
 interface MonetizationSuiteProps {
   userProfile?: any;
   subscription?: any;
   className?: string;
+  featureAccess: FeatureAccess;
 }
 
 interface EarningsData {
@@ -69,6 +71,7 @@ export default function MonetizationSuite({
   userProfile,
   subscription,
   className = "",
+  featureAccess,
 }: MonetizationSuiteProps) {
   const { checkFeatureAccess } = useSubscriptionCheck();
   const [earnings, setEarnings] = useState<EarningsData>({

@@ -39,6 +39,7 @@ import ViralScoreMeter from "./viral-score-meter";
 import { createClient } from "../../supabase/client";
 import Link from "next/link";
 import { Lock, Crown } from "lucide-react";
+import { FeatureAccess } from "@/utils/feature-access";
 
 interface MetricCardProps {
   title: string;
@@ -267,6 +268,7 @@ interface DashboardAnalyticsProps {
   hasActiveSubscription: boolean;
   subscriptionTier: string;
   className?: string;
+  featureAccess: FeatureAccess;
 }
 
 function LockedFeatureOverlay() {
@@ -296,6 +298,7 @@ export default function DashboardAnalytics({
   hasActiveSubscription,
   subscriptionTier,
   className = "",
+  featureAccess,
 }: DashboardAnalyticsProps) {
   const [timeRange, setTimeRange] = useState("30d");
   const [selectedPlatform, setSelectedPlatform] = useState("all");

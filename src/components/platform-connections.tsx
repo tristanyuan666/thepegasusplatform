@@ -21,11 +21,13 @@ import {
 } from "lucide-react";
 import { createClient } from "../../supabase/client";
 import { SocialConnection } from "@/utils/auth";
+import { FeatureAccess } from "@/utils/feature-access";
 
 interface PlatformConnectionsProps {
   userId: string;
   connections: SocialConnection[];
   onConnectionUpdate: () => void;
+  featureAccess: FeatureAccess;
 }
 
 const platforms = [
@@ -59,6 +61,7 @@ export default function PlatformConnections({
   userId,
   connections,
   onConnectionUpdate,
+  featureAccess,
 }: PlatformConnectionsProps) {
   const [isConnecting, setIsConnecting] = useState<string | null>(null);
   const [isRefreshing, setIsRefreshing] = useState<string | null>(null);

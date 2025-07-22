@@ -39,11 +39,13 @@ import {
   getUsageLimit,
   hasFeatureAccess,
 } from "@/utils/auth";
+import { FeatureAccess } from "@/utils/feature-access";
 import Link from "next/link";
 
 interface SubscriptionManagementProps {
   userId: string;
   subscription: SubscriptionData | null;
+  featureAccess: FeatureAccess;
 }
 
 interface BillingHistoryItem {
@@ -66,6 +68,7 @@ interface UsageStats {
 export default function SubscriptionManagement({
   userId,
   subscription,
+  featureAccess,
 }: SubscriptionManagementProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [billingHistory, setBillingHistory] = useState<BillingHistoryItem[]>(
