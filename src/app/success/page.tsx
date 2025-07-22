@@ -95,6 +95,22 @@ function SuccessContent() {
           } else {
             console.log(`No subscription found on attempt ${attempt + 1}/${maxRetries}`);
             
+            // Also check if user has been updated with plan info
+            const { data: userProfile, error: userError } = await supabase
+              .from("users")
+              .select("plan, plan_status, is_active")
+              .eq("user_id", user.id)
+              .single();
+            
+            if (!userError && userProfile && userProfile.is_active && userProfile.plan) {
+              console.log("User has active plan, using user profile data:", userProfile);
+              setPlan(userProfile.plan?.toLowerCase() || urlPlan);
+              setBilling("monthly"); // Default billing
+              setSubscriptionFound(true);
+              setLoading(false);
+              return;
+            }
+            
             if (attempt < maxRetries - 1) {
               // Wait 3 seconds before retrying
               setTimeout(() => {

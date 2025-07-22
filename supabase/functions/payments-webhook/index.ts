@@ -429,22 +429,74 @@ async function handleCheckoutCompleted(supabaseClient: any, eventData: any) {
       console.log("Checkout session updated successfully");
     }
 
-    // If this checkout session has a subscription, we should also handle it
-    if (eventData.subscription) {
-      console.log("Checkout session has subscription, processing subscription event");
-      
-      // Get the subscription details from Stripe
-      // For now, we'll rely on the separate subscription.created webhook
-      // But we can log this for debugging
-      console.log("Subscription ID from checkout:", eventData.subscription);
-    }
+    // Extract metadata from checkout session
+    const userId = eventData.metadata?.user_id;
+    const planName = eventData.metadata?.plan_name;
+    const billingCycle = eventData.metadata?.billing_cycle;
 
-    // Check if we have user metadata in the checkout session
-    if (eventData.metadata?.user_id) {
-      console.log("User ID found in checkout metadata:", eventData.metadata.user_id);
+    console.log("Checkout metadata:", { userId, planName, billingCycle });
+
+    // If this checkout session has a subscription, update it with metadata
+    if (eventData.subscription && userId) {
+      console.log("Checkout session has subscription, updating with metadata");
       
-      // We could potentially create a pending subscription here
-      // But it's better to wait for the subscription.created webhook
+      // Update the subscription with metadata from checkout session
+      const subscriptionUpdateData = {
+        user_id: userId,
+        plan_name: planName || "Unknown Plan",
+        billing_cycle: billingCycle || "monthly",
+        status: "active", // Assuming payment was successful
+        metadata: {
+          user_id: userId,
+          plan_name: planName || "Unknown Plan",
+          billing_cycle: billingCycle || "monthly",
+          checkout_session_id: eventData.id,
+          processed_at: new Date().toISOString(),
+        },
+      };
+
+      console.log("Updating subscription with metadata:", subscriptionUpdateData);
+
+      const { data: subscription, error: subError } = await supabaseClient
+        .from("subscriptions")
+        .upsert({
+          stripe_id: eventData.subscription,
+          ...subscriptionUpdateData,
+        }, {
+          onConflict: "stripe_id"
+        })
+        .select()
+        .single();
+
+      if (subError) {
+        console.error("Error updating subscription:", subError);
+      } else {
+        console.log("Subscription updated successfully:", subscription);
+      }
+
+      // Update user profile with subscription details
+      if (userId) {
+        const userUpdateData = {
+          plan: planName || "Unknown Plan",
+          plan_status: "active",
+          plan_billing: billingCycle || "monthly",
+          is_active: true,
+          updated_at: new Date().toISOString(),
+        };
+
+        const { error: userUpdateError } = await supabaseClient
+          .from("users")
+          .update(userUpdateData)
+          .eq("user_id", userId);
+
+        if (userUpdateError) {
+          console.error("Error updating user plan:", userUpdateError);
+        } else {
+          console.log("User plan updated successfully for:", userId);
+        }
+      }
+    } else {
+      console.log("No subscription found in checkout session or missing user_id");
     }
 
   } catch (error) {
