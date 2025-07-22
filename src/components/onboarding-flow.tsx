@@ -32,6 +32,19 @@ import {
   Users,
   BarChart3,
   DollarSign,
+  Globe,
+  Video,
+  Camera,
+  Mic,
+  PenTool,
+  Heart,
+  MessageCircle,
+  Share2,
+  Play,
+  Calendar,
+  Settings,
+  Lock,
+  Unlock,
 } from "lucide-react";
 import { createClient } from "../../supabase/client";
 import { useRouter } from "next/navigation";
@@ -40,58 +53,88 @@ interface OnboardingFlowProps {
   user: any;
 }
 
-const niches = [
-  "Fitness & Health",
-  "Business & Finance",
-  "Technology",
-  "Lifestyle",
-  "Food & Cooking",
-  "Travel",
+// Pegasus-specific content niches optimized for viral growth
+const pegasusNiches = [
+  "Lifestyle & Personal Development",
+  "Fitness & Wellness",
+  "Business & Entrepreneurship", 
+  "Technology & Innovation",
   "Fashion & Beauty",
-  "Education",
-  "Entertainment",
-  "Gaming",
-  "Music",
-  "Art & Design",
-  "Sports",
-  "Parenting",
-  "DIY & Crafts",
-  "Other",
+  "Food & Cooking",
+  "Travel & Adventure",
+  "Education & Learning",
+  "Entertainment & Comedy",
+  "Gaming & Esports",
+  "Music & Arts",
+  "Sports & Athletics",
+  "Parenting & Family",
+  "Finance & Investing",
+  "Health & Medical",
+  "Automotive & Cars",
+  "Pets & Animals",
+  "Home & DIY",
+  "Science & Discovery",
+  "Social Issues & Activism",
 ];
 
-const tones = [
-  "Professional",
-  "Casual & Friendly",
-  "Humorous",
-  "Inspirational",
-  "Educational",
-  "Trendy",
-  "Authentic",
-  "Bold & Edgy",
-  "Minimalist",
-  "Storytelling",
-];
-
-const contentFormats = [
-  "Short Videos (TikTok/Reels)",
+// Pegasus-specific content formats optimized for virality
+const pegasusContentFormats = [
+  "Short-form Videos (TikTok/Reels/Shorts)",
   "Long-form Videos (YouTube)",
-  "Images & Carousels",
-  "Text Posts",
-  "Stories",
-  "Live Streams",
-  "Podcasts",
-  "Mixed Content",
+  "Carousel Posts (Instagram)",
+  "Story Content (24h)",
+  "Live Streaming",
+  "Podcast Content",
+  "Educational Threads",
+  "Behind-the-scenes",
+  "Tutorial/How-to",
+  "Reaction Content",
+  "Challenge Videos",
+  "Collaboration Content",
+  "Q&A Sessions",
+  "Product Reviews",
+  "Day-in-the-life",
+  "Trending Topics",
 ];
 
-const fameGoals = [
-  "Build Personal Brand",
-  "Grow Business",
-  "Become an Influencer",
-  "Share Knowledge",
-  "Monetize Content",
-  "Build Community",
+// Pegasus-specific brand voices for maximum engagement
+const pegasusBrandVoices = [
+  "Authentic & Relatable",
+  "Professional & Expert",
+  "Humorous & Entertaining", 
+  "Inspirational & Motivational",
+  "Educational & Informative",
+  "Trendy & Fashionable",
+  "Bold & Controversial",
+  "Calm & Mindful",
+  "Energetic & Dynamic",
+  "Mysterious & Intriguing",
+  "Friendly & Approachable",
+  "Luxury & Premium",
+  "Minimalist & Clean",
+  "Storytelling & Narrative",
+  "Data-driven & Analytical",
+  "Creative & Artistic",
+];
+
+// Pegasus-specific fame goals with clear metrics
+const pegasusFameGoals = [
+  "Build Personal Brand (10K+ followers)",
+  "Monetize Content ($1K+ monthly)",
+  "Become Industry Expert",
+  "Launch Business/Product",
+  "Build Community (50K+ engaged)",
+  "Collaborate with Brands",
+  "Create Educational Content",
+  "Entertain & Inspire",
+  "Share Knowledge & Skills",
+  "Build Network & Connections",
+  "Achieve Financial Freedom",
+  "Make Social Impact",
   "Creative Expression",
   "Career Opportunities",
+  "Influence & Leadership",
+  "Legacy Building",
 ];
 
 export default function OnboardingFlow({ user }: OnboardingFlowProps) {
@@ -100,10 +143,12 @@ export default function OnboardingFlow({ user }: OnboardingFlowProps) {
   const [formData, setFormData] = useState({
     avatar_url: "",
     niche: "",
-    tone: "",
+    brand_voice: "",
     content_format: "",
     fame_goals: "",
     bio: "",
+    target_audience: "",
+    content_schedule: "",
   });
   const supabase = createClient();
   const router = useRouter();
@@ -137,7 +182,7 @@ export default function OnboardingFlow({ user }: OnboardingFlowProps) {
   };
 
   const handleNext = () => {
-    if (currentStep < 4) {
+    if (currentStep < 5) {
       setCurrentStep(currentStep + 1);
     } else {
       handleComplete();
@@ -147,7 +192,7 @@ export default function OnboardingFlow({ user }: OnboardingFlowProps) {
   const handleComplete = async () => {
     setIsLoading(true);
     try {
-      // Update user profile
+      // Update user profile with Pegasus-specific data
       const { error: userError } = await supabase
         .from("users")
         .update({
@@ -159,7 +204,7 @@ export default function OnboardingFlow({ user }: OnboardingFlowProps) {
 
       if (userError) throw userError;
 
-      // Create onboarding record
+      // Create Pegasus onboarding record
       const { error: onboardingError } = await supabase
         .from("user_onboarding")
         .upsert({
@@ -168,13 +213,22 @@ export default function OnboardingFlow({ user }: OnboardingFlowProps) {
           step_2_completed: true,
           step_3_completed: true,
           step_4_completed: true,
+          step_5_completed: true,
           completed_at: new Date().toISOString(),
+          pegasus_profile: {
+            niche: formData.niche,
+            brand_voice: formData.brand_voice,
+            content_format: formData.content_format,
+            fame_goals: formData.fame_goals,
+            target_audience: formData.target_audience,
+            content_schedule: formData.content_schedule,
+          }
         });
 
       if (onboardingError) throw onboardingError;
 
-      // Redirect to dashboard after successful completion
-      router.push("/dashboard");
+      // Redirect to the actual dashboard (not onboarding)
+      router.push("/dashboard?onboarding=complete");
     } catch (error) {
       console.error("Error completing onboarding:", error);
     } finally {
@@ -189,23 +243,25 @@ export default function OnboardingFlow({ user }: OnboardingFlowProps) {
       case 2:
         return formData.niche && formData.content_format;
       case 3:
-        return formData.tone;
+        return formData.brand_voice;
       case 4:
         return formData.fame_goals;
+      case 5:
+        return formData.target_audience;
       default:
         return false;
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-cyan-900 flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Animated background elements */}
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-900 flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Premium animated background */}
       <div className="absolute inset-0">
-        {/* Floating particles */}
-        {[...Array(30)].map((_, i) => (
+        {/* Floating Pegasus elements */}
+        {[...Array(20)].map((_, i) => (
           <div
             key={i}
-            className="absolute w-1 h-1 bg-cyan-400/40 rounded-full animate-pulse"
+            className="absolute w-2 h-2 bg-gradient-to-r from-purple-400 to-indigo-400 rounded-full animate-pulse"
             style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
@@ -215,41 +271,42 @@ export default function OnboardingFlow({ user }: OnboardingFlowProps) {
           />
         ))}
 
-        {/* Gradient orbs */}
-        <div className="absolute top-20 left-20 w-96 h-96 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-full blur-3xl animate-pulse" />
+        {/* Premium gradient orbs */}
+        <div className="absolute top-20 left-20 w-96 h-96 bg-gradient-to-r from-purple-500/20 to-indigo-500/20 rounded-full blur-3xl animate-pulse" />
         <div
-          className="absolute bottom-20 right-20 w-80 h-80 bg-gradient-to-r from-blue-500/20 to-slate-500/20 rounded-full blur-3xl animate-pulse"
+          className="absolute bottom-20 right-20 w-80 h-80 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-full blur-3xl animate-pulse"
           style={{ animationDelay: "1.5s" }}
         />
         <div
-          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-cyan-400/10 to-blue-400/10 rounded-full blur-2xl animate-pulse"
+          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-purple-400/10 to-indigo-400/10 rounded-full blur-2xl animate-pulse"
           style={{ animationDelay: "3s" }}
         />
       </div>
 
-      <div className="max-w-4xl w-full relative z-10">
-        {/* Enhanced Progress Bar */}
+      <div className="max-w-5xl w-full relative z-10">
+        {/* Premium Progress Bar */}
         <div className="mb-12">
           <div className="flex items-center justify-between mb-8">
-            {[1, 2, 3, 4].map((step) => {
-              const icons = [User, Palette, Sparkles, Trophy];
+            {[1, 2, 3, 4, 5].map((step) => {
+              const icons = [User, Target, Palette, Trophy, Rocket];
               const Icon = icons[step - 1];
               const isCompleted = step < currentStep;
               const isCurrent = step === currentStep;
               const colors = [
-                "from-cyan-500 to-blue-500",
-                "from-blue-500 to-slate-600",
-                "from-slate-600 to-cyan-600",
-                "from-cyan-600 to-blue-600",
+                "from-purple-500 to-indigo-500",
+                "from-indigo-500 to-purple-600",
+                "from-purple-600 to-indigo-600",
+                "from-indigo-600 to-purple-700",
+                "from-purple-700 to-indigo-700",
               ];
 
               return (
                 <div key={step} className="flex flex-col items-center relative">
                   {/* Connection line */}
-                  {step < 4 && (
-                    <div className="absolute top-8 left-16 w-24 md:w-32 h-0.5 bg-gradient-to-r from-slate-600 to-slate-700">
+                  {step < 5 && (
+                    <div className="absolute top-8 left-16 w-20 md:w-24 h-0.5 bg-gradient-to-r from-slate-600 to-slate-700">
                       <div
-                        className={`h-full bg-gradient-to-r from-cyan-500 to-blue-500 transition-all duration-1000 ${
+                        className={`h-full bg-gradient-to-r from-purple-500 to-indigo-500 transition-all duration-1000 ${
                           step < currentStep ? "w-full" : "w-0"
                         }`}
                       />
@@ -259,9 +316,9 @@ export default function OnboardingFlow({ user }: OnboardingFlowProps) {
                   <div
                     className={`flex items-center justify-center w-16 h-16 md:w-20 md:h-20 rounded-full border-4 transition-all duration-700 transform relative overflow-hidden ${
                       isCompleted
-                        ? `bg-gradient-to-r ${colors[step - 1]} border-cyan-400 text-white scale-110 shadow-2xl shadow-cyan-500/50`
+                        ? `bg-gradient-to-r ${colors[step - 1]} border-purple-400 text-white scale-110 shadow-2xl shadow-purple-500/50`
                         : isCurrent
-                          ? `bg-gradient-to-r ${colors[step - 1]} border-blue-400 text-white scale-110 shadow-2xl shadow-blue-500/50 animate-pulse`
+                          ? `bg-gradient-to-r ${colors[step - 1]} border-indigo-400 text-white scale-110 shadow-2xl shadow-indigo-500/50 animate-pulse`
                           : "border-slate-600 text-slate-400 bg-slate-800/50 backdrop-blur-sm"
                     }`}
                   >
@@ -290,11 +347,11 @@ export default function OnboardingFlow({ user }: OnboardingFlowProps) {
                     <div
                       className={`text-xs md:text-sm transition-colors ${
                         isCompleted || isCurrent
-                          ? "text-cyan-300"
+                          ? "text-purple-300"
                           : "text-slate-600"
                       }`}
                     >
-                      {["Profile", "Niche", "Style", "Goals"][step - 1]}
+                      {["Profile", "Niche", "Voice", "Goals", "Audience"][step - 1]}
                     </div>
                   </div>
                 </div>
@@ -302,21 +359,21 @@ export default function OnboardingFlow({ user }: OnboardingFlowProps) {
             })}
           </div>
 
-          {/* Enhanced XP-style progress bar */}
+          {/* Premium XP-style progress bar */}
           <div className="relative">
             <div className="w-full bg-slate-800/50 backdrop-blur-sm rounded-full h-6 border-2 border-slate-700 shadow-inner">
               <div
-                className="bg-gradient-to-r from-cyan-500 via-blue-500 to-cyan-600 h-full rounded-full transition-all duration-1000 ease-out relative overflow-hidden shadow-lg"
-                style={{ width: `${(currentStep / 4) * 100}%` }}
+                className="bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-600 h-full rounded-full transition-all duration-1000 ease-out relative overflow-hidden shadow-lg"
+                style={{ width: `${(currentStep / 5) * 100}%` }}
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
               </div>
             </div>
             <div className="absolute -top-10 left-0 text-white text-sm font-bold flex items-center gap-2">
-              <Zap className="w-4 h-4 text-cyan-400" />
-              <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
-                Creator Level Progress: {Math.round((currentStep / 4) * 100)}%
+              <Zap className="w-4 h-4 text-purple-400" />
+              <span className="bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">
+                Pegasus Profile Progress: {Math.round((currentStep / 5) * 100)}%
               </span>
             </div>
           </div>
@@ -324,74 +381,80 @@ export default function OnboardingFlow({ user }: OnboardingFlowProps) {
 
         <Card className="bg-slate-900/80 backdrop-blur-xl border-slate-700/50 p-8 md:p-12 relative overflow-hidden shadow-2xl">
           {/* Card background effects */}
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-800/50 via-transparent to-cyan-900/20" />
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 via-blue-500 to-cyan-500" />
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-800/50 via-transparent to-purple-900/20" />
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-500" />
 
-          {/* Achievement badges */}
+          {/* Premium achievement badges */}
           <div className="absolute top-6 right-6 flex flex-col gap-2">
             {currentStep > 1 && (
-              <div className="bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-4 py-2 rounded-full text-xs font-bold flex items-center gap-2 animate-bounce shadow-lg">
+              <div className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white px-4 py-2 rounded-full text-xs font-bold flex items-center gap-2 animate-bounce shadow-lg">
                 <Star className="w-4 h-4" />
-                Profile Started!
+                Profile Created!
               </div>
             )}
             {currentStep > 2 && (
-              <div className="bg-gradient-to-r from-blue-500 to-slate-600 text-white px-4 py-2 rounded-full text-xs font-bold flex items-center gap-2 animate-bounce shadow-lg">
+              <div className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-4 py-2 rounded-full text-xs font-bold flex items-center gap-2 animate-bounce shadow-lg">
                 <Zap className="w-4 h-4" />
-                Niche Expert!
+                Niche Selected!
               </div>
             )}
             {currentStep > 3 && (
-              <div className="bg-gradient-to-r from-slate-600 to-cyan-600 text-white px-4 py-2 rounded-full text-xs font-bold flex items-center gap-2 animate-bounce shadow-lg">
+              <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-4 py-2 rounded-full text-xs font-bold flex items-center gap-2 animate-bounce shadow-lg">
                 <Crown className="w-4 h-4" />
-                Style Master!
+                Voice Defined!
+              </div>
+            )}
+            {currentStep > 4 && (
+              <div className="bg-gradient-to-r from-indigo-600 to-purple-700 text-white px-4 py-2 rounded-full text-xs font-bold flex items-center gap-2 animate-bounce shadow-lg">
+                <Trophy className="w-4 h-4" />
+                Goals Set!
               </div>
             )}
           </div>
 
           <div className="relative z-10">
-            {/* Step 1: Profile Setup */}
+            {/* Step 1: Premium Profile Setup */}
             {currentStep === 1 && (
               <div className="text-center">
                 <div className="relative mb-8">
-                  <div className="w-24 h-24 md:w-32 md:h-32 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse shadow-2xl">
+                  <div className="w-24 h-24 md:w-32 md:h-32 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse shadow-2xl">
                     <User className="w-12 h-12 md:w-16 md:h-16 text-white" />
                   </div>
-                  <div className="absolute -top-4 -right-4 w-12 h-12 bg-gradient-to-r from-cyan-400 to-blue-400 rounded-full flex items-center justify-center animate-bounce shadow-lg">
+                  <div className="absolute -top-4 -right-4 w-12 h-12 bg-gradient-to-r from-purple-400 to-indigo-400 rounded-full flex items-center justify-center animate-bounce shadow-lg">
                     <Rocket className="w-6 h-6 text-white" />
                   </div>
                 </div>
 
                 <h2 className="text-4xl md:text-6xl font-bold text-white mb-6">
                   🚀 Welcome to{" "}
-                  <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
-                    Pegasus!
+                  <span className="bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">
+                    Pegasus
                   </span>
                 </h2>
 
                 <p className="text-slate-300 mb-10 text-lg md:text-xl leading-relaxed">
                   Let's build your{" "}
-                  <span className="text-cyan-400 font-semibold">
-                    viral creator profile
+                  <span className="text-purple-400 font-semibold">
+                    viral creator empire
                   </span>{" "}
-                  and start your fame journey!
+                  and unlock your fame potential!
                 </p>
 
-                {/* Enhanced stats preview */}
+                {/* Premium stats preview */}
                 <div className="grid grid-cols-3 gap-6 mb-10">
-                  <div className="bg-gradient-to-br from-cyan-500/20 to-blue-500/20 rounded-xl p-6 border border-cyan-500/30 backdrop-blur-sm hover:scale-105 transition-transform">
-                    <Users className="w-8 h-8 text-cyan-400 mx-auto mb-2" />
-                    <div className="text-3xl font-bold text-cyan-400">0</div>
+                  <div className="bg-gradient-to-br from-purple-500/20 to-indigo-500/20 rounded-xl p-6 border border-purple-500/30 backdrop-blur-sm hover:scale-105 transition-transform">
+                    <Users className="w-8 h-8 text-purple-400 mx-auto mb-2" />
+                    <div className="text-3xl font-bold text-purple-400">0</div>
                     <div className="text-sm text-slate-400">Followers</div>
                   </div>
-                  <div className="bg-gradient-to-br from-blue-500/20 to-slate-500/20 rounded-xl p-6 border border-blue-500/30 backdrop-blur-sm hover:scale-105 transition-transform">
-                    <Zap className="w-8 h-8 text-blue-400 mx-auto mb-2" />
-                    <div className="text-3xl font-bold text-blue-400">0</div>
+                  <div className="bg-gradient-to-br from-indigo-500/20 to-purple-500/20 rounded-xl p-6 border border-indigo-500/30 backdrop-blur-sm hover:scale-105 transition-transform">
+                    <Zap className="w-8 h-8 text-indigo-400 mx-auto mb-2" />
+                    <div className="text-3xl font-bold text-indigo-400">0</div>
                     <div className="text-sm text-slate-400">Viral Score</div>
                   </div>
-                  <div className="bg-gradient-to-br from-slate-500/20 to-cyan-500/20 rounded-xl p-6 border border-slate-500/30 backdrop-blur-sm hover:scale-105 transition-transform">
-                    <DollarSign className="w-8 h-8 text-slate-400 mx-auto mb-2" />
-                    <div className="text-3xl font-bold text-slate-400">$0</div>
+                  <div className="bg-gradient-to-br from-purple-500/20 to-indigo-500/20 rounded-xl p-6 border border-purple-500/30 backdrop-blur-sm hover:scale-105 transition-transform">
+                    <DollarSign className="w-8 h-8 text-purple-400 mx-auto mb-2" />
+                    <div className="text-3xl font-bold text-purple-400">$0</div>
                     <div className="text-sm text-slate-400">Earnings</div>
                   </div>
                 </div>
@@ -403,14 +466,14 @@ export default function OnboardingFlow({ user }: OnboardingFlowProps) {
                         <img
                           src={formData.avatar_url}
                           alt="Avatar"
-                          className="w-32 h-32 rounded-full object-cover border-4 border-cyan-500 shadow-2xl"
+                          className="w-32 h-32 rounded-full object-cover border-4 border-purple-500 shadow-2xl"
                         />
                       ) : (
                         <div className="w-32 h-32 rounded-full bg-slate-700/50 backdrop-blur-sm border-4 border-slate-600 flex items-center justify-center">
                           <User className="w-12 h-12 text-slate-400" />
                         </div>
                       )}
-                      <label className="absolute bottom-0 right-0 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full p-3 cursor-pointer hover:scale-110 transition-transform shadow-lg">
+                      <label className="absolute bottom-0 right-0 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full p-3 cursor-pointer hover:scale-110 transition-transform shadow-lg">
                         <Upload className="w-5 h-5 text-white" />
                         <input
                           type="file"
@@ -428,39 +491,39 @@ export default function OnboardingFlow({ user }: OnboardingFlowProps) {
               </div>
             )}
 
-            {/* Step 2: Content Preferences */}
+            {/* Step 2: Pegasus-Specific Content Preferences */}
             {currentStep === 2 && (
               <div>
                 <div className="text-center mb-10">
                   <div className="relative mb-8">
-                    <div className="w-24 h-24 md:w-32 md:h-32 bg-gradient-to-r from-blue-500 to-slate-600 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse shadow-2xl">
-                      <Palette className="w-12 h-12 md:w-16 md:h-16 text-white" />
+                    <div className="w-24 h-24 md:w-32 md:h-32 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse shadow-2xl">
+                      <Target className="w-12 h-12 md:w-16 md:h-16 text-white" />
                     </div>
-                    <div className="absolute -top-4 -right-4 w-12 h-12 bg-gradient-to-r from-cyan-400 to-blue-400 rounded-full flex items-center justify-center animate-bounce shadow-lg">
+                    <div className="absolute -top-4 -right-4 w-12 h-12 bg-gradient-to-r from-purple-400 to-indigo-400 rounded-full flex items-center justify-center animate-bounce shadow-lg">
                       <TrendingUp className="w-6 h-6 text-white" />
                     </div>
                   </div>
 
                   <h2 className="text-4xl md:text-6xl font-bold text-white mb-6">
-                    🎨 Choose Your{" "}
-                    <span className="bg-gradient-to-r from-blue-400 to-slate-400 bg-clip-text text-transparent">
-                      Niche
+                    🎯 Choose Your{" "}
+                    <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+                      Viral Niche
                     </span>
                   </h2>
 
                   <p className="text-slate-300 mb-10 text-lg md:text-xl leading-relaxed">
                     Select your{" "}
-                    <span className="text-blue-400 font-semibold">
+                    <span className="text-indigo-400 font-semibold">
                       content focus
                     </span>{" "}
-                    to unlock targeted viral strategies
+                    to unlock Pegasus viral strategies
                   </p>
                 </div>
 
                 <div className="space-y-8">
                   <div>
                     <Label className="text-white mb-4 block text-lg font-semibold">
-                      What's your niche?
+                      What's your primary niche?
                     </Label>
                     <Select
                       value={formData.niche}
@@ -469,10 +532,10 @@ export default function OnboardingFlow({ user }: OnboardingFlowProps) {
                       }
                     >
                       <SelectTrigger className="bg-slate-800/50 backdrop-blur-sm border-slate-600 text-white h-14 text-lg">
-                        <SelectValue placeholder="Select your niche" />
+                        <SelectValue placeholder="Select your viral niche" />
                       </SelectTrigger>
                       <SelectContent className="bg-slate-800 border-slate-600">
-                        {niches.map((niche) => (
+                        {pegasusNiches.map((niche) => (
                           <SelectItem
                             key={niche}
                             value={niche}
@@ -487,7 +550,7 @@ export default function OnboardingFlow({ user }: OnboardingFlowProps) {
 
                   <div>
                     <Label className="text-white mb-4 block text-lg font-semibold">
-                      Preferred content format?
+                      Preferred content format for virality?
                     </Label>
                     <Select
                       value={formData.content_format}
@@ -502,7 +565,7 @@ export default function OnboardingFlow({ user }: OnboardingFlowProps) {
                         <SelectValue placeholder="Select content format" />
                       </SelectTrigger>
                       <SelectContent className="bg-slate-800 border-slate-600">
-                        {contentFormats.map((format) => (
+                        {pegasusContentFormats.map((format) => (
                           <SelectItem
                             key={format}
                             value={format}
@@ -518,103 +581,103 @@ export default function OnboardingFlow({ user }: OnboardingFlowProps) {
               </div>
             )}
 
-            {/* Step 3: Tone & Style */}
+            {/* Step 3: Pegasus Brand Voice */}
             {currentStep === 3 && (
               <div>
                 <div className="text-center mb-10">
                   <div className="relative mb-8">
-                    <div className="w-24 h-24 md:w-32 md:h-32 bg-gradient-to-r from-slate-600 to-cyan-600 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse shadow-2xl">
-                      <Sparkles className="w-12 h-12 md:w-16 md:h-16 text-white" />
+                    <div className="w-24 h-24 md:w-32 md:h-32 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse shadow-2xl">
+                      <Palette className="w-12 h-12 md:w-16 md:h-16 text-white" />
                     </div>
-                    <div className="absolute -top-4 -right-4 w-12 h-12 bg-gradient-to-r from-cyan-400 to-blue-400 rounded-full flex items-center justify-center animate-bounce shadow-lg">
+                    <div className="absolute -top-4 -right-4 w-12 h-12 bg-gradient-to-r from-purple-400 to-indigo-400 rounded-full flex items-center justify-center animate-bounce shadow-lg">
                       <Flame className="w-6 h-6 text-white" />
                     </div>
                   </div>
 
                   <h2 className="text-4xl md:text-6xl font-bold text-white mb-6">
                     ✨ Define Your{" "}
-                    <span className="bg-gradient-to-r from-slate-400 to-cyan-400 bg-clip-text text-transparent">
-                      Voice
+                    <span className="bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">
+                      Brand Voice
                     </span>
                   </h2>
 
                   <p className="text-slate-300 mb-10 text-lg md:text-xl leading-relaxed">
                     Choose your{" "}
-                    <span className="text-slate-400 font-semibold">
+                    <span className="text-purple-400 font-semibold">
                       communication style
                     </span>{" "}
-                    to connect with your audience
+                    to maximize engagement and virality
                   </p>
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-4">
-                  {tones.map((tone) => (
+                  {pegasusBrandVoices.map((voice) => (
                     <button
-                      key={tone}
-                      onClick={() => setFormData((prev) => ({ ...prev, tone }))}
+                      key={voice}
+                      onClick={() => setFormData((prev) => ({ ...prev, brand_voice: voice }))}
                       className={`p-6 rounded-xl border-2 transition-all duration-300 text-left hover:scale-105 ${
-                        formData.tone === tone
-                          ? "border-cyan-500 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-white shadow-lg shadow-cyan-500/25"
+                        formData.brand_voice === voice
+                          ? "border-purple-500 bg-gradient-to-r from-purple-500/20 to-indigo-500/20 text-white shadow-lg shadow-purple-500/25"
                           : "border-slate-600 bg-slate-800/50 backdrop-blur-sm text-slate-300 hover:border-slate-500"
                       }`}
                     >
-                      <span className="font-semibold text-lg">{tone}</span>
+                      <span className="font-semibold text-lg">{voice}</span>
                     </button>
                   ))}
                 </div>
               </div>
             )}
 
-            {/* Step 4: Fame Goals */}
+            {/* Step 4: Pegasus Fame Goals */}
             {currentStep === 4 && (
               <div>
                 <div className="text-center mb-10">
                   <div className="relative mb-8">
-                    <div className="w-24 h-24 md:w-32 md:h-32 bg-gradient-to-r from-cyan-600 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse shadow-2xl">
+                    <div className="w-24 h-24 md:w-32 md:h-32 bg-gradient-to-r from-indigo-600 to-purple-700 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse shadow-2xl">
                       <Trophy className="w-12 h-12 md:w-16 md:h-16 text-white" />
                     </div>
-                    <div className="absolute -top-4 -right-4 w-12 h-12 bg-gradient-to-r from-cyan-400 to-blue-400 rounded-full flex items-center justify-center animate-bounce shadow-lg">
+                    <div className="absolute -top-4 -right-4 w-12 h-12 bg-gradient-to-r from-purple-400 to-indigo-400 rounded-full flex items-center justify-center animate-bounce shadow-lg">
                       <Award className="w-6 h-6 text-white" />
                     </div>
                   </div>
 
                   <h2 className="text-4xl md:text-6xl font-bold text-white mb-6">
                     🏆 Set Your{" "}
-                    <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
-                      Goals
+                    <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+                      Fame Goals
                     </span>
                   </h2>
 
                   <p className="text-slate-300 mb-10 text-lg md:text-xl leading-relaxed">
                     Define your{" "}
-                    <span className="text-cyan-400 font-semibold">
+                    <span className="text-indigo-400 font-semibold">
                       success targets
                     </span>{" "}
-                    and unlock your fame potential
+                    and unlock your Pegasus potential
                   </p>
 
-                  {/* Enhanced preview dashboard */}
+                  {/* Premium preview dashboard */}
                   <div className="bg-gradient-to-r from-slate-800/50 to-slate-700/50 backdrop-blur-sm rounded-xl p-6 mb-8 border border-slate-600 shadow-xl">
                     <div className="text-lg text-slate-400 mb-4 flex items-center justify-center gap-2">
                       <BarChart3 className="w-5 h-5" />
-                      🎯 Your Future Dashboard Preview
+                      🎯 Your Pegasus Dashboard Preview
                     </div>
                     <div className="grid grid-cols-3 gap-4">
-                      <div className="bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-lg p-4 border border-cyan-500/30">
-                        <div className="text-2xl font-bold text-cyan-400">
-                          10K+
+                      <div className="bg-gradient-to-r from-purple-500/20 to-indigo-500/20 rounded-lg p-4 border border-purple-500/30">
+                        <div className="text-2xl font-bold text-purple-400">
+                          100K+
                         </div>
                         <div className="text-slate-400">Followers</div>
                       </div>
-                      <div className="bg-gradient-to-r from-blue-500/20 to-slate-500/20 rounded-lg p-4 border border-blue-500/30">
-                        <div className="text-2xl font-bold text-blue-400">
-                          85%
+                      <div className="bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-lg p-4 border border-indigo-500/30">
+                        <div className="text-2xl font-bold text-indigo-400">
+                          95%
                         </div>
                         <div className="text-slate-400">Viral Score</div>
                       </div>
-                      <div className="bg-gradient-to-r from-slate-500/20 to-cyan-500/20 rounded-lg p-4 border border-slate-500/30">
-                        <div className="text-2xl font-bold text-slate-400">
-                          $2.5K
+                      <div className="bg-gradient-to-r from-purple-500/20 to-indigo-500/20 rounded-lg p-4 border border-purple-500/30">
+                        <div className="text-2xl font-bold text-purple-400">
+                          $10K
                         </div>
                         <div className="text-slate-400">Monthly</div>
                       </div>
@@ -623,7 +686,7 @@ export default function OnboardingFlow({ user }: OnboardingFlowProps) {
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-4">
-                  {fameGoals.map((goal) => (
+                  {pegasusFameGoals.map((goal) => (
                     <button
                       key={goal}
                       onClick={() =>
@@ -631,13 +694,96 @@ export default function OnboardingFlow({ user }: OnboardingFlowProps) {
                       }
                       className={`p-6 rounded-xl border-2 transition-all duration-300 text-left hover:scale-105 ${
                         formData.fame_goals === goal
-                          ? "border-cyan-500 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-white shadow-lg shadow-cyan-500/25"
+                          ? "border-purple-500 bg-gradient-to-r from-purple-500/20 to-indigo-500/20 text-white shadow-lg shadow-purple-500/25"
                           : "border-slate-600 bg-slate-800/50 backdrop-blur-sm text-slate-300 hover:border-slate-500"
                       }`}
                     >
                       <span className="font-semibold text-lg">{goal}</span>
                     </button>
                   ))}
+                </div>
+              </div>
+            )}
+
+            {/* Step 5: Target Audience */}
+            {currentStep === 5 && (
+              <div>
+                <div className="text-center mb-10">
+                  <div className="relative mb-8">
+                    <div className="w-24 h-24 md:w-32 md:h-32 bg-gradient-to-r from-purple-700 to-indigo-700 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse shadow-2xl">
+                      <Rocket className="w-12 h-12 md:w-16 md:h-16 text-white" />
+                    </div>
+                    <div className="absolute -top-4 -right-4 w-12 h-12 bg-gradient-to-r from-purple-400 to-indigo-400 rounded-full flex items-center justify-center animate-bounce shadow-lg">
+                      <Globe className="w-6 h-6 text-white" />
+                    </div>
+                  </div>
+
+                  <h2 className="text-4xl md:text-6xl font-bold text-white mb-6">
+                    🎯 Define Your{" "}
+                    <span className="bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">
+                      Target Audience
+                    </span>
+                  </h2>
+
+                  <p className="text-slate-300 mb-10 text-lg md:text-xl leading-relaxed">
+                    Identify your{" "}
+                    <span className="text-purple-400 font-semibold">
+                      ideal followers
+                    </span>{" "}
+                    to maximize engagement and growth
+                  </p>
+                </div>
+
+                <div className="space-y-6">
+                  <div>
+                    <Label className="text-white mb-4 block text-lg font-semibold">
+                      Who is your target audience?
+                    </Label>
+                    <Textarea
+                      value={formData.target_audience}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          target_audience: e.target.value,
+                        }))
+                      }
+                      placeholder="e.g., Young professionals aged 25-35 interested in personal development and career growth..."
+                      className="bg-slate-800/50 backdrop-blur-sm border-slate-600 text-white h-24 text-lg"
+                    />
+                  </div>
+
+                  <div>
+                    <Label className="text-white mb-4 block text-lg font-semibold">
+                      Preferred content posting schedule?
+                    </Label>
+                    <Select
+                      value={formData.content_schedule}
+                      onValueChange={(value) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          content_schedule: value,
+                        }))
+                      }
+                    >
+                      <SelectTrigger className="bg-slate-800/50 backdrop-blur-sm border-slate-600 text-white h-14 text-lg">
+                        <SelectValue placeholder="Select posting frequency" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-slate-800 border-slate-600">
+                        <SelectItem value="daily" className="text-white hover:bg-slate-700">
+                          Daily (High Growth)
+                        </SelectItem>
+                        <SelectItem value="2-3_per_week" className="text-white hover:bg-slate-700">
+                          2-3 times per week (Balanced)
+                        </SelectItem>
+                        <SelectItem value="weekly" className="text-white hover:bg-slate-700">
+                          Weekly (Quality Focus)
+                        </SelectItem>
+                        <SelectItem value="flexible" className="text-white hover:bg-slate-700">
+                          Flexible (As Inspired)
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
               </div>
             )}
@@ -656,16 +802,16 @@ export default function OnboardingFlow({ user }: OnboardingFlowProps) {
               <Button
                 onClick={handleNext}
                 disabled={!isStepValid() || isLoading}
-                className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 transform hover:scale-105 transition-all duration-300 shadow-2xl hover:shadow-cyan-500/25 px-8 py-3 text-lg font-semibold"
+                className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 transform hover:scale-105 transition-all duration-300 shadow-2xl hover:shadow-purple-500/25 px-8 py-3 text-lg font-semibold"
               >
                 {isLoading ? (
                   <div className="flex items-center gap-3">
                     <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    <span>🚀 Launching Your Fame Journey...</span>
+                    <span>🚀 Launching Your Pegasus Empire...</span>
                   </div>
-                ) : currentStep === 4 ? (
+                ) : currentStep === 5 ? (
                   <div className="flex items-center gap-3">
-                    <Trophy className="w-6 h-6" />
+                    <Rocket className="w-6 h-6" />
                     <span>🎉 Launch My Empire!</span>
                   </div>
                 ) : (

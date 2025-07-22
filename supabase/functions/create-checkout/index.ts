@@ -97,8 +97,20 @@ Deno.serve(async (req) => {
     }
 
     if (existingSub) {
+      console.log("Existing subscription found:", existingSub);
       const existingTier = getTierOrder(existingSub.plan_name);
       const requestedTier = getTierOrder(plan_name);
+      
+      console.log("Tier comparison:", {
+        existingPlan: existingSub.plan_name,
+        existingTier,
+        requestedPlan: plan_name,
+        requestedTier,
+        existingBilling: existingSub.billing_cycle,
+        requestedBilling: billing_cycle
+      });
+
+      // Same plan and billing cycle - prevent duplicate
       if (
         existingTier === requestedTier &&
         existingSub.billing_cycle === billing_cycle
@@ -107,17 +119,21 @@ Deno.serve(async (req) => {
           JSON.stringify({
             error: `You already have an active ${plan_name} (${billing_cycle}) subscription.`,
             success: false,
+            details: "Duplicate subscription attempt"
           }),
           {
             status: 400,
             headers: { ...corsHeaders, "Content-Type": "application/json" },
           },
         );
-      } else if (existingTier > requestedTier) {
+      } 
+      // Downgrade attempt - not allowed
+      else if (existingTier > requestedTier) {
         return new Response(
           JSON.stringify({
             error: `You already have a higher-tier plan (${existingSub.plan_name}). Downgrades are not allowed through this flow.`,
             success: false,
+            details: "Downgrade attempt"
           }),
           {
             status: 400,
@@ -125,7 +141,18 @@ Deno.serve(async (req) => {
           },
         );
       }
-      // If requestedTier > existingTier, allow upgrade (optionally cancel old sub in Stripe)
+      // Upgrade or billing cycle change - allow it
+      else {
+        console.log("Upgrade or billing change allowed:", {
+          existingPlan: existingSub.plan_name,
+          newPlan: plan_name,
+          existingBilling: existingSub.billing_cycle,
+          newBilling: billing_cycle
+        });
+        
+        // For upgrades, we should ideally cancel the old subscription in Stripe
+        // For now, we'll let Stripe handle it and update via webhook
+      }
     }
 
     // Handle test mode - return success without creating actual checkout

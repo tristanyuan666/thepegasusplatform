@@ -46,6 +46,82 @@ Deno.serve(async (req) => {
     );
   }
 
+  // Test payment simulation endpoint
+  if (url.searchParams.get("simulate") === "true") {
+    console.log("Simulating successful payment event");
+    
+    // Simulate a successful subscription creation event
+    const testEvent = {
+      type: "customer.subscription.created",
+      data: {
+        object: {
+          id: "sub_test_" + Date.now(),
+          status: "active",
+          metadata: {
+            user_id: "e8741da8-be9d-411c-8d1c-e021ced75668", // Your actual user ID
+            plan_name: "Superstar",
+            billing_cycle: "yearly"
+          },
+          current_period_start: Math.floor(Date.now() / 1000),
+          current_period_end: Math.floor(Date.now() / 1000) + (365 * 24 * 60 * 60),
+          cancel_at_period_end: false
+        }
+      }
+    };
+    
+    try {
+      console.log("Test event data:", JSON.stringify(testEvent, null, 2));
+      
+      // Test database connection first
+      const { data: testUser, error: userError } = await supabase
+        .from("users")
+        .select("*")
+        .eq("user_id", "e8741da8-be9d-411c-8d1c-e021ced75668")
+        .maybeSingle();
+      
+      console.log("Test user lookup result:", { user: testUser, error: userError });
+      
+      if (userError) {
+        throw new Error(`User lookup failed: ${userError.message}`);
+      }
+      
+      if (!testUser) {
+        throw new Error("User not found in database");
+      }
+      
+      // Now try to create the subscription
+      const result = await handleSubscriptionCreated(supabase, testEvent.data.object);
+      
+      return new Response(
+        JSON.stringify({ 
+          success: true, 
+          message: "Test subscription created successfully",
+          event: testEvent,
+          user_found: !!testUser,
+          timestamp: new Date().toISOString()
+        }),
+        {
+          status: 200,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
+      );
+    } catch (error) {
+      console.error("Test simulation failed:", error);
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: error.message,
+          error_stack: error.stack,
+          timestamp: new Date().toISOString()
+        }),
+        {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
+      );
+    }
+  }
+
   // Only allow POST requests for actual webhook processing
   if (req.method !== "POST") {
     return new Response(
