@@ -508,136 +508,105 @@ async function handleCheckoutCompleted(supabaseClient: any, eventData: any) {
 async function handleSubscriptionCreated(supabaseClient: any, eventData: any) {
   console.log("Handling subscription created:", eventData.id);
   console.log("Event data:", JSON.stringify(eventData, null, 2));
-  
+
   try {
-    // Validate required data
-    let userId = eventData.metadata?.user_id;
-    let planName = eventData.metadata?.plan_name;
-    let billingCycle = eventData.metadata?.billing_cycle;
+    // Check if subscription already exists with metadata from checkout session
+    const { data: existingSub, error: subError } = await supabaseClient
+      .from("subscriptions")
+      .select("*")
+      .eq("stripe_id", eventData.id)
+      .maybeSingle();
 
-    // If metadata is missing, try to get it from the checkout session
-    if (!userId || !planName || !billingCycle) {
-      console.log("Missing metadata in subscription, attempting to find checkout session...");
+    if (existingSub && existingSub.user_id) {
+      console.log("Subscription already exists with metadata:", existingSub);
+      return;
+    }
+
+    // If no metadata in subscription, try to find it from recent checkout sessions
+    console.log("No user_id in subscription update metadata:", eventData);
+    
+    // Look for recent checkout sessions that might be related
+    const { data: checkoutSessions, error: checkoutError } = await supabaseClient
+      .from("checkout_sessions")
+      .select("*")
+      .eq("status", "completed")
+      .order("completed_at", { ascending: false })
+      .limit(5);
+
+    if (checkoutError) {
+      console.error("Error fetching checkout sessions:", checkoutError);
+      throw new Error("Failed to fetch checkout sessions for fallback");
+    }
+
+    console.log("Recent checkout sessions for fallback:", checkoutSessions);
+
+    let userId = null;
+    let planName = null;
+    let billingCycle = null;
+
+    // Try to find matching checkout session
+    if (checkoutSessions && checkoutSessions.length > 0) {
+      // Look for a checkout session that was completed recently (within last 5 minutes)
+      const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
       
-      // Get the latest checkout session for this customer
-      const { data: checkoutSessions, error: checkoutError } = await supabaseClient
-        .from("checkout_sessions")
-        .select("*")
-        .eq("status", "pending")
-        .order("created_at", { ascending: false })
-        .limit(5); // Get more sessions to increase chances of finding the right one
-
-      console.log("Checkout sessions query result:", {
-        sessionsFound: checkoutSessions?.length || 0,
-        error: checkoutError?.message,
-        sessions: checkoutSessions
-      });
-
-      if (!checkoutError && checkoutSessions && checkoutSessions.length > 0) {
-        const latestCheckout = checkoutSessions[0];
-        console.log("Found checkout session:", latestCheckout);
-        
-        // Use checkout session data as fallback
-        if (!userId) userId = latestCheckout.user_id;
-        if (!planName) planName = latestCheckout.plan_name;
-        if (!billingCycle) billingCycle = latestCheckout.billing_cycle;
-        
-        console.log("Using checkout session data as fallback:", {
-          userId,
-          planName,
-          billingCycle
-        });
-      } else {
-        console.error("No checkout session found for fallback");
-        
-        // Try to get user from customer email if we have it
-        if (eventData.customer) {
-          console.log("Attempting to find user by customer ID:", eventData.customer);
-          
-          // This is a fallback - we'll try to find the user by looking at recent users
-          // since we don't have a direct way to get user from customer ID
-          const { data: recentUsers, error: userError } = await supabaseClient
-            .from("users")
-            .select("*")
-            .order("created_at", { ascending: false })
-            .limit(10);
-            
-          if (!userError && recentUsers && recentUsers.length > 0) {
-            console.log("Found recent users:", recentUsers.map(u => ({ id: u.user_id, email: u.email })));
-            // Use the most recent user as a fallback
-            userId = recentUsers[0].user_id;
-            planName = "Influencer"; // Default plan
-            billingCycle = "monthly"; // Default billing
-            
-            console.log("Using most recent user as fallback:", {
-              userId,
-              planName,
-              billingCycle
-            });
-          }
+      for (const session of checkoutSessions) {
+        if (session.completed_at && new Date(session.completed_at) > fiveMinutesAgo) {
+          userId = session.user_id;
+          planName = session.plan_name;
+          billingCycle = session.billing_cycle;
+          console.log("Found recent checkout session for fallback:", session);
+          break;
         }
       }
     }
 
-    // If we still don't have the required data, we can't process this subscription
+    // If still no user_id, try to find the most recent user
     if (!userId) {
-      console.error("No user_id found in subscription metadata or checkout session");
+      console.log("No recent checkout session found, trying to find recent user");
+      const { data: recentUsers, error: userError } = await supabaseClient
+        .from("users")
+        .select("user_id, email, created_at")
+        .order("created_at", { ascending: false })
+        .limit(1);
+
+      if (userError) {
+        console.error("Error fetching recent users:", userError);
+        throw new Error("Failed to fetch recent users for fallback");
+      }
+
+      if (recentUsers && recentUsers.length > 0) {
+        userId = recentUsers[0].user_id;
+        console.log("Using most recent user for fallback:", recentUsers[0]);
+      }
+    }
+
+    if (!userId) {
+      console.error("No user_id found for subscription, cannot proceed");
       throw new Error("Missing user_id in subscription metadata");
     }
 
-    // Set defaults for missing data
-    planName = planName || "Unknown Plan";
-    billingCycle = billingCycle || "monthly";
-
-    console.log("Processing subscription for user:", {
-      userId,
-      planName,
-      billingCycle,
-      status: eventData.status,
-      stripeId: eventData.id
-    });
-
-    // First, check if user exists
-    const { data: user, error: userError } = await supabaseClient
-      .from("users")
-      .select("*")
-      .eq("user_id", userId)
-      .maybeSingle();
-
-    if (userError) {
-      console.error("Error checking user existence:", userError);
-      throw new Error(`User lookup failed: ${userError.message}`);
-    }
-
-    if (!user) {
-      console.error("User not found for subscription:", userId);
-      throw new Error(`User not found: ${userId}`);
-    }
-
-    console.log("User found:", { userId: user.user_id, email: user.email });
-
-    // Create or update subscription in database
+    // Create subscription record with fallback data
     const subscriptionData = {
       stripe_id: eventData.id,
       user_id: userId,
-      status: eventData.status,
-      plan_name: planName,
-      billing_cycle: billingCycle,
+      plan_name: planName || "Influencer", // Default to Influencer if unknown
+      billing_cycle: billingCycle || "monthly",
+      status: eventData.status || "active",
       current_period_start: eventData.current_period_start,
       current_period_end: eventData.current_period_end,
       cancel_at_period_end: eventData.cancel_at_period_end || false,
       metadata: {
-        ...eventData.metadata,
-        subscription_id: eventData.id,
-        created_at: new Date().toISOString(),
-        webhook_processed_at: new Date().toISOString(),
-        fallback_used: !eventData.metadata?.user_id, // Flag if we used fallback data
+        user_id: userId,
+        plan_name: planName || "Influencer",
+        billing_cycle: billingCycle || "monthly",
+        fallback_used: true,
+        processed_at: new Date().toISOString(),
       },
     };
 
-    console.log("Inserting subscription data:", subscriptionData);
+    console.log("Creating subscription with fallback data:", subscriptionData);
 
-    const { data: subscription, error: subError } = await supabaseClient
+    const { data: subscription, error: createError } = await supabaseClient
       .from("subscriptions")
       .upsert(subscriptionData, {
         onConflict: "stripe_id"
@@ -645,24 +614,21 @@ async function handleSubscriptionCreated(supabaseClient: any, eventData: any) {
       .select()
       .single();
 
-    if (subError) {
-      console.error("Error creating subscription:", subError);
-      throw new Error(`Subscription creation failed: ${subError.message}`);
+    if (createError) {
+      console.error("Error creating subscription:", createError);
+      throw createError;
     }
 
-    console.log("Subscription created/updated successfully:", subscription);
+    console.log("Subscription created successfully:", subscription);
 
-    // Update user profile with subscription details
+    // Update user profile
     const userUpdateData = {
-      plan: planName,
-      plan_status: eventData.status,
-      plan_billing: billingCycle,
-      plan_period_end: eventData.current_period_end,
-      is_active: eventData.status === "active",
+      plan: planName || "Influencer",
+      plan_status: "active",
+      plan_billing: billingCycle || "monthly",
+      is_active: true,
       updated_at: new Date().toISOString(),
     };
-
-    console.log("Updating user with plan data:", userUpdateData);
 
     const { error: userUpdateError } = await supabaseClient
       .from("users")
@@ -671,23 +637,13 @@ async function handleSubscriptionCreated(supabaseClient: any, eventData: any) {
 
     if (userUpdateError) {
       console.error("Error updating user plan:", userUpdateError);
-      // Don't throw here, as the subscription was created successfully
     } else {
-      console.log("User plan updated successfully for:", userId, planName, eventData.status);
+      console.log("User plan updated successfully for:", userId);
     }
-
-    // Log successful processing
-    console.log("Subscription webhook processed successfully:", {
-      subscriptionId: subscription.id,
-      userId,
-      planName,
-      status: eventData.status,
-      timestamp: new Date().toISOString()
-    });
 
   } catch (error) {
     console.error("Error in handleSubscriptionCreated:", error);
-    throw error; // Re-throw to be handled by the main webhook handler
+    throw error;
   }
 }
 
