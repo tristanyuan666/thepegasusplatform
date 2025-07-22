@@ -529,9 +529,9 @@ async function handleSubscriptionCreated(supabaseClient: any, eventData: any) {
     const { data: checkoutSessions, error: checkoutError } = await supabaseClient
       .from("checkout_sessions")
       .select("*")
-      .eq("status", "completed")
-      .order("completed_at", { ascending: false })
-      .limit(5);
+      .in("status", ["pending", "completed"])
+      .order("created_at", { ascending: false })
+      .limit(10);
 
     if (checkoutError) {
       console.error("Error fetching checkout sessions:", checkoutError);
@@ -546,11 +546,11 @@ async function handleSubscriptionCreated(supabaseClient: any, eventData: any) {
 
     // Try to find matching checkout session
     if (checkoutSessions && checkoutSessions.length > 0) {
-      // Look for a checkout session that was completed recently (within last 5 minutes)
-      const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+      // Look for a checkout session that was created recently (within last 10 minutes)
+      const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000);
       
       for (const session of checkoutSessions) {
-        if (session.completed_at && new Date(session.completed_at) > fiveMinutesAgo) {
+        if (session.created_at && new Date(session.created_at) > tenMinutesAgo) {
           userId = session.user_id;
           planName = session.plan_name;
           billingCycle = session.billing_cycle;
