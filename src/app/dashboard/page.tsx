@@ -63,7 +63,7 @@ export default async function Dashboard({
     socialConnections = await getSocialConnections(user.id);
     
     // Check if user has active subscription
-    hasActiveSubscription = subscription && subscription.status === "active";
+    hasActiveSubscription = !!(subscription && subscription.status === "active");
     
     console.log("Dashboard subscription check:", {
       userId: user.id,
