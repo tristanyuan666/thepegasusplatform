@@ -30,6 +30,7 @@ import {
 import Link from "next/link";
 import { createClient } from "../../supabase/client";
 import { UserProfile, SubscriptionData } from "@/utils/auth";
+import { FeatureAccess } from "@/utils/feature-access";
 import ViralScoreMeter from "./viral-score-meter";
 
 interface DashboardHomeProps {
@@ -38,6 +39,7 @@ interface DashboardHomeProps {
   subscription: SubscriptionData | null;
   subscriptionTier: string;
   hasActiveSubscription: boolean;
+  featureAccess: FeatureAccess;
 }
 
 interface DashboardStats {
@@ -64,6 +66,7 @@ export default function DashboardHome({
   subscription,
   subscriptionTier,
   hasActiveSubscription,
+  featureAccess,
 }: DashboardHomeProps) {
   const [stats, setStats] = useState<DashboardStats>({
     followerCount: userProfile.follower_count || 0,
@@ -272,25 +275,26 @@ export default function DashboardHome({
             value={stats.followerCount}
             change={stats.weeklyGrowth}
             icon={<Users className="w-5 h-5 md:w-6 md:h-6" />}
-            locked={true}
+            locked={!featureAccess.analytics.basic}
           />
           <StatCard
             title="Content Queue"
             value={stats.contentQueue}
             icon={<Calendar className="w-5 h-5 md:w-6 md:h-6" />}
+            locked={!featureAccess.aiPosts.enabled}
           />
           <StatCard
             title="Viral Score"
             value={stats.viralScore}
             icon={<Zap className="w-5 h-5 md:w-6 md:h-6" />}
-            locked={true}
+            locked={!featureAccess.viralScorePredictor}
           />
           <StatCard
             title="Monthly Forecast"
             value={`${stats.monetizationForecast}`}
             change={15}
             icon={<DollarSign className="w-5 h-5 md:w-6 md:h-6" />}
-            locked={!hasActiveSubscription}
+            locked={!featureAccess.advancedMonetization}
           />
         </div>
 
@@ -505,19 +509,37 @@ export default function DashboardHome({
           {/* Viral Score & Top Post */}
           <div className="space-y-6">
             {/* Viral Score Meter */}
-            <Card className="p-6 bg-gradient-to-br from-purple-50 to-pink-50 border-purple-200">
-              <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <Zap className="w-5 h-5 text-purple-600" />
-                Current Viral Score
-              </h3>
-              <div className="flex justify-center">
-                <ViralScoreMeter
-                  score={stats.viralScore}
-                  size="md"
-                  animated={true}
-                />
-              </div>
-            </Card>
+            {featureAccess.viralScorePredictor ? (
+              <Card className="p-6 bg-gradient-to-br from-purple-50 to-pink-50 border-purple-200">
+                <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                  <Zap className="w-5 h-5 text-purple-600" />
+                  Current Viral Score
+                </h3>
+                <div className="flex justify-center">
+                  <ViralScoreMeter
+                    score={stats.viralScore}
+                    size="md"
+                    animated={true}
+                  />
+                </div>
+              </Card>
+            ) : (
+              <Card className="p-6 bg-gradient-to-br from-gray-50 to-slate-50 border-gray-200">
+                <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                  <Zap className="w-5 h-5 text-gray-600" />
+                  Viral Score Predictor
+                </h3>
+                <div className="text-center py-8">
+                  <Lock className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+                  <p className="text-gray-600 mb-4">
+                    Upgrade to Influencer or Superstar plan to access viral score predictions
+                  </p>
+                  <Button asChild>
+                    <Link href="/pricing?upgrade=true">Upgrade Plan</Link>
+                  </Button>
+                </div>
+              </Card>
+            )}
 
             {/* Top Performing Post */}
             <Card className="p-6">

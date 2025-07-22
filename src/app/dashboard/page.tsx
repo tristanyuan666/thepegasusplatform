@@ -17,6 +17,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { getFeatureAccess } from "@/utils/feature-access";
 
 // Force dynamic rendering for authenticated pages
 export const dynamic = 'force-dynamic';
@@ -35,7 +36,7 @@ function LoadingSpinner() {
 export default async function Dashboard({
   searchParams,
 }: {
-  searchParams: { tab?: string };
+  searchParams: { tab?: string; onboarding?: string };
 }) {
   const supabase = await createClient();
 
@@ -68,6 +69,10 @@ export default async function Dashboard({
   }
 
   // User already has active subscription (checked above)
+  const featureAccess = getFeatureAccess(
+    subscription?.plan_name || null,
+    subscription?.status || null
+  );
 
   const activeTab = searchParams.tab || "home";
 
@@ -102,14 +107,35 @@ export default async function Dashboard({
           <Link href="/pricing?upgrade=true">Manage Subscription</Link>
         </Button>
       </div>
+
+      {/* Onboarding completion message */}
+      {searchParams.onboarding === "complete" && (
+        <div className="w-full bg-gradient-to-r from-green-50 to-emerald-50 border-b border-green-100 py-4 px-4">
+          <div className="text-center">
+            <h3 className="text-lg font-semibold text-green-800 mb-2">
+              🎉 Welcome to Your Pegasus Empire!
+            </h3>
+            <p className="text-green-700">
+              Your profile is set up and ready to go viral. Start exploring your features below!
+            </p>
+          </div>
+        </div>
+      )}
+
       <div className="min-h-screen bg-gray-50">
         <div className="container mx-auto px-6 py-8">
           <Tabs defaultValue={activeTab} className="space-y-6">
             <TabsList className="grid w-full grid-cols-5 max-w-2xl mx-auto">
               <TabsTrigger value="home">Home</TabsTrigger>
-              <TabsTrigger value="analytics">Analytics</TabsTrigger>
-              <TabsTrigger value="monetization">Revenue</TabsTrigger>
-              <TabsTrigger value="platforms">Platforms</TabsTrigger>
+              <TabsTrigger value="analytics" disabled={!featureAccess.analytics.basic}>
+                Analytics
+              </TabsTrigger>
+              <TabsTrigger value="monetization" disabled={!featureAccess.advancedMonetization}>
+                Revenue
+              </TabsTrigger>
+              <TabsTrigger value="platforms" disabled={!featureAccess.socialPlatforms.enabled}>
+                Platforms
+              </TabsTrigger>
               <TabsTrigger value="settings">Settings</TabsTrigger>
             </TabsList>
 
@@ -121,37 +147,83 @@ export default async function Dashboard({
                   subscription={subscription}
                   subscriptionTier={subscriptionTier}
                   hasActiveSubscription={hasActiveSubscription}
+                  featureAccess={featureAccess}
                 />
               </Suspense>
             </TabsContent>
 
             <TabsContent value="analytics" className="space-y-6">
-              <Suspense fallback={<LoadingSpinner />}>
-                <DashboardAnalytics
-                  userId={user.id}
-                  hasActiveSubscription={hasActiveSubscription}
-                  subscriptionTier={subscriptionTier}
-                />
-              </Suspense>
+              {featureAccess.analytics.basic ? (
+                <Suspense fallback={<LoadingSpinner />}>
+                  <DashboardAnalytics
+                    userId={user.id}
+                    hasActiveSubscription={hasActiveSubscription}
+                    subscriptionTier={subscriptionTier}
+                    featureAccess={featureAccess}
+                  />
+                </Suspense>
+              ) : (
+                <div className="text-center py-12">
+                  <h3 className="text-xl font-semibold text-gray-900 mb-4">
+                    Analytics Feature Not Available
+                  </h3>
+                  <p className="text-gray-600 mb-6">
+                    Upgrade your plan to access advanced analytics and insights.
+                  </p>
+                  <Button asChild>
+                    <Link href="/pricing?upgrade=true">Upgrade Plan</Link>
+                  </Button>
+                </div>
+              )}
             </TabsContent>
 
             <TabsContent value="monetization" className="space-y-6">
-              <Suspense fallback={<LoadingSpinner />}>
-                <MonetizationSuite
-                  userProfile={userProfile}
-                  subscription={subscription}
-                />
-              </Suspense>
+              {featureAccess.advancedMonetization ? (
+                <Suspense fallback={<LoadingSpinner />}>
+                  <MonetizationSuite
+                    userProfile={userProfile}
+                    subscription={subscription}
+                    featureAccess={featureAccess}
+                  />
+                </Suspense>
+              ) : (
+                <div className="text-center py-12">
+                  <h3 className="text-xl font-semibold text-gray-900 mb-4">
+                    Advanced Monetization Not Available
+                  </h3>
+                  <p className="text-gray-600 mb-6">
+                    Upgrade to Superstar plan to access advanced monetization features.
+                  </p>
+                  <Button asChild>
+                    <Link href="/pricing?upgrade=true">Upgrade to Superstar</Link>
+                  </Button>
+                </div>
+              )}
             </TabsContent>
 
             <TabsContent value="platforms" className="space-y-6">
-              <Suspense fallback={<LoadingSpinner />}>
-                <PlatformConnections
-                  userId={user.id}
-                  connections={socialConnections}
-                  onConnectionUpdate={() => {}}
-                />
-              </Suspense>
+              {featureAccess.socialPlatforms.enabled ? (
+                <Suspense fallback={<LoadingSpinner />}>
+                  <PlatformConnections
+                    userId={user.id}
+                    connections={socialConnections}
+                    onConnectionUpdate={() => {}}
+                    featureAccess={featureAccess}
+                  />
+                </Suspense>
+              ) : (
+                <div className="text-center py-12">
+                  <h3 className="text-xl font-semibold text-gray-900 mb-4">
+                    Platform Connections Not Available
+                  </h3>
+                  <p className="text-gray-600 mb-6">
+                    Upgrade your plan to connect and manage social media platforms.
+                  </p>
+                  <Button asChild>
+                    <Link href="/pricing?upgrade=true">Upgrade Plan</Link>
+                  </Button>
+                </div>
+              )}
             </TabsContent>
 
             <TabsContent value="settings" className="space-y-6">
@@ -159,6 +231,7 @@ export default async function Dashboard({
                 <SubscriptionManagement
                   userId={user.id}
                   subscription={subscription}
+                  featureAccess={featureAccess}
                 />
               </Suspense>
             </TabsContent>
