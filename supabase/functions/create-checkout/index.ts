@@ -200,6 +200,12 @@ Deno.serve(async (req) => {
         success_url: successUrl,
         cancel_url: cancelUrl,
         customer_email: customer_email,
+        // Use subscription_data to pass metadata to the subscription
+        "subscription_data[metadata][user_id]": user_id,
+        "subscription_data[metadata][plan_name]": plan_name || "Unknown Plan",
+        "subscription_data[metadata][billing_cycle]": billing_cycle || "monthly",
+        "subscription_data[metadata][timestamp]": new Date().toISOString(),
+        // Also keep metadata on checkout session for tracking
         "metadata[user_id]": user_id,
         "metadata[plan_name]": plan_name || "Unknown Plan",
         "metadata[billing_cycle]": billing_cycle || "monthly",

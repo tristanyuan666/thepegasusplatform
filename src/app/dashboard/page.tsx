@@ -6,6 +6,7 @@ import {
   getUserSubscription,
   getSubscriptionTier,
   getSocialConnections,
+  UserProfile,
 } from "@/utils/auth";
 import OnboardingFlow from "@/components/onboarding-flow";
 import DashboardHome from "@/components/dashboard-home";
@@ -48,23 +49,70 @@ export default async function Dashboard({
     return redirect("/sign-in");
   }
 
-  // Get user profile and subscription
-  const userProfile = await getUserProfile(user.id);
-  const subscription = await getUserSubscription(user.id);
-  const subscriptionTier = getSubscriptionTier(subscription);
-  const socialConnections = await getSocialConnections(user.id);
+  // Get user profile and subscription with error handling
+  let userProfile = null;
+  let subscription = null;
+  let subscriptionTier = "free";
+  let socialConnections: any[] = [];
+  let hasActiveSubscription = false;
 
-  // Check if user has active subscription before showing onboarding
-  const hasActiveSubscription =
-    subscription && subscription.status === "active";
+  try {
+    userProfile = await getUserProfile(user.id);
+    subscription = await getUserSubscription(user.id);
+    subscriptionTier = getSubscriptionTier(subscription);
+    socialConnections = await getSocialConnections(user.id);
+    
+    // Check if user has active subscription
+    hasActiveSubscription = subscription && subscription.status === "active";
+    
+    console.log("Dashboard subscription check:", {
+      userId: user.id,
+      hasSubscription: !!subscription,
+      subscriptionStatus: subscription?.status,
+      hasActiveSubscription,
+      subscriptionTier
+    });
+  } catch (error) {
+    console.error("Error fetching user data in dashboard:", error);
+    // Continue with default values, but log the error
+  }
+
+  // Create a default user profile if none exists
+  const defaultUserProfile: UserProfile = {
+    id: user.id,
+    user_id: user.id,
+    email: user.email,
+    full_name: user.user_metadata?.full_name || user.user_metadata?.name || null,
+    avatar_url: user.user_metadata?.avatar_url || null,
+    niche: null,
+    tone: null,
+    content_format: null,
+    fame_goals: null,
+    follower_count: 0,
+    viral_score: 0,
+    monetization_forecast: 0,
+    onboarding_completed: false,
+    subscription: null,
+    created_at: new Date().toISOString(),
+    updated_at: null,
+  };
+
+  const finalUserProfile = userProfile || defaultUserProfile;
+  
+  // Ensure onboarding_completed is always a boolean
+  if (finalUserProfile.onboarding_completed === null) {
+    finalUserProfile.onboarding_completed = false;
+  }
 
   // Redirect to pricing if no active subscription
   if (!hasActiveSubscription) {
+    console.log("No active subscription found, redirecting to pricing");
     return redirect("/pricing?welcome=true");
   }
 
   // Check if user needs onboarding (only after they have a subscription)
-  if (!userProfile?.onboarding_completed) {
+  if (finalUserProfile.onboarding_completed === false) {
+    console.log("User needs onboarding, showing onboarding flow");
     return <OnboardingFlow user={user} />;
   }
 
@@ -143,7 +191,7 @@ export default async function Dashboard({
               <Suspense fallback={<LoadingSpinner />}>
                 <DashboardHome
                   user={user}
-                  userProfile={userProfile}
+                  userProfile={finalUserProfile}
                   subscription={subscription}
                   subscriptionTier={subscriptionTier}
                   hasActiveSubscription={hasActiveSubscription}

@@ -10,6 +10,7 @@ import {
   Gift,
   ArrowRight,
   Star,
+  AlertCircle,
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -44,6 +45,11 @@ function SuccessContent() {
   const [loading, setLoading] = useState(true);
   const [needsSignIn, setNeedsSignIn] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
+  const [subscriptionFound, setSubscriptionFound] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
+  const [error, setError] = useState<string | null>(null);
+
+  const maxRetries = 10; // Wait up to 30 seconds (10 * 3 seconds)
 
   useEffect(() => {
     const fetchPlan = async () => {
@@ -63,39 +69,92 @@ function SuccessContent() {
         setLoading(false);
         return;
       }
-      const { data: sub } = await supabase
-        .from("subscriptions")
-        .select("plan_name,billing_cycle,status")
-        .eq("user_id", user.id)
-        .eq("status", "active")
-        .maybeSingle();
-      if (sub) {
-        setPlan(sub.plan_name?.toLowerCase() || urlPlan);
-        setBilling(sub.billing_cycle?.toLowerCase() || urlBilling);
-      } else {
-        setPlan(urlPlan);
-        setBilling(urlBilling);
-      }
-      setLoading(false);
+      
+      // Check for subscription with retry logic
+      const checkSubscription = async (attempt: number = 0): Promise<void> => {
+        try {
+          const { data: sub, error: subError } = await supabase
+            .from("subscriptions")
+            .select("plan_name,billing_cycle,status")
+            .eq("user_id", user.id)
+            .eq("status", "active")
+            .maybeSingle();
+          
+          if (subError) {
+            console.error("Subscription check error:", subError);
+            throw subError;
+          }
+          
+          if (sub) {
+            console.log("Subscription found:", sub);
+            setPlan(sub.plan_name?.toLowerCase() || urlPlan);
+            setBilling(sub.billing_cycle?.toLowerCase() || urlBilling);
+            setSubscriptionFound(true);
+            setLoading(false);
+            return;
+          } else {
+            console.log(`No subscription found on attempt ${attempt + 1}/${maxRetries}`);
+            
+            if (attempt < maxRetries - 1) {
+              // Wait 3 seconds before retrying
+              setTimeout(() => {
+                setRetryCount(attempt + 1);
+                checkSubscription(attempt + 1);
+              }, 3000);
+            } else {
+              // Max retries reached, show error
+              console.error("Max retries reached, subscription not found");
+              setError("Payment processed but subscription activation is taking longer than expected. Please contact support if this persists.");
+              setPlan(urlPlan);
+              setBilling(urlBilling);
+              setLoading(false);
+            }
+          }
+        } catch (error) {
+          console.error("Error checking subscription:", error);
+          if (attempt < maxRetries - 1) {
+            setTimeout(() => {
+              setRetryCount(attempt + 1);
+              checkSubscription(attempt + 1);
+            }, 3000);
+          } else {
+            setError("Unable to verify subscription status. Please contact support.");
+            setPlan(urlPlan);
+            setBilling(urlBilling);
+            setLoading(false);
+          }
+        }
+      };
+      
+      checkSubscription();
     };
     fetchPlan();
     // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
-    if (!loading && !needsSignIn && plan && billing) {
+    if (!loading && !needsSignIn && plan && billing && subscriptionFound) {
       setTimeout(() => {
         setRedirecting(true);
         window.location.href = "/dashboard";
       }, 3000);
     }
-  }, [loading, needsSignIn, plan, billing]);
+  }, [loading, needsSignIn, plan, billing, subscriptionFound]);
 
   // Show a loading spinner if loading
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" />
+      <div className="min-h-screen flex flex-col items-center justify-center p-8">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4" />
+        <h2 className="text-xl font-semibold text-gray-900 mb-2">
+          Activating your subscription...
+        </h2>
+        <p className="text-gray-600 text-center max-w-md">
+          {retryCount > 0 
+            ? `Attempt ${retryCount}/${maxRetries} - This may take a few moments...`
+            : "Setting up your account and activating features..."
+          }
+        </p>
       </div>
     );
   }
@@ -115,6 +174,31 @@ function SuccessContent() {
       <div className="min-h-screen flex flex-col items-center justify-center p-8">
         <h2 className="text-2xl font-bold mb-4 text-blue-700">Redirecting to your Dashboard…</h2>
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" />
+      </div>
+    );
+  }
+
+  // Show error state if subscription wasn't found
+  if (error) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center p-8">
+        <div className="max-w-md w-full">
+          <Card className="p-6 text-center">
+            <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <AlertCircle className="w-8 h-8 text-yellow-600" />
+            </div>
+            <h2 className="text-xl font-bold text-gray-900 mb-2">Payment Successful!</h2>
+            <p className="text-gray-600 mb-4">{error}</p>
+            <div className="space-y-2">
+              <Button asChild className="w-full">
+                <Link href="/dashboard">Try Dashboard</Link>
+              </Button>
+              <Button asChild variant="outline" className="w-full">
+                <Link href="/pricing">Back to Pricing</Link>
+              </Button>
+            </div>
+          </Card>
+        </div>
       </div>
     );
   }
