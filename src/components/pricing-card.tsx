@@ -457,12 +457,31 @@ export default function PricingCard({
 
   // Determine button state
   const isCurrentPlan =
-    userPlan === safePlan.id &&
+    userPlan && 
+    (userPlan.toLowerCase() === safePlan.id.toLowerCase() ||
+     userPlan.toLowerCase() === safePlan.name.toLowerCase()) &&
     userBilling === (isYearly ? "yearly" : "monthly");
+  
   const isUpgrade =
     userPlan &&
     ["creator", "influencer", "superstar"].indexOf(safePlan.id) >
       ["creator", "influencer", "superstar"].indexOf(userPlan);
+  
+  const isDowngrade =
+    !!userPlan &&
+    ["creator", "influencer", "superstar"].indexOf(safePlan.id) <
+      ["creator", "influencer", "superstar"].indexOf(userPlan);
+
+  console.log("Pricing card state:", {
+    userPlan,
+    safePlanId: safePlan.id,
+    safePlanName: safePlan.name,
+    userBilling,
+    isYearly,
+    isCurrentPlan,
+    isUpgrade,
+    isDowngrade
+  });
 
   return (
     <div
@@ -642,13 +661,13 @@ export default function PricingCard({
           <div className="space-y-2">
             <Button
               onClick={handleCheckout}
-              disabled={isLoading || isCurrentPlan}
+              disabled={isLoading || !!isCurrentPlan}
               className={`w-full py-3 text-sm font-bold transition-all duration-300 magnetic interactive-element hover-target pricing-button checkout-button stripe-button button ${
                 safePlan.popular
                   ? `bg-gradient-to-r ${safePlan.gradient} hover:shadow-premium-lg text-white`
                   : "bg-gray-800 hover:bg-gray-700 text-white"
               } ${
-                isLoading || isCurrentPlan
+                isLoading || !!isCurrentPlan
                   ? "opacity-50 cursor-not-allowed"
                   : "hover:scale-105"
               }`}
@@ -667,6 +686,8 @@ export default function PricingCard({
                 <span className="text-sm">Current Plan</span>
               ) : isUpgrade ? (
                 <span className="text-sm">Upgrade</span>
+              ) : isDowngrade ? (
+                <span className="text-sm">Downgrade</span>
               ) : safePlan.popular ? (
                 <span className="text-sm">Start Building Fame</span>
               ) : (

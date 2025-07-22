@@ -110,11 +110,15 @@ export default async function Dashboard({
     return redirect("/pricing?welcome=true");
   }
 
-  // Check if user needs onboarding (only after they have a subscription)
-  if (finalUserProfile.onboarding_completed === false) {
-    console.log("User needs onboarding, showing onboarding flow");
+  // Check if user needs onboarding (only if they don't have an active subscription)
+  // If they have an active subscription, show dashboard regardless of onboarding status
+  if (finalUserProfile.onboarding_completed === false && !hasActiveSubscription) {
+    console.log("User needs onboarding and has no subscription, showing onboarding flow");
     return <OnboardingFlow user={user} />;
   }
+
+  // User has active subscription - show dashboard (onboarding is optional)
+  console.log("User has active subscription, showing dashboard");
 
   // User already has active subscription (checked above)
   const featureAccess = getFeatureAccess(

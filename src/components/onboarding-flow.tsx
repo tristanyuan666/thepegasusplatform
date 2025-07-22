@@ -228,7 +228,7 @@ export default function OnboardingFlow({ user }: OnboardingFlowProps) {
       if (onboardingError) throw onboardingError;
 
       // Redirect to the actual dashboard (not onboarding)
-      router.push("/dashboard?onboarding=complete");
+      window.location.href = "/dashboard?onboarding=complete";
     } catch (error) {
       console.error("Error completing onboarding:", error);
     } finally {
@@ -254,14 +254,14 @@ export default function OnboardingFlow({ user }: OnboardingFlowProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-900 flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50 flex items-center justify-center p-4 relative overflow-hidden">
       {/* Premium animated background */}
       <div className="absolute inset-0">
-        {/* Floating Pegasus elements */}
-        {[...Array(20)].map((_, i) => (
+        {/* Floating elements */}
+        {[...Array(15)].map((_, i) => (
           <div
             key={i}
-            className="absolute w-2 h-2 bg-gradient-to-r from-purple-400 to-indigo-400 rounded-full animate-pulse"
+            className="absolute w-1 h-1 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full animate-pulse"
             style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
@@ -271,14 +271,14 @@ export default function OnboardingFlow({ user }: OnboardingFlowProps) {
           />
         ))}
 
-        {/* Premium gradient orbs */}
-        <div className="absolute top-20 left-20 w-96 h-96 bg-gradient-to-r from-purple-500/20 to-indigo-500/20 rounded-full blur-3xl animate-pulse" />
+        {/* Subtle gradient orbs */}
+        <div className="absolute top-20 left-20 w-96 h-96 bg-gradient-to-r from-blue-100/30 to-indigo-100/30 rounded-full blur-3xl animate-pulse" />
         <div
-          className="absolute bottom-20 right-20 w-80 h-80 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-full blur-3xl animate-pulse"
+          className="absolute bottom-20 right-20 w-80 h-80 bg-gradient-to-r from-indigo-100/30 to-blue-100/30 rounded-full blur-3xl animate-pulse"
           style={{ animationDelay: "1.5s" }}
         />
         <div
-          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-purple-400/10 to-indigo-400/10 rounded-full blur-2xl animate-pulse"
+          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-blue-50/20 to-indigo-50/20 rounded-full blur-2xl animate-pulse"
           style={{ animationDelay: "3s" }}
         />
       </div>
@@ -293,119 +293,72 @@ export default function OnboardingFlow({ user }: OnboardingFlowProps) {
               const isCompleted = step < currentStep;
               const isCurrent = step === currentStep;
               const colors = [
-                "from-purple-500 to-indigo-500",
-                "from-indigo-500 to-purple-600",
-                "from-purple-600 to-indigo-600",
-                "from-indigo-600 to-purple-700",
-                "from-purple-700 to-indigo-700",
+                "from-blue-500 to-indigo-500",
+                "from-indigo-500 to-blue-600",
+                "from-blue-600 to-indigo-600",
+                "from-indigo-600 to-blue-700",
+                "from-blue-700 to-indigo-700",
               ];
 
               return (
-                <div key={step} className="flex flex-col items-center relative">
-                  {/* Connection line */}
-                  {step < 5 && (
-                    <div className="absolute top-8 left-16 w-20 md:w-24 h-0.5 bg-gradient-to-r from-slate-600 to-slate-700">
-                      <div
-                        className={`h-full bg-gradient-to-r from-purple-500 to-indigo-500 transition-all duration-1000 ${
-                          step < currentStep ? "w-full" : "w-0"
-                        }`}
-                      />
-                    </div>
-                  )}
-
+                <div key={step} className="flex flex-col items-center">
                   <div
-                    className={`flex items-center justify-center w-16 h-16 md:w-20 md:h-20 rounded-full border-4 transition-all duration-700 transform relative overflow-hidden ${
+                    className={`w-12 h-12 rounded-full flex items-center justify-center mb-2 transition-all duration-300 ${
                       isCompleted
-                        ? `bg-gradient-to-r ${colors[step - 1]} border-purple-400 text-white scale-110 shadow-2xl shadow-purple-500/50`
+                        ? `bg-gradient-to-r ${colors[step - 1]} text-white shadow-lg`
                         : isCurrent
-                          ? `bg-gradient-to-r ${colors[step - 1]} border-indigo-400 text-white scale-110 shadow-2xl shadow-indigo-500/50 animate-pulse`
-                          : "border-slate-600 text-slate-400 bg-slate-800/50 backdrop-blur-sm"
+                        ? `bg-gradient-to-r ${colors[step - 1]} text-white shadow-lg scale-110`
+                        : "bg-gray-200 text-gray-500"
                     }`}
                   >
-                    {/* Shimmer effect for active/completed steps */}
-                    {(isCompleted || isCurrent) && (
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer" />
-                    )}
-
-                    {isCompleted ? (
-                      <CheckCircle className="w-8 h-8 md:w-10 md:h-10 animate-bounce" />
-                    ) : (
-                      <Icon className="w-8 h-8 md:w-10 md:h-10" />
-                    )}
+                    <Icon className="w-6 h-6" />
                   </div>
-
-                  <div className="mt-4 text-center">
-                    <div
-                      className={`text-sm md:text-base font-bold transition-colors ${
-                        isCompleted || isCurrent
-                          ? "text-white"
-                          : "text-slate-500"
-                      }`}
-                    >
-                      Step {step}
-                    </div>
-                    <div
-                      className={`text-xs md:text-sm transition-colors ${
-                        isCompleted || isCurrent
-                          ? "text-purple-300"
-                          : "text-slate-600"
-                      }`}
-                    >
-                      {["Profile", "Niche", "Voice", "Goals", "Audience"][step - 1]}
-                    </div>
-                  </div>
+                  <span
+                    className={`text-xs font-medium ${
+                      isCurrent ? "text-blue-600" : isCompleted ? "text-gray-600" : "text-gray-400"
+                    }`}
+                  >
+                    Step {step}
+                  </span>
                 </div>
               );
             })}
           </div>
-
-          {/* Premium XP-style progress bar */}
-          <div className="relative">
-            <div className="w-full bg-slate-800/50 backdrop-blur-sm rounded-full h-6 border-2 border-slate-700 shadow-inner">
-              <div
-                className="bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-600 h-full rounded-full transition-all duration-1000 ease-out relative overflow-hidden shadow-lg"
-                style={{ width: `${(currentStep / 5) * 100}%` }}
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-              </div>
-            </div>
-            <div className="absolute -top-10 left-0 text-white text-sm font-bold flex items-center gap-2">
-              <Zap className="w-4 h-4 text-purple-400" />
-              <span className="bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">
-                Pegasus Profile Progress: {Math.round((currentStep / 5) * 100)}%
-              </span>
-            </div>
+          <div className="w-full bg-gray-200 rounded-full h-2">
+            <div
+              className="bg-gradient-to-r from-blue-500 to-indigo-500 h-2 rounded-full transition-all duration-500 ease-out"
+              style={{ width: `${(currentStep / 5) * 100}%` }}
+            />
           </div>
         </div>
 
-        <Card className="bg-slate-900/80 backdrop-blur-xl border-slate-700/50 p-8 md:p-12 relative overflow-hidden shadow-2xl">
+        <Card className="bg-white p-8 md:p-12 rounded-2xl shadow-2xl border border-gray-200">
           {/* Card background effects */}
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-800/50 via-transparent to-purple-900/20" />
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-500" />
+          <div className="absolute inset-0 bg-gradient-to-br from-white/50 via-transparent to-blue-50/50" />
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-500" />
 
           {/* Premium achievement badges */}
           <div className="absolute top-6 right-6 flex flex-col gap-2">
             {currentStep > 1 && (
-              <div className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white px-4 py-2 rounded-full text-xs font-bold flex items-center gap-2 animate-bounce shadow-lg">
+              <div className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-4 py-2 rounded-full text-xs font-bold flex items-center gap-2 animate-bounce shadow-lg">
                 <Star className="w-4 h-4" />
                 Profile Created!
               </div>
             )}
             {currentStep > 2 && (
-              <div className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-4 py-2 rounded-full text-xs font-bold flex items-center gap-2 animate-bounce shadow-lg">
+              <div className="bg-gradient-to-r from-indigo-500 to-blue-600 text-white px-4 py-2 rounded-full text-xs font-bold flex items-center gap-2 animate-bounce shadow-lg">
                 <Zap className="w-4 h-4" />
                 Niche Selected!
               </div>
             )}
             {currentStep > 3 && (
-              <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-4 py-2 rounded-full text-xs font-bold flex items-center gap-2 animate-bounce shadow-lg">
+              <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 py-2 rounded-full text-xs font-bold flex items-center gap-2 animate-bounce shadow-lg">
                 <Crown className="w-4 h-4" />
                 Voice Defined!
               </div>
             )}
             {currentStep > 4 && (
-              <div className="bg-gradient-to-r from-indigo-600 to-purple-700 text-white px-4 py-2 rounded-full text-xs font-bold flex items-center gap-2 animate-bounce shadow-lg">
+              <div className="bg-gradient-to-r from-indigo-600 to-blue-700 text-white px-4 py-2 rounded-full text-xs font-bold flex items-center gap-2 animate-bounce shadow-lg">
                 <Trophy className="w-4 h-4" />
                 Goals Set!
               </div>
@@ -417,24 +370,24 @@ export default function OnboardingFlow({ user }: OnboardingFlowProps) {
             {currentStep === 1 && (
               <div className="text-center">
                 <div className="relative mb-8">
-                  <div className="w-24 h-24 md:w-32 md:h-32 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse shadow-2xl">
+                  <div className="w-24 h-24 md:w-32 md:h-32 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse shadow-2xl">
                     <User className="w-12 h-12 md:w-16 md:h-16 text-white" />
                   </div>
-                  <div className="absolute -top-4 -right-4 w-12 h-12 bg-gradient-to-r from-purple-400 to-indigo-400 rounded-full flex items-center justify-center animate-bounce shadow-lg">
+                  <div className="absolute -top-4 -right-4 w-12 h-12 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full flex items-center justify-center animate-bounce shadow-lg">
                     <Rocket className="w-6 h-6 text-white" />
                   </div>
                 </div>
 
-                <h2 className="text-4xl md:text-6xl font-bold text-white mb-6">
+                <h2 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
                   🚀 Welcome to{" "}
-                  <span className="bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">
+                  <span className="bg-gradient-to-r from-blue-500 to-indigo-500 bg-clip-text text-transparent">
                     Pegasus
                   </span>
                 </h2>
 
-                <p className="text-slate-300 mb-10 text-lg md:text-xl leading-relaxed">
+                <p className="text-gray-600 mb-10 text-lg md:text-xl leading-relaxed">
                   Let's build your{" "}
-                  <span className="text-purple-400 font-semibold">
+                  <span className="text-blue-500 font-semibold">
                     viral creator empire
                   </span>{" "}
                   and unlock your fame potential!
@@ -442,20 +395,20 @@ export default function OnboardingFlow({ user }: OnboardingFlowProps) {
 
                 {/* Premium stats preview */}
                 <div className="grid grid-cols-3 gap-6 mb-10">
-                  <div className="bg-gradient-to-br from-purple-500/20 to-indigo-500/20 rounded-xl p-6 border border-purple-500/30 backdrop-blur-sm hover:scale-105 transition-transform">
-                    <Users className="w-8 h-8 text-purple-400 mx-auto mb-2" />
-                    <div className="text-3xl font-bold text-purple-400">0</div>
-                    <div className="text-sm text-slate-400">Followers</div>
+                  <div className="bg-gradient-to-br from-blue-500/20 to-indigo-500/20 rounded-xl p-6 border border-blue-500/30 backdrop-blur-sm hover:scale-105 transition-transform">
+                    <Users className="w-8 h-8 text-blue-500 mx-auto mb-2" />
+                    <div className="text-3xl font-bold text-blue-500">0</div>
+                    <div className="text-sm text-gray-500">Followers</div>
                   </div>
-                  <div className="bg-gradient-to-br from-indigo-500/20 to-purple-500/20 rounded-xl p-6 border border-indigo-500/30 backdrop-blur-sm hover:scale-105 transition-transform">
-                    <Zap className="w-8 h-8 text-indigo-400 mx-auto mb-2" />
-                    <div className="text-3xl font-bold text-indigo-400">0</div>
-                    <div className="text-sm text-slate-400">Viral Score</div>
+                  <div className="bg-gradient-to-br from-indigo-500/20 to-blue-500/20 rounded-xl p-6 border border-indigo-500/30 backdrop-blur-sm hover:scale-105 transition-transform">
+                    <Zap className="w-8 h-8 text-indigo-500 mx-auto mb-2" />
+                    <div className="text-3xl font-bold text-indigo-500">0</div>
+                    <div className="text-sm text-gray-500">Viral Score</div>
                   </div>
-                  <div className="bg-gradient-to-br from-purple-500/20 to-indigo-500/20 rounded-xl p-6 border border-purple-500/30 backdrop-blur-sm hover:scale-105 transition-transform">
-                    <DollarSign className="w-8 h-8 text-purple-400 mx-auto mb-2" />
-                    <div className="text-3xl font-bold text-purple-400">$0</div>
-                    <div className="text-sm text-slate-400">Earnings</div>
+                  <div className="bg-gradient-to-br from-blue-500/20 to-indigo-500/20 rounded-xl p-6 border border-blue-500/30 backdrop-blur-sm hover:scale-105 transition-transform">
+                    <DollarSign className="w-8 h-8 text-blue-500 mx-auto mb-2" />
+                    <div className="text-3xl font-bold text-blue-500">$0</div>
+                    <div className="text-sm text-gray-500">Earnings</div>
                   </div>
                 </div>
 
@@ -466,14 +419,14 @@ export default function OnboardingFlow({ user }: OnboardingFlowProps) {
                         <img
                           src={formData.avatar_url}
                           alt="Avatar"
-                          className="w-32 h-32 rounded-full object-cover border-4 border-purple-500 shadow-2xl"
+                          className="w-32 h-32 rounded-full object-cover border-4 border-blue-500 shadow-2xl"
                         />
                       ) : (
-                        <div className="w-32 h-32 rounded-full bg-slate-700/50 backdrop-blur-sm border-4 border-slate-600 flex items-center justify-center">
-                          <User className="w-12 h-12 text-slate-400" />
+                        <div className="w-32 h-32 rounded-full bg-gray-200/50 backdrop-blur-sm border-4 border-gray-300 flex items-center justify-center">
+                          <User className="w-12 h-12 text-gray-400" />
                         </div>
                       )}
-                      <label className="absolute bottom-0 right-0 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full p-3 cursor-pointer hover:scale-110 transition-transform shadow-lg">
+                      <label className="absolute bottom-0 right-0 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full p-3 cursor-pointer hover:scale-110 transition-transform shadow-lg">
                         <Upload className="w-5 h-5 text-white" />
                         <input
                           type="file"
@@ -483,7 +436,7 @@ export default function OnboardingFlow({ user }: OnboardingFlowProps) {
                         />
                       </label>
                     </div>
-                    <p className="text-slate-400 text-lg">
+                    <p className="text-gray-500 text-lg">
                       Upload your profile picture (optional)
                     </p>
                   </div>
@@ -496,22 +449,22 @@ export default function OnboardingFlow({ user }: OnboardingFlowProps) {
               <div>
                 <div className="text-center mb-10">
                   <div className="relative mb-8">
-                    <div className="w-24 h-24 md:w-32 md:h-32 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse shadow-2xl">
+                    <div className="w-24 h-24 md:w-32 md:h-32 bg-gradient-to-r from-indigo-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse shadow-2xl">
                       <Target className="w-12 h-12 md:w-16 md:h-16 text-white" />
                     </div>
-                    <div className="absolute -top-4 -right-4 w-12 h-12 bg-gradient-to-r from-purple-400 to-indigo-400 rounded-full flex items-center justify-center animate-bounce shadow-lg">
+                    <div className="absolute -top-4 -right-4 w-12 h-12 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full flex items-center justify-center animate-bounce shadow-lg">
                       <TrendingUp className="w-6 h-6 text-white" />
                     </div>
                   </div>
 
-                  <h2 className="text-4xl md:text-6xl font-bold text-white mb-6">
+                  <h2 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
                     🎯 Choose Your{" "}
-                    <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+                    <span className="bg-gradient-to-r from-indigo-400 to-blue-400 bg-clip-text text-transparent">
                       Viral Niche
                     </span>
                   </h2>
 
-                  <p className="text-slate-300 mb-10 text-lg md:text-xl leading-relaxed">
+                  <p className="text-gray-600 mb-10 text-lg md:text-xl leading-relaxed">
                     Select your{" "}
                     <span className="text-indigo-400 font-semibold">
                       content focus
@@ -522,7 +475,7 @@ export default function OnboardingFlow({ user }: OnboardingFlowProps) {
 
                 <div className="space-y-8">
                   <div>
-                    <Label className="text-white mb-4 block text-lg font-semibold">
+                    <Label className="text-gray-700 mb-4 block text-lg font-semibold">
                       What's your primary niche?
                     </Label>
                     <Select
@@ -531,15 +484,15 @@ export default function OnboardingFlow({ user }: OnboardingFlowProps) {
                         setFormData((prev) => ({ ...prev, niche: value }))
                       }
                     >
-                      <SelectTrigger className="bg-slate-800/50 backdrop-blur-sm border-slate-600 text-white h-14 text-lg">
+                      <SelectTrigger className="bg-gray-100 border-gray-300 text-gray-800 h-14 text-lg rounded-lg">
                         <SelectValue placeholder="Select your viral niche" />
                       </SelectTrigger>
-                      <SelectContent className="bg-slate-800 border-slate-600">
+                      <SelectContent className="bg-gray-100 border-gray-300">
                         {pegasusNiches.map((niche) => (
                           <SelectItem
                             key={niche}
                             value={niche}
-                            className="text-white hover:bg-slate-700"
+                            className="text-gray-800 hover:bg-gray-200"
                           >
                             {niche}
                           </SelectItem>
@@ -549,7 +502,7 @@ export default function OnboardingFlow({ user }: OnboardingFlowProps) {
                   </div>
 
                   <div>
-                    <Label className="text-white mb-4 block text-lg font-semibold">
+                    <Label className="text-gray-700 mb-4 block text-lg font-semibold">
                       Preferred content format for virality?
                     </Label>
                     <Select
@@ -561,15 +514,15 @@ export default function OnboardingFlow({ user }: OnboardingFlowProps) {
                         }))
                       }
                     >
-                      <SelectTrigger className="bg-slate-800/50 backdrop-blur-sm border-slate-600 text-white h-14 text-lg">
+                      <SelectTrigger className="bg-gray-100 border-gray-300 text-gray-800 h-14 text-lg rounded-lg">
                         <SelectValue placeholder="Select content format" />
                       </SelectTrigger>
-                      <SelectContent className="bg-slate-800 border-slate-600">
+                      <SelectContent className="bg-gray-100 border-gray-300">
                         {pegasusContentFormats.map((format) => (
                           <SelectItem
                             key={format}
                             value={format}
-                            className="text-white hover:bg-slate-700"
+                            className="text-gray-800 hover:bg-gray-200"
                           >
                             {format}
                           </SelectItem>
@@ -586,24 +539,24 @@ export default function OnboardingFlow({ user }: OnboardingFlowProps) {
               <div>
                 <div className="text-center mb-10">
                   <div className="relative mb-8">
-                    <div className="w-24 h-24 md:w-32 md:h-32 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse shadow-2xl">
+                    <div className="w-24 h-24 md:w-32 md:h-32 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse shadow-2xl">
                       <Palette className="w-12 h-12 md:w-16 md:h-16 text-white" />
                     </div>
-                    <div className="absolute -top-4 -right-4 w-12 h-12 bg-gradient-to-r from-purple-400 to-indigo-400 rounded-full flex items-center justify-center animate-bounce shadow-lg">
+                    <div className="absolute -top-4 -right-4 w-12 h-12 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full flex items-center justify-center animate-bounce shadow-lg">
                       <Flame className="w-6 h-6 text-white" />
                     </div>
                   </div>
 
-                  <h2 className="text-4xl md:text-6xl font-bold text-white mb-6">
+                  <h2 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
                     ✨ Define Your{" "}
-                    <span className="bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">
+                    <span className="bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
                       Brand Voice
                     </span>
                   </h2>
 
-                  <p className="text-slate-300 mb-10 text-lg md:text-xl leading-relaxed">
+                  <p className="text-gray-600 mb-10 text-lg md:text-xl leading-relaxed">
                     Choose your{" "}
-                    <span className="text-purple-400 font-semibold">
+                    <span className="text-blue-500 font-semibold">
                       communication style
                     </span>{" "}
                     to maximize engagement and virality
@@ -617,8 +570,8 @@ export default function OnboardingFlow({ user }: OnboardingFlowProps) {
                       onClick={() => setFormData((prev) => ({ ...prev, brand_voice: voice }))}
                       className={`p-6 rounded-xl border-2 transition-all duration-300 text-left hover:scale-105 ${
                         formData.brand_voice === voice
-                          ? "border-purple-500 bg-gradient-to-r from-purple-500/20 to-indigo-500/20 text-white shadow-lg shadow-purple-500/25"
-                          : "border-slate-600 bg-slate-800/50 backdrop-blur-sm text-slate-300 hover:border-slate-500"
+                          ? "border-blue-500 bg-gradient-to-r from-blue-500/20 to-indigo-500/20 text-white shadow-lg shadow-blue-500/25"
+                          : "border-gray-300 bg-gray-100/50 backdrop-blur-sm text-gray-600 hover:border-gray-300"
                       }`}
                     >
                       <span className="font-semibold text-lg">{voice}</span>
@@ -633,22 +586,22 @@ export default function OnboardingFlow({ user }: OnboardingFlowProps) {
               <div>
                 <div className="text-center mb-10">
                   <div className="relative mb-8">
-                    <div className="w-24 h-24 md:w-32 md:h-32 bg-gradient-to-r from-indigo-600 to-purple-700 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse shadow-2xl">
+                    <div className="w-24 h-24 md:w-32 md:h-32 bg-gradient-to-r from-indigo-600 to-blue-700 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse shadow-2xl">
                       <Trophy className="w-12 h-12 md:w-16 md:h-16 text-white" />
                     </div>
-                    <div className="absolute -top-4 -right-4 w-12 h-12 bg-gradient-to-r from-purple-400 to-indigo-400 rounded-full flex items-center justify-center animate-bounce shadow-lg">
+                    <div className="absolute -top-4 -right-4 w-12 h-12 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full flex items-center justify-center animate-bounce shadow-lg">
                       <Award className="w-6 h-6 text-white" />
                     </div>
                   </div>
 
-                  <h2 className="text-4xl md:text-6xl font-bold text-white mb-6">
+                  <h2 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
                     🏆 Set Your{" "}
-                    <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+                    <span className="bg-gradient-to-r from-indigo-400 to-blue-400 bg-clip-text text-transparent">
                       Fame Goals
                     </span>
                   </h2>
 
-                  <p className="text-slate-300 mb-10 text-lg md:text-xl leading-relaxed">
+                  <p className="text-gray-600 mb-10 text-lg md:text-xl leading-relaxed">
                     Define your{" "}
                     <span className="text-indigo-400 font-semibold">
                       success targets
@@ -657,29 +610,29 @@ export default function OnboardingFlow({ user }: OnboardingFlowProps) {
                   </p>
 
                   {/* Premium preview dashboard */}
-                  <div className="bg-gradient-to-r from-slate-800/50 to-slate-700/50 backdrop-blur-sm rounded-xl p-6 mb-8 border border-slate-600 shadow-xl">
-                    <div className="text-lg text-slate-400 mb-4 flex items-center justify-center gap-2">
+                  <div className="bg-gradient-to-r from-gray-100/50 to-gray-50/50 backdrop-blur-sm rounded-xl p-6 mb-8 border border-gray-200 shadow-xl">
+                    <div className="text-lg text-gray-600 mb-4 flex items-center justify-center gap-2">
                       <BarChart3 className="w-5 h-5" />
                       🎯 Your Pegasus Dashboard Preview
                     </div>
                     <div className="grid grid-cols-3 gap-4">
-                      <div className="bg-gradient-to-r from-purple-500/20 to-indigo-500/20 rounded-lg p-4 border border-purple-500/30">
-                        <div className="text-2xl font-bold text-purple-400">
+                      <div className="bg-gradient-to-r from-blue-500/20 to-indigo-500/20 rounded-lg p-4 border border-blue-500/30">
+                        <div className="text-2xl font-bold text-blue-500">
                           100K+
                         </div>
-                        <div className="text-slate-400">Followers</div>
+                        <div className="text-gray-600">Followers</div>
                       </div>
-                      <div className="bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-lg p-4 border border-indigo-500/30">
-                        <div className="text-2xl font-bold text-indigo-400">
+                      <div className="bg-gradient-to-r from-indigo-500/20 to-blue-500/20 rounded-lg p-4 border border-indigo-500/30">
+                        <div className="text-2xl font-bold text-indigo-500">
                           95%
                         </div>
-                        <div className="text-slate-400">Viral Score</div>
+                        <div className="text-gray-600">Viral Score</div>
                       </div>
-                      <div className="bg-gradient-to-r from-purple-500/20 to-indigo-500/20 rounded-lg p-4 border border-purple-500/30">
-                        <div className="text-2xl font-bold text-purple-400">
+                      <div className="bg-gradient-to-r from-blue-500/20 to-indigo-500/20 rounded-lg p-4 border border-blue-500/30">
+                        <div className="text-2xl font-bold text-blue-500">
                           $10K
                         </div>
-                        <div className="text-slate-400">Monthly</div>
+                        <div className="text-gray-600">Monthly</div>
                       </div>
                     </div>
                   </div>
@@ -694,8 +647,8 @@ export default function OnboardingFlow({ user }: OnboardingFlowProps) {
                       }
                       className={`p-6 rounded-xl border-2 transition-all duration-300 text-left hover:scale-105 ${
                         formData.fame_goals === goal
-                          ? "border-purple-500 bg-gradient-to-r from-purple-500/20 to-indigo-500/20 text-white shadow-lg shadow-purple-500/25"
-                          : "border-slate-600 bg-slate-800/50 backdrop-blur-sm text-slate-300 hover:border-slate-500"
+                          ? "border-blue-500 bg-gradient-to-r from-blue-500/20 to-indigo-500/20 text-white shadow-lg shadow-blue-500/25"
+                          : "border-gray-300 bg-gray-100/50 backdrop-blur-sm text-gray-600 hover:border-gray-300"
                       }`}
                     >
                       <span className="font-semibold text-lg">{goal}</span>
@@ -710,24 +663,24 @@ export default function OnboardingFlow({ user }: OnboardingFlowProps) {
               <div>
                 <div className="text-center mb-10">
                   <div className="relative mb-8">
-                    <div className="w-24 h-24 md:w-32 md:h-32 bg-gradient-to-r from-purple-700 to-indigo-700 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse shadow-2xl">
+                    <div className="w-24 h-24 md:w-32 md:h-32 bg-gradient-to-r from-blue-700 to-indigo-700 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse shadow-2xl">
                       <Rocket className="w-12 h-12 md:w-16 md:h-16 text-white" />
                     </div>
-                    <div className="absolute -top-4 -right-4 w-12 h-12 bg-gradient-to-r from-purple-400 to-indigo-400 rounded-full flex items-center justify-center animate-bounce shadow-lg">
+                    <div className="absolute -top-4 -right-4 w-12 h-12 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full flex items-center justify-center animate-bounce shadow-lg">
                       <Globe className="w-6 h-6 text-white" />
                     </div>
                   </div>
 
-                  <h2 className="text-4xl md:text-6xl font-bold text-white mb-6">
+                  <h2 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
                     🎯 Define Your{" "}
-                    <span className="bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">
+                    <span className="bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
                       Target Audience
                     </span>
                   </h2>
 
-                  <p className="text-slate-300 mb-10 text-lg md:text-xl leading-relaxed">
+                  <p className="text-gray-600 mb-10 text-lg md:text-xl leading-relaxed">
                     Identify your{" "}
-                    <span className="text-purple-400 font-semibold">
+                    <span className="text-blue-500 font-semibold">
                       ideal followers
                     </span>{" "}
                     to maximize engagement and growth
@@ -736,7 +689,7 @@ export default function OnboardingFlow({ user }: OnboardingFlowProps) {
 
                 <div className="space-y-6">
                   <div>
-                    <Label className="text-white mb-4 block text-lg font-semibold">
+                    <Label className="text-gray-700 mb-4 block text-lg font-semibold">
                       Who is your target audience?
                     </Label>
                     <Textarea
@@ -748,12 +701,12 @@ export default function OnboardingFlow({ user }: OnboardingFlowProps) {
                         }))
                       }
                       placeholder="e.g., Young professionals aged 25-35 interested in personal development and career growth..."
-                      className="bg-slate-800/50 backdrop-blur-sm border-slate-600 text-white h-24 text-lg"
+                      className="bg-gray-100 border-gray-300 text-gray-800 h-24 text-lg rounded-lg"
                     />
                   </div>
 
                   <div>
-                    <Label className="text-white mb-4 block text-lg font-semibold">
+                    <Label className="text-gray-700 mb-4 block text-lg font-semibold">
                       Preferred content posting schedule?
                     </Label>
                     <Select
@@ -765,20 +718,20 @@ export default function OnboardingFlow({ user }: OnboardingFlowProps) {
                         }))
                       }
                     >
-                      <SelectTrigger className="bg-slate-800/50 backdrop-blur-sm border-slate-600 text-white h-14 text-lg">
+                      <SelectTrigger className="bg-gray-100 border-gray-300 text-gray-800 h-14 text-lg rounded-lg">
                         <SelectValue placeholder="Select posting frequency" />
                       </SelectTrigger>
-                      <SelectContent className="bg-slate-800 border-slate-600">
-                        <SelectItem value="daily" className="text-white hover:bg-slate-700">
+                      <SelectContent className="bg-gray-100 border-gray-300">
+                        <SelectItem value="daily" className="text-gray-800 hover:bg-gray-200">
                           Daily (High Growth)
                         </SelectItem>
-                        <SelectItem value="2-3_per_week" className="text-white hover:bg-slate-700">
+                        <SelectItem value="2-3_per_week" className="text-gray-800 hover:bg-gray-200">
                           2-3 times per week (Balanced)
                         </SelectItem>
-                        <SelectItem value="weekly" className="text-white hover:bg-slate-700">
+                        <SelectItem value="weekly" className="text-gray-800 hover:bg-gray-200">
                           Weekly (Quality Focus)
                         </SelectItem>
-                        <SelectItem value="flexible" className="text-white hover:bg-slate-700">
+                        <SelectItem value="flexible" className="text-gray-800 hover:bg-gray-200">
                           Flexible (As Inspired)
                         </SelectItem>
                       </SelectContent>
@@ -794,7 +747,7 @@ export default function OnboardingFlow({ user }: OnboardingFlowProps) {
                 variant="outline"
                 onClick={() => setCurrentStep(Math.max(1, currentStep - 1))}
                 disabled={currentStep === 1}
-                className="border-slate-600 text-slate-300 hover:bg-slate-800 bg-slate-800/50 backdrop-blur-sm px-8 py-3 text-lg"
+                className="border-gray-300 text-gray-600 hover:bg-gray-100 bg-gray-100/50 backdrop-blur-sm px-8 py-3 text-lg rounded-lg"
               >
                 Previous
               </Button>
@@ -802,11 +755,11 @@ export default function OnboardingFlow({ user }: OnboardingFlowProps) {
               <Button
                 onClick={handleNext}
                 disabled={!isStepValid() || isLoading}
-                className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 transform hover:scale-105 transition-all duration-300 shadow-2xl hover:shadow-purple-500/25 px-8 py-3 text-lg font-semibold"
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transform hover:scale-105 transition-all duration-300 shadow-2xl hover:shadow-blue-500/25 px-8 py-3 text-lg font-semibold rounded-lg"
               >
                 {isLoading ? (
                   <div className="flex items-center gap-3">
-                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <div className="w-5 h-5 border-2 border-gray-400 border-t-gray-400 rounded-full animate-spin" />
                     <span>🚀 Launching Your Pegasus Empire...</span>
                   </div>
                 ) : currentStep === 5 ? (
