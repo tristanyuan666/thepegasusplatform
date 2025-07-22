@@ -206,7 +206,7 @@ CREATE INDEX IF NOT EXISTS idx_user_goals_user_id ON user_goals(user_id);
 CREATE INDEX IF NOT EXISTS idx_monetization_data_user_id ON monetization_data(user_id);
 
 -- Enable realtime for tables (skip if already added)
-DO $
+DO $$
 BEGIN
     -- Only add tables to realtime publication if they're not already there
     IF NOT EXISTS (SELECT 1 FROM pg_publication_tables WHERE pubname = 'supabase_realtime' AND tablename = 'content_queue') THEN
@@ -240,7 +240,7 @@ BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_publication_tables WHERE pubname = 'supabase_realtime' AND tablename = 'subscription_plans') THEN
         ALTER PUBLICATION supabase_realtime ADD TABLE subscription_plans;
     END IF;
-END $;
+END $$;
 
 -- Insert default subscription plans
 INSERT INTO subscription_plans (name, stripe_price_id, price_monthly, price_yearly, features, limits) VALUES

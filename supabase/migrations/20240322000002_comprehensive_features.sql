@@ -3,7 +3,7 @@
 -- Social Media Connections Table
 CREATE TABLE IF NOT EXISTS social_connections (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  user_id UUID REFERENCES users(user_id) ON DELETE CASCADE,
+  user_id TEXT REFERENCES users(user_id) ON DELETE CASCADE,
   platform VARCHAR(50) NOT NULL,
   platform_user_id VARCHAR(255),
   access_token TEXT,
@@ -38,7 +38,7 @@ ALTER TABLE analytics ADD COLUMN IF NOT EXISTS saves INTEGER;
 -- Viral Score Tracking
 CREATE TABLE IF NOT EXISTS viral_scores (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  user_id UUID REFERENCES users(user_id) ON DELETE CASCADE,
+  user_id TEXT REFERENCES users(user_id) ON DELETE CASCADE,
   content_id UUID REFERENCES content_queue(id) ON DELETE CASCADE,
   score INTEGER NOT NULL CHECK (score >= 0 AND score <= 100),
   factors JSONB,
@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS content_performance (
 -- User Goals and Targets
 CREATE TABLE IF NOT EXISTS user_goals (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  user_id UUID REFERENCES users(user_id) ON DELETE CASCADE,
+  user_id TEXT REFERENCES users(user_id) ON DELETE CASCADE,
   goal_type VARCHAR(50) NOT NULL,
   target_value INTEGER NOT NULL,
   current_value INTEGER DEFAULT 0,
@@ -100,7 +100,7 @@ CREATE TABLE IF NOT EXISTS user_goals (
 -- Monetization Tracking
 CREATE TABLE IF NOT EXISTS monetization_data (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  user_id UUID REFERENCES users(user_id) ON DELETE CASCADE,
+  user_id TEXT REFERENCES users(user_id) ON DELETE CASCADE,
   platform VARCHAR(50) NOT NULL,
   revenue_source VARCHAR(100) NOT NULL,
   amount DECIMAL(10,2) NOT NULL,

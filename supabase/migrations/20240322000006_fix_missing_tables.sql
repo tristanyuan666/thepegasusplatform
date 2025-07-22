@@ -29,7 +29,7 @@ CREATE INDEX IF NOT EXISTS idx_social_connections_platform ON social_connections
 CREATE INDEX IF NOT EXISTS idx_subscriptions_user_id_status ON subscriptions(user_id, status);
 
 -- Enable realtime (only if not already added)
-DO $
+DO $$
 BEGIN
     IF NOT EXISTS (
         SELECT 1 FROM pg_publication_tables 
@@ -38,4 +38,4 @@ BEGIN
     ) THEN
         ALTER PUBLICATION supabase_realtime ADD TABLE social_connections;
     END IF;
-END $;
+END $$;

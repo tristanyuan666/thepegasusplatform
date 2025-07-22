@@ -46,7 +46,7 @@ Deno.serve(async (req) => {
     console.log("Raw webhook body:", rawBody);
 
     // Verify webhook signature
-    const signature = req.headers.get("x-signature");
+    const signature = req.headers.get("stripe-signature");
     if (!signature) {
       console.error("No signature found in webhook");
       return new Response(
