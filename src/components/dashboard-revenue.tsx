@@ -1,399 +1,227 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { 
-  DollarSign, 
-  TrendingUp, 
-  TrendingDown,
-  BarChart3,
-  Calendar,
-  Target,
-  Zap,
-  AlertCircle,
-  CreditCard,
-  ShoppingCart,
-  Gift,
-  Users
-} from "lucide-react";
-
-interface User {
-  id: string;
-  email?: string;
-}
-
-interface PlatformConnection {
-  id: string;
-  user_id: string;
-  platform: string;
-  platform_user_id: string;
-  platform_username: string;
-  access_token: string;
-  refresh_token: string;
-  is_active: boolean;
-  connected_at: string;
-  last_sync: string;
-}
-
-interface AnalyticsData {
-  total_followers: number;
-  total_views: number;
-  engagement_rate: number;
-  viral_score: number;
-  content_count: number;
-  revenue: number;
-  growth_rate: number;
-}
+import { DollarSign, TrendingUp, TrendingDown, Target, Calendar, BarChart3 } from "lucide-react";
 
 interface DashboardRevenueProps {
-  user: User;
-  platformConnections: PlatformConnection[];
-  analyticsData: AnalyticsData | null;
+  userProfile: any;
+  subscription: any;
   hasFeatureAccess: (feature: string) => boolean;
 }
 
-export default function DashboardRevenue({
-  user,
-  platformConnections,
-  analyticsData,
-  hasFeatureAccess,
-}: DashboardRevenueProps) {
-  const connectedPlatforms = platformConnections.filter(conn => conn.is_active);
-  const hasConnectedPlatforms = connectedPlatforms.length > 0;
-
-  // Format currency
-  const formatCurrency = (amount: number): string => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(amount);
+export default function DashboardRevenue({ userProfile, subscription, hasFeatureAccess }: DashboardRevenueProps) {
+  // Mock revenue data - in production this would come from real analytics
+  const revenueData = {
+    currentMonth: 1250,
+    previousMonth: 980,
+    growth: 27.6,
+    topPlatform: "Instagram",
+    topContentType: "Sponsored Posts",
+    monthlyGoal: 2000,
+    progress: 62.5,
   };
 
-  // Calculate revenue metrics
-  const calculateRevenueMetrics = () => {
-    if (!analyticsData) return null;
+  const recentTransactions = [
+    { id: 1, platform: "Instagram", amount: 450, type: "Sponsored Post", date: "2024-01-15" },
+    { id: 2, platform: "YouTube", amount: 320, type: "Ad Revenue", date: "2024-01-12" },
+    { id: 3, platform: "TikTok", amount: 280, type: "Brand Deal", date: "2024-01-10" },
+    { id: 4, platform: "Instagram", amount: 200, type: "Affiliate", date: "2024-01-08" },
+  ];
 
-    const monthlyRevenue = analyticsData.revenue || 0;
-    const previousMonthRevenue = monthlyRevenue * 0.85; // Simulate previous month
-    const growth = ((monthlyRevenue - previousMonthRevenue) / previousMonthRevenue) * 100;
-
-    return {
-      current: monthlyRevenue,
-      previous: previousMonthRevenue,
-      growth: growth,
-      projected: monthlyRevenue * 1.15, // Project 15% growth
-    };
-  };
-
-  const revenueMetrics = calculateRevenueMetrics();
+  if (!hasFeatureAccess("revenue")) {
+    return (
+      <div className="space-y-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <DollarSign className="w-5 h-5 text-green-600" />
+              Revenue Tracking
+            </CardTitle>
+            <CardDescription>
+              Track your monetization performance across all platforms
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="text-center py-8">
+              <DollarSign className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Upgrade Required</h3>
+              <p className="text-gray-600 mb-4">
+                Revenue tracking is available for Influencer and Superstar plans
+              </p>
+              <Button>Upgrade Plan</Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">
-              Revenue Dashboard
-            </h1>
-            <p className="text-gray-600 mt-1">
-              Track your earnings and monetization performance
-            </p>
-          </div>
-          <div className="text-right">
-            <Badge variant="outline" className="text-green-600 border-green-600">
-              <DollarSign className="w-3 h-3 mr-1" />
-              Monthly Overview
-            </Badge>
-          </div>
-        </div>
-      </div>
-
-      {/* Key Revenue Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Revenue Overview */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Monthly Revenue</CardTitle>
+            <CardTitle className="text-sm font-medium">Current Month Revenue</CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {hasConnectedPlatforms ? formatCurrency(revenueMetrics?.current || 0) : "$0"}
-            </div>
-            {hasConnectedPlatforms && revenueMetrics && (
-              <p className="text-xs text-muted-foreground flex items-center">
-                {revenueMetrics.growth > 0 ? (
-                  <TrendingUp className="w-3 h-3 mr-1 text-green-600" />
-                ) : (
-                  <TrendingDown className="w-3 h-3 mr-1 text-red-600" />
-                )}
-                {revenueMetrics.growth > 0 ? "+" : ""}{revenueMetrics.growth.toFixed(1)}% vs last month
-              </p>
-            )}
+            <div className="text-2xl font-bold">${revenueData.currentMonth}</div>
+            <p className="text-xs text-muted-foreground">
+              {revenueData.growth > 0 ? (
+                <span className="text-green-600 flex items-center gap-1">
+                  <TrendingUp className="w-3 h-3" />
+                  +{revenueData.growth}% from last month
+                </span>
+              ) : (
+                <span className="text-red-600 flex items-center gap-1">
+                  <TrendingDown className="w-3 h-3" />
+                  {revenueData.growth}% from last month
+                </span>
+              )}
+            </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Projected Revenue</CardTitle>
+            <CardTitle className="text-sm font-medium">Monthly Goal</CardTitle>
             <Target className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {hasConnectedPlatforms ? formatCurrency(revenueMetrics?.projected || 0) : "$0"}
+            <div className="text-2xl font-bold">${revenueData.monthlyGoal}</div>
+            <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
+              <div 
+                className="bg-green-600 h-2 rounded-full" 
+                style={{ width: `${revenueData.progress}%` }}
+              ></div>
             </div>
-            <p className="text-xs text-muted-foreground">
-              Next month projection
+            <p className="text-xs text-muted-foreground mt-1">
+              {revenueData.progress}% complete
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Revenue per Follower</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {hasConnectedPlatforms && analyticsData?.total_followers ? 
-                formatCurrency((revenueMetrics?.current || 0) / analyticsData.total_followers) : 
-                "$0"
-              }
-            </div>
-            <p className="text-xs text-muted-foreground">
-              Average per follower
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Conversion Rate</CardTitle>
+            <CardTitle className="text-sm font-medium">Top Platform</CardTitle>
             <BarChart3 className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {hasConnectedPlatforms ? "2.4%" : "0%"}
-            </div>
+            <div className="text-2xl font-bold">{revenueData.topPlatform}</div>
             <p className="text-xs text-muted-foreground">
-              From views to revenue
+              {revenueData.topContentType}
             </p>
           </CardContent>
         </Card>
       </div>
 
       {/* Revenue Breakdown */}
-      {hasConnectedPlatforms && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <DollarSign className="w-5 h-5" />
-              Revenue Breakdown
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              <div className="p-4 border border-gray-200 rounded-lg">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="p-2 bg-blue-100 rounded-lg">
-                    <ShoppingCart className="w-5 h-5 text-blue-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-medium">Product Sales</h3>
-                    <p className="text-sm text-gray-600">Your own products</p>
-                  </div>
-                </div>
-                <div className="text-2xl font-bold text-blue-600">
-                  {formatCurrency((revenueMetrics?.current || 0) * 0.4)}
-                </div>
-                <p className="text-xs text-gray-600">40% of total revenue</p>
-              </div>
-
-              <div className="p-4 border border-gray-200 rounded-lg">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="p-2 bg-green-100 rounded-lg">
-                    <CreditCard className="w-5 h-5 text-green-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-medium">Sponsorships</h3>
-                    <p className="text-sm text-gray-600">Brand partnerships</p>
-                  </div>
-                </div>
-                <div className="text-2xl font-bold text-green-600">
-                  {formatCurrency((revenueMetrics?.current || 0) * 0.35)}
-                </div>
-                <p className="text-xs text-gray-600">35% of total revenue</p>
-              </div>
-
-              <div className="p-4 border border-gray-200 rounded-lg">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="p-2 bg-purple-100 rounded-lg">
-                    <Gift className="w-5 h-5 text-purple-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-medium">Affiliate</h3>
-                    <p className="text-sm text-gray-600">Commission earnings</p>
-                  </div>
-                </div>
-                <div className="text-2xl font-bold text-purple-600">
-                  {formatCurrency((revenueMetrics?.current || 0) * 0.25)}
-                </div>
-                <p className="text-xs text-gray-600">25% of total revenue</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Revenue Growth Chart */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Revenue Trends</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {hasConnectedPlatforms ? (
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <TrendingUp className="w-5 h-5 text-green-600" />
-                    <div>
-                      <p className="font-medium">Monthly Growth</p>
-                      <p className="text-sm text-gray-600">Revenue increase</p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-2xl font-bold text-green-600">
-                      +{revenueMetrics?.growth.toFixed(1) || 0}%
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <Calendar className="w-5 h-5 text-blue-600" />
-                    <div>
-                      <p className="font-medium">Year-to-Date</p>
-                      <p className="text-sm text-gray-600">Total earnings</p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-2xl font-bold text-blue-600">
-                      {formatCurrency((revenueMetrics?.current || 0) * 12)}
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="flex items-center justify-between p-3 bg-purple-50 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <Target className="w-5 h-5 text-purple-600" />
-                    <div>
-                      <p className="font-medium">Goal Progress</p>
-                      <p className="text-sm text-gray-600">Annual target</p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-2xl font-bold text-purple-600">
-                      {Math.round(((revenueMetrics?.current || 0) * 12 / 50000) * 100)}%
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div className="text-center py-8 text-gray-500">
-                <DollarSign className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                <p>No revenue data available</p>
-                <p className="text-sm">Connect platforms to start tracking earnings</p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Monetization Tools</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="p-4 border border-gray-200 rounded-lg">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="p-2 bg-blue-100 rounded-lg">
-                    <ShoppingCart className="w-5 h-5 text-blue-600" />
-                  </div>
-                  <h3 className="font-medium">Product Store</h3>
-                </div>
-                <p className="text-sm text-gray-600 mb-3">
-                  Create and sell your own products
-                </p>
-                <Button variant="outline" size="sm" className="w-full">
-                  Create Product
-                </Button>
-              </div>
-
-              <div className="p-4 border border-gray-200 rounded-lg">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="p-2 bg-green-100 rounded-lg">
-                    <CreditCard className="w-5 h-5 text-green-600" />
-                  </div>
-                  <h3 className="font-medium">Sponsorship Hub</h3>
-                </div>
-                <p className="text-sm text-gray-600 mb-3">
-                  Connect with brands for partnerships
-                </p>
-                <Button variant="outline" size="sm" className="w-full">
-                  Browse Opportunities
-                </Button>
-              </div>
-
-              <div className="p-4 border border-gray-200 rounded-lg">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="p-2 bg-purple-100 rounded-lg">
-                    <Gift className="w-5 h-5 text-purple-600" />
-                  </div>
-                  <h3 className="font-medium">Affiliate Programs</h3>
-                </div>
-                <p className="text-sm text-gray-600 mb-3">
-                  Join affiliate networks
-                </p>
-                <Button variant="outline" size="sm" className="w-full">
-                  Explore Programs
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Tips */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <AlertCircle className="w-5 h-5 text-blue-600" />
-            Revenue Optimization Tips
-          </CardTitle>
+          <CardTitle>Revenue Breakdown</CardTitle>
+          <CardDescription>
+            Your revenue sources and performance metrics
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-3">
-            <div className="flex items-start gap-3">
-              <div className="w-2 h-2 bg-blue-600 rounded-full mt-2"></div>
-              <div>
-                <p className="font-medium">Diversify your income streams</p>
-                <p className="text-sm text-gray-600">Don't rely on just one revenue source</p>
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="text-center p-4 bg-blue-50 rounded-lg">
+                <div className="text-2xl font-bold text-blue-600">45%</div>
+                <div className="text-sm text-gray-600">Sponsored Posts</div>
+              </div>
+              <div className="text-center p-4 bg-green-50 rounded-lg">
+                <div className="text-2xl font-bold text-green-600">25%</div>
+                <div className="text-sm text-gray-600">Ad Revenue</div>
+              </div>
+              <div className="text-center p-4 bg-purple-50 rounded-lg">
+                <div className="text-2xl font-bold text-purple-600">20%</div>
+                <div className="text-sm text-gray-600">Brand Deals</div>
+              </div>
+              <div className="text-center p-4 bg-orange-50 rounded-lg">
+                <div className="text-2xl font-bold text-orange-600">10%</div>
+                <div className="text-sm text-gray-600">Affiliate</div>
               </div>
             </div>
-            <div className="flex items-start gap-3">
-              <div className="w-2 h-2 bg-green-600 rounded-full mt-2"></div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Recent Transactions */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Recent Transactions</CardTitle>
+          <CardDescription>
+            Your latest revenue-generating activities
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {recentTransactions.map((transaction) => (
+              <div key={transaction.id} className="flex items-center justify-between p-4 border rounded-lg">
+                <div className="flex items-center space-x-4">
+                  <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                    <DollarSign className="w-5 h-5 text-green-600" />
+                  </div>
+                  <div>
+                    <div className="font-medium">{transaction.platform}</div>
+                    <div className="text-sm text-gray-500">{transaction.type}</div>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="font-bold text-green-600">+${transaction.amount}</div>
+                  <div className="text-sm text-gray-500">{transaction.date}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Monetization Tips */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Monetization Tips</CardTitle>
+          <CardDescription>
+            Strategies to increase your revenue
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="flex items-start space-x-3">
+              <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="text-blue-600 text-sm font-bold">1</span>
+              </div>
               <div>
-                <p className="font-medium">Focus on high-value content</p>
-                <p className="text-sm text-gray-600">Quality content drives better monetization</p>
+                <h4 className="font-medium">Optimize Your Content Schedule</h4>
+                <p className="text-sm text-gray-600">
+                  Post during peak engagement hours to maximize ad revenue
+                </p>
               </div>
             </div>
-            <div className="flex items-start gap-3">
-              <div className="w-2 h-2 bg-purple-600 rounded-full mt-2"></div>
+            <div className="flex items-start space-x-3">
+              <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="text-green-600 text-sm font-bold">2</span>
+              </div>
               <div>
-                <p className="font-medium">Build authentic partnerships</p>
-                <p className="text-sm text-gray-600">Long-term relationships are more valuable</p>
+                <h4 className="font-medium">Diversify Revenue Streams</h4>
+                <p className="text-sm text-gray-600">
+                  Combine sponsored content with affiliate marketing and merchandise
+                </p>
+              </div>
+            </div>
+            <div className="flex items-start space-x-3">
+              <div className="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="text-purple-600 text-sm font-bold">3</span>
+              </div>
+              <div>
+                <h4 className="font-medium">Build Brand Relationships</h4>
+                <p className="text-sm text-gray-600">
+                  Long-term partnerships often provide better rates than one-off deals
+                </p>
               </div>
             </div>
           </div>

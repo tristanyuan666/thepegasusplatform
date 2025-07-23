@@ -19,7 +19,7 @@ interface OnboardingData {
   content_format: string;
   fame_goals: string;
   tone: string;
-  follower_count: number;
+  follower_count: string;
 }
 
 export default function OnboardingPage() {
@@ -33,7 +33,7 @@ export default function OnboardingPage() {
     content_format: "",
     fame_goals: "",
     tone: "",
-    follower_count: 0,
+    follower_count: "",
   });
   
   const supabase = createClient();
@@ -51,7 +51,7 @@ export default function OnboardingPage() {
         
         // Check if user already completed onboarding
         const { data: profile } = await supabase
-          .from("user_profiles")
+          .from("users")
           .select("onboarding_completed")
           .eq("user_id", currentUser.id)
           .single();
@@ -83,9 +83,11 @@ export default function OnboardingPage() {
     
     setIsSubmitting(true);
     try {
+      console.log("Submitting onboarding data:", onboardingData);
+      
       // Update user profile with onboarding data
       const { error } = await supabase
-        .from("user_profiles")
+        .from("users")
         .update({
           full_name: onboardingData.full_name,
           niche: onboardingData.niche,
@@ -94,15 +96,22 @@ export default function OnboardingPage() {
           tone: onboardingData.tone,
           follower_count: onboardingData.follower_count,
           onboarding_completed: true,
+          updated_at: new Date().toISOString(),
         })
         .eq("user_id", user.id);
 
-      if (error) throw error;
+      if (error) {
+        console.error("Database error:", error);
+        throw error;
+      }
 
+      console.log("Onboarding completed successfully");
+      
       // Redirect to dashboard
       router.push("/dashboard");
     } catch (error) {
       console.error("Error saving onboarding data:", error);
+      alert("Failed to save onboarding data. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -187,13 +196,17 @@ export default function OnboardingPage() {
                   </div>
                   <div>
                     <Label htmlFor="follower_count">Current Follower Count</Label>
-                    <Input
-                      id="follower_count"
-                      type="number"
-                      value={onboardingData.follower_count}
-                      onChange={(e) => handleInputChange("follower_count", parseInt(e.target.value) || 0)}
-                      placeholder="0"
-                    />
+                    <Select value={onboardingData.follower_count} onValueChange={(value) => handleInputChange("follower_count", value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select your follower count" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="less-than-5k">Less than 5K</SelectItem>
+                        <SelectItem value="5k-50k">5K - 50K</SelectItem>
+                        <SelectItem value="50k-500k">50K - 500K</SelectItem>
+                        <SelectItem value="500k-plus">500K+</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
               )}

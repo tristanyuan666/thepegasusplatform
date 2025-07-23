@@ -125,7 +125,7 @@ function DashboardContent() {
 
       // Get user profile
       const { data: profile, error: profileError } = await supabase
-        .from("user_profiles")
+        .from("users")
         .select("*")
         .eq("user_id", currentUser.id)
         .single();
@@ -134,22 +134,26 @@ function DashboardContent() {
         console.error("Profile error:", profileError);
         // Create a default profile if none exists
         const { data: newProfile, error: createError } = await supabase
-          .from("user_profiles")
+          .from("users")
           .insert({
             user_id: currentUser.id,
             email: currentUser.email,
-            name: currentUser.user_metadata?.name || currentUser.email?.split('@')[0],
             full_name: currentUser.user_metadata?.full_name || currentUser.user_metadata?.name || currentUser.email?.split('@')[0],
             avatar_url: currentUser.user_metadata?.avatar_url,
-            subscription: null,
+            plan: null,
+            plan_status: null,
+            plan_billing: null,
+            is_active: false,
             niche: null,
             tone: null,
             content_format: null,
             fame_goals: null,
-            follower_count: 0,
+            follower_count: null,
             viral_score: 0,
             monetization_forecast: 0,
             onboarding_completed: false,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
           })
           .select()
           .single();
