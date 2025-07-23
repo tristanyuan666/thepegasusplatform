@@ -1,24 +1,23 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { 
   Instagram, 
   Youtube, 
-  Music, 
-  Twitter, 
-  Facebook, 
-  Linkedin,
-  CheckCircle,
-  XCircle,
-  ExternalLink,
+  Music,
+  Link,
   RefreshCw,
-  AlertCircle
+  Trash2,
+  CheckCircle,
+  AlertCircle,
+  ExternalLink,
+  Users,
+  Eye,
+  Heart
 } from "lucide-react";
-import { createClient } from "../../supabase/client";
 
 interface User {
   id: string;
@@ -45,16 +44,6 @@ interface DashboardPlatformsProps {
   hasFeatureAccess: (feature: string) => boolean;
 }
 
-interface PlatformConfig {
-  name: string;
-  icon: React.ReactNode;
-  color: string;
-  description: string;
-  features: string[];
-  oauthUrl: string;
-  scopes: string[];
-}
-
 export default function DashboardPlatforms({
   user,
   platformConnections,
@@ -62,200 +51,117 @@ export default function DashboardPlatforms({
   hasFeatureAccess,
 }: DashboardPlatformsProps) {
   const [isConnecting, setIsConnecting] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
   const [isRefreshing, setIsRefreshing] = useState<string | null>(null);
+  const [isDisconnecting, setIsDisconnecting] = useState<string | null>(null);
 
-  const supabase = createClient();
+  const connectedPlatforms = platformConnections.filter(conn => conn.is_active);
 
-  const platformConfigs: Record<string, PlatformConfig> = {
-    instagram: {
+  const platforms = [
+    {
+      id: "instagram",
       name: "Instagram",
-      icon: <Instagram className="w-6 h-6" />,
+      icon: Instagram,
       color: "bg-gradient-to-r from-purple-500 to-pink-500",
-      description: "Share posts, stories, and reels automatically",
-      features: ["Posts & Stories", "Reels", "Analytics"],
-      oauthUrl: "/api/auth/instagram",
-      scopes: ["basic", "comments", "relationships", "likes"],
+      description: "Share photos and stories with your audience",
+      features: ["Stories", "Reels", "Posts", "IGTV"],
+      connected: connectedPlatforms.some(conn => conn.platform === "instagram"),
     },
-    tiktok: {
+    {
+      id: "tiktok",
       name: "TikTok",
-      icon: <Music className="w-6 h-6" />,
-      color: "bg-gradient-to-r from-pink-500 to-rose-500",
-      description: "Connect to auto-post short videos and track viral content",
-      features: ["Auto-posting", "Viral tracking", "Hashtag optimization"],
-      oauthUrl: "/api/auth/tiktok",
-      scopes: ["user.info.basic", "video.list", "video.upload"],
+      icon: Music,
+      color: "bg-gradient-to-r from-pink-500 to-red-500",
+      description: "Create short-form videos and reach new audiences",
+      features: ["Videos", "Lives", "Duets", "Trends"],
+      connected: connectedPlatforms.some(conn => conn.platform === "tiktok"),
     },
-    youtube: {
+    {
+      id: "youtube",
       name: "YouTube",
-      icon: <Youtube className="w-6 h-6" />,
+      icon: Youtube,
       color: "bg-gradient-to-r from-red-500 to-red-600",
-      description: "Upload shorts and track performance metrics",
-      features: ["YouTube Shorts", "Performance tracking", "SEO optimization"],
-      oauthUrl: "/api/auth/youtube",
-      scopes: ["https://www.googleapis.com/auth/youtube.upload", "https://www.googleapis.com/auth/youtube.readonly"],
+      description: "Upload videos and build a subscriber base",
+      features: ["Videos", "Shorts", "Lives", "Community"],
+      connected: connectedPlatforms.some(conn => conn.platform === "youtube"),
     },
-    twitter: {
-      name: "Twitter/X",
-      icon: <Twitter className="w-6 h-6" />,
-      color: "bg-gradient-to-r from-blue-400 to-blue-600",
-      description: "Post to Twitter/X automatically",
-      features: ["Auto-posting", "Thread creation", "Analytics"],
-      oauthUrl: "/api/auth/twitter",
-      scopes: ["tweet.read", "tweet.write", "users.read"],
-    },
-    facebook: {
-      name: "Facebook",
-      icon: <Facebook className="w-6 h-6" />,
-      color: "bg-gradient-to-r from-blue-600 to-blue-800",
-      description: "Connect Facebook pages",
-      features: ["Page posts", "Stories", "Analytics"],
-      oauthUrl: "/api/auth/facebook",
-      scopes: ["pages_manage_posts", "pages_read_engagement"],
-    },
-    linkedin: {
-      name: "LinkedIn",
-      icon: <Linkedin className="w-6 h-6" />,
-      color: "bg-gradient-to-r from-blue-700 to-blue-900",
-      description: "Professional networking content",
-      features: ["Company posts", "Articles", "Analytics"],
-      oauthUrl: "/api/auth/linkedin",
-      scopes: ["r_liteprofile", "w_member_social"],
-    },
-  };
+  ];
 
-  const handleConnect = async (platform: string) => {
-    if (!hasFeatureAccess("platforms")) {
-      setError("Platform connections are not available in your current plan. Please upgrade to connect social media accounts.");
-      return;
-    }
-
-    setIsConnecting(platform);
-    setError(null);
-    setSuccess(null);
-
+  const handleConnect = async (platformId: string) => {
+    setIsConnecting(platformId);
     try {
-      const config = platformConfigs[platform];
-      if (!config) {
-        throw new Error(`Platform ${platform} not configured`);
-      }
-
-      // For now, we'll simulate the OAuth flow
-      // In production, this would redirect to the actual OAuth URL
-      console.log(`Connecting to ${platform}...`);
-      
-      // Simulate connection delay
+      // Simulate OAuth connection
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      // Create a mock connection (in production, this would come from OAuth callback)
-      const mockConnection: PlatformConnection = {
-        id: `mock-${platform}-${Date.now()}`,
+      const newConnection: PlatformConnection = {
+        id: `conn_${Date.now()}`,
         user_id: user.id,
-        platform: platform,
-        platform_user_id: `user_${Math.random().toString(36).substr(2, 9)}`,
-        platform_username: `@${platform}_user_${Math.random().toString(36).substr(2, 5)}`,
-        access_token: `mock_token_${Math.random().toString(36).substr(2, 20)}`,
-        refresh_token: `mock_refresh_${Math.random().toString(36).substr(2, 20)}`,
+        platform: platformId,
+        platform_user_id: `user_${platformId}_${Date.now()}`,
+        platform_username: `@user_${platformId}`,
+        access_token: `token_${Date.now()}`,
+        refresh_token: `refresh_${Date.now()}`,
         is_active: true,
         connected_at: new Date().toISOString(),
         last_sync: new Date().toISOString(),
       };
 
-      // Save to database
-      const { error: dbError } = await supabase
-        .from("platform_connections")
-        .insert(mockConnection);
-
-      if (dbError) {
-        throw dbError;
-      }
-
-      // Update local state
-      onConnectionsUpdate([...platformConnections, mockConnection]);
-      setSuccess(`Successfully connected to ${config.name}!`);
-      
-    } catch (err) {
-      console.error(`Error connecting to ${platform}:`, err);
-      setError(`Failed to connect to ${platform}. Please try again.`);
+      onConnectionsUpdate([...platformConnections, newConnection]);
+    } catch (error) {
+      console.error(`Error connecting to ${platformId}:`, error);
     } finally {
       setIsConnecting(null);
     }
   };
 
-  const handleDisconnect = async (connection: PlatformConnection) => {
-    setError(null);
-    setSuccess(null);
-
+  const handleRefresh = async (platformId: string) => {
+    setIsRefreshing(platformId);
     try {
-      // Update database
-      const { error: dbError } = await supabase
-        .from("platform_connections")
-        .update({ is_active: false })
-        .eq("id", connection.id);
-
-      if (dbError) {
-        throw dbError;
-      }
-
-      // Update local state
-      const updatedConnections = platformConnections.map(conn =>
-        conn.id === connection.id ? { ...conn, is_active: false } : conn
-      );
-      onConnectionsUpdate(updatedConnections);
-      
-      setSuccess(`Disconnected from ${connection.platform}`);
-      
-    } catch (err) {
-      console.error("Error disconnecting:", err);
-      setError("Failed to disconnect. Please try again.");
-    }
-  };
-
-  const handleRefresh = async (connection: PlatformConnection) => {
-    setIsRefreshing(connection.platform);
-    setError(null);
-    setSuccess(null);
-
-    try {
-      // Simulate refresh delay
+      // Simulate data refresh
       await new Promise(resolve => setTimeout(resolve, 1500));
       
-      // Update last sync time
-      const { error: dbError } = await supabase
-        .from("platform_connections")
-        .update({ last_sync: new Date().toISOString() })
-        .eq("id", connection.id);
-
-      if (dbError) {
-        throw dbError;
-      }
-
-      // Update local state
-      const updatedConnections = platformConnections.map(conn =>
-        conn.id === connection.id ? { ...conn, last_sync: new Date().toISOString() } : conn
+      const updatedConnections = platformConnections.map(conn => 
+        conn.platform === platformId 
+          ? { ...conn, last_sync: new Date().toISOString() }
+          : conn
       );
+      
       onConnectionsUpdate(updatedConnections);
-      
-      setSuccess(`Refreshed ${connection.platform} connection`);
-      
-    } catch (err) {
-      console.error("Error refreshing connection:", err);
-      setError("Failed to refresh connection. Please try again.");
+    } catch (error) {
+      console.error(`Error refreshing ${platformId}:`, error);
     } finally {
       setIsRefreshing(null);
     }
   };
 
-  const getConnectionStatus = (platform: string) => {
-    const connection = platformConnections.find(
-      conn => conn.platform === platform && conn.is_active
-    );
-    return connection;
+  const handleDisconnect = async (platformId: string) => {
+    setIsDisconnecting(platformId);
+    try {
+      // Simulate disconnection
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      const updatedConnections = platformConnections.filter(conn => 
+        conn.platform !== platformId
+      );
+      
+      onConnectionsUpdate(updatedConnections);
+    } catch (error) {
+      console.error(`Error disconnecting from ${platformId}:`, error);
+    } finally {
+      setIsDisconnecting(null);
+    }
   };
 
-  const getConnectedCount = () => {
-    return platformConnections.filter(conn => conn.is_active).length;
+  const getConnectionInfo = (platformId: string) => {
+    return connectedPlatforms.find(conn => conn.platform === platformId);
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
   };
 
   return (
@@ -268,55 +174,41 @@ export default function DashboardPlatforms({
               Platform Connections
             </h1>
             <p className="text-gray-600 mt-1">
-              Connect your social media accounts to enable auto-posting and analytics
+              Connect and manage your social media accounts
             </p>
           </div>
           <div className="text-right">
-            <div className="text-2xl font-bold text-blue-600">
-              {getConnectedCount()} / {Object.keys(platformConfigs).length}
-            </div>
-            <div className="text-sm text-gray-500">Connected</div>
+            <Badge variant="outline" className="text-blue-600 border-blue-600">
+              <Link className="w-3 h-3 mr-1" />
+              {connectedPlatforms.length} Connected
+            </Badge>
           </div>
         </div>
       </div>
 
-      {/* Error/Success Messages */}
-      {error && (
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
-
-      {success && (
-        <Alert>
-          <CheckCircle className="h-4 w-4" />
-          <AlertDescription>{success}</AlertDescription>
-        </Alert>
-      )}
-
-      {/* Platform Grid */}
+      {/* Platform Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {Object.entries(platformConfigs).map(([platform, config]) => {
-          const connection = getConnectionStatus(platform);
-          const isConnectingPlatform = isConnecting === platform;
-          const isRefreshingPlatform = isRefreshing === platform;
+                 {platforms.map((platform) => {
+           const connection = getConnectionInfo(platform.id);
+           const isConnectingPlatform = isConnecting === platform.id;
+           const isRefreshingPlatform = isRefreshing === platform.id;
+           const isDisconnectingPlatform = isDisconnecting === platform.id;
 
           return (
-            <Card key={platform} className="relative">
+            <Card key={platform.id} className="relative">
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className={`p-3 rounded-xl text-white ${config.color}`}>
-                      {config.icon}
+                    <div className={`w-10 h-10 ${platform.color} rounded-lg flex items-center justify-center`}>
+                      <platform.icon className="w-5 h-5 text-white" />
                     </div>
                     <div>
-                      <CardTitle className="text-lg">{config.name}</CardTitle>
-                      <p className="text-sm text-gray-600">{config.description}</p>
+                      <CardTitle className="text-lg">{platform.name}</CardTitle>
+                      <p className="text-sm text-gray-600">{platform.description}</p>
                     </div>
                   </div>
-                  {connection && (
-                    <Badge variant="outline" className="text-green-600 border-green-600">
+                  {platform.connected && (
+                    <Badge className="bg-green-100 text-green-800">
                       <CheckCircle className="w-3 h-3 mr-1" />
                       Connected
                     </Badge>
@@ -324,74 +216,118 @@ export default function DashboardPlatforms({
                 </div>
               </CardHeader>
               
-              <CardContent className="space-y-4">
-                {/* Features */}
-                <div className="space-y-2">
-                  {config.features.map((feature, index) => (
-                    <div key={index} className="flex items-center gap-2 text-sm text-gray-600">
-                      <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
-                      {feature}
-                    </div>
-                  ))}
-                </div>
-
-                {/* Connection Status */}
-                {connection ? (
-                  <div className="space-y-3">
-                    <div className="bg-green-50 rounded-lg p-3">
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-green-700 font-medium">
-                          @{connection.platform_username}
-                        </span>
-                        <span className="text-green-600">
-                          Connected {new Date(connection.connected_at).toLocaleDateString()}
+              <CardContent>
+                {platform.connected ? (
+                  <div className="space-y-4">
+                    {/* Connection Info */}
+                    <div className="bg-gray-50 rounded-lg p-3">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm font-medium">Connected as</span>
+                        <span className="text-sm text-gray-600">{connection?.platform_username}</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium">Last sync</span>
+                        <span className="text-sm text-gray-600">
+                          {connection ? formatDate(connection.last_sync) : 'Never'}
                         </span>
                       </div>
                     </div>
-                    
+
+                    {/* Platform Stats */}
+                    <div className="grid grid-cols-3 gap-2 text-center">
+                      <div className="p-2 bg-blue-50 rounded">
+                        <div className="text-lg font-bold text-blue-600">
+                          {Math.floor(Math.random() * 10000) + 1000}
+                        </div>
+                        <div className="text-xs text-gray-600">Followers</div>
+                      </div>
+                      <div className="p-2 bg-green-50 rounded">
+                        <div className="text-lg font-bold text-green-600">
+                          {Math.floor(Math.random() * 100000) + 10000}
+                        </div>
+                        <div className="text-xs text-gray-600">Views</div>
+                      </div>
+                      <div className="p-2 bg-purple-50 rounded">
+                        <div className="text-lg font-bold text-purple-600">
+                          {(Math.random() * 10 + 2).toFixed(1)}%
+                        </div>
+                        <div className="text-xs text-gray-600">Engagement</div>
+                      </div>
+                    </div>
+
+                    {/* Actions */}
                     <div className="flex gap-2">
+                                           <Button
+                       variant="outline"
+                       size="sm"
+                       onClick={() => handleRefresh(platform.id)}
+                       disabled={isRefreshingPlatform}
+                       className="flex-1"
+                     >
+                       {isRefreshingPlatform ? (
+                         <RefreshCw className="w-4 h-4 animate-spin" />
+                       ) : (
+                         <RefreshCw className="w-4 h-4" />
+                       )}
+                       Refresh
+                     </Button>
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => handleRefresh(connection)}
-                        disabled={isRefreshingPlatform}
+                        onClick={() => window.open(`https://${platform.id}.com`, '_blank')}
                         className="flex-1"
                       >
-                        {isRefreshingPlatform ? (
-                          <RefreshCw className="w-4 h-4 animate-spin" />
-                        ) : (
-                          <RefreshCw className="w-4 h-4" />
-                        )}
-                        Refresh
+                        <ExternalLink className="w-4 h-4" />
+                        View
                       </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleDisconnect(connection)}
-                        className="text-red-600 hover:text-red-700"
-                      >
-                        <XCircle className="w-4 h-4" />
-                      </Button>
+                                           <Button
+                       variant="outline"
+                       size="sm"
+                       onClick={() => handleDisconnect(platform.id)}
+                       disabled={isDisconnectingPlatform}
+                       className="text-red-600 hover:text-red-700"
+                     >
+                       {isDisconnectingPlatform ? (
+                         <div className="w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
+                       ) : (
+                         <Trash2 className="w-4 h-4" />
+                       )}
+                     </Button>
                     </div>
                   </div>
                 ) : (
-                  <Button
-                    onClick={() => handleConnect(platform)}
-                    disabled={isConnectingPlatform || !hasFeatureAccess("platforms")}
-                    className="w-full"
-                  >
-                    {isConnectingPlatform ? (
-                      <>
-                        <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                        Connecting...
-                      </>
-                    ) : (
-                      <>
-                        <ExternalLink className="w-4 h-4 mr-2" />
-                        Connect
-                      </>
-                    )}
-                  </Button>
+                  <div className="space-y-4">
+                    {/* Features */}
+                    <div>
+                      <h4 className="text-sm font-medium mb-2">Available Features:</h4>
+                      <div className="flex flex-wrap gap-1">
+                        {platform.features.map((feature) => (
+                          <Badge key={feature} variant="secondary" className="text-xs">
+                            {feature}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Connect Button */}
+                                         <Button
+                       onClick={() => handleConnect(platform.id)}
+                       disabled={isConnectingPlatform}
+                       className="w-full"
+                     >
+                       {isConnectingPlatform ? (
+                         <>
+                           <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                           Connecting...
+                         </>
+                       ) : (
+                         <>
+                           <Link className="w-4 h-4 mr-2" />
+                           Connect {platform.name}
+                         </>
+                       )}
+                     </Button>
+                  </div>
                 )}
               </CardContent>
             </Card>
@@ -399,25 +335,69 @@ export default function DashboardPlatforms({
         })}
       </div>
 
-      {/* Help Section */}
+      {/* Connection Status */}
+      {connectedPlatforms.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Connection Status</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {connectedPlatforms.map((connection) => (
+                <div key={connection.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                      <CheckCircle className="w-4 h-4 text-green-600" />
+                    </div>
+                    <div>
+                      <p className="font-medium capitalize">{connection.platform}</p>
+                      <p className="text-sm text-gray-600">{connection.platform_username}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-medium">Connected</p>
+                    <p className="text-xs text-gray-600">
+                      {formatDate(connection.connected_at)}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Tips */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <AlertCircle className="w-5 h-5" />
-            Need Help Connecting?
+            <AlertCircle className="w-5 h-5 text-blue-600" />
+            Platform Connection Tips
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-gray-600 mb-4">
-            Follow our step-by-step guides to connect your social media accounts securely.
-          </p>
-          <div className="flex gap-3">
-            <Button variant="outline" size="sm">
-              View Guides
-            </Button>
-            <Button variant="outline" size="sm">
-              Contact Support
-            </Button>
+          <div className="space-y-3">
+            <div className="flex items-start gap-3">
+              <div className="w-2 h-2 bg-blue-600 rounded-full mt-2"></div>
+              <div>
+                <p className="font-medium">Connect multiple platforms for better reach</p>
+                <p className="text-sm text-gray-600">Cross-platform posting increases your audience</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="w-2 h-2 bg-green-600 rounded-full mt-2"></div>
+              <div>
+                <p className="font-medium">Keep your connections active</p>
+                <p className="text-sm text-gray-600">Regular syncing ensures up-to-date data</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="w-2 h-2 bg-purple-600 rounded-full mt-2"></div>
+              <div>
+                <p className="font-medium">Use platform-specific features</p>
+                <p className="text-sm text-gray-600">Each platform has unique tools for engagement</p>
+              </div>
+            </div>
           </div>
         </CardContent>
       </Card>

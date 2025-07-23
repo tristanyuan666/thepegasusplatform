@@ -26,15 +26,23 @@ interface User {
 }
 
 interface UserProfile {
+  id: string;
   user_id: string;
-  full_name: string;
-  email: string;
-  plan: string;
-  plan_status: string;
-  plan_billing: string;
-  is_active: boolean;
+  email: string | null;
+  name: string | null;
+  full_name: string | null;
+  avatar_url: string | null;
+  subscription: string | null;
+  niche: string | null;
+  tone: string | null;
+  content_format: string | null;
+  fame_goals: string | null;
+  follower_count: number | null;
+  viral_score: number | null;
+  monetization_forecast: number | null;
+  onboarding_completed: boolean | null;
   created_at: string;
-  updated_at: string;
+  updated_at: string | null;
 }
 
 interface Subscription {

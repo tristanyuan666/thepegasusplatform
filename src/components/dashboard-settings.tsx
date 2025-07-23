@@ -16,7 +16,11 @@ import {
   Save,
   Edit,
   CheckCircle,
-  AlertCircle
+  AlertCircle,
+  Camera,
+  Mail,
+  Phone,
+  MapPin
 } from "lucide-react";
 
 interface User {
@@ -25,15 +29,23 @@ interface User {
 }
 
 interface UserProfile {
+  id: string;
   user_id: string;
-  full_name: string;
-  email: string;
-  plan: string;
-  plan_status: string;
-  plan_billing: string;
-  is_active: boolean;
+  email: string | null;
+  name: string | null;
+  full_name: string | null;
+  avatar_url: string | null;
+  subscription: string | null;
+  niche: string | null;
+  tone: string | null;
+  content_format: string | null;
+  fame_goals: string | null;
+  follower_count: number | null;
+  viral_score: number | null;
+  monetization_forecast: number | null;
+  onboarding_completed: boolean | null;
   created_at: string;
-  updated_at: string;
+  updated_at: string | null;
 }
 
 interface Subscription {
@@ -66,7 +78,11 @@ export default function DashboardSettings({
   const [isSaving, setIsSaving] = useState(false);
   const [formData, setFormData] = useState({
     full_name: userProfile.full_name || "",
-    email: userProfile.email || "",
+    email: userProfile.email || user.email || "",
+    niche: userProfile.niche || "",
+    tone: userProfile.tone || "",
+    content_format: userProfile.content_format || "",
+    fame_goals: userProfile.fame_goals || "",
   });
 
   const handleSave = async () => {
@@ -79,6 +95,10 @@ export default function DashboardSettings({
         ...userProfile,
         full_name: formData.full_name,
         email: formData.email,
+        niche: formData.niche,
+        tone: formData.tone,
+        content_format: formData.content_format,
+        fame_goals: formData.fame_goals,
         updated_at: new Date().toISOString(),
       };
       
@@ -118,278 +138,313 @@ export default function DashboardSettings({
               Account Settings
             </h1>
             <p className="text-gray-600 mt-1">
-              Manage your profile, subscription, and preferences
+              Manage your profile and account preferences
             </p>
           </div>
           <div className="text-right">
-            <Badge variant="outline" className="text-green-600 border-green-600">
-              <CheckCircle className="w-3 h-3 mr-1" />
-              Account Active
+            <Badge variant="outline" className="text-blue-600 border-blue-600">
+              <Settings className="w-3 h-3 mr-1" />
+              Settings
             </Badge>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Profile Settings */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <User className="w-5 h-5" />
-              Profile Information
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {isEditing ? (
-              <>
-                <div className="space-y-2">
-                  <Label htmlFor="full_name">Full Name</Label>
-                  <Input
-                    id="full_name"
-                    value={formData.full_name}
-                    onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
-                    placeholder="Enter your full name"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    placeholder="Enter your email"
-                  />
-                </div>
-                <div className="flex gap-2">
-                  <Button onClick={handleSave} disabled={isSaving}>
-                    {isSaving ? "Saving..." : "Save Changes"}
-                  </Button>
-                  <Button variant="outline" onClick={() => setIsEditing(false)}>
-                    Cancel
-                  </Button>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="space-y-2">
-                  <Label>Full Name</Label>
-                  <p className="text-sm text-gray-600">{userProfile.full_name || "Not set"}</p>
-                </div>
-                <div className="space-y-2">
-                  <Label>Email</Label>
-                  <p className="text-sm text-gray-600">{userProfile.email}</p>
-                </div>
-                <div className="space-y-2">
-                  <Label>Member Since</Label>
-                  <p className="text-sm text-gray-600">
-                    {new Date(userProfile.created_at).toLocaleDateString()}
-                  </p>
-                </div>
-                <Button variant="outline" onClick={() => setIsEditing(true)}>
-                  <Edit className="w-4 h-4 mr-2" />
-                  Edit Profile
-                </Button>
-              </>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Subscription Management */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <CreditCard className="w-5 h-5" />
-              Subscription Management
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {subscription ? (
-              <>
-                <div className="space-y-2">
-                  <Label>Current Plan</Label>
-                  <div className="flex items-center gap-2">
-                    <Badge className={getPlanColor(subscription.plan_name)}>
-                      {subscription.plan_name}
-                    </Badge>
-                    <Badge variant="outline">
-                      {subscription.billing_cycle}
-                    </Badge>
+        <div className="lg:col-span-2 space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <User className="w-5 h-5" />
+                Profile Information
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {/* Avatar */}
+                <div className="flex items-center gap-4">
+                  <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center">
+                    {userProfile.avatar_url ? (
+                      <img 
+                        src={userProfile.avatar_url} 
+                        alt="Profile" 
+                        className="w-20 h-20 rounded-full object-cover"
+                      />
+                    ) : (
+                      <User className="w-8 h-8 text-gray-400" />
+                    )}
+                  </div>
+                  <div>
+                    <Button variant="outline" size="sm">
+                      <Camera className="w-4 h-4 mr-2" />
+                      Change Photo
+                    </Button>
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <Label>Status</Label>
-                  <p className="text-sm text-gray-600 capitalize">{subscription.status}</p>
+
+                {/* Form Fields */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="full_name">Full Name</Label>
+                    <Input
+                      id="full_name"
+                      value={formData.full_name}
+                      onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
+                      disabled={!isEditing}
+                      placeholder="Enter your full name"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="email">Email</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      disabled={!isEditing}
+                      placeholder="Enter your email"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="niche">Content Niche</Label>
+                    <Input
+                      id="niche"
+                      value={formData.niche}
+                      onChange={(e) => setFormData({ ...formData, niche: e.target.value })}
+                      disabled={!isEditing}
+                      placeholder="e.g., Fitness, Tech, Lifestyle"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="tone">Content Tone</Label>
+                    <Input
+                      id="tone"
+                      value={formData.tone}
+                      onChange={(e) => setFormData({ ...formData, tone: e.target.value })}
+                      disabled={!isEditing}
+                      placeholder="e.g., Professional, Casual, Humorous"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="content_format">Preferred Format</Label>
+                    <Input
+                      id="content_format"
+                      value={formData.content_format}
+                      onChange={(e) => setFormData({ ...formData, content_format: e.target.value })}
+                      disabled={!isEditing}
+                      placeholder="e.g., Videos, Posts, Stories"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="fame_goals">Fame Goals</Label>
+                    <Input
+                      id="fame_goals"
+                      value={formData.fame_goals}
+                      onChange={(e) => setFormData({ ...formData, fame_goals: e.target.value })}
+                      disabled={!isEditing}
+                      placeholder="e.g., 100K followers, Brand deals"
+                    />
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  <Label>Next Billing</Label>
-                  <p className="text-sm text-gray-600">
-                    {formatDate(subscription.current_period_end)}
-                  </p>
+
+                {/* Action Buttons */}
+                <div className="flex gap-2 pt-4">
+                  {isEditing ? (
+                    <>
+                      <Button onClick={handleSave} disabled={isSaving}>
+                        {isSaving ? (
+                          <>
+                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                            Saving...
+                          </>
+                        ) : (
+                          <>
+                            <Save className="w-4 h-4 mr-2" />
+                            Save Changes
+                          </>
+                        )}
+                      </Button>
+                      <Button variant="outline" onClick={() => setIsEditing(false)}>
+                        Cancel
+                      </Button>
+                    </>
+                  ) : (
+                    <Button onClick={() => setIsEditing(true)}>
+                      <Edit className="w-4 h-4 mr-2" />
+                      Edit Profile
+                    </Button>
+                  )}
                 </div>
-                <div className="space-y-2">
-                  <Label>Subscription ID</Label>
-                  <p className="text-sm text-gray-600 font-mono">
-                    {subscription.stripe_id}
-                  </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Subscription Information */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <CreditCard className="w-5 h-5" />
+                Subscription Details
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {subscription ? (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <Badge className={getPlanColor(subscription.plan_name)}>
+                        {subscription.plan_name}
+                      </Badge>
+                      <div>
+                        <p className="font-medium">{subscription.billing_cycle} Plan</p>
+                        <p className="text-sm text-gray-600">
+                          Status: {subscription.status}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm text-gray-600">Next billing</p>
+                      <p className="font-medium">
+                        {formatDate(subscription.current_period_end)}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="p-3 bg-blue-50 rounded-lg">
+                      <p className="text-sm font-medium text-blue-600">Current Period</p>
+                      <p className="text-sm text-gray-600">
+                        {formatDate(subscription.current_period_start)} - {formatDate(subscription.current_period_end)}
+                      </p>
+                    </div>
+                    <div className="p-3 bg-green-50 rounded-lg">
+                      <p className="text-sm font-medium text-green-600">Auto-renewal</p>
+                      <p className="text-sm text-gray-600">
+                        {subscription.cancel_at_period_end ? "Cancels at period end" : "Active"}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-2">
+                    <Button variant="outline" className="flex-1">
+                      Manage Subscription
+                    </Button>
+                    <Button variant="outline" className="flex-1">
+                      View Billing History
+                    </Button>
+                  </div>
                 </div>
-                <div className="flex gap-2">
-                  <Button variant="outline" size="sm">
-                    Manage Billing
+              ) : (
+                <div className="text-center py-8 text-gray-500">
+                  <CreditCard className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                  <p>No active subscription</p>
+                  <p className="text-sm">Upgrade to access premium features</p>
+                  <Button className="mt-4">
+                    View Plans
                   </Button>
-                  <Button variant="outline" size="sm">
-                    Change Plan
-                  </Button>
                 </div>
-              </>
-            ) : (
-              <div className="text-center py-8 text-gray-500">
-                <CreditCard className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                <p>No active subscription</p>
-                <p className="text-sm mb-4">Subscribe to unlock all features</p>
-                <Button>
-                  View Plans
+              )}
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Sidebar */}
+        <div className="space-y-6">
+          {/* Account Stats */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Account Stats</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">Member since</span>
+                  <span className="text-sm font-medium">
+                    {new Date(userProfile.created_at).toLocaleDateString()}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">Followers</span>
+                  <span className="text-sm font-medium">
+                    {userProfile.follower_count?.toLocaleString() || "0"}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">Viral Score</span>
+                  <span className="text-sm font-medium">
+                    {userProfile.viral_score || "0"}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">Onboarding</span>
+                  <span className="text-sm font-medium">
+                    {userProfile.onboarding_completed ? "Complete" : "Incomplete"}
+                  </span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Quick Actions */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Quick Actions</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                <Button variant="outline" className="w-full justify-start">
+                  <Bell className="w-4 h-4 mr-2" />
+                  Notification Settings
+                </Button>
+                <Button variant="outline" className="w-full justify-start">
+                  <Shield className="w-4 h-4 mr-2" />
+                  Privacy Settings
+                </Button>
+                <Button variant="outline" className="w-full justify-start">
+                  <Globe className="w-4 h-4 mr-2" />
+                  Language & Region
                 </Button>
               </div>
-            )}
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+
+          {/* Tips */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <AlertCircle className="w-5 h-5 text-blue-600" />
+                Profile Tips
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <div className="flex items-start gap-3">
+                  <div className="w-2 h-2 bg-blue-600 rounded-full mt-2"></div>
+                  <div>
+                    <p className="font-medium">Keep your profile updated</p>
+                    <p className="text-sm text-gray-600">Accurate information helps with content recommendations</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-2 h-2 bg-green-600 rounded-full mt-2"></div>
+                  <div>
+                    <p className="font-medium">Set clear goals</p>
+                    <p className="text-sm text-gray-600">Define your fame goals to get personalized insights</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-2 h-2 bg-purple-600 rounded-full mt-2"></div>
+                  <div>
+                    <p className="font-medium">Choose your niche wisely</p>
+                    <p className="text-sm text-gray-600">A focused niche helps build a loyal audience</p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
-
-      {/* Additional Settings */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {/* Notifications */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Bell className="w-5 h-5" />
-              Notifications
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-sm">Email Notifications</span>
-                <Button variant="outline" size="sm">
-                  Configure
-                </Button>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm">Push Notifications</span>
-                <Button variant="outline" size="sm">
-                  Configure
-                </Button>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm">Analytics Reports</span>
-                <Button variant="outline" size="sm">
-                  Configure
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Privacy & Security */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Shield className="w-5 h-5" />
-              Privacy & Security
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-sm">Change Password</span>
-                <Button variant="outline" size="sm">
-                  Update
-                </Button>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm">Two-Factor Auth</span>
-                <Button variant="outline" size="sm">
-                  Enable
-                </Button>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm">Data Export</span>
-                <Button variant="outline" size="sm">
-                  Download
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Integrations */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Globe className="w-5 h-5" />
-              Integrations
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-sm">API Access</span>
-                <Button variant="outline" size="sm">
-                  Manage
-                </Button>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm">Webhooks</span>
-                <Button variant="outline" size="sm">
-                  Configure
-                </Button>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm">Third-party Apps</span>
-                <Button variant="outline" size="sm">
-                  View
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Danger Zone */}
-      <Card className="border-red-200">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-red-600">
-            <AlertCircle className="w-5 h-5" />
-            Danger Zone
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between p-4 bg-red-50 rounded-lg">
-              <div>
-                <h3 className="font-medium text-red-900">Delete Account</h3>
-                <p className="text-sm text-red-700">
-                  Permanently delete your account and all associated data
-                </p>
-              </div>
-              <Button variant="destructive" size="sm">
-                Delete Account
-              </Button>
-            </div>
-            <div className="flex items-center justify-between p-4 bg-orange-50 rounded-lg">
-              <div>
-                <h3 className="font-medium text-orange-900">Cancel Subscription</h3>
-                <p className="text-sm text-orange-700">
-                  Cancel your subscription and lose access to premium features
-                </p>
-              </div>
-              <Button variant="outline" size="sm" className="text-orange-600 border-orange-600">
-                Cancel Subscription
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 } 
