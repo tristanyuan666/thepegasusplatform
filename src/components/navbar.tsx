@@ -171,37 +171,58 @@ export default function Navbar({ user = null }: NavbarProps) {
 
   // Determine if user has active subscription (for button logic)
   const [hasActiveSubscription, setHasActiveSubscription] = useState(false);
-  useEffect(() => {
-    if (currentUser) {
-      (async () => {
-        const { data } = await supabase
-          .from("subscriptions")
-          .select("*")
-          .eq("user_id", currentUser.id)
-          .eq("status", "active")
-          .maybeSingle();
+  const [isLoadingSubscription, setIsLoadingSubscription] = useState(false);
+  
+  const checkSubscription = async () => {
+    if (!currentUser) return;
+    
+    setIsLoadingSubscription(true);
+    try {
+      console.log("🔍 Checking subscription for user:", currentUser.id);
+      const { data, error } = await supabase
+        .from("subscriptions")
+        .select("*")
+        .eq("user_id", currentUser.id)
+        .eq("status", "active")
+        .maybeSingle();
+      
+      if (error) {
+        console.error("❌ Error checking subscription:", error);
+      } else {
+        console.log("📋 Subscription check result:", data);
         setHasActiveSubscription(!!data);
-      })();
+      }
+    } catch (error) {
+      console.error("❌ Exception checking subscription:", error);
+    } finally {
+      setIsLoadingSubscription(false);
     }
+  };
+
+  useEffect(() => {
+    checkSubscription();
   }, [currentUser]);
 
   // Force refresh subscription status after payment or navigation
   useEffect(() => {
     const handleUrlChange = () => {
       if (window.location.pathname === "/success" || window.location.pathname === "/dashboard") {
-        if (currentUser) {
-          (async () => {
-            const { data } = await supabase
-              .from("subscriptions")
-              .select("*")
-              .eq("user_id", currentUser.id)
-              .eq("status", "active")
-              .maybeSingle();
-            setHasActiveSubscription(!!data);
-          })();
-        }
+        console.log("🔄 URL changed to success/dashboard, refreshing subscription status");
+        // Add a small delay to ensure the webhook has processed
+        setTimeout(() => {
+          checkSubscription();
+        }, 2000);
       }
     };
+    
+    // Also check on page load if we're on success or dashboard
+    if (window.location.pathname === "/success" || window.location.pathname === "/dashboard") {
+      console.log("📍 On success/dashboard page, checking subscription");
+      setTimeout(() => {
+        checkSubscription();
+      }, 2000);
+    }
+    
     window.addEventListener("popstate", handleUrlChange);
     window.addEventListener("pushstate", handleUrlChange);
     window.addEventListener("replacestate", handleUrlChange);
@@ -210,7 +231,7 @@ export default function Navbar({ user = null }: NavbarProps) {
       window.removeEventListener("pushstate", handleUrlChange);
       window.removeEventListener("replacestate", handleUrlChange);
     };
-  }, [currentUser, supabase]);
+  }, [currentUser]);
 
   return (
     <nav
@@ -407,17 +428,31 @@ export default function Navbar({ user = null }: NavbarProps) {
                     </Button>
                   </Link>
                 ) : (
-                  <Link href="/pricing" aria-label="Get Started with Pricing">
-                    <Button
-                      className="premium-button text-xs px-3 py-1.5 hover-target interactive-element pricing-nav pricing-link button"
-                      data-interactive="true"
-                      data-pricing-nav="true"
-                      data-pricing-link="true"
-                      data-button="true"
-                    >
-                      <span>Get Started</span>
-                    </Button>
-                  </Link>
+                  <div className="flex items-center gap-2">
+                    <Link href="/pricing" aria-label="Get Started with Pricing">
+                      <Button
+                        className="premium-button text-xs px-3 py-1.5 hover-target interactive-element pricing-nav pricing-link button"
+                        data-interactive="true"
+                        data-pricing-nav="true"
+                        data-pricing-link="true"
+                        data-button="true"
+                      >
+                        <span>Get Started</span>
+                      </Button>
+                    </Link>
+                    {process.env.NODE_ENV === "development" && (
+                      <Button
+                        onClick={checkSubscription}
+                        disabled={isLoadingSubscription}
+                        variant="outline"
+                        size="sm"
+                        className="text-xs"
+                        title="Refresh subscription status"
+                      >
+                        {isLoadingSubscription ? "🔄" : "🔄"}
+                      </Button>
+                    )}
+                  </div>
                 )}
                 <UserProfile />
               </>

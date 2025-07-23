@@ -581,15 +581,19 @@ async function handleSubscriptionCreated(supabaseClient: any, eventData: any) {
           if (customerEmail) {
             console.log("📧 Found customer email:", customerEmail);
             
+            // Get the MOST RECENT user with this email (in case of multiple accounts)
             const { data: users, error: userError } = await supabaseClient
               .from("users")
               .select("user_id, email, created_at")
               .eq("email", customerEmail)
+              .order("created_at", { ascending: false })
               .limit(1);
             
             if (!userError && users && users.length > 0) {
               userId = users[0].user_id;
-              console.log("✅ Found user by email:", users[0]);
+              console.log("✅ Found user by email (most recent):", users[0]);
+            } else {
+              console.log("❌ No user found with email:", customerEmail);
             }
           }
         }
