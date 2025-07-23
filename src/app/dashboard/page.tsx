@@ -327,6 +327,8 @@ export default function Dashboard() {
                 user={user}
                 userProfile={userProfile}
                 subscription={subscription}
+                onProfileUpdate={setUserProfile}
+                hasFeatureAccess={hasFeatureAccess}
               />
             )}
           </div>
