@@ -259,7 +259,6 @@ export default async function Dashboard({
                   <PlatformConnections
                     userId={user.id}
                     connections={socialConnections}
-                    onConnectionUpdate={() => {}}
                     featureAccess={featureAccess}
                   />
                 </Suspense>

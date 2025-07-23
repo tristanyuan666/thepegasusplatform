@@ -26,7 +26,6 @@ import { FeatureAccess } from "@/utils/feature-access";
 interface PlatformConnectionsProps {
   userId: string;
   connections: SocialConnection[];
-  onConnectionUpdate: () => void;
   featureAccess: FeatureAccess;
 }
 
@@ -60,7 +59,6 @@ const platforms = [
 export default function PlatformConnections({
   userId,
   connections,
-  onConnectionUpdate,
   featureAccess,
 }: PlatformConnectionsProps) {
   const [isConnecting, setIsConnecting] = useState<string | null>(null);
@@ -96,7 +94,7 @@ export default function PlatformConnections({
 
       if (error) throw error;
 
-      onConnectionUpdate();
+      // onConnectionUpdate(); // Removed as per edit hint
     } catch (error) {
       console.error(`Error connecting to ${platformId}:`, error);
       alert(`Failed to connect to ${platformId}. Please try again.`);
@@ -121,7 +119,7 @@ export default function PlatformConnections({
 
       if (error) throw error;
 
-      onConnectionUpdate();
+      // onConnectionUpdate(); // Removed as per edit hint
     } catch (error) {
       console.error("Error disconnecting:", error);
       alert("Failed to disconnect. Please try again.");
@@ -150,7 +148,7 @@ export default function PlatformConnections({
 
       if (error) throw error;
 
-      onConnectionUpdate();
+      // onConnectionUpdate(); // Removed as per edit hint
     } catch (error) {
       console.error("Error refreshing stats:", error);
     } finally {
