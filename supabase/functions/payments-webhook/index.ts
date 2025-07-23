@@ -415,14 +415,14 @@ async function handleCheckoutCompleted(supabaseClient: any, eventData: any) {
   try {
     // Step 1: Update checkout session status
     const { error: updateError } = await supabaseClient
-      .from("checkout_sessions")
-      .update({
-        status: "completed",
-        amount: eventData.amount_total,
-        currency: eventData.currency,
-        completed_at: new Date().toISOString(),
-      })
-      .eq("session_id", eventData.id);
+    .from("checkout_sessions")
+    .update({
+      status: "completed",
+      amount: eventData.amount_total,
+      currency: eventData.currency,
+      completed_at: new Date().toISOString(),
+    })
+    .eq("session_id", eventData.id);
 
     if (updateError) {
       console.error("Error updating checkout session:", updateError);
@@ -516,7 +516,7 @@ async function handleSubscriptionCreated(supabaseClient: any, eventData: any) {
   try {
     // Step 1: Check if subscription already exists (from checkout.completed)
     const { data: existingSub, error: subError } = await supabaseClient
-      .from("subscriptions")
+    .from("subscriptions")
       .select("*")
       .eq("stripe_id", eventData.id)
       .maybeSingle();
@@ -654,7 +654,7 @@ async function handleSubscriptionCreated(supabaseClient: any, eventData: any) {
     const { data: subscription, error: createError } = await supabaseClient
       .from("subscriptions")
       .upsert(subscriptionData, {
-        onConflict: "stripe_id"
+      onConflict: "stripe_id"
       })
       .select()
       .single();

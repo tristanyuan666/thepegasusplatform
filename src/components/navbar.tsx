@@ -29,7 +29,9 @@ import {
   Facebook,
   Linkedin,
   ArrowRight,
+  Lock,
 } from "lucide-react";
+import { Badge } from "./ui/badge";
 import UserProfile from "./user-profile";
 import PegasusLogo from "./pegasus-logo";
 import {
@@ -88,37 +90,43 @@ export default function Navbar({ user = null }: NavbarProps) {
       title: "AI Content Generator",
       description: "Create viral content with AI",
       icon: <Sparkles className="w-5 h-5 text-blue-600" />,
-      href: "/features/ai-content",
+      href: "/content-hub",
+      feature: "ai_content",
     },
     {
       title: "Analytics Dashboard",
       description: "Track your growth metrics",
       icon: <BarChart3 className="w-5 h-5 text-blue-600" />,
-      href: "/features/analytics",
+      href: "/dashboard?tab=analytics",
+      feature: "analytics",
     },
     {
       title: "Content Scheduler",
       description: "Auto-schedule across platforms",
       icon: <Calendar className="w-5 h-5 text-blue-600" />,
-      href: "/features/scheduler",
+      href: "/content-hub",
+      feature: "ai_content",
     },
     {
       title: "Viral Score Predictor",
       description: "Predict content performance",
       icon: <Zap className="w-5 h-5 text-blue-600" />,
-      href: "/features/viral-predictor",
+      href: "/dashboard?tab=analytics",
+      feature: "advanced_analytics",
     },
     {
       title: "Persona Builder",
       description: "Build your creator identity",
       icon: <Brain className="w-5 h-5 text-blue-600" />,
-      href: "/features/persona-builder",
+      href: "/content-hub",
+      feature: "ai_content",
     },
     {
       title: "Growth Engine",
       description: "Optimize for maximum reach",
       icon: <TrendingUp className="w-5 h-5 text-blue-600" />,
-      href: "/features/growth-engine",
+      href: "/dashboard?tab=analytics",
+      feature: "advanced_analytics",
     },
   ];
 
@@ -135,43 +143,50 @@ export default function Navbar({ user = null }: NavbarProps) {
           <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
         </svg>
       ),
-      href: "/integrations/tiktok",
+      href: "/dashboard?tab=platforms",
+      feature: "platforms",
     },
     {
       title: "Instagram",
       description: "Sync with Instagram",
       icon: <Instagram className="w-5 h-5 text-purple-600" />,
-      href: "/integrations/instagram",
+      href: "/dashboard?tab=platforms",
+      feature: "platforms",
     },
     {
       title: "YouTube",
       description: "Manage YouTube content",
       icon: <Youtube className="w-5 h-5 text-red-600" />,
-      href: "/integrations/youtube",
+      href: "/dashboard?tab=platforms",
+      feature: "platforms",
     },
     {
       title: "Twitter/X",
       description: "Post to Twitter/X",
       icon: <Twitter className="w-5 h-5 text-blue-600" />,
-      href: "/integrations/twitter",
+      href: "/dashboard?tab=platforms",
+      feature: "platforms",
     },
     {
       title: "LinkedIn",
       description: "Professional networking",
       icon: <Linkedin className="w-5 h-5 text-blue-700" />,
-      href: "/integrations/linkedin",
+      href: "/dashboard?tab=platforms",
+      feature: "platforms",
     },
     {
       title: "Facebook",
       description: "Connect Facebook pages",
       icon: <Facebook className="w-5 h-5 text-blue-800" />,
-      href: "/integrations/facebook",
+      href: "/dashboard?tab=platforms",
+      feature: "platforms",
     },
   ];
 
   // Determine if user has active subscription (for button logic)
   const [hasActiveSubscription, setHasActiveSubscription] = useState(false);
   const [isLoadingSubscription, setIsLoadingSubscription] = useState(false);
+  const [userPlan, setUserPlan] = useState<string | null>(null);
   
   const checkSubscription = async () => {
     if (!currentUser) return;
@@ -191,11 +206,38 @@ export default function Navbar({ user = null }: NavbarProps) {
       } else {
         console.log("📋 Subscription check result:", data);
         setHasActiveSubscription(!!data);
+        setUserPlan(data?.plan_name || null);
       }
     } catch (error) {
       console.error("❌ Exception checking subscription:", error);
     } finally {
       setIsLoadingSubscription(false);
+    }
+  };
+
+  // Check if user has access to specific features based on plan
+  const hasFeatureAccess = (feature: string): boolean => {
+    if (!hasActiveSubscription || !userPlan) return false;
+    
+    const plan = userPlan.toLowerCase();
+    
+    switch (feature) {
+      case "analytics":
+        return ["creator", "influencer", "superstar"].includes(plan);
+      case "revenue":
+        return ["influencer", "superstar"].includes(plan);
+      case "platforms":
+        return ["creator", "influencer", "superstar"].includes(plan);
+      case "ai_content":
+        return ["creator", "influencer", "superstar"].includes(plan);
+      case "advanced_analytics":
+        return ["influencer", "superstar"].includes(plan);
+      case "monetization":
+        return ["influencer", "superstar"].includes(plan);
+      case "team_collaboration":
+        return ["superstar"].includes(plan);
+      default:
+        return false;
     }
   };
 
@@ -282,27 +324,47 @@ export default function Navbar({ user = null }: NavbarProps) {
                 align="start"
               >
                 <div className="grid gap-3">
-                  {featuresItems.map((item, index) => (
-                    <Link
-                      key={index}
-                      href={item.href}
-                      className="block"
-                      onClick={() => setActiveDropdown(null)}
-                    >
-                      <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-blue-50 transition-colors cursor-pointer group">
-                        <div className="mt-1">{item.icon}</div>
-                        <div className="flex-1">
-                          <h4 className="font-medium text-gray-900 group-hover:text-blue-600 transition-colors">
-                            {item.title}
-                          </h4>
-                          <p className="text-sm text-gray-600 mt-1">
-                            {item.description}
-                          </p>
+                  {featuresItems.map((item, index) => {
+                    const hasAccess = hasFeatureAccess(item.feature || "");
+                    const isLocked = !hasAccess;
+                    
+                    return (
+                      <Link
+                        key={index}
+                        href={isLocked ? "/pricing" : item.href}
+                        className="block"
+                        onClick={() => setActiveDropdown(null)}
+                      >
+                        <div className={`flex items-start gap-3 p-3 rounded-lg transition-colors cursor-pointer group ${
+                          isLocked 
+                            ? "opacity-60 hover:bg-gray-50" 
+                            : "hover:bg-blue-50"
+                        }`}>
+                          <div className="mt-1">
+                            {isLocked ? (
+                              <Lock className="w-5 h-5 text-gray-500" />
+                            ) : (
+                              item.icon
+                            )}
+                          </div>
+                          <div className="flex-1">
+                            <h4 className="font-medium text-gray-900 group-hover:text-blue-600 transition-colors flex items-center gap-2">
+                              {item.title}
+                              {isLocked && (
+                                <Badge variant="outline" className="text-xs">
+                                  {userPlan === "Creator" ? "Influencer+" : "Superstar"}
+                                </Badge>
+                              )}
+                            </h4>
+                            <p className="text-sm text-gray-600 mt-1">
+                              {item.description}
+                            </p>
+                          </div>
+                          <ArrowRight className="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
                         </div>
-                        <ArrowRight className="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </div>
-                    </Link>
-                  ))}
+                      </Link>
+                    );
+                  })}
                 </div>
                 <DropdownMenuSeparator className="my-3" />
                 <Link href="/features" onClick={() => setActiveDropdown(null)}>
