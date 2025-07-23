@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { createClient } from "@/supabase/client";
+import { createClient } from "../../../supabase/client";
 import { User } from "@supabase/supabase-js";
 import DashboardNavbar from "@/components/dashboard-navbar";
 import DashboardHome from "@/components/dashboard-home";

@@ -18,7 +18,7 @@ import {
   RefreshCw,
   AlertCircle
 } from "lucide-react";
-import { createClient } from "@/supabase/client";
+import { createClient } from "../../supabase/client";
 
 interface User {
   id: string;
@@ -299,8 +299,8 @@ export default function DashboardPlatforms({
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {Object.entries(platformConfigs).map(([platform, config]) => {
           const connection = getConnectionStatus(platform);
-          const isConnecting = isConnecting === platform;
-          const isRefreshing = isRefreshing === platform;
+          const isConnectingPlatform = isConnecting === platform;
+          const isRefreshingPlatform = isRefreshing === platform;
 
           return (
             <Card key={platform} className="relative">
@@ -354,10 +354,10 @@ export default function DashboardPlatforms({
                         variant="outline"
                         size="sm"
                         onClick={() => handleRefresh(connection)}
-                        disabled={isRefreshing}
+                        disabled={isRefreshingPlatform}
                         className="flex-1"
                       >
-                        {isRefreshing ? (
+                        {isRefreshingPlatform ? (
                           <RefreshCw className="w-4 h-4 animate-spin" />
                         ) : (
                           <RefreshCw className="w-4 h-4" />
@@ -377,10 +377,10 @@ export default function DashboardPlatforms({
                 ) : (
                   <Button
                     onClick={() => handleConnect(platform)}
-                    disabled={isConnecting || !hasFeatureAccess("platforms")}
+                    disabled={isConnectingPlatform || !hasFeatureAccess("platforms")}
                     className="w-full"
                   >
-                    {isConnecting ? (
+                    {isConnectingPlatform ? (
                       <>
                         <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
                         Connecting...
