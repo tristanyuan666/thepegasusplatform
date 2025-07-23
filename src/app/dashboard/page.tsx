@@ -318,6 +318,7 @@ export default function Dashboard() {
               <DashboardPlatforms
                 user={user}
                 platformConnections={platformConnections}
+                onConnectionsUpdate={setPlatformConnections}
                 hasFeatureAccess={hasFeatureAccess}
               />
             )}
