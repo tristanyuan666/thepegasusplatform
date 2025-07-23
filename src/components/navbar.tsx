@@ -382,7 +382,7 @@ export default function Navbar({ user = null }: NavbarProps) {
 
   return (
     <nav
-      className={`w-full fixed top-0 z-50 py-2 transition-all duration-300 ${
+      className={`w-full fixed top-0 z-40 py-2 transition-all duration-300 ${
         isScrolled ? "glass-navbar scrolled" : "glass-navbar"
       }`}
       style={{
@@ -390,7 +390,7 @@ export default function Navbar({ user = null }: NavbarProps) {
         top: 0,
         left: 0,
         right: 0,
-        zIndex: 9999,
+        zIndex: 40,
         transform: "translateZ(0)",
         backfaceVisibility: "hidden",
       }}
@@ -425,8 +425,9 @@ export default function Navbar({ user = null }: NavbarProps) {
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-blue-600 transition-all duration-300 group-hover:w-full"></span>
               </DropdownMenuTrigger>
               <DropdownMenuContent
-                className="w-80 p-4 bg-white/95 backdrop-blur-md border border-gray-200 shadow-xl rounded-xl"
+                className="w-80 p-4 bg-white/95 backdrop-blur-md border border-gray-200 shadow-xl rounded-xl z-50"
                 align="start"
+                style={{ zIndex: 9999 }}
               >
                 <div className="grid gap-3">
                   {featuresItems.map((item, index) => {
@@ -499,8 +500,9 @@ export default function Navbar({ user = null }: NavbarProps) {
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-blue-600 transition-all duration-300 group-hover:w-full"></span>
               </DropdownMenuTrigger>
               <DropdownMenuContent
-                className="w-80 p-4 bg-white/95 backdrop-blur-md border border-gray-200 shadow-xl rounded-xl"
+                className="w-80 p-4 bg-white/95 backdrop-blur-md border border-gray-200 shadow-xl rounded-xl z-50"
                 align="start"
+                style={{ zIndex: 9999 }}
               >
                 <div className="grid gap-3">
                   {integrationsItems.map((item, index) => {

@@ -120,13 +120,45 @@ export default function Dashboard() {
 
       // Get user profile
       const { data: profile, error: profileError } = await supabase
-        .from("users")
+        .from("user_profiles")
         .select("*")
         .eq("user_id", currentUser.id)
         .single();
 
-      if (profileError) throw profileError;
-      setUserProfile(profile);
+      if (profileError) {
+        console.error("Profile error:", profileError);
+        // Create a default profile if none exists
+        const { data: newProfile, error: createError } = await supabase
+          .from("user_profiles")
+          .insert({
+            user_id: currentUser.id,
+            email: currentUser.email,
+            name: currentUser.user_metadata?.name || currentUser.email?.split('@')[0],
+            full_name: currentUser.user_metadata?.full_name || currentUser.user_metadata?.name || currentUser.email?.split('@')[0],
+            avatar_url: currentUser.user_metadata?.avatar_url,
+            subscription: null,
+            niche: null,
+            tone: null,
+            content_format: null,
+            fame_goals: null,
+            follower_count: 0,
+            viral_score: 0,
+            monetization_forecast: 0,
+            onboarding_completed: false,
+          })
+          .select()
+          .single();
+        
+        if (createError) {
+          console.error("Create profile error:", createError);
+          // Continue without profile for now
+          setUserProfile(null);
+        } else {
+          setUserProfile(newProfile);
+        }
+      } else {
+        setUserProfile(profile);
+      }
 
       // Get subscription
       const { data: sub, error: subError } = await supabase
@@ -223,7 +255,7 @@ export default function Dashboard() {
   }
 
   if (error) {
-    return (
+  return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-red-600 mb-4">Error Loading Dashboard</h2>
@@ -242,7 +274,7 @@ export default function Dashboard() {
   if (!user || !userProfile) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
-        <div className="text-center">
+          <div className="text-center">
           <h2 className="text-2xl font-bold text-gray-800 mb-4">User Not Found</h2>
           <p className="text-gray-600">Please log in to access your dashboard.</p>
         </div>
@@ -264,10 +296,10 @@ export default function Dashboard() {
       <main className="pt-20 pb-8">
         <div className="container mx-auto px-4">
           {activeTab === "home" && (
-            <DashboardHome
-              user={user}
-              userProfile={userProfile}
-              subscription={subscription}
+                <DashboardHome
+                  user={user}
+                  userProfile={userProfile}
+                  subscription={subscription}
               platformConnections={platformConnections}
               analyticsData={analyticsData}
               hasFeatureAccess={hasFeatureAccess}
@@ -275,7 +307,7 @@ export default function Dashboard() {
           )}
           
           {activeTab === "analytics" && hasFeatureAccess("analytics") && (
-            <DashboardAnalytics
+                  <DashboardAnalytics
               user={user}
               platformConnections={platformConnections}
               analyticsData={analyticsData}
@@ -305,13 +337,13 @@ export default function Dashboard() {
             <DashboardSettings
               user={user}
               userProfile={userProfile}
-              subscription={subscription}
+                  subscription={subscription}
               onProfileUpdate={setUserProfile}
               hasFeatureAccess={hasFeatureAccess}
-            />
+                />
           )}
         </div>
       </main>
-    </div>
+      </div>
   );
 }

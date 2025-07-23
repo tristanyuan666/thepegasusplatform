@@ -5,9 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { 
-  TrendingUp, 
-  Users, 
+import {
+  TrendingUp,
+  Users,
   Video, 
   Zap, 
   Calendar,
@@ -147,14 +147,14 @@ export default function DashboardHome({
       {/* Welcome Header */}
       <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
         <div className="flex items-center justify-between">
-          <div>
+            <div>
             <h1 className="text-2xl font-bold text-gray-900">
               Welcome back, {userProfile.full_name || user.email}!
-            </h1>
+              </h1>
             <p className="text-gray-600 mt-1">
-              Ready to create some viral content today?
-            </p>
-          </div>
+                Ready to create some viral content today?
+              </p>
+            </div>
           <div className="text-right">
             <Badge 
               variant={isPlanActive ? "default" : "secondary"}
@@ -167,7 +167,7 @@ export default function DashboardHome({
             </p>
           </div>
         </div>
-      </div>
+        </div>
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -179,7 +179,7 @@ export default function DashboardHome({
           <CardContent>
             <div className="text-2xl font-bold">
               {hasConnectedPlatforms ? formatNumber(analyticsData?.total_followers || 0) : "0"}
-            </div>
+                </div>
             {hasConnectedPlatforms && analyticsData?.growth_rate && (
               <p className="text-xs text-muted-foreground flex items-center">
                 <TrendingUp className="w-3 h-3 mr-1" />
@@ -187,7 +187,7 @@ export default function DashboardHome({
               </p>
             )}
           </CardContent>
-        </Card>
+            </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -197,12 +197,12 @@ export default function DashboardHome({
           <CardContent>
             <div className="text-2xl font-bold">
               {analyticsData?.content_count || 0}
-            </div>
+                </div>
             <p className="text-xs text-muted-foreground">
               Scheduled posts
             </p>
           </CardContent>
-        </Card>
+            </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -212,12 +212,12 @@ export default function DashboardHome({
           <CardContent>
             <div className={`text-2xl font-bold ${getViralScoreColor(analyticsData?.viral_score || 0)}`}>
               {analyticsData?.viral_score || 0}
-            </div>
+                </div>
             <p className="text-xs text-muted-foreground">
               {getViralScoreStatus(analyticsData?.viral_score || 0)}
             </p>
           </CardContent>
-        </Card>
+            </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -227,13 +227,13 @@ export default function DashboardHome({
           <CardContent>
             <div className="text-2xl font-bold">
               {hasConnectedPlatforms ? formatNumber(analyticsData?.total_views || 0) : "0"}
-            </div>
+                </div>
             <p className="text-xs text-muted-foreground">
               Across all platforms
             </p>
           </CardContent>
-        </Card>
-      </div>
+            </Card>
+        </div>
 
       {/* Platform Connections */}
       {hasFeatureAccess("platforms") && (
@@ -253,7 +253,7 @@ export default function DashboardHome({
                     className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg"
                   >
                     {getPlatformIcon(connection.platform)}
-                    <div>
+                      <div>
                       <p className="font-medium text-sm capitalize">
                         {connection.platform}
                       </p>
@@ -266,22 +266,22 @@ export default function DashboardHome({
                     </Badge>
                   </div>
                 ))}
-              </div>
+                </div>
             ) : (
               <div className="text-center py-8">
                 <Target className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-900 mb-2">
                   No platforms connected
                 </h3>
-                <p className="text-gray-600 mb-4">
+                  <p className="text-gray-600 mb-4">
                   Connect your social media accounts to start tracking analytics and auto-posting content.
-                </p>
+                  </p>
                 <Link href="/dashboard?tab=platforms">
                   <Button>
                     Connect Platforms
                   </Button>
                 </Link>
-              </div>
+                </div>
             )}
           </CardContent>
         </Card>
@@ -360,12 +360,12 @@ export default function DashboardHome({
             <CardTitle>Recent Activity</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
+                <div className="space-y-4">
               {analyticsData?.content_count ? (
                 <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
                   <div className="flex items-center gap-3">
                     <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
-                    <div>
+                      <div>
                       <p className="text-sm font-medium">Content Performance</p>
                       <p className="text-xs text-gray-600">
                         {analyticsData.content_count} posts published this month
@@ -385,7 +385,7 @@ export default function DashboardHome({
               )}
             </div>
           </CardContent>
-        </Card>
+            </Card>
       )}
     </div>
   );
