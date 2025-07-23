@@ -1,7 +1,3 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { createClient } from "../../../supabase/client";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import {
@@ -15,53 +11,10 @@ import {
 import Link from "next/link";
 
 export default function AIContentPage() {
-  const [user, setUser] = useState<any>(null);
-  const [hasActiveSubscription, setHasActiveSubscription] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const supabase = createClient();
-
-  useEffect(() => {
-    const checkUserAndSubscription = async () => {
-      try {
-        // Get current user
-        const { data: { user: currentUser } } = await supabase.auth.getUser();
-        setUser(currentUser);
-
-        if (currentUser) {
-          // Check subscription
-          const { data: subscription } = await supabase
-            .from("subscriptions")
-            .select("*")
-            .eq("user_id", currentUser.id)
-            .eq("status", "active")
-            .maybeSingle();
-          
-          setHasActiveSubscription(!!subscription);
-        }
-      } catch (error) {
-        console.error("Error checking user/subscription:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    checkUserAndSubscription();
-  }, [supabase]);
-
   // Determine where "Get Started" should lead
   const getStartedHref = () => {
-    if (!user) return "/sign-in"; // Not logged in -> sign in
-    if (!hasActiveSubscription) return "/pricing"; // Logged in but no plan -> pricing
-    return "/dashboard"; // Has plan -> dashboard
+    return "/pricing"; // Default to pricing for now
   };
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-white">
