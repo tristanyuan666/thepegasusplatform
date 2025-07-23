@@ -234,6 +234,14 @@ Deno.serve(async (req) => {
         amount: null, // Will be updated when webhook is received
         currency: "usd",
         status: "pending",
+        metadata: {
+          user_id: user_id,
+          plan_name: plan_name || "Unknown Plan",
+          billing_cycle: billing_cycle || "monthly",
+          price_id: price_id,
+          customer_email: customer_email,
+          created_at: new Date().toISOString(),
+        },
         created_at: new Date().toISOString(),
       });
     } catch (dbError) {

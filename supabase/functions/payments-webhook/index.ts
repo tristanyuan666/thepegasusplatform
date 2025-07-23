@@ -408,11 +408,12 @@ Deno.serve(async (req) => {
 });
 
 async function handleCheckoutCompleted(supabaseClient: any, eventData: any) {
-  console.log("Handling checkout completed:", eventData.id);
-  console.log("Checkout session data:", JSON.stringify(eventData, null, 2));
+  console.log("=== HANDLING CHECKOUT COMPLETED ===");
+  console.log("Checkout session ID:", eventData.id);
+  console.log("Full checkout data:", JSON.stringify(eventData, null, 2));
   
   try {
-    // Update checkout session status
+    // Step 1: Update checkout session status
     const { error: updateError } = await supabaseClient
       .from("checkout_sessions")
       .update({
@@ -426,91 +427,94 @@ async function handleCheckoutCompleted(supabaseClient: any, eventData: any) {
     if (updateError) {
       console.error("Error updating checkout session:", updateError);
     } else {
-      console.log("Checkout session updated successfully");
+      console.log("✅ Checkout session updated successfully");
     }
 
-    // Extract metadata from checkout session
+    // Step 2: Extract metadata from checkout session
     const userId = eventData.metadata?.user_id;
     const planName = eventData.metadata?.plan_name;
     const billingCycle = eventData.metadata?.billing_cycle;
 
-    console.log("Checkout metadata:", { userId, planName, billingCycle });
+    console.log("Checkout metadata extracted:", { userId, planName, billingCycle });
 
-    // If this checkout session has a subscription, update it with metadata
+    // Step 3: If this checkout has a subscription, process it immediately
     if (eventData.subscription && userId) {
-      console.log("Checkout session has subscription, updating with metadata");
+      console.log("🎯 Checkout has subscription, processing immediately");
       
-      // Update the subscription with metadata from checkout session
-      const subscriptionUpdateData = {
+      const subscriptionData = {
+        stripe_id: eventData.subscription,
         user_id: userId,
-        plan_name: planName || "Unknown Plan",
+        plan_name: planName || "Influencer",
         billing_cycle: billingCycle || "monthly",
-        status: "active", // Assuming payment was successful
+        status: "active",
+        current_period_start: Math.floor(Date.now() / 1000),
+        current_period_end: Math.floor(Date.now() / 1000) + (30 * 24 * 60 * 60), // 30 days
+        cancel_at_period_end: false,
         metadata: {
           user_id: userId,
-          plan_name: planName || "Unknown Plan",
+          plan_name: planName || "Influencer",
           billing_cycle: billingCycle || "monthly",
           checkout_session_id: eventData.id,
           processed_at: new Date().toISOString(),
+          source: "checkout_completed",
         },
       };
 
-      console.log("Updating subscription with metadata:", subscriptionUpdateData);
+      console.log("Creating subscription from checkout:", subscriptionData);
 
       const { data: subscription, error: subError } = await supabaseClient
         .from("subscriptions")
-        .upsert({
-          stripe_id: eventData.subscription,
-          ...subscriptionUpdateData,
-        }, {
+        .upsert(subscriptionData, {
           onConflict: "stripe_id"
         })
         .select()
         .single();
 
       if (subError) {
-        console.error("Error updating subscription:", subError);
+        console.error("❌ Error creating subscription:", subError);
       } else {
-        console.log("Subscription updated successfully:", subscription);
+        console.log("✅ Subscription created successfully:", subscription);
       }
 
-      // Update user profile with subscription details
-      if (userId) {
-        const userUpdateData = {
-          plan: planName || "Unknown Plan",
-          plan_status: "active",
-          plan_billing: billingCycle || "monthly",
-          is_active: true,
-          updated_at: new Date().toISOString(),
-        };
+      // Step 4: Update user profile immediately
+      const userUpdateData = {
+        plan: planName || "Influencer",
+        plan_status: "active",
+        plan_billing: billingCycle || "monthly",
+        is_active: true,
+        updated_at: new Date().toISOString(),
+      };
 
-        const { error: userUpdateError } = await supabaseClient
-          .from("users")
-          .update(userUpdateData)
-          .eq("user_id", userId);
+      const { error: userUpdateError } = await supabaseClient
+        .from("users")
+        .update(userUpdateData)
+        .eq("user_id", userId);
 
-        if (userUpdateError) {
-          console.error("Error updating user plan:", userUpdateError);
-        } else {
-          console.log("User plan updated successfully for:", userId);
-        }
+      if (userUpdateError) {
+        console.error("❌ Error updating user plan:", userUpdateError);
+      } else {
+        console.log("✅ User plan updated successfully for:", userId);
       }
+
+      console.log("🎉 Checkout completed successfully - user has full access!");
     } else {
-      console.log("No subscription found in checkout session or missing user_id");
+      console.log("⚠️ No subscription in checkout session or missing user_id");
+      console.log("Will wait for customer.subscription.created event");
     }
 
   } catch (error) {
-    console.error("Error in handleCheckoutCompleted:", error);
+    console.error("❌ Error in handleCheckoutCompleted:", error);
     throw error;
   }
 }
 
 async function handleSubscriptionCreated(supabaseClient: any, eventData: any) {
-  console.log("Handling subscription created:", eventData.id);
-  console.log("Event data:", JSON.stringify(eventData, null, 2));
+  console.log("=== HANDLING SUBSCRIPTION CREATED ===");
+  console.log("Subscription ID:", eventData.id);
+  console.log("Full subscription data:", JSON.stringify(eventData, null, 2));
 
   try {
-    // Check if subscription already exists with metadata from checkout session
+    // Step 1: Check if subscription already exists (from checkout.completed)
     const { data: existingSub, error: subError } = await supabaseClient
       .from("subscriptions")
       .select("*")
@@ -518,51 +522,86 @@ async function handleSubscriptionCreated(supabaseClient: any, eventData: any) {
       .maybeSingle();
 
     if (existingSub && existingSub.user_id) {
-      console.log("Subscription already exists with metadata:", existingSub);
+      console.log("✅ Subscription already exists with metadata:", existingSub);
       return;
     }
 
-    // If no metadata in subscription, try to find it from recent checkout sessions
-    console.log("No user_id in subscription update metadata:", eventData);
+    // Step 2: If no existing subscription, find user data from checkout sessions
+    console.log("🔍 No existing subscription found, searching for checkout session...");
     
-    // Look for recent checkout sessions that might be related
+    let userId = null;
+    let planName = null;
+    let billingCycle = null;
+
+    // Strategy 1: Look for recent checkout sessions (within 15 minutes)
     const { data: checkoutSessions, error: checkoutError } = await supabaseClient
       .from("checkout_sessions")
       .select("*")
       .in("status", ["pending", "completed"])
       .order("created_at", { ascending: false })
-      .limit(10);
+      .limit(20);
 
     if (checkoutError) {
-      console.error("Error fetching checkout sessions:", checkoutError);
-      throw new Error("Failed to fetch checkout sessions for fallback");
-    }
-
-    console.log("Recent checkout sessions for fallback:", checkoutSessions);
-
-    let userId = null;
-    let planName = null;
-    let billingCycle = null;
-
-    // Try to find matching checkout session
-    if (checkoutSessions && checkoutSessions.length > 0) {
-      // Look for a checkout session that was created recently (within last 10 minutes)
-      const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000);
+      console.error("❌ Error fetching checkout sessions:", checkoutError);
+    } else {
+      console.log(`📋 Found ${checkoutSessions?.length || 0} recent checkout sessions`);
       
-      for (const session of checkoutSessions) {
-        if (session.created_at && new Date(session.created_at) > tenMinutesAgo) {
-          userId = session.user_id;
-          planName = session.plan_name;
-          billingCycle = session.billing_cycle;
-          console.log("Found recent checkout session for fallback:", session);
-          break;
+      if (checkoutSessions && checkoutSessions.length > 0) {
+        const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000);
+        
+        for (const session of checkoutSessions) {
+          if (session.created_at && new Date(session.created_at) > fifteenMinutesAgo) {
+            userId = session.user_id;
+            planName = session.plan_name;
+            billingCycle = session.billing_cycle;
+            console.log("✅ Found recent checkout session:", session);
+            break;
+          }
         }
       }
     }
 
-    // If still no user_id, try to find the most recent user
+    // Strategy 2: If no checkout session, try to find by customer email
+    if (!userId && eventData.customer) {
+      console.log("🔍 No checkout session found, trying to find user by customer...");
+      
+      // Get customer details from Stripe
+      try {
+        const stripeResponse = await fetch(`https://api.stripe.com/v1/customers/${eventData.customer}`, {
+          headers: {
+            "Authorization": `Bearer ${Deno.env.get("STRIPE_SECRET_KEY")}`,
+            "Stripe-Version": "2024-12-18.acacia",
+          },
+        });
+        
+        if (stripeResponse.ok) {
+          const customerData = await stripeResponse.json();
+          const customerEmail = customerData.email;
+          
+          if (customerEmail) {
+            console.log("📧 Found customer email:", customerEmail);
+            
+            const { data: users, error: userError } = await supabaseClient
+              .from("users")
+              .select("user_id, email, created_at")
+              .eq("email", customerEmail)
+              .limit(1);
+            
+            if (!userError && users && users.length > 0) {
+              userId = users[0].user_id;
+              console.log("✅ Found user by email:", users[0]);
+            }
+          }
+        }
+      } catch (stripeError) {
+        console.error("❌ Error fetching customer from Stripe:", stripeError);
+      }
+    }
+
+    // Strategy 3: Last resort - find most recent user
     if (!userId) {
-      console.log("No recent checkout session found, trying to find recent user");
+      console.log("🔍 No user found, using most recent user as fallback...");
+      
       const { data: recentUsers, error: userError } = await supabaseClient
         .from("users")
         .select("user_id, email, created_at")
@@ -570,26 +609,26 @@ async function handleSubscriptionCreated(supabaseClient: any, eventData: any) {
         .limit(1);
 
       if (userError) {
-        console.error("Error fetching recent users:", userError);
+        console.error("❌ Error fetching recent users:", userError);
         throw new Error("Failed to fetch recent users for fallback");
       }
 
       if (recentUsers && recentUsers.length > 0) {
         userId = recentUsers[0].user_id;
-        console.log("Using most recent user for fallback:", recentUsers[0]);
+        console.log("✅ Using most recent user:", recentUsers[0]);
       }
     }
 
+    // Step 3: Create subscription with found data
     if (!userId) {
-      console.error("No user_id found for subscription, cannot proceed");
+      console.error("❌ No user_id found for subscription, cannot proceed");
       throw new Error("Missing user_id in subscription metadata");
     }
 
-    // Create subscription record with fallback data
     const subscriptionData = {
       stripe_id: eventData.id,
       user_id: userId,
-      plan_name: planName || "Influencer", // Default to Influencer if unknown
+      plan_name: planName || "Influencer",
       billing_cycle: billingCycle || "monthly",
       status: eventData.status || "active",
       current_period_start: eventData.current_period_start,
@@ -599,12 +638,13 @@ async function handleSubscriptionCreated(supabaseClient: any, eventData: any) {
         user_id: userId,
         plan_name: planName || "Influencer",
         billing_cycle: billingCycle || "monthly",
-        fallback_used: true,
+        fallback_used: !planName,
         processed_at: new Date().toISOString(),
+        source: "subscription_created",
       },
     };
 
-    console.log("Creating subscription with fallback data:", subscriptionData);
+    console.log("📝 Creating subscription with data:", subscriptionData);
 
     const { data: subscription, error: createError } = await supabaseClient
       .from("subscriptions")
@@ -615,13 +655,13 @@ async function handleSubscriptionCreated(supabaseClient: any, eventData: any) {
       .single();
 
     if (createError) {
-      console.error("Error creating subscription:", createError);
+      console.error("❌ Error creating subscription:", createError);
       throw createError;
     }
 
-    console.log("Subscription created successfully:", subscription);
+    console.log("✅ Subscription created successfully:", subscription);
 
-    // Update user profile
+    // Step 4: Update user profile
     const userUpdateData = {
       plan: planName || "Influencer",
       plan_status: "active",
@@ -636,13 +676,15 @@ async function handleSubscriptionCreated(supabaseClient: any, eventData: any) {
       .eq("user_id", userId);
 
     if (userUpdateError) {
-      console.error("Error updating user plan:", userUpdateError);
+      console.error("❌ Error updating user plan:", userUpdateError);
     } else {
-      console.log("User plan updated successfully for:", userId);
+      console.log("✅ User plan updated successfully for:", userId);
     }
 
+    console.log("🎉 Subscription created successfully - user has full access!");
+
   } catch (error) {
-    console.error("Error in handleSubscriptionCreated:", error);
+    console.error("❌ Error in handleSubscriptionCreated:", error);
     throw error;
   }
 }
