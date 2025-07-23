@@ -7,13 +7,70 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
-import { UserCircle, Home } from "lucide-react";
+import { Badge } from "./ui/badge";
+import { 
+  UserCircle, 
+  Home, 
+  BarChart3, 
+  DollarSign, 
+  Settings, 
+  Target,
+  LogOut,
+  Crown
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
-export default function DashboardNavbar() {
+interface User {
+  id: string;
+  email?: string;
+}
+
+interface UserProfile {
+  user_id: string;
+  full_name: string;
+  email: string;
+  plan: string;
+  plan_status: string;
+  plan_billing: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+interface Subscription {
+  stripe_id: string;
+  user_id: string;
+  plan_name: string;
+  billing_cycle: string;
+  status: string;
+  current_period_start: number;
+  current_period_end: number;
+  cancel_at_period_end: boolean;
+}
+
+type DashboardTab = "home" | "analytics" | "revenue" | "platforms" | "settings";
+
+interface DashboardNavbarProps {
+  user: User;
+  userProfile: UserProfile;
+  subscription: Subscription | null;
+  activeTab: DashboardTab;
+  onTabChange: (tab: DashboardTab) => void;
+  hasFeatureAccess: (feature: string) => boolean;
+}
+
+export default function DashboardNavbar({
+  user,
+  userProfile,
+  subscription,
+  activeTab,
+  onTabChange,
+  hasFeatureAccess,
+}: DashboardNavbarProps) {
   const [isMounted, setIsMounted] = useState(false);
   const supabase = createClient();
   const router = useRouter();
@@ -30,6 +87,21 @@ export default function DashboardNavbar() {
       }
     } catch (error) {
       console.error("Error signing out:", error);
+    }
+  };
+
+  const getPlanColor = (plan: string | null) => {
+    if (!plan) return "bg-gray-100 text-gray-800";
+    
+    switch (plan.toLowerCase()) {
+      case "creator":
+        return "bg-blue-100 text-blue-800";
+      case "influencer":
+        return "bg-purple-100 text-purple-800";
+      case "superstar":
+        return "bg-yellow-100 text-yellow-800";
+      default:
+        return "bg-gray-100 text-gray-800";
     }
   };
 
@@ -55,6 +127,7 @@ export default function DashboardNavbar() {
   return (
     <nav className="w-full border-b border-gray-200 bg-white py-4">
       <div className="container mx-auto px-4 flex justify-between items-center">
+        {/* Logo */}
         <div className="flex items-center gap-4">
           <Link
             href="/"
@@ -69,7 +142,81 @@ export default function DashboardNavbar() {
             </div>
           </Link>
         </div>
+
+        {/* Navigation Tabs */}
+        <div className="hidden md:flex items-center gap-1">
+          <Button
+            variant={activeTab === "home" ? "default" : "ghost"}
+            size="sm"
+            onClick={() => onTabChange("home")}
+            className="hover-target interactive-element"
+            data-interactive="true"
+          >
+            <Home className="h-4 w-4 mr-2" />
+            Home
+          </Button>
+          
+          {hasFeatureAccess("analytics") && (
+            <Button
+              variant={activeTab === "analytics" ? "default" : "ghost"}
+              size="sm"
+              onClick={() => onTabChange("analytics")}
+              className="hover-target interactive-element"
+              data-interactive="true"
+            >
+              <BarChart3 className="h-4 w-4 mr-2" />
+              Analytics
+            </Button>
+          )}
+          
+          {hasFeatureAccess("revenue") && (
+            <Button
+              variant={activeTab === "revenue" ? "default" : "ghost"}
+              size="sm"
+              onClick={() => onTabChange("revenue")}
+              className="hover-target interactive-element"
+              data-interactive="true"
+            >
+              <DollarSign className="h-4 w-4 mr-2" />
+              Revenue
+            </Button>
+          )}
+          
+          {hasFeatureAccess("platforms") && (
+            <Button
+              variant={activeTab === "platforms" ? "default" : "ghost"}
+              size="sm"
+              onClick={() => onTabChange("platforms")}
+              className="hover-target interactive-element"
+              data-interactive="true"
+            >
+              <Target className="h-4 w-4 mr-2" />
+              Platforms
+            </Button>
+          )}
+          
+          <Button
+            variant={activeTab === "settings" ? "default" : "ghost"}
+            size="sm"
+            onClick={() => onTabChange("settings")}
+            className="hover-target interactive-element"
+            data-interactive="true"
+          >
+            <Settings className="h-4 w-4 mr-2" />
+            Settings
+          </Button>
+        </div>
+
+        {/* User Menu */}
         <div className="flex gap-4 items-center">
+          {/* Plan Badge */}
+          {subscription && subscription.plan_name && (
+            <Badge className={getPlanColor(subscription.plan_name)}>
+              <Crown className="w-3 h-3 mr-1" />
+              {subscription.plan_name} ({subscription.billing_cycle})
+            </Badge>
+          )}
+          
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -81,7 +228,12 @@ export default function DashboardNavbar() {
                 <UserCircle className="h-6 w-6" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" className="w-56">
+              <div className="px-2 py-1.5">
+                <p className="text-sm font-medium">{userProfile.full_name || user.email || 'User'}</p>
+                <p className="text-xs text-gray-500">{user.email || 'No email'}</p>
+              </div>
+              <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
                 <Link
                   href="/system-test"
@@ -98,15 +250,13 @@ export default function DashboardNavbar() {
                   data-interactive="true"
                 >
                   <Home className="h-4 w-4 mr-2" />
-                  Home
+                  Back to Home
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={handleSignOut}
-                className="hover-target interactive-element"
-                data-interactive="true"
-              >
-                Sign out
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={handleSignOut}>
+                <LogOut className="h-4 w-4 mr-2" />
+                Sign Out
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

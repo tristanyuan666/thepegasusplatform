@@ -22,7 +22,7 @@ import Link from "next/link";
 
 interface User {
   id: string;
-  email: string;
+  email?: string;
 }
 
 interface UserProfile {

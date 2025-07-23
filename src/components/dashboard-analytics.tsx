@@ -1,882 +1,442 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import {
-  TrendingUp,
-  Users,
-  Eye,
-  Heart,
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { 
+  TrendingUp, 
+  TrendingDown,
+  Users, 
+  Eye, 
+  Heart, 
   Share2,
-  DollarSign,
-  Zap,
-  Target,
   BarChart3,
-  Activity,
   Calendar,
-  ArrowUpRight,
-  ArrowDownRight,
-  Clock,
-  Globe,
-  Smartphone,
-  Play,
-  MessageCircle,
-  Bookmark,
-  Download,
-  Filter,
-  RefreshCw,
+  Target,
+  Zap,
+  AlertCircle
 } from "lucide-react";
-import { Card } from "./ui/card";
-import { Button } from "./ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "./ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
-import ViralScoreMeter from "./viral-score-meter";
-import { createClient } from "../../supabase/client";
-import Link from "next/link";
-import { Lock, Crown } from "lucide-react";
-import { FeatureAccess } from "@/utils/feature-access";
 
-interface MetricCardProps {
-  title: string;
-  value: string;
-  change: string;
-  trend: "up" | "down";
-  icon: React.ReactNode;
-  color: string;
+interface User {
+  id: string;
+  email?: string;
 }
 
-function MetricCard({
-  title,
-  value,
-  change,
-  trend,
-  icon,
-  color,
-}: MetricCardProps) {
-  const [animatedValue, setAnimatedValue] = useState(0);
-  const targetValue = parseInt(value.replace(/[^0-9]/g, ""));
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      let current = 0;
-      const increment = targetValue / 60;
-      const counter = setInterval(() => {
-        current += increment;
-        if (current >= targetValue) {
-          setAnimatedValue(targetValue);
-          clearInterval(counter);
-        } else {
-          setAnimatedValue(Math.floor(current));
-        }
-      }, 25);
-    }, Math.random() * 500);
-
-    return () => clearTimeout(timer);
-  }, [targetValue]);
-
-  return (
-    <div className="glass-premium p-6 hover-lift preview-hover group">
-      <div className="flex items-center justify-between mb-4">
-        <div className={`p-3 rounded-xl bg-gradient-to-r ${color} shadow-lg`}>
-          <div className="text-white">{icon}</div>
-        </div>
-        <div
-          className={`flex items-center gap-1 text-sm font-semibold px-3 py-1 rounded-full ${
-            trend === "up"
-              ? "text-green-600 bg-green-50"
-              : "text-red-600 bg-red-50"
-          }`}
-        >
-          {trend === "up" ? (
-            <ArrowUpRight className="w-4 h-4" />
-          ) : (
-            <ArrowDownRight className="w-4 h-4" />
-          )}
-          {change}
-        </div>
-      </div>
-      <div className="space-y-2">
-        <p className="text-2xl font-bold text-gray-900">
-          {value.includes("K") || value.includes("M") || value.includes("$")
-            ? value
-            : animatedValue.toLocaleString()}
-        </p>
-        <p className="text-gray-600 text-sm font-medium">{title}</p>
-      </div>
-    </div>
-  );
+interface PlatformConnection {
+  id: string;
+  user_id: string;
+  platform: string;
+  platform_user_id: string;
+  platform_username: string;
+  access_token: string;
+  refresh_token: string;
+  is_active: boolean;
+  connected_at: string;
+  last_sync: string;
 }
 
-function AnalyticsChart() {
-  const [animateChart, setAnimateChart] = useState(false);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setAnimateChart(true), 1000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  const dataPoints = [45, 52, 48, 61, 58, 72, 69, 78, 85, 92, 88, 95];
-  const months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ];
-
-  return (
-    <div className="glass-premium p-8 hover-lift">
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h3 className="text-xl font-bold text-gray-900 mb-2">
-            Growth Analytics
-          </h3>
-          <p className="text-gray-600 text-sm">Monthly performance overview</p>
-        </div>
-        <div className="flex items-center gap-2 text-green-600 bg-green-50 px-4 py-2 rounded-full">
-          <TrendingUp className="w-4 h-4" />
-          <span className="text-sm font-semibold">+127% YoY</span>
-        </div>
-      </div>
-
-      <div className="h-64 flex items-end justify-between gap-3 mb-4">
-        {dataPoints.map((height, index) => (
-          <div key={index} className="flex-1 flex flex-col items-center">
-            <div
-              className="w-full bg-gradient-to-t from-blue-500 to-blue-400 rounded-t-lg transition-all duration-1000 ease-out shadow-lg"
-              style={{
-                height: animateChart ? `${height}%` : "0%",
-                transitionDelay: `${index * 100}ms`,
-              }}
-            />
-            <span className="text-xs text-gray-500 mt-2 font-medium">
-              {months[index]}
-            </span>
-          </div>
-        ))}
-      </div>
-
-      <div className="grid grid-cols-3 gap-4 pt-6 border-t border-gray-100">
-        <div className="text-center">
-          <div className="text-lg font-bold text-gray-900">2.4M</div>
-          <div className="text-xs text-gray-600">Total Views</div>
-        </div>
-        <div className="text-center">
-          <div className="text-lg font-bold text-gray-900">8.7%</div>
-          <div className="text-xs text-gray-600">Engagement</div>
-        </div>
-        <div className="text-center">
-          <div className="text-lg font-bold text-gray-900">127K</div>
-          <div className="text-xs text-gray-600">New Followers</div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function RealtimeActivity() {
-  const [activities] = useState([
-    {
-      action: "New follower gained",
-      user: "@sarah_creates",
-      time: "2 min ago",
-      type: "follower",
-      color: "bg-blue-500",
-    },
-    {
-      action: "Post went viral",
-      user: "@viral_marcus",
-      time: "5 min ago",
-      type: "viral",
-      color: "bg-red-500",
-    },
-    {
-      action: "Revenue milestone",
-      user: "@emma_lifestyle",
-      time: "8 min ago",
-      type: "revenue",
-      color: "bg-green-500",
-    },
-    {
-      action: "Engagement spike",
-      user: "@tech_alex",
-      time: "12 min ago",
-      type: "engagement",
-      color: "bg-purple-500",
-    },
-  ]);
-
-  return (
-    <div className="glass-premium p-6 hover-lift">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="p-2 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg">
-          <Activity className="w-5 h-5 text-white" />
-        </div>
-        <div>
-          <h3 className="text-lg font-bold text-gray-900">Live Activity</h3>
-          <p className="text-gray-600 text-sm">Real-time updates</p>
-        </div>
-      </div>
-
-      <div className="space-y-4">
-        {activities.map((activity, index) => (
-          <div
-            key={index}
-            className="flex items-center gap-4 p-3 bg-white/50 rounded-xl hover:bg-white/70 transition-colors"
-          >
-            <div
-              className={`w-3 h-3 ${activity.color} rounded-full animate-pulse`}
-            />
-            <div className="flex-1">
-              <p className="text-sm font-medium text-gray-900">
-                {activity.action}
-              </p>
-              <p className="text-xs text-gray-600">{activity.user}</p>
-            </div>
-            <span className="text-xs text-gray-500">{activity.time}</span>
-          </div>
-        ))}
-      </div>
-
-      <div className="mt-6 pt-4 border-t border-gray-100">
-        <div className="flex items-center justify-between text-sm">
-          <span className="text-gray-600">Active users</span>
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-            <span className="font-semibold text-gray-900">1,247 online</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+interface AnalyticsData {
+  total_followers: number;
+  total_views: number;
+  engagement_rate: number;
+  viral_score: number;
+  content_count: number;
+  revenue: number;
+  growth_rate: number;
 }
 
 interface DashboardAnalyticsProps {
-  userId: string;
-  hasActiveSubscription: boolean;
-  subscriptionTier: string;
-  className?: string;
-  featureAccess: FeatureAccess;
-}
-
-function LockedFeatureOverlay() {
-  return (
-    <div className="absolute inset-0 bg-white/90 backdrop-blur-sm flex items-center justify-center z-10 rounded-lg">
-      <div className="text-center p-8">
-        <Lock className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-        <h3 className="text-xl font-bold text-gray-900 mb-2">
-          Premium Feature
-        </h3>
-        <p className="text-gray-600 mb-4">
-          Upgrade to access advanced analytics
-        </p>
-        <Link href="/pricing">
-          <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
-            <Crown className="w-4 h-4 mr-2" />
-            Upgrade Now
-          </Button>
-        </Link>
-      </div>
-    </div>
-  );
+  user: User;
+  platformConnections: PlatformConnection[];
+  analyticsData: AnalyticsData | null;
+  hasFeatureAccess: (feature: string) => boolean;
 }
 
 export default function DashboardAnalytics({
-  userId,
-  hasActiveSubscription,
-  subscriptionTier,
-  className = "",
-  featureAccess,
+  user,
+  platformConnections,
+  analyticsData,
+  hasFeatureAccess,
 }: DashboardAnalyticsProps) {
-  const [timeRange, setTimeRange] = useState("30d");
-  const [selectedPlatform, setSelectedPlatform] = useState("all");
-  const [isLoading, setIsLoading] = useState(false);
-  const [realTimeData, setRealTimeData] = useState({
-    followers: 127543,
-    views: 2456789,
-    engagement: 8.7,
-    revenue: 12450,
-    viralScore: 87,
-  });
-  const [predictiveInsights, setPredictiveInsights] = useState({
-    nextViralContent: "Tutorial-style videos",
-    bestPostingTime: "Tuesday 2:00 PM",
-    growthPrediction: "+34% next month",
-    audienceGrowth: "127 new followers/day",
-  });
-  const supabase = createClient();
+  const connectedPlatforms = platformConnections.filter(conn => conn.is_active);
+  const hasConnectedPlatforms = connectedPlatforms.length > 0;
 
-  // Enhanced analytics data with more detailed metrics
-  const [analyticsData, setAnalyticsData] = useState({
-    overview: {
-      totalFollowers: 127543,
-      monthlyViews: 2456789,
-      engagementRate: 8.7,
-      revenue: 12450,
-      growth: {
-        followers: 23.4,
-        views: 45.2,
-        engagement: 12.1,
-        revenue: 67.8,
-      },
-    },
-    platforms: {
-      tiktok: { followers: 85432, engagement: 9.2, views: 1234567 },
-      instagram: { followers: 32109, engagement: 7.8, views: 876543 },
-      youtube: { followers: 10002, engagement: 12.4, views: 345679 },
-    },
-    topContent: [
-      {
-        title: "Morning Routine Hack",
-        platform: "tiktok",
-        views: 234567,
-        engagement: 12.3,
-        viralScore: 94,
-      },
-      {
-        title: "Productivity Tips",
-        platform: "instagram",
-        views: 123456,
-        engagement: 8.9,
-        viralScore: 78,
-      },
-      {
-        title: "Life Changing Advice",
-        platform: "youtube",
-        views: 87654,
-        engagement: 15.2,
-        viralScore: 89,
-      },
-    ],
-    demographics: {
-      ageGroups: {
-        "18-24": 35,
-        "25-34": 42,
-        "35-44": 18,
-        "45+": 5,
-      },
-      topCountries: [
-        { country: "United States", percentage: 45 },
-        { country: "United Kingdom", percentage: 18 },
-        { country: "Canada", percentage: 12 },
-        { country: "Australia", percentage: 8 },
-      ],
-    },
-    bestTimes: {
-      days: ["Tuesday", "Wednesday", "Thursday"],
-      hours: ["2:00 PM", "7:00 PM", "9:00 PM"],
-    },
-  });
+  // Format numbers with K/M suffixes
+  const formatNumber = (num: number): string => {
+    if (num >= 1000000) {
+      return (num / 1000000).toFixed(1) + "M";
+    } else if (num >= 1000) {
+      return (num / 1000).toFixed(1) + "K";
+    }
+    return num.toString();
+  };
 
-  // Real-time updates simulation
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setRealTimeData((prev) => ({
-        ...prev,
-        followers: prev.followers + Math.floor(Math.random() * 10),
-        views: prev.views + Math.floor(Math.random() * 100),
-        engagement: prev.engagement + (Math.random() - 0.5) * 0.1,
-      }));
-    }, 5000);
+  // Calculate viral score color
+  const getViralScoreColor = (score: number): string => {
+    if (score >= 80) return "text-green-600";
+    if (score >= 60) return "text-yellow-600";
+    if (score >= 40) return "text-orange-600";
+    return "text-red-600";
+  };
 
-    return () => clearInterval(interval);
-  }, []);
-
-  const refreshData = async () => {
-    setIsLoading(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setIsLoading(false);
+  // Get viral score status
+  const getViralScoreStatus = (score: number): string => {
+    if (score >= 80) return "VIRAL";
+    if (score >= 60) return "Trending";
+    if (score >= 40) return "Growing";
+    return "Needs Work";
   };
 
   return (
-    <div className={`space-y-6 ${className}`}>
-      {/* Header with Controls */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-            <BarChart3 className="w-6 h-6 text-blue-600" />
-            Analytics Dashboard
-          </h2>
-          <p className="text-gray-600">
-            Track your performance across all platforms
-          </p>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <Select value={timeRange} onValueChange={setTimeRange}>
-            <SelectTrigger className="w-32">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="7d">Last 7 days</SelectItem>
-              <SelectItem value="30d">Last 30 days</SelectItem>
-              <SelectItem value="90d">Last 3 months</SelectItem>
-              <SelectItem value="1y">Last year</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select value={selectedPlatform} onValueChange={setSelectedPlatform}>
-            <SelectTrigger className="w-36">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Platforms</SelectItem>
-              <SelectItem value="tiktok">🎵 TikTok</SelectItem>
-              <SelectItem value="instagram">📸 Instagram</SelectItem>
-              <SelectItem value="youtube">📺 YouTube</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={refreshData}
-            disabled={isLoading}
-          >
-            <RefreshCw
-              className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`}
-            />
-          </Button>
-        </div>
-      </div>
-
-      {/* Key Metrics Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 relative">
-        <MetricCard
-          title="Total Followers"
-          value="---"
-          change="---%"
-          trend="up"
-          icon={<Users className="w-5 h-5" />}
-          color="from-gray-400 to-gray-500"
-        />
-        <MetricCard
-          title="Monthly Views"
-          value="---"
-          change="---%"
-          trend="up"
-          icon={<Eye className="w-5 h-5" />}
-          color="from-gray-400 to-gray-500"
-        />
-        <MetricCard
-          title="Engagement Rate"
-          value="---%"
-          change="---%"
-          trend="up"
-          icon={<Heart className="w-5 h-5" />}
-          color="from-gray-400 to-gray-500"
-        />
-        <MetricCard
-          title="Revenue"
-          value="$---"
-          change="---%"
-          trend="up"
-          icon={<DollarSign className="w-5 h-5" />}
-          color="from-gray-400 to-gray-500"
-        />
-        <LockedFeatureOverlay />
-      </div>
-
-      {/* Main Analytics Tabs */}
-      <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="content">Content</TabsTrigger>
-          <TabsTrigger value="audience">Audience</TabsTrigger>
-          <TabsTrigger value="revenue">Revenue</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="overview" className="space-y-6">
-          <div className="grid md:grid-cols-3 gap-6 relative">
-            {/* Growth Chart */}
-            <div className="md:col-span-2 relative">
-              <div className="filter blur-sm opacity-50">
-                <AnalyticsChart />
-              </div>
-              <LockedFeatureOverlay />
-            </div>
-
-            {/* Enhanced Viral Score Meter */}
-            <Card className="p-6 flex flex-col items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 border-gray-200 relative">
-              <div className="filter blur-sm opacity-50">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <Zap className="w-5 h-5 text-gray-600" />
-                  Real-Time Viral Score
-                </h3>
-                <ViralScoreMeter score={0} size="lg" />
-                <div className="mt-4 text-center">
-                  <div className="text-sm text-gray-600 mb-2">
-                    Score updates every 5 minutes
-                  </div>
-                  <div className="flex items-center gap-2 text-xs text-gray-600">
-                    <div className="w-2 h-2 bg-gray-500 rounded-full" />
-                    <span>Premium feature</span>
-                  </div>
-                </div>
-              </div>
-              <LockedFeatureOverlay />
-            </Card>
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">
+              Analytics Dashboard
+            </h1>
+            <p className="text-gray-600 mt-1">
+              Track your performance across all platforms
+            </p>
           </div>
+          <div className="text-right">
+            <Badge variant="outline" className="text-blue-600 border-blue-600">
+              <BarChart3 className="w-3 h-3 mr-1" />
+              Last 30 days
+            </Badge>
+          </div>
+        </div>
+      </div>
 
-          {/* Platform Breakdown */}
-          <Card className="p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+      {/* Key Metrics */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Followers</CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {hasConnectedPlatforms ? formatNumber(analyticsData?.total_followers || 0) : "0"}
+            </div>
+            {hasConnectedPlatforms && analyticsData?.growth_rate && (
+              <p className="text-xs text-muted-foreground flex items-center">
+                {analyticsData.growth_rate > 0 ? (
+                  <TrendingUp className="w-3 h-3 mr-1 text-green-600" />
+                ) : (
+                  <TrendingDown className="w-3 h-3 mr-1 text-red-600" />
+                )}
+                {analyticsData.growth_rate > 0 ? "+" : ""}{analyticsData.growth_rate.toFixed(1)}% this month
+              </p>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Monthly Views</CardTitle>
+            <Eye className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {hasConnectedPlatforms ? formatNumber(analyticsData?.total_views || 0) : "0"}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Across all platforms
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Engagement Rate</CardTitle>
+            <Heart className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {hasConnectedPlatforms ? (analyticsData?.engagement_rate || 0).toFixed(1) : "0"}%
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Average across platforms
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Viral Score</CardTitle>
+            <Zap className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className={`text-2xl font-bold ${getViralScoreColor(analyticsData?.viral_score || 0)}`}>
+              {analyticsData?.viral_score || 0}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {getViralScoreStatus(analyticsData?.viral_score || 0)}
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Platform Performance */}
+      {hasConnectedPlatforms && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Target className="w-5 h-5" />
               Platform Performance
-            </h3>
-            <div className="grid md:grid-cols-3 gap-6">
-              {Object.entries(analyticsData.platforms).map(
-                ([platform, data]) => {
-                  const platformInfo = {
-                    tiktok: {
-                      name: "TikTok",
-                      icon: "🎵",
-                      color: "bg-pink-500",
-                    },
-                    instagram: {
-                      name: "Instagram",
-                      icon: "📸",
-                      color: "bg-purple-500",
-                    },
-                    youtube: {
-                      name: "YouTube",
-                      icon: "📺",
-                      color: "bg-red-500",
-                    },
-                  }[platform];
-
-                  return (
-                    <div key={platform} className="bg-gray-50 rounded-lg p-4">
-                      <div className="flex items-center gap-3 mb-3">
-                        <div
-                          className={`w-8 h-8 ${platformInfo?.color} rounded-lg flex items-center justify-center text-white text-sm`}
-                        >
-                          {platformInfo?.icon}
-                        </div>
-                        <h4 className="font-medium text-gray-900">
-                          {platformInfo?.name}
-                        </h4>
-                      </div>
-                      <div className="space-y-2">
-                        <div className="flex justify-between text-sm">
-                          <span className="text-gray-600">Followers</span>
-                          <span className="font-medium">
-                            {data.followers.toLocaleString()}
-                          </span>
-                        </div>
-                        <div className="flex justify-between text-sm">
-                          <span className="text-gray-600">Engagement</span>
-                          <span className="font-medium">
-                            {data.engagement}%
-                          </span>
-                        </div>
-                        <div className="flex justify-between text-sm">
-                          <span className="text-gray-600">Views</span>
-                          <span className="font-medium">
-                            {(data.views / 1000).toFixed(0)}K
-                          </span>
-                        </div>
-                      </div>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {connectedPlatforms.map((connection) => (
+                <div key={connection.id} className="p-4 border border-gray-200 rounded-lg">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                      <span className="text-sm font-medium capitalize">
+                        {connection.platform.charAt(0)}
+                      </span>
                     </div>
-                  );
-                },
-              )}
-            </div>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="content" className="space-y-6">
-          {/* Top Performing Content */}
-          <Card className="p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              Top Performing Content
-            </h3>
-            <div className="space-y-4">
-              {analyticsData.topContent.map((content, index) => {
-                const platformInfo = {
-                  tiktok: { name: "TikTok", icon: "🎵", color: "bg-pink-500" },
-                  instagram: {
-                    name: "Instagram",
-                    icon: "📸",
-                    color: "bg-purple-500",
-                  },
-                  youtube: { name: "YouTube", icon: "📺", color: "bg-red-500" },
-                }[content.platform];
-
-                return (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
-                  >
-                    <div className="flex items-center gap-4">
-                      <div
-                        className={`w-10 h-10 ${platformInfo?.color} rounded-lg flex items-center justify-center text-white`}
-                      >
-                        {platformInfo?.icon}
-                      </div>
-                      <div>
-                        <h4 className="font-medium text-gray-900">
-                          {content.title}
-                        </h4>
-                        <div className="flex items-center gap-4 text-sm text-gray-600">
-                          <span className="flex items-center gap-1">
-                            <Eye className="w-3 h-3" />
-                            {content.views.toLocaleString()} views
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Heart className="w-3 h-3" />
-                            {content.engagement}% engagement
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div
-                        className={`px-3 py-1 rounded-full text-sm font-medium ${
-                          content.viralScore >= 80
-                            ? "bg-green-100 text-green-700"
-                            : content.viralScore >= 60
-                              ? "bg-yellow-100 text-yellow-700"
-                              : "bg-blue-100 text-blue-700"
-                        }`}
-                      >
-                        <Zap className="w-3 h-3 inline mr-1" />
-                        {content.viralScore}% viral
-                      </div>
+                    <div>
+                      <h3 className="font-medium capitalize">{connection.platform}</h3>
+                      <p className="text-sm text-gray-600">@{connection.platform_username}</p>
                     </div>
                   </div>
-                );
-              })}
-            </div>
-          </Card>
-
-          {/* Best Posting Times */}
-          <Card className="p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              Optimal Posting Times
-            </h3>
-            <div className="grid md:grid-cols-2 gap-6">
-              <div>
-                <h4 className="font-medium text-gray-700 mb-3 flex items-center gap-2">
-                  <Calendar className="w-4 h-4" />
-                  Best Days
-                </h4>
-                <div className="space-y-2">
-                  {analyticsData.bestTimes.days.map((day, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between p-2 bg-blue-50 rounded"
-                    >
-                      <span className="text-sm font-medium">{day}</span>
-                      <span className="text-xs text-blue-600">
-                        Peak engagement
+                  
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Followers</span>
+                      <span className="font-medium">
+                        {formatNumber(Math.floor((analyticsData?.total_followers || 0) / connectedPlatforms.length))}
                       </span>
                     </div>
-                  ))}
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Engagement</span>
+                      <span className="font-medium text-green-600">
+                        {(analyticsData?.engagement_rate || 0).toFixed(1)}%
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Views</span>
+                      <span className="font-medium">
+                        {formatNumber(Math.floor((analyticsData?.total_views || 0) / connectedPlatforms.length))}
+                      </span>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div>
-                <h4 className="font-medium text-gray-700 mb-3 flex items-center gap-2">
-                  <Clock className="w-4 h-4" />
-                  Best Hours
-                </h4>
-                <div className="space-y-2">
-                  {analyticsData.bestTimes.hours.map((hour, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between p-2 bg-green-50 rounded"
-                    >
-                      <span className="text-sm font-medium">{hour}</span>
-                      <span className="text-xs text-green-600">
-                        High activity
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              ))}
             </div>
-          </Card>
-        </TabsContent>
+          </CardContent>
+        </Card>
+      )}
 
-        <TabsContent value="audience" className="space-y-6">
-          {/* Demographics */}
-          <div className="grid md:grid-cols-2 gap-6">
-            <Card className="p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                Age Demographics
-              </h3>
-              <div className="space-y-3">
-                {Object.entries(analyticsData.demographics.ageGroups).map(
-                  ([age, percentage]) => (
-                    <div
-                      key={age}
-                      className="flex items-center justify-between"
-                    >
-                      <span className="text-sm font-medium text-gray-700">
-                        {age}
-                      </span>
-                      <div className="flex items-center gap-3">
-                        <div className="w-24 bg-gray-200 rounded-full h-2">
-                          <div
-                            className="bg-blue-500 h-2 rounded-full transition-all duration-500"
-                            style={{ width: `${percentage}%` }}
-                          />
-                        </div>
-                        <span className="text-sm font-medium text-gray-900 w-8">
-                          {percentage}%
-                        </span>
-                      </div>
-                    </div>
-                  ),
-                )}
-              </div>
-            </Card>
-
-            <Card className="p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                Top Countries
-              </h3>
-              <div className="space-y-3">
-                {analyticsData.demographics.topCountries.map(
-                  (country, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between"
-                    >
-                      <div className="flex items-center gap-3">
-                        <Globe className="w-4 h-4 text-gray-500" />
-                        <span className="text-sm font-medium text-gray-700">
-                          {country.country}
-                        </span>
-                      </div>
-                      <span className="text-sm font-medium text-gray-900">
-                        {country.percentage}%
-                      </span>
-                    </div>
-                  ),
-                )}
-              </div>
-            </Card>
-          </div>
-
-          {/* Real-time Activity */}
-          <RealtimeActivity />
-        </TabsContent>
-
-        <TabsContent value="revenue" className="space-y-6">
-          {/* Revenue Analytics */}
-          <div className="grid md:grid-cols-2 gap-6">
-            <Card className="p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                Revenue Breakdown
-              </h3>
+      {/* Growth Analytics */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Growth Insights</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {hasConnectedPlatforms ? (
               <div className="space-y-4">
-                <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <DollarSign className="w-5 h-5 text-green-600" />
-                    <span className="font-medium">Sponsorships</span>
-                  </div>
-                  <span className="font-bold text-green-600">$8,200</span>
-                </div>
                 <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
                   <div className="flex items-center gap-3">
-                    <Smartphone className="w-5 h-5 text-blue-600" />
-                    <span className="font-medium">Creator Fund</span>
+                    <TrendingUp className="w-5 h-5 text-blue-600" />
+                    <div>
+                      <p className="font-medium">Monthly Growth</p>
+                      <p className="text-sm text-gray-600">Follower increase</p>
+                    </div>
                   </div>
-                  <span className="font-bold text-blue-600">$2,850</span>
+                  <div className="text-right">
+                    <p className="text-2xl font-bold text-blue-600">
+                      +{analyticsData?.growth_rate || 0}%
+                    </p>
+                  </div>
                 </div>
+                
+                <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <Heart className="w-5 h-5 text-green-600" />
+                    <div>
+                      <p className="font-medium">Engagement Rate</p>
+                      <p className="text-sm text-gray-600">Average across platforms</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-2xl font-bold text-green-600">
+                      {(analyticsData?.engagement_rate || 0).toFixed(1)}%
+                    </p>
+                  </div>
+                </div>
+                
                 <div className="flex items-center justify-between p-3 bg-purple-50 rounded-lg">
                   <div className="flex items-center gap-3">
                     <Share2 className="w-5 h-5 text-purple-600" />
-                    <span className="font-medium">Affiliate</span>
+                    <div>
+                      <p className="font-medium">Content Performance</p>
+                      <p className="text-sm text-gray-600">Posts this month</p>
+                    </div>
                   </div>
-                  <span className="font-bold text-purple-600">$1,400</span>
+                  <div className="text-right">
+                    <p className="text-2xl font-bold text-purple-600">
+                      {analyticsData?.content_count || 0}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </Card>
+            ) : (
+              <div className="text-center py-8 text-gray-500">
+                <BarChart3 className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                <p>No analytics data available</p>
+                <p className="text-sm">Connect platforms to start tracking performance</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
-            <Card className="p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                Earnings Forecast
-              </h3>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-gray-900 mb-2">
-                  $18,750
+        <Card>
+          <CardHeader>
+            <CardTitle>Viral Score Analysis</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {hasConnectedPlatforms ? (
+              <div className="space-y-4">
+                <div className="text-center">
+                  <div className={`text-4xl font-bold mb-2 ${getViralScoreColor(analyticsData?.viral_score || 0)}`}>
+                    {analyticsData?.viral_score || 0}
+                  </div>
+                  <p className="text-sm text-gray-600 mb-4">
+                    {getViralScoreStatus(analyticsData?.viral_score || 0)}
+                  </p>
+                  
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div 
+                      className={`h-2 rounded-full transition-all duration-500 ${
+                        (analyticsData?.viral_score || 0) >= 80 ? "bg-green-500" :
+                        (analyticsData?.viral_score || 0) >= 60 ? "bg-yellow-500" :
+                        (analyticsData?.viral_score || 0) >= 40 ? "bg-orange-500" : "bg-red-500"
+                      }`}
+                      style={{ width: `${Math.min((analyticsData?.viral_score || 0), 100)}%` }}
+                    ></div>
+                  </div>
                 </div>
-                <div className="text-sm text-gray-600 mb-4">
-                  Projected next month
-                </div>
-                <div className="flex items-center justify-center gap-2 text-green-600">
-                  <TrendingUp className="w-4 h-4" />
-                  <span className="text-sm font-medium">
-                    +34% growth expected
-                  </span>
+                
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-sm">
+                    <span>Content Quality</span>
+                    <span className="font-medium">{(analyticsData?.viral_score || 0) * 0.4}%</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span>Engagement Rate</span>
+                    <span className="font-medium">{(analyticsData?.engagement_rate || 0) * 0.3}%</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span>Growth Momentum</span>
+                    <span className="font-medium">{(analyticsData?.growth_rate || 0) * 0.3}%</span>
+                  </div>
                 </div>
               </div>
-            </Card>
+            ) : (
+              <div className="text-center py-8 text-gray-500">
+                <Zap className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                <p>No viral score data</p>
+                <p className="text-sm">Connect platforms to calculate viral score</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Analytics Tools */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Analytics Tools</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="p-4 border border-gray-200 rounded-lg">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="p-2 bg-blue-100 rounded-lg">
+                  <BarChart3 className="w-5 h-5 text-blue-600" />
+                </div>
+                <h3 className="font-medium">Custom Reports</h3>
+              </div>
+              <p className="text-sm text-gray-600 mb-3">
+                Create personalized analytics reports
+              </p>
+              <Button variant="outline" size="sm" className="w-full">
+                Generate Report
+              </Button>
+            </div>
+
+            <div className="p-4 border border-gray-200 rounded-lg">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="p-2 bg-green-100 rounded-lg">
+                  <Target className="w-5 h-5 text-green-600" />
+                </div>
+                <h3 className="font-medium">Performance Goals</h3>
+              </div>
+              <p className="text-sm text-gray-600 mb-3">
+                Set and track performance targets
+              </p>
+              <Button variant="outline" size="sm" className="w-full">
+                Set Goals
+              </Button>
+            </div>
+
+            <div className="p-4 border border-gray-200 rounded-lg">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="p-2 bg-purple-100 rounded-lg">
+                  <Calendar className="w-5 h-5 text-purple-600" />
+                </div>
+                <h3 className="font-medium">Scheduled Reports</h3>
+              </div>
+              <p className="text-sm text-gray-600 mb-3">
+                Automate weekly/monthly reports
+              </p>
+              <Button variant="outline" size="sm" className="w-full">
+                Schedule
+              </Button>
+            </div>
           </div>
+        </CardContent>
+      </Card>
 
-          {/* AI Predictive Insights */}
-          {hasActiveSubscription && (
-            <Card className="p-6 bg-gradient-to-r from-purple-50 to-pink-50 border-purple-200">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                <Target className="w-5 h-5 text-purple-600" />
-                AI Predictive Insights
-              </h3>
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between p-3 bg-white/70 rounded-lg">
-                    <span className="text-sm font-medium text-gray-700">
-                      Next Viral Content Type
-                    </span>
-                    <span className="text-sm font-bold text-purple-600">
-                      {predictiveInsights.nextViralContent}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between p-3 bg-white/70 rounded-lg">
-                    <span className="text-sm font-medium text-gray-700">
-                      Optimal Posting Time
-                    </span>
-                    <span className="text-sm font-bold text-blue-600">
-                      {predictiveInsights.bestPostingTime}
-                    </span>
-                  </div>
-                </div>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between p-3 bg-white/70 rounded-lg">
-                    <span className="text-sm font-medium text-gray-700">
-                      Growth Prediction
-                    </span>
-                    <span className="text-sm font-bold text-green-600">
-                      {predictiveInsights.growthPrediction}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between p-3 bg-white/70 rounded-lg">
-                    <span className="text-sm font-medium text-gray-700">
-                      Daily Follower Growth
-                    </span>
-                    <span className="text-sm font-bold text-orange-600">
-                      {predictiveInsights.audienceGrowth}
-                    </span>
-                  </div>
-                </div>
+      {/* Tips */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <AlertCircle className="w-5 h-5 text-blue-600" />
+            Analytics Tips
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            <div className="flex items-start gap-3">
+              <div className="w-2 h-2 bg-blue-600 rounded-full mt-2"></div>
+              <div>
+                <p className="font-medium">Focus on engagement rate over follower count</p>
+                <p className="text-sm text-gray-600">High engagement indicates quality audience</p>
               </div>
-            </Card>
-          )}
-        </TabsContent>
-      </Tabs>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="w-2 h-2 bg-green-600 rounded-full mt-2"></div>
+              <div>
+                <p className="font-medium">Track viral score trends over time</p>
+                <p className="text-sm text-gray-600">Consistent improvement shows content strategy success</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="w-2 h-2 bg-purple-600 rounded-full mt-2"></div>
+              <div>
+                <p className="font-medium">Compare performance across platforms</p>
+                <p className="text-sm text-gray-600">Identify which platforms work best for your content</p>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

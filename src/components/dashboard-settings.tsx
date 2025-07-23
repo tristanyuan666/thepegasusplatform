@@ -21,7 +21,7 @@ import {
 
 interface User {
   id: string;
-  email: string;
+  email?: string;
 }
 
 interface UserProfile {
