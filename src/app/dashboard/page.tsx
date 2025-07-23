@@ -68,7 +68,7 @@ interface AnalyticsData {
   growth_rate: number;
 }
 
-export default function Dashboard() {
+function DashboardContent() {
   const [user, setUser] = useState<User | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [subscription, setSubscription] = useState<Subscription | null>(null);
@@ -274,66 +274,72 @@ export default function Dashboard() {
   }
 
   return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      <DashboardNavbar 
+        user={user}
+        userProfile={userProfile as any}
+        subscription={subscription}
+        activeTab={activeTab}
+        hasFeatureAccess={hasFeatureAccess}
+      />
+      
+      <main className="pt-20 pb-8">
+        <div className="container mx-auto px-4">
+          {activeTab === "home" && (
+                <DashboardHome
+                  user={user}
+                  userProfile={userProfile}
+                  subscription={subscription}
+              platformConnections={platformConnections}
+              analyticsData={analyticsData}
+              hasFeatureAccess={hasFeatureAccess}
+            />
+          )}
+          
+          {activeTab === "analytics" && hasFeatureAccess("analytics") && (
+                  <DashboardAnalytics
+              user={user}
+              platformConnections={platformConnections}
+              analyticsData={analyticsData}
+              hasFeatureAccess={hasFeatureAccess}
+            />
+          )}
+          
+          {activeTab === "revenue" && hasFeatureAccess("revenue") && (
+            <DashboardRevenue
+              user={user}
+              analyticsData={analyticsData}
+              platformConnections={platformConnections}
+              hasFeatureAccess={hasFeatureAccess}
+            />
+          )}
+          {activeTab === "platforms" && hasFeatureAccess("platforms") && (
+            <DashboardPlatforms
+              user={user}
+              platformConnections={platformConnections}
+              onConnectionsUpdate={setPlatformConnections}
+              hasFeatureAccess={hasFeatureAccess}
+            />
+          )}
+          {activeTab === "settings" && (
+            <DashboardSettings
+              user={user}
+              userProfile={userProfile}
+              subscription={subscription}
+              onProfileUpdate={setUserProfile}
+              hasFeatureAccess={hasFeatureAccess}
+            />
+          )}
+        </div>
+      </main>
+    </div>
+  );
+}
+
+export default function Dashboard() {
+  return (
     <Suspense fallback={<LoadingSpinner size="lg" />}>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-        <DashboardNavbar 
-          user={user}
-          userProfile={userProfile as any}
-          subscription={subscription}
-          activeTab={activeTab}
-          hasFeatureAccess={hasFeatureAccess}
-        />
-        
-        <main className="pt-20 pb-8">
-          <div className="container mx-auto px-4">
-            {activeTab === "home" && (
-                  <DashboardHome
-                    user={user}
-                    userProfile={userProfile}
-                    subscription={subscription}
-                platformConnections={platformConnections}
-                analyticsData={analyticsData}
-                hasFeatureAccess={hasFeatureAccess}
-              />
-            )}
-            
-            {activeTab === "analytics" && hasFeatureAccess("analytics") && (
-                    <DashboardAnalytics
-                user={user}
-                platformConnections={platformConnections}
-                analyticsData={analyticsData}
-                hasFeatureAccess={hasFeatureAccess}
-              />
-            )}
-            
-            {activeTab === "revenue" && hasFeatureAccess("revenue") && (
-              <DashboardRevenue
-                user={user}
-                analyticsData={analyticsData}
-                platformConnections={platformConnections}
-                hasFeatureAccess={hasFeatureAccess}
-              />
-            )}
-            {activeTab === "platforms" && hasFeatureAccess("platforms") && (
-              <DashboardPlatforms
-                user={user}
-                platformConnections={platformConnections}
-                onConnectionsUpdate={setPlatformConnections}
-                hasFeatureAccess={hasFeatureAccess}
-              />
-            )}
-            {activeTab === "settings" && (
-              <DashboardSettings
-                user={user}
-                userProfile={userProfile}
-                subscription={subscription}
-                onProfileUpdate={setUserProfile}
-                hasFeatureAccess={hasFeatureAccess}
-              />
-            )}
-          </div>
-        </main>
-      </div>
+      <DashboardContent />
     </Suspense>
   );
 }
