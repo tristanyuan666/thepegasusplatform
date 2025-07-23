@@ -85,7 +85,108 @@ export default function Navbar({ user = null }: NavbarProps) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isMounted]);
 
-  const featuresItems = [
+  // Original feature pages for non-subscribed users
+  const originalFeaturesItems = [
+    {
+      title: "AI Content Generator",
+      description: "Create viral content with AI",
+      icon: <Sparkles className="w-5 h-5 text-blue-600" />,
+      href: "/features/ai-content",
+      feature: undefined,
+    },
+    {
+      title: "Analytics Dashboard",
+      description: "Track your growth metrics",
+      icon: <BarChart3 className="w-5 h-5 text-blue-600" />,
+      href: "/features/analytics",
+      feature: undefined,
+    },
+    {
+      title: "Content Scheduler",
+      description: "Auto-schedule across platforms",
+      icon: <Calendar className="w-5 h-5 text-blue-600" />,
+      href: "/features/scheduler",
+      feature: undefined,
+    },
+    {
+      title: "Viral Score Predictor",
+      description: "Predict content performance",
+      icon: <Zap className="w-5 h-5 text-blue-600" />,
+      href: "/features/viral-predictor",
+      feature: undefined,
+    },
+    {
+      title: "Persona Builder",
+      description: "Build your creator identity",
+      icon: <Brain className="w-5 h-5 text-blue-600" />,
+      href: "/features/persona-builder",
+      feature: undefined,
+    },
+    {
+      title: "Growth Engine",
+      description: "Optimize for maximum reach",
+      icon: <TrendingUp className="w-5 h-5 text-blue-600" />,
+      href: "/features/growth-engine",
+      feature: undefined,
+    },
+  ];
+
+  // Original integration pages for non-subscribed users
+  const originalIntegrationsItems = [
+    {
+      title: "TikTok",
+      description: "Connect your TikTok account",
+      icon: (
+        <svg
+          className="w-5 h-5 text-pink-600"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+        >
+          <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
+        </svg>
+      ),
+      href: "/integrations/tiktok",
+      feature: undefined,
+    },
+    {
+      title: "Instagram",
+      description: "Sync with Instagram",
+      icon: <Instagram className="w-5 h-5 text-purple-600" />,
+      href: "/integrations/instagram",
+      feature: undefined,
+    },
+    {
+      title: "YouTube",
+      description: "Manage YouTube content",
+      icon: <Youtube className="w-5 h-5 text-red-600" />,
+      href: "/integrations/youtube",
+      feature: undefined,
+    },
+    {
+      title: "Twitter/X",
+      description: "Post to Twitter/X",
+      icon: <Twitter className="w-5 h-5 text-blue-600" />,
+      href: "/integrations/twitter",
+      feature: undefined,
+    },
+    {
+      title: "LinkedIn",
+      description: "Professional networking",
+      icon: <Linkedin className="w-5 h-5 text-blue-700" />,
+      href: "/integrations/linkedin",
+      feature: undefined,
+    },
+    {
+      title: "Facebook",
+      description: "Connect Facebook pages",
+      icon: <Facebook className="w-5 h-5 text-blue-800" />,
+      href: "/integrations/facebook",
+      feature: undefined,
+    },
+  ];
+
+  // Dashboard features for subscribed users
+  const dashboardFeaturesItems = [
     {
       title: "AI Content Generator",
       description: "Create viral content with AI",
@@ -130,7 +231,7 @@ export default function Navbar({ user = null }: NavbarProps) {
     },
   ];
 
-  const integrationsItems = [
+  const dashboardIntegrationsItems = [
     {
       title: "TikTok",
       description: "Connect your TikTok account",
@@ -275,6 +376,10 @@ export default function Navbar({ user = null }: NavbarProps) {
     };
   }, [currentUser]);
 
+  // Determine which items to show based on subscription status
+  const featuresItems = hasActiveSubscription ? dashboardFeaturesItems : originalFeaturesItems;
+  const integrationsItems = hasActiveSubscription ? dashboardIntegrationsItems : originalIntegrationsItems;
+
   return (
     <nav
       className={`w-full fixed top-0 z-50 py-2 transition-all duration-300 ${
@@ -325,8 +430,9 @@ export default function Navbar({ user = null }: NavbarProps) {
               >
                 <div className="grid gap-3">
                   {featuresItems.map((item, index) => {
-                    const hasAccess = hasFeatureAccess(item.feature || "");
-                    const isLocked = !hasAccess;
+                    // For subscribed users, check feature access
+                    const hasAccess = hasActiveSubscription ? hasFeatureAccess(item.feature || "") : true;
+                    const isLocked = hasActiveSubscription && !hasAccess;
                     
                     return (
                       <Link
@@ -397,27 +503,48 @@ export default function Navbar({ user = null }: NavbarProps) {
                 align="start"
               >
                 <div className="grid gap-3">
-                  {integrationsItems.map((item, index) => (
-                    <Link
-                      key={index}
-                      href={item.href}
-                      className="block"
-                      onClick={() => setActiveDropdown(null)}
-                    >
-                      <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-blue-50 transition-colors cursor-pointer group">
-                        <div className="mt-1">{item.icon}</div>
-                        <div className="flex-1">
-                          <h4 className="font-medium text-gray-900 group-hover:text-blue-600 transition-colors">
-                            {item.title}
-                          </h4>
-                          <p className="text-sm text-gray-600 mt-1">
-                            {item.description}
-                          </p>
+                  {integrationsItems.map((item, index) => {
+                    // For subscribed users, check feature access
+                    const hasAccess = hasActiveSubscription ? hasFeatureAccess(item.feature || "") : true;
+                    const isLocked = hasActiveSubscription && !hasAccess;
+                    
+                    return (
+                      <Link
+                        key={index}
+                        href={isLocked ? "/pricing" : item.href}
+                        className="block"
+                        onClick={() => setActiveDropdown(null)}
+                      >
+                        <div className={`flex items-start gap-3 p-3 rounded-lg transition-colors cursor-pointer group ${
+                          isLocked 
+                            ? "opacity-60 hover:bg-gray-50" 
+                            : "hover:bg-blue-50"
+                        }`}>
+                          <div className="mt-1">
+                            {isLocked ? (
+                              <Lock className="w-5 h-5 text-gray-500" />
+                            ) : (
+                              item.icon
+                            )}
+                          </div>
+                          <div className="flex-1">
+                            <h4 className="font-medium text-gray-900 group-hover:text-blue-600 transition-colors flex items-center gap-2">
+                              {item.title}
+                              {isLocked && (
+                                <Badge variant="outline" className="text-xs">
+                                  {userPlan === "Creator" ? "Influencer+" : "Superstar"}
+                                </Badge>
+                              )}
+                            </h4>
+                            <p className="text-sm text-gray-600 mt-1">
+                              {item.description}
+                            </p>
+                          </div>
+                          <ArrowRight className="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
                         </div>
-                        <ArrowRight className="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </div>
-                    </Link>
-                  ))}
+                      </Link>
+                    );
+                  })}
                 </div>
                 <DropdownMenuSeparator className="my-3" />
                 <Link
@@ -554,18 +681,32 @@ export default function Navbar({ user = null }: NavbarProps) {
                 <div className="text-sm font-semibold text-gray-900 px-3">
                   Features
                 </div>
-                {featuresItems.slice(0, 3).map((item, index) => (
-                  <Link
-                    key={index}
-                    href={item.href}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    <div className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
-                      {item.icon}
-                      <span className="text-sm font-medium">{item.title}</span>
-                    </div>
-                  </Link>
-                ))}
+                {featuresItems.slice(0, 3).map((item, index) => {
+                  const hasAccess = hasActiveSubscription ? hasFeatureAccess(item.feature || "") : true;
+                  const isLocked = hasActiveSubscription && !hasAccess;
+                  
+                  return (
+                    <Link
+                      key={index}
+                      href={isLocked ? "/pricing" : item.href}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <div className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                        {isLocked ? (
+                          <Lock className="w-5 h-5 text-gray-500" />
+                        ) : (
+                          item.icon
+                        )}
+                        <span className="text-sm font-medium">{item.title}</span>
+                        {isLocked && (
+                          <Badge variant="outline" className="text-xs ml-auto">
+                            {userPlan === "Creator" ? "Influencer+" : "Superstar"}
+                          </Badge>
+                        )}
+                      </div>
+                    </Link>
+                  );
+                })}
               </div>
 
               {/* Mobile Integrations */}
@@ -573,18 +714,32 @@ export default function Navbar({ user = null }: NavbarProps) {
                 <div className="text-sm font-semibold text-gray-900 px-3">
                   Integrations
                 </div>
-                {integrationsItems.slice(0, 3).map((item, index) => (
-                  <Link
-                    key={index}
-                    href={item.href}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    <div className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
-                      {item.icon}
-                      <span className="text-sm font-medium">{item.title}</span>
-                    </div>
-                  </Link>
-                ))}
+                {integrationsItems.slice(0, 3).map((item, index) => {
+                  const hasAccess = hasActiveSubscription ? hasFeatureAccess(item.feature || "") : true;
+                  const isLocked = hasActiveSubscription && !hasAccess;
+                  
+                  return (
+                    <Link
+                      key={index}
+                      href={isLocked ? "/pricing" : item.href}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <div className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                        {isLocked ? (
+                          <Lock className="w-5 h-5 text-gray-500" />
+                        ) : (
+                          item.icon
+                        )}
+                        <span className="text-sm font-medium">{item.title}</span>
+                        {isLocked && (
+                          <Badge variant="outline" className="text-xs ml-auto">
+                            {userPlan === "Creator" ? "Influencer+" : "Superstar"}
+                          </Badge>
+                        )}
+                      </div>
+                    </Link>
+                  );
+                })}
               </div>
 
               {/* Mobile Navigation Links */}
