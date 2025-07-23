@@ -431,9 +431,9 @@ export default function Navbar({ user = null }: NavbarProps) {
               >
                 <div className="grid gap-3">
                   {featuresItems.map((item, index) => {
+                    // For non-subscribed users, always show feature pages
                     // For subscribed users, check feature access
-                    const hasAccess = hasActiveSubscription ? hasFeatureAccess(item.feature || "") : true;
-                    const isLocked = hasActiveSubscription && !hasAccess;
+                    const isLocked = hasActiveSubscription && !hasFeatureAccess(item.feature || "");
                     
                     return (
                       <Link
@@ -506,9 +506,9 @@ export default function Navbar({ user = null }: NavbarProps) {
               >
                 <div className="grid gap-3">
                   {integrationsItems.map((item, index) => {
+                    // For non-subscribed users, always show integration pages
                     // For subscribed users, check feature access
-                    const hasAccess = hasActiveSubscription ? hasFeatureAccess(item.feature || "") : true;
-                    const isLocked = hasActiveSubscription && !hasAccess;
+                    const isLocked = hasActiveSubscription && !hasFeatureAccess(item.feature || "");
                     
                     return (
                       <Link

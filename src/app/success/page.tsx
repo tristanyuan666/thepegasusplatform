@@ -150,9 +150,26 @@ function SuccessContent() {
 
   useEffect(() => {
     if (!loading && !needsSignIn && plan && billing && subscriptionFound) {
-      setTimeout(() => {
+      setTimeout(async () => {
         setRedirecting(true);
-        window.location.href = "/dashboard";
+        // Check if user has completed onboarding
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const { data: profile } = await supabase
+            .from("user_profiles")
+            .select("onboarding_completed")
+            .eq("user_id", user.id)
+            .single();
+          
+          if (profile?.onboarding_completed) {
+            window.location.href = "/dashboard";
+          } else {
+            window.location.href = "/onboarding";
+          }
+        } else {
+          window.location.href = "/dashboard";
+        }
       }, 3000);
     }
   }, [loading, needsSignIn, plan, billing, subscriptionFound]);
@@ -381,13 +398,31 @@ function SuccessContent() {
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-4 pt-4">
                 <Button
-                  asChild
+                  onClick={async () => {
+                    const supabase = createClient();
+                    const { data: { user } } = await supabase.auth.getUser();
+                    if (user) {
+                      const { data: profile } = await supabase
+                        .from("user_profiles")
+                        .select("onboarding_completed")
+                        .eq("user_id", user.id)
+                        .single();
+                      
+                      if (profile?.onboarding_completed) {
+                        window.location.href = "/dashboard";
+                      } else {
+                        window.location.href = "/onboarding";
+                      }
+                    } else {
+                      window.location.href = "/dashboard";
+                    }
+                  }}
                   className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
                 >
-                  <Link href="/dashboard" className="flex items-center gap-2">
-                    Go to Dashboard
+                  <span className="flex items-center gap-2">
+                    Get Started
                     <ArrowRight className="w-4 h-4" />
-                  </Link>
+                  </span>
                 </Button>
                 <Button asChild variant="outline" className="flex-1">
                   <Link href="/features/ai-content" className="flex items-center gap-2">
