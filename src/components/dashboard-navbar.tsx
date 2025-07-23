@@ -59,7 +59,6 @@ interface DashboardNavbarProps {
   userProfile: UserProfile;
   subscription: Subscription | null;
   activeTab: DashboardTab;
-  onTabChange: (tab: DashboardTab) => void;
   hasFeatureAccess: (feature: string) => boolean;
 }
 
@@ -68,7 +67,6 @@ export default function DashboardNavbar({
   userProfile,
   subscription,
   activeTab,
-  onTabChange,
   hasFeatureAccess,
 }: DashboardNavbarProps) {
   const [isMounted, setIsMounted] = useState(false);
@@ -145,66 +143,71 @@ export default function DashboardNavbar({
 
         {/* Navigation Tabs */}
         <div className="hidden md:flex items-center gap-1">
-          <Button
-            variant={activeTab === "home" ? "default" : "ghost"}
-            size="sm"
-            onClick={() => onTabChange("home")}
-            className="hover-target interactive-element"
-            data-interactive="true"
-          >
-            <Home className="h-4 w-4 mr-2" />
-            Home
-          </Button>
-          
-          {hasFeatureAccess("analytics") && (
+          <Link href="/dashboard?tab=home">
             <Button
-              variant={activeTab === "analytics" ? "default" : "ghost"}
+              variant={activeTab === "home" ? "default" : "ghost"}
               size="sm"
-              onClick={() => onTabChange("analytics")}
               className="hover-target interactive-element"
               data-interactive="true"
             >
-              <BarChart3 className="h-4 w-4 mr-2" />
-              Analytics
+              <Home className="h-4 w-4 mr-2" />
+              Home
             </Button>
+          </Link>
+          
+          {hasFeatureAccess("analytics") && (
+            <Link href="/dashboard?tab=analytics">
+              <Button
+                variant={activeTab === "analytics" ? "default" : "ghost"}
+                size="sm"
+                className="hover-target interactive-element"
+                data-interactive="true"
+              >
+                <BarChart3 className="h-4 w-4 mr-2" />
+                Analytics
+              </Button>
+            </Link>
           )}
           
           {hasFeatureAccess("revenue") && (
-            <Button
-              variant={activeTab === "revenue" ? "default" : "ghost"}
-              size="sm"
-              onClick={() => onTabChange("revenue")}
-              className="hover-target interactive-element"
-              data-interactive="true"
-            >
-              <DollarSign className="h-4 w-4 mr-2" />
-              Revenue
-            </Button>
+            <Link href="/dashboard?tab=revenue">
+              <Button
+                variant={activeTab === "revenue" ? "default" : "ghost"}
+                size="sm"
+                className="hover-target interactive-element"
+                data-interactive="true"
+              >
+                <DollarSign className="h-4 w-4 mr-2" />
+                Revenue
+              </Button>
+            </Link>
           )}
           
           {hasFeatureAccess("platforms") && (
+            <Link href="/dashboard?tab=platforms">
+              <Button
+                variant={activeTab === "platforms" ? "default" : "ghost"}
+                size="sm"
+                className="hover-target interactive-element"
+                data-interactive="true"
+              >
+                <Target className="h-4 w-4 mr-2" />
+                Platforms
+              </Button>
+            </Link>
+          )}
+          
+          <Link href="/dashboard?tab=settings">
             <Button
-              variant={activeTab === "platforms" ? "default" : "ghost"}
+              variant={activeTab === "settings" ? "default" : "ghost"}
               size="sm"
-              onClick={() => onTabChange("platforms")}
               className="hover-target interactive-element"
               data-interactive="true"
             >
-              <Target className="h-4 w-4 mr-2" />
-              Platforms
+              <Settings className="h-4 w-4 mr-2" />
+              Settings
             </Button>
-          )}
-          
-          <Button
-            variant={activeTab === "settings" ? "default" : "ghost"}
-            size="sm"
-            onClick={() => onTabChange("settings")}
-            className="hover-target interactive-element"
-            data-interactive="true"
-          >
-            <Settings className="h-4 w-4 mr-2" />
-            Settings
-          </Button>
+          </Link>
         </div>
 
         {/* User Menu */}

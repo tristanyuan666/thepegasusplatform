@@ -57,7 +57,7 @@ export default async function ProfilePage() {
         userProfile={userProfile as any}
         subscription={subscription}
         activeTab="settings"
-        onTabChange={() => {}}
+
         hasFeatureAccess={hasFeatureAccess}
       />
       <div className="min-h-screen bg-gray-50">

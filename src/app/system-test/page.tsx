@@ -50,7 +50,7 @@ export default async function SystemTestPage() {
         userProfile={userProfile as any}
         subscription={subscription}
         activeTab="home"
-        onTabChange={() => {}}
+
         hasFeatureAccess={hasFeatureAccess}
       />
       <div className="min-h-screen bg-gray-50">

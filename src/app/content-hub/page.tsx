@@ -62,7 +62,6 @@ export default async function ContentHubPage() {
         userProfile={userProfile}
         subscription={subscription}
         activeTab="home"
-        onTabChange={() => {}}
         hasFeatureAccess={hasFeatureAccess}
       />
       <ContentCreationHub

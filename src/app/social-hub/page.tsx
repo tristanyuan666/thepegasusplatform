@@ -54,7 +54,7 @@ export default async function SocialHubPage() {
         userProfile={userProfile as any}
         subscription={subscription}
         activeTab="platforms"
-        onTabChange={() => {}}
+
         hasFeatureAccess={hasFeatureAccess}
       />
       {/* SocialPlatformHub component is not implemented */}
