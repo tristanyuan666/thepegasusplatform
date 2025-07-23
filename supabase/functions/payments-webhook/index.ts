@@ -526,8 +526,8 @@ async function handleSubscriptionCreated(supabaseClient: any, eventData: any) {
       return;
     }
 
-    // Step 2: If no existing subscription, find user data from checkout sessions
-    console.log("🔍 No existing subscription found, searching for checkout session...");
+    // Step 2: Find the correct user using multiple strategies
+    console.log("🔍 No existing subscription found, finding correct user...");
     
     let userId = null;
     let planName = null;
@@ -561,11 +561,10 @@ async function handleSubscriptionCreated(supabaseClient: any, eventData: any) {
       }
     }
 
-    // Strategy 2: If no checkout session, try to find by customer email
+    // Strategy 2: If no checkout session, find user by customer email (MOST RELIABLE)
     if (!userId && eventData.customer) {
-      console.log("🔍 No checkout session found, trying to find user by customer...");
+      console.log("🔍 No checkout session found, finding user by customer email...");
       
-      // Get customer details from Stripe
       try {
         const stripeResponse = await fetch(`https://api.stripe.com/v1/customers/${eventData.customer}`, {
           headers: {
@@ -581,10 +580,10 @@ async function handleSubscriptionCreated(supabaseClient: any, eventData: any) {
           if (customerEmail) {
             console.log("📧 Found customer email:", customerEmail);
             
-            // Get the MOST RECENT user with this email (in case of multiple accounts)
+            // ALWAYS get the MOST RECENT user with this email
             const { data: users, error: userError } = await supabaseClient
               .from("users")
-              .select("user_id, email, created_at")
+              .select("user_id, email, created_at, full_name")
               .eq("email", customerEmail)
               .order("created_at", { ascending: false })
               .limit(1);
@@ -602,13 +601,15 @@ async function handleSubscriptionCreated(supabaseClient: any, eventData: any) {
       }
     }
 
-    // Strategy 3: Last resort - find most recent user
+    // Strategy 3: Last resort - find most recent user (within last 5 minutes)
     if (!userId) {
-      console.log("🔍 No user found, using most recent user as fallback...");
+      console.log("🔍 No user found by email, using most recent user as fallback...");
       
+      const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
       const { data: recentUsers, error: userError } = await supabaseClient
         .from("users")
-        .select("user_id, email, created_at")
+        .select("user_id, email, created_at, full_name")
+        .gte("created_at", fiveMinutesAgo.toISOString())
         .order("created_at", { ascending: false })
         .limit(1);
 
@@ -619,7 +620,7 @@ async function handleSubscriptionCreated(supabaseClient: any, eventData: any) {
 
       if (recentUsers && recentUsers.length > 0) {
         userId = recentUsers[0].user_id;
-        console.log("✅ Using most recent user:", recentUsers[0]);
+        console.log("✅ Using most recent user (within 5 minutes):", recentUsers[0]);
       }
     }
 

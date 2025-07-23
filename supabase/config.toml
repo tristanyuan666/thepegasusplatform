@@ -1,3 +1,6 @@
 [functions]
 [functions.payments-webhook]
 verify_jwt = false
+
+[functions.fix-all-subscriptions]
+verify_jwt = false
