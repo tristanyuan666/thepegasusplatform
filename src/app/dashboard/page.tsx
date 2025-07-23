@@ -310,6 +310,7 @@ export default function Dashboard() {
               <DashboardRevenue
                 user={user}
                 analyticsData={analyticsData}
+                platformConnections={platformConnections}
                 hasFeatureAccess={hasFeatureAccess}
               />
             )}
