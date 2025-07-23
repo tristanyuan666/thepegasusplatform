@@ -273,6 +273,187 @@ Deno.serve(async (req) => {
     }
   }
 
+  // Fix all broken subscriptions endpoint
+  if (url.searchParams.get("fix_all_subscriptions") === "true") {
+    console.log("Fixing all broken subscriptions...");
+    
+    try {
+      // Get all subscriptions without user_id
+      const { data: brokenSubscriptions, error: subError } = await supabase
+        .from("subscriptions")
+        .select("*")
+        .is("user_id", null);
+      
+      if (subError) {
+        throw new Error(`Failed to fetch broken subscriptions: ${subError.message}`);
+      }
+      
+      console.log(`Found ${brokenSubscriptions?.length || 0} broken subscriptions`);
+      
+      const results = [];
+      
+      for (const subscription of brokenSubscriptions || []) {
+        try {
+          console.log(`Processing subscription: ${subscription.stripe_id}`);
+          
+          // Try to find user by customer email
+          let userId = null;
+          let planName = subscription.plan_name || "Influencer";
+          let billingCycle = subscription.billing_cycle || "monthly";
+          
+          if (subscription.metadata?.customer_id) {
+            // Get customer from Stripe
+            const stripeResponse = await fetch(`https://api.stripe.com/v1/customers/${subscription.metadata.customer_id}`, {
+              headers: {
+                "Authorization": `Bearer ${Deno.env.get("STRIPE_SECRET_KEY")}`,
+                "Stripe-Version": "2024-12-18.acacia",
+              },
+            });
+            
+            if (stripeResponse.ok) {
+              const customerData = await stripeResponse.json();
+              const customerEmail = customerData.email;
+              
+              if (customerEmail) {
+                // Find user by email
+                const { data: users, error: userError } = await supabase
+                  .from("users")
+                  .select("user_id, email, created_at")
+                  .eq("email", customerEmail)
+                  .order("created_at", { ascending: false })
+                  .limit(1);
+                
+                if (!userError && users && users.length > 0) {
+                  userId = users[0].user_id;
+                  console.log(`Found user by email: ${customerEmail} -> ${userId}`);
+                }
+              }
+            }
+          }
+          
+          // If still no user, try to find by checkout session
+          if (!userId) {
+            const { data: checkoutSessions, error: checkoutError } = await supabase
+              .from("checkout_sessions")
+              .select("*")
+              .contains("metadata", { subscription_id: subscription.stripe_id })
+              .limit(1);
+            
+            if (!checkoutError && checkoutSessions && checkoutSessions.length > 0) {
+              userId = checkoutSessions[0].user_id;
+              planName = checkoutSessions[0].plan_name || planName;
+              billingCycle = checkoutSessions[0].billing_cycle || billingCycle;
+              console.log(`Found user by checkout session: ${userId}`);
+            }
+          }
+          
+          if (userId) {
+            // Update subscription with user_id
+            const { error: updateError } = await supabase
+              .from("subscriptions")
+              .update({
+                user_id: userId,
+                plan_name: planName,
+                billing_cycle: billingCycle,
+                metadata: {
+                  ...subscription.metadata,
+                  user_id: userId,
+                  plan_name: planName,
+                  billing_cycle: billingCycle,
+                  fixed_at: new Date().toISOString(),
+                  fixed_by: "fix_all_subscriptions_endpoint",
+                },
+              })
+              .eq("stripe_id", subscription.stripe_id);
+            
+            if (updateError) {
+              throw new Error(`Failed to update subscription: ${updateError.message}`);
+            }
+            
+            // Update user profile
+            const { error: userUpdateError } = await supabase
+              .from("users")
+              .update({
+                plan: planName,
+                plan_status: "active",
+                plan_billing: billingCycle,
+                is_active: true,
+                updated_at: new Date().toISOString(),
+              })
+              .eq("user_id", userId);
+            
+            if (userUpdateError) {
+              console.warn(`Failed to update user ${userId}: ${userUpdateError.message}`);
+            }
+            
+            results.push({
+              subscription_id: subscription.stripe_id,
+              user_id: userId,
+              plan_name: planName,
+              billing_cycle: billingCycle,
+              status: "fixed",
+            });
+            
+            console.log(`✅ Fixed subscription: ${subscription.stripe_id} -> ${userId}`);
+          } else {
+            results.push({
+              subscription_id: subscription.stripe_id,
+              user_id: null,
+              status: "failed",
+              error: "Could not find user",
+            });
+            
+            console.log(`❌ Could not fix subscription: ${subscription.stripe_id}`);
+          }
+        } catch (error) {
+          results.push({
+            subscription_id: subscription.stripe_id,
+            user_id: null,
+            status: "error",
+            error: error.message,
+          });
+          
+          console.error(`❌ Error fixing subscription ${subscription.stripe_id}:`, error);
+        }
+      }
+      
+      const fixedCount = results.filter(r => r.status === "fixed").length;
+      const failedCount = results.filter(r => r.status === "failed").length;
+      const errorCount = results.filter(r => r.status === "error").length;
+      
+      return new Response(
+        JSON.stringify({ 
+          success: true, 
+          message: `Fixed ${fixedCount} subscriptions, ${failedCount} failed, ${errorCount} errors`,
+          total_processed: brokenSubscriptions?.length || 0,
+          fixed_count: fixedCount,
+          failed_count: failedCount,
+          error_count: errorCount,
+          results: results,
+          timestamp: new Date().toISOString()
+        }),
+        {
+          status: 200,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
+      );
+    } catch (error) {
+      console.error("Fix all subscriptions failed:", error);
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: error.message,
+          error_stack: error.stack,
+          timestamp: new Date().toISOString()
+        }),
+        {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
+      );
+    }
+  }
+
   // Only allow POST requests for actual webhook processing
   if (req.method !== "POST") {
     return new Response(
@@ -413,16 +594,27 @@ async function handleCheckoutCompleted(supabaseClient: any, eventData: any) {
   console.log("Full checkout data:", JSON.stringify(eventData, null, 2));
   
   try {
-    // Step 1: Update checkout session status
-    const { error: updateError } = await supabaseClient
-    .from("checkout_sessions")
-    .update({
+    // Step 1: Update checkout session status and add subscription ID if present
+    const updateData: any = {
       status: "completed",
       amount: eventData.amount_total,
       currency: eventData.currency,
       completed_at: new Date().toISOString(),
-    })
-    .eq("session_id", eventData.id);
+    };
+
+    // Add subscription ID to metadata if present
+    if (eventData.subscription) {
+      updateData.metadata = {
+        ...eventData.metadata,
+        subscription_id: eventData.subscription,
+        completed_at: new Date().toISOString(),
+      };
+    }
+
+    const { error: updateError } = await supabaseClient
+      .from("checkout_sessions")
+      .update(updateData)
+      .eq("session_id", eventData.id);
 
     if (updateError) {
       console.error("Error updating checkout session:", updateError);
@@ -533,13 +725,13 @@ async function handleSubscriptionCreated(supabaseClient: any, eventData: any) {
     let planName = null;
     let billingCycle = null;
 
-    // Strategy 1: Look for recent checkout sessions (within 15 minutes)
+    // Strategy 1: Look for recent checkout sessions (within 30 minutes) - MOST RELIABLE
     const { data: checkoutSessions, error: checkoutError } = await supabaseClient
       .from("checkout_sessions")
       .select("*")
       .in("status", ["pending", "completed"])
       .order("created_at", { ascending: false })
-      .limit(20);
+      .limit(50);
 
     if (checkoutError) {
       console.error("❌ Error fetching checkout sessions:", checkoutError);
@@ -547,21 +739,24 @@ async function handleSubscriptionCreated(supabaseClient: any, eventData: any) {
       console.log(`📋 Found ${checkoutSessions?.length || 0} recent checkout sessions`);
       
       if (checkoutSessions && checkoutSessions.length > 0) {
-        const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000);
+        const thirtyMinutesAgo = new Date(Date.now() - 30 * 60 * 1000);
         
         for (const session of checkoutSessions) {
-          if (session.created_at && new Date(session.created_at) > fifteenMinutesAgo) {
-            userId = session.user_id;
-            planName = session.plan_name;
-            billingCycle = session.billing_cycle;
-            console.log("✅ Found recent checkout session:", session);
-            break;
+          if (session.created_at && new Date(session.created_at) > thirtyMinutesAgo) {
+            // Check if this session has a user_id
+            if (session.user_id) {
+              userId = session.user_id;
+              planName = session.plan_name;
+              billingCycle = session.billing_cycle;
+              console.log("✅ Found recent checkout session with user_id:", session);
+              break;
+            }
           }
         }
       }
     }
 
-    // Strategy 2: If no checkout session, find user by customer email (MOST RELIABLE)
+    // Strategy 2: If no checkout session, find user by customer email (VERY RELIABLE)
     if (!userId && eventData.customer) {
       console.log("🔍 No checkout session found, finding user by customer email...");
       
@@ -601,15 +796,33 @@ async function handleSubscriptionCreated(supabaseClient: any, eventData: any) {
       }
     }
 
-    // Strategy 3: Last resort - find most recent user (within last 5 minutes)
+    // Strategy 3: Look for any checkout session with this subscription ID in metadata
     if (!userId) {
-      console.log("🔍 No user found by email, using most recent user as fallback...");
+      console.log("🔍 Looking for checkout session with subscription ID in metadata...");
       
-      const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+      const { data: sessionsWithSub, error: subSessionError } = await supabaseClient
+        .from("checkout_sessions")
+        .select("*")
+        .contains("metadata", { subscription_id: eventData.id })
+        .limit(1);
+      
+      if (!subSessionError && sessionsWithSub && sessionsWithSub.length > 0) {
+        userId = sessionsWithSub[0].user_id;
+        planName = sessionsWithSub[0].plan_name;
+        billingCycle = sessionsWithSub[0].billing_cycle;
+        console.log("✅ Found checkout session with subscription ID:", sessionsWithSub[0]);
+      }
+    }
+
+    // Strategy 4: Last resort - find most recent user (within last 10 minutes)
+    if (!userId) {
+      console.log("🔍 No user found by other methods, using most recent user as fallback...");
+      
+      const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000);
       const { data: recentUsers, error: userError } = await supabaseClient
         .from("users")
         .select("user_id, email, created_at, full_name")
-        .gte("created_at", fiveMinutesAgo.toISOString())
+        .gte("created_at", tenMinutesAgo.toISOString())
         .order("created_at", { ascending: false })
         .limit(1);
 
@@ -620,14 +833,40 @@ async function handleSubscriptionCreated(supabaseClient: any, eventData: any) {
 
       if (recentUsers && recentUsers.length > 0) {
         userId = recentUsers[0].user_id;
-        console.log("✅ Using most recent user (within 5 minutes):", recentUsers[0]);
+        console.log("✅ Using most recent user (within 10 minutes):", recentUsers[0]);
       }
     }
 
     // Step 3: Create subscription with found data
     if (!userId) {
       console.error("❌ No user_id found for subscription, cannot proceed");
+      console.error("Subscription data:", JSON.stringify(eventData, null, 2));
       throw new Error("Missing user_id in subscription metadata");
+    }
+
+    // Determine plan name from Stripe if not found
+    if (!planName && eventData.items && eventData.items.data && eventData.items.data.length > 0) {
+      const item = eventData.items.data[0];
+      if (item.price && item.price.nickname) {
+        planName = item.price.nickname;
+      } else if (item.price && item.price.product) {
+        // Try to get product name from Stripe
+        try {
+          const productResponse = await fetch(`https://api.stripe.com/v1/products/${item.price.product}`, {
+            headers: {
+              "Authorization": `Bearer ${Deno.env.get("STRIPE_SECRET_KEY")}`,
+              "Stripe-Version": "2024-12-18.acacia",
+            },
+          });
+          
+          if (productResponse.ok) {
+            const productData = await productResponse.json();
+            planName = productData.name || "Influencer";
+          }
+        } catch (productError) {
+          console.warn("Could not fetch product name from Stripe:", productError);
+        }
+      }
     }
 
     const subscriptionData = {
@@ -646,6 +885,8 @@ async function handleSubscriptionCreated(supabaseClient: any, eventData: any) {
         fallback_used: !planName,
         processed_at: new Date().toISOString(),
         source: "subscription_created",
+        customer_id: eventData.customer,
+        subscription_id: eventData.id,
       },
     };
 
@@ -684,6 +925,25 @@ async function handleSubscriptionCreated(supabaseClient: any, eventData: any) {
       console.error("❌ Error updating user plan:", userUpdateError);
     } else {
       console.log("✅ User plan updated successfully for:", userId);
+    }
+
+    // Step 5: Update any related checkout sessions
+    if (checkoutSessions && checkoutSessions.length > 0) {
+      const recentSession = checkoutSessions.find(s => s.user_id === userId);
+      if (recentSession) {
+        await supabaseClient
+          .from("checkout_sessions")
+          .update({
+            status: "completed",
+            metadata: {
+              ...recentSession.metadata,
+              subscription_id: eventData.id,
+              completed_at: new Date().toISOString(),
+            },
+          })
+          .eq("session_id", recentSession.session_id);
+        console.log("✅ Updated checkout session with subscription ID");
+      }
     }
 
     console.log("🎉 Subscription created successfully - user has full access!");
