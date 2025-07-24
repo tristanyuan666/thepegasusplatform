@@ -189,23 +189,41 @@ function DashboardContent() {
         .eq("user_id", currentUser.id)
         .eq("is_active", true);
 
-      if (connectionsError) throw connectionsError;
-      setPlatformConnections(connections || []);
+      if (connectionsError) {
+        console.warn("Platform connections error:", connectionsError);
+        setPlatformConnections([]);
+      } else {
+        setPlatformConnections(connections || []);
+      }
 
       // Get real analytics data (only if platforms are connected)
       if (connections && connections.length > 0) {
-        const { data: analytics, error: analyticsError } = await supabase
-          .from("analytics")
-          .select("*")
-          .eq("user_id", currentUser.id)
-          .order("created_at", { ascending: false })
-          .limit(1)
-          .maybeSingle();
+        try {
+          const { data: analytics, error: analyticsError } = await supabase
+            .from("analytics")
+            .select("*")
+            .eq("user_id", currentUser.id)
+            .order("created_at", { ascending: false })
+            .limit(1)
+            .maybeSingle();
 
-        if (!analyticsError && analytics) {
-          setAnalyticsData(analytics);
-        } else {
-          // Set default analytics data for connected platforms
+          if (!analyticsError && analytics) {
+            setAnalyticsData(analytics);
+          } else {
+            // Set default analytics data for connected platforms
+            setAnalyticsData({
+              total_followers: 0,
+              total_views: 0,
+              engagement_rate: 0,
+              viral_score: 0,
+              content_count: 0,
+              revenue: 0,
+              growth_rate: 0,
+            });
+          }
+        } catch (analyticsError) {
+          console.warn("Analytics error:", analyticsError);
+          // Set default analytics data
           setAnalyticsData({
             total_followers: 0,
             total_views: 0,
