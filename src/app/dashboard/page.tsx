@@ -311,8 +311,8 @@ function DashboardContent() {
           
           {activeTab === "revenue" && hasFeatureAccess("revenue") && (
             <DashboardRevenue
-              userProfile={userProfile}
-              subscription={subscription}
+                    userProfile={userProfile}
+                    subscription={subscription}
               hasFeatureAccess={hasFeatureAccess}
             />
           )}
@@ -328,14 +328,14 @@ function DashboardContent() {
           {activeTab === "settings" && (
             <DashboardSettings
               userProfile={userProfile}
-              subscription={subscription}
+                  subscription={subscription}
               onProfileUpdate={() => fetchUserData()}
               hasFeatureAccess={hasFeatureAccess}
-            />
+                />
           )}
         </div>
       </main>
-    </div>
+      </div>
   );
 }
 
