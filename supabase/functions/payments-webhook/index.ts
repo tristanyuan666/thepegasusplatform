@@ -273,164 +273,178 @@ Deno.serve(async (req) => {
     }
   }
 
-  // Fix all broken subscriptions endpoint
+  // Recovery endpoint to fix all broken subscriptions
   if (url.searchParams.get("fix_all_subscriptions") === "true") {
-    console.log("Fixing all broken subscriptions...");
+    console.log("=== RECOVERY: Fixing all broken subscriptions ===");
     
     try {
-      // Get all subscriptions without user_id
-      const { data: brokenSubscriptions, error: subError } = await supabase
+      // Step 1: Find all subscriptions with null user_id
+      const { data: brokenSubs, error: brokenError } = await supabase
         .from("subscriptions")
         .select("*")
         .is("user_id", null);
-      
-      if (subError) {
-        throw new Error(`Failed to fetch broken subscriptions: ${subError.message}`);
+
+      if (brokenError) {
+        throw new Error(`Failed to fetch broken subscriptions: ${brokenError.message}`);
       }
-      
-      console.log(`Found ${brokenSubscriptions?.length || 0} broken subscriptions`);
-      
+
+      console.log(`Found ${brokenSubs?.length || 0} broken subscriptions`);
+
+      if (!brokenSubs || brokenSubs.length === 0) {
+        return new Response(
+          JSON.stringify({ 
+            success: true, 
+            message: "No broken subscriptions found",
+            fixed_count: 0
+          }),
+          {
+            status: 200,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          },
+        );
+      }
+
+      let fixedCount = 0;
       const results = [];
-      
-      for (const subscription of brokenSubscriptions || []) {
+
+      for (const sub of brokenSubs) {
+        console.log(`Fixing subscription: ${sub.stripe_id}`);
+        
         try {
-          console.log(`Processing subscription: ${subscription.stripe_id}`);
-          
-          // Try to find user by customer email
+          // Strategy 1: Try to find user by customer ID via Stripe
           let userId = null;
-          let planName = subscription.plan_name || "Influencer";
-          let billingCycle = subscription.billing_cycle || "monthly";
           
-          if (subscription.metadata?.customer_id) {
-            // Get customer from Stripe
-            const stripeResponse = await fetch(`https://api.stripe.com/v1/customers/${subscription.metadata.customer_id}`, {
-              headers: {
-                "Authorization": `Bearer ${Deno.env.get("STRIPE_SECRET_KEY")}`,
-                "Stripe-Version": "2024-12-18.acacia",
-              },
-            });
-            
-            if (stripeResponse.ok) {
-              const customerData = await stripeResponse.json();
-              const customerEmail = customerData.email;
+          if (sub.metadata?.customer_id) {
+            try {
+              const stripeResponse = await fetch(`https://api.stripe.com/v1/customers/${sub.metadata.customer_id}`, {
+                headers: {
+                  "Authorization": `Bearer ${Deno.env.get("STRIPE_SECRET_KEY")}`,
+                  "Stripe-Version": "2024-12-18.acacia",
+                },
+              });
               
-              if (customerEmail) {
-                // Find user by email
-                const { data: users, error: userError } = await supabase
-                  .from("users")
-                  .select("user_id, email, created_at")
-                  .eq("email", customerEmail)
-                  .order("created_at", { ascending: false })
-                  .limit(1);
+              if (stripeResponse.ok) {
+                const customerData = await stripeResponse.json();
+                const customerEmail = customerData.email;
                 
-                if (!userError && users && users.length > 0) {
-                  userId = users[0].user_id;
-                  console.log(`Found user by email: ${customerEmail} -> ${userId}`);
+                if (customerEmail) {
+                  const { data: users, error: userError } = await supabase
+                    .from("users")
+                    .select("user_id, email, created_at")
+                    .eq("email", customerEmail)
+                    .order("created_at", { ascending: false })
+                    .limit(1);
+                  
+                  if (!userError && users && users.length > 0) {
+                    userId = users[0].user_id;
+                    console.log(`Found user by customer email: ${customerEmail}`);
+                  }
                 }
               }
+            } catch (stripeError) {
+              console.warn(`Failed to fetch customer ${sub.metadata.customer_id}:`, stripeError);
             }
           }
-          
-          // If still no user, try to find by checkout session
-          if (!userId) {
-            const { data: checkoutSessions, error: checkoutError } = await supabase
+
+          // Strategy 2: Look for checkout sessions with this subscription ID
+          if (!userId && sub.metadata?.subscription_id) {
+            const { data: sessions, error: sessionError } = await supabase
               .from("checkout_sessions")
               .select("*")
-              .contains("metadata", { subscription_id: subscription.stripe_id })
+              .contains("metadata", { subscription_id: sub.metadata.subscription_id })
               .limit(1);
             
-            if (!checkoutError && checkoutSessions && checkoutSessions.length > 0) {
-              userId = checkoutSessions[0].user_id;
-              planName = checkoutSessions[0].plan_name || planName;
-              billingCycle = checkoutSessions[0].billing_cycle || billingCycle;
-              console.log(`Found user by checkout session: ${userId}`);
+            if (!sessionError && sessions && sessions.length > 0) {
+              userId = sessions[0].user_id;
+              console.log(`Found user by checkout session: ${sessions[0].session_id}`);
             }
           }
-          
+
+          // Strategy 3: Look for recent checkout sessions (within 1 hour of subscription creation)
+          if (!userId) {
+            const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+            const { data: recentSessions, error: recentError } = await supabase
+              .from("checkout_sessions")
+              .select("*")
+              .gte("created_at", oneHourAgo.toISOString())
+              .order("created_at", { ascending: false })
+              .limit(10);
+            
+            if (!recentError && recentSessions && recentSessions.length > 0) {
+              // Use the most recent session
+              userId = recentSessions[0].user_id;
+              console.log(`Found user by recent checkout session: ${recentSessions[0].session_id}`);
+            }
+          }
+
           if (userId) {
-            // Update subscription with user_id
+            // Update the subscription with the found user_id
             const { error: updateError } = await supabase
               .from("subscriptions")
               .update({
                 user_id: userId,
-                plan_name: planName,
-                billing_cycle: billingCycle,
                 metadata: {
-                  ...subscription.metadata,
-                  user_id: userId,
-                  plan_name: planName,
-                  billing_cycle: billingCycle,
+                  ...sub.metadata,
                   fixed_at: new Date().toISOString(),
-                  fixed_by: "fix_all_subscriptions_endpoint",
-                },
+                  fixed_by: "recovery_endpoint",
+                  original_user_id: sub.user_id,
+                }
               })
-              .eq("stripe_id", subscription.stripe_id);
-            
+              .eq("stripe_id", sub.stripe_id);
+
             if (updateError) {
               throw new Error(`Failed to update subscription: ${updateError.message}`);
             }
-            
-            // Update user profile
-            const { error: userUpdateError } = await supabase
+
+            // Update user profile with subscription info
+            const { error: profileError } = await supabase
               .from("users")
               .update({
-                plan: planName,
-                plan_status: "active",
-                plan_billing: billingCycle,
-                is_active: true,
+                plan: sub.plan_name,
+                plan_status: sub.status,
+                plan_billing: sub.billing_cycle,
+                is_active: sub.status === "active",
                 updated_at: new Date().toISOString(),
               })
               .eq("user_id", userId);
-            
-            if (userUpdateError) {
-              console.warn(`Failed to update user ${userId}: ${userUpdateError.message}`);
+
+            if (profileError) {
+              console.warn(`Failed to update user profile: ${profileError.message}`);
             }
-            
+
+            fixedCount++;
             results.push({
-              subscription_id: subscription.stripe_id,
+              subscription_id: sub.stripe_id,
               user_id: userId,
-              plan_name: planName,
-              billing_cycle: billingCycle,
-              status: "fixed",
+              status: "fixed"
             });
             
-            console.log(`✅ Fixed subscription: ${subscription.stripe_id} -> ${userId}`);
+            console.log(`✅ Fixed subscription ${sub.stripe_id} for user ${userId}`);
           } else {
             results.push({
-              subscription_id: subscription.stripe_id,
-              user_id: null,
+              subscription_id: sub.stripe_id,
               status: "failed",
-              error: "Could not find user",
+              reason: "No user found"
             });
-            
-            console.log(`❌ Could not fix subscription: ${subscription.stripe_id}`);
+            console.log(`❌ Could not find user for subscription ${sub.stripe_id}`);
           }
-        } catch (error) {
+        } catch (subError) {
           results.push({
-            subscription_id: subscription.stripe_id,
-            user_id: null,
+            subscription_id: sub.stripe_id,
             status: "error",
-            error: error.message,
+            error: subError.message
           });
-          
-          console.error(`❌ Error fixing subscription ${subscription.stripe_id}:`, error);
+          console.error(`❌ Error fixing subscription ${sub.stripe_id}:`, subError);
         }
       }
-      
-      const fixedCount = results.filter(r => r.status === "fixed").length;
-      const failedCount = results.filter(r => r.status === "failed").length;
-      const errorCount = results.filter(r => r.status === "error").length;
-      
+
       return new Response(
         JSON.stringify({ 
           success: true, 
-          message: `Fixed ${fixedCount} subscriptions, ${failedCount} failed, ${errorCount} errors`,
-          total_processed: brokenSubscriptions?.length || 0,
+          message: `Recovery completed. Fixed ${fixedCount} out of ${brokenSubs.length} subscriptions.`,
           fixed_count: fixedCount,
-          failed_count: failedCount,
-          error_count: errorCount,
-          results: results,
-          timestamp: new Date().toISOString()
+          total_broken: brokenSubs.length,
+          results: results
         }),
         {
           status: 200,
@@ -438,13 +452,11 @@ Deno.serve(async (req) => {
         },
       );
     } catch (error) {
-      console.error("Fix all subscriptions failed:", error);
+      console.error("Recovery failed:", error);
       return new Response(
         JSON.stringify({ 
           success: false, 
-          error: error.message,
-          error_stack: error.stack,
-          timestamp: new Date().toISOString()
+          error: error.message 
         }),
         {
           status: 500,

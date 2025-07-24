@@ -7,9 +7,9 @@ import { useSearchParams } from "next/navigation";
 import DashboardNavbar from "@/components/dashboard-navbar";
 import DashboardHome from "@/components/dashboard-home";
 import DashboardAnalytics from "@/components/dashboard-analytics";
-import DashboardRevenue from "@/components/dashboard-revenue";
-import DashboardPlatforms from "@/components/dashboard-platforms";
-import DashboardSettings from "@/components/dashboard-settings";
+import DashboardRevenue from "../../components/dashboard-revenue";
+import DashboardPlatforms from "../../components/dashboard-platforms";
+import DashboardSettings from "../../components/dashboard-settings";
 import LoadingSpinner from "@/components/loading-spinner";
 
 type DashboardTab = "home" | "analytics" | "revenue" | "platforms" | "settings";
@@ -18,18 +18,20 @@ interface UserProfile {
   id: string;
   user_id: string;
   email: string | null;
-  name: string | null;
   full_name: string | null;
   avatar_url: string | null;
-  subscription: string | null;
+  plan: string | null;
+  plan_status: string | null;
+  plan_billing: string | null;
+  is_active: boolean;
   niche: string | null;
   tone: string | null;
   content_format: string | null;
   fame_goals: string | null;
-  follower_count: number | null;
-  viral_score: number | null;
-  monetization_forecast: number | null;
-  onboarding_completed: boolean | null;
+  follower_count: string | null;
+  viral_score: number;
+  monetization_forecast: number;
+  onboarding_completed: boolean;
   created_at: string;
   updated_at: string | null;
 }
@@ -281,7 +283,17 @@ function DashboardContent() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <DashboardNavbar 
         user={user}
-        userProfile={userProfile as any}
+        userProfile={{
+          user_id: userProfile.user_id,
+          full_name: userProfile.full_name || "",
+          email: userProfile.email || "",
+          plan: userProfile.plan || "",
+          plan_status: userProfile.plan_status || "",
+          plan_billing: userProfile.plan_billing || "",
+          is_active: userProfile.is_active,
+          created_at: userProfile.created_at,
+          updated_at: userProfile.updated_at || "",
+        }}
         subscription={subscription}
         activeTab={activeTab}
         hasFeatureAccess={hasFeatureAccess}
@@ -292,7 +304,25 @@ function DashboardContent() {
           {activeTab === "home" && (
                 <DashboardHome
                   user={user}
-                  userProfile={userProfile}
+                  userProfile={{
+                    id: userProfile.id,
+                    user_id: userProfile.user_id,
+                    email: userProfile.email,
+                    name: userProfile.full_name,
+                    full_name: userProfile.full_name,
+                    avatar_url: userProfile.avatar_url,
+                    subscription: userProfile.plan,
+                    niche: userProfile.niche,
+                    tone: userProfile.tone,
+                    content_format: userProfile.content_format,
+                    fame_goals: userProfile.fame_goals,
+                    follower_count: userProfile.follower_count ? parseInt(userProfile.follower_count) : null,
+                    viral_score: userProfile.viral_score,
+                    monetization_forecast: userProfile.monetization_forecast,
+                    onboarding_completed: userProfile.onboarding_completed,
+                    created_at: userProfile.created_at,
+                    updated_at: userProfile.updated_at,
+                  }}
                   subscription={subscription}
               platformConnections={platformConnections}
               analyticsData={analyticsData}
