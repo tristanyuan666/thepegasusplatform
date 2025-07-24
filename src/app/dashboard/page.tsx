@@ -311,26 +311,25 @@ function DashboardContent() {
           
           {activeTab === "revenue" && hasFeatureAccess("revenue") && (
             <DashboardRevenue
-              user={user}
-              analyticsData={analyticsData}
-              platformConnections={platformConnections}
+              userProfile={userProfile}
+              subscription={subscription}
               hasFeatureAccess={hasFeatureAccess}
             />
           )}
           {activeTab === "platforms" && hasFeatureAccess("platforms") && (
             <DashboardPlatforms
-              user={user}
+              userProfile={userProfile}
+              subscription={subscription}
               platformConnections={platformConnections}
-              onConnectionsUpdate={setPlatformConnections}
+              onConnectionsUpdate={() => fetchUserData()}
               hasFeatureAccess={hasFeatureAccess}
             />
           )}
           {activeTab === "settings" && (
             <DashboardSettings
-              user={user}
               userProfile={userProfile}
               subscription={subscription}
-              onProfileUpdate={setUserProfile}
+              onProfileUpdate={() => fetchUserData()}
               hasFeatureAccess={hasFeatureAccess}
             />
           )}
