@@ -19,7 +19,7 @@ export default async function ContentHubPage() {
 
   // Fetch user profile
   const { data: userProfile } = await supabase
-    .from("user_profiles")
+    .from("users")
     .select("*")
     .eq("user_id", user.id)
     .single();

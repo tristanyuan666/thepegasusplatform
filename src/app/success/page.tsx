@@ -157,7 +157,7 @@ function SuccessContent() {
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
           const { data: profile } = await supabase
-            .from("user_profiles")
+            .from("users")
             .select("onboarding_completed")
             .eq("user_id", user.id)
             .single();
@@ -403,7 +403,7 @@ function SuccessContent() {
                     const { data: { user } } = await supabase.auth.getUser();
                     if (user) {
                       const { data: profile } = await supabase
-                        .from("user_profiles")
+                        .from("users")
                         .select("onboarding_completed")
                         .eq("user_id", user.id)
                         .single();
