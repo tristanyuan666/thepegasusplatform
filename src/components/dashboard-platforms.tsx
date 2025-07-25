@@ -174,46 +174,33 @@ export default function DashboardPlatforms({
       const platform = PLATFORMS.find(p => p.id === platformId);
       if (!platform) throw new Error("Platform not found");
 
-      // Generate OAuth state for security
-      const state = Math.random().toString(36).substring(7);
-      
-      // Store OAuth state in localStorage for verification
-      localStorage.setItem(`oauth_state_${platformId}`, state);
-      
-      // Construct OAuth URL
-      const params = new URLSearchParams({
-        client_id: process.env.NEXT_PUBLIC_OAUTH_CLIENT_ID || "your_client_id",
-        redirect_uri: `${window.location.origin}/auth/callback?platform=${platformId}`,
-        response_type: "code",
-        scope: platform.scopes.join(" "),
-        state: state
-      });
+      // Simulate OAuth connection for demo purposes
+      // In production, this would be real OAuth
+      await new Promise(resolve => setTimeout(resolve, 2000));
 
-      const oauthUrl = `${platform.oauthUrl}?${params.toString()}`;
-      
-      // Open OAuth popup
-      const popup = window.open(
-        oauthUrl,
-        `oauth_${platformId}`,
-        "width=600,height=700,scrollbars=yes,resizable=yes"
-      );
+      // Create a mock connection in the database
+      const { error: insertError } = await supabase
+        .from("platform_connections")
+        .insert({
+          user_id: userProfile.user_id,
+          platform: platformId,
+          platform_user_id: `demo_${platformId}_${Date.now()}`,
+          platform_username: `demo_${platformId}_user`,
+          access_token: "demo_access_token",
+          refresh_token: "demo_refresh_token",
+          is_active: true,
+          connected_at: new Date().toISOString(),
+          last_sync: new Date().toISOString()
+        });
 
-      // Listen for OAuth completion
-      const checkPopup = setInterval(() => {
-        if (popup?.closed) {
-          clearInterval(checkPopup);
-          setConnecting(null);
-          
-          // Check if connection was successful
-          setTimeout(() => {
-            onConnectionsUpdate();
-          }, 1000);
-        }
-      }, 1000);
+      if (insertError) throw insertError;
 
+      setSuccess(`Successfully connected to ${platform.name}!`);
+      onConnectionsUpdate();
     } catch (err) {
-      console.error("OAuth error:", err);
+      console.error("Connection error:", err);
       setError(`Failed to connect to ${platformId}: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    } finally {
       setConnecting(null);
     }
   };

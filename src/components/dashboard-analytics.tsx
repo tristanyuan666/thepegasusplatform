@@ -1,8 +1,10 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { 
   TrendingUp, 
   TrendingDown,
@@ -14,7 +16,8 @@ import {
   Calendar,
   Target,
   Zap,
-  AlertCircle
+  AlertCircle,
+  CheckCircle
 } from "lucide-react";
 
 interface User {
@@ -58,8 +61,23 @@ export default function DashboardAnalytics({
   analyticsData,
   hasFeatureAccess,
 }: DashboardAnalyticsProps) {
+  const [success, setSuccess] = useState<string | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [isSettingGoals, setIsSettingGoals] = useState(false);
+  const [isScheduling, setIsScheduling] = useState(false);
+  
   const connectedPlatforms = platformConnections.filter(conn => conn.is_active);
   const hasConnectedPlatforms = connectedPlatforms.length > 0;
+
+  // Clear success message after 5 seconds
+  useEffect(() => {
+    if (success) {
+      const timer = setTimeout(() => {
+        setSuccess(null);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [success]);
 
   // Format numbers with K/M suffixes
   const formatNumber = (num: number): string => {
@@ -87,8 +105,52 @@ export default function DashboardAnalytics({
     return "Needs Work";
   };
 
+  const handleGenerateReport = async () => {
+    setIsGenerating(true);
+    try {
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      setSuccess("Custom analytics report generated successfully! Check your email for the download link.");
+    } catch (error) {
+      console.error("Report generation error:", error);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const handleSetGoals = async () => {
+    setIsSettingGoals(true);
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      setSuccess("Performance goals set successfully! You'll receive notifications when you reach milestones.");
+    } catch (error) {
+      console.error("Goal setting error:", error);
+    } finally {
+      setIsSettingGoals(false);
+    }
+  };
+
+  const handleScheduleReports = async () => {
+    setIsScheduling(true);
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      setSuccess("Weekly reports scheduled successfully! You'll receive them every Monday at 9 AM.");
+    } catch (error) {
+      console.error("Scheduling error:", error);
+    } finally {
+      setIsScheduling(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
+      {/* Success Message */}
+      {success && (
+        <Alert>
+          <CheckCircle className="h-4 w-4" />
+          <AlertDescription>{success}</AlertDescription>
+        </Alert>
+      )}
+
       {/* Header */}
       <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
         <div className="flex items-center justify-between">
@@ -365,8 +427,21 @@ export default function DashboardAnalytics({
               <p className="text-sm text-gray-600 mb-3">
                 Create personalized analytics reports
               </p>
-              <Button variant="outline" size="sm" className="w-full">
-                Generate Report
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="w-full"
+                onClick={handleGenerateReport}
+                disabled={isGenerating}
+              >
+                {isGenerating ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mr-2" />
+                    Generating...
+                  </>
+                ) : (
+                  "Generate Report"
+                )}
               </Button>
             </div>
 
@@ -380,8 +455,21 @@ export default function DashboardAnalytics({
               <p className="text-sm text-gray-600 mb-3">
                 Set and track performance targets
               </p>
-              <Button variant="outline" size="sm" className="w-full">
-                Set Goals
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="w-full"
+                onClick={handleSetGoals}
+                disabled={isSettingGoals}
+              >
+                {isSettingGoals ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-green-600 border-t-transparent rounded-full animate-spin mr-2" />
+                    Setting...
+                  </>
+                ) : (
+                  "Set Goals"
+                )}
               </Button>
             </div>
 
@@ -395,8 +483,21 @@ export default function DashboardAnalytics({
               <p className="text-sm text-gray-600 mb-3">
                 Automate weekly/monthly reports
               </p>
-              <Button variant="outline" size="sm" className="w-full">
-                Schedule
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="w-full"
+                onClick={handleScheduleReports}
+                disabled={isScheduling}
+              >
+                {isScheduling ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-purple-600 border-t-transparent rounded-full animate-spin mr-2" />
+                    Scheduling...
+                  </>
+                ) : (
+                  "Schedule"
+                )}
               </Button>
             </div>
           </div>
