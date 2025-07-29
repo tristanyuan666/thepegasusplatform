@@ -415,15 +415,39 @@ export default function Home() {
                     </div>
                   </div>
 
+                  {/* Platform Statistics */}
+                  <div className="grid grid-cols-2 gap-4 mb-6">
+                    <div className="bg-purple-50 rounded-lg p-4 border border-purple-200">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="w-4 h-4 bg-purple-500 rounded-full flex items-center justify-center">
+                          <TrendingUp className="w-2 h-2 text-white" />
+                        </div>
+                        <div className="text-xs text-purple-600 font-semibold">Total Reach</div>
+                      </div>
+                      <div className="text-lg font-bold text-gray-900">12.4M</div>
+                      <div className="text-xs text-green-600">+23% this week</div>
+                    </div>
+                    <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
+                          <Users className="w-2 h-2 text-white" />
+                        </div>
+                        <div className="text-xs text-blue-600 font-semibold">Connected</div>
+                      </div>
+                      <div className="text-lg font-bold text-gray-900">3/6</div>
+                      <div className="text-xs text-blue-600">Platforms</div>
+                    </div>
+                  </div>
+
                   {/* Platform Grid */}
                   <div className="grid grid-cols-2 gap-4 mb-6">
                     {[
-                      { name: "Instagram", icon: <Instagram className="w-6 h-6" />, color: "text-pink-600", connected: true },
-                      { name: "TikTok", icon: <Video className="w-6 h-6" />, color: "text-black", connected: true },
-                      { name: "YouTube", icon: <Youtube className="w-6 h-6" />, color: "text-red-600", connected: true },
-                      { name: "Twitter", icon: <Twitter className="w-6 h-6" />, color: "text-blue-500", connected: false },
-                      { name: "LinkedIn", icon: <Linkedin className="w-6 h-6" />, color: "text-blue-700", connected: false },
-                      { name: "Facebook", icon: <MessageCircle className="w-6 h-6" />, color: "text-blue-600", connected: false },
+                      { name: "Instagram", icon: <Instagram className="w-6 h-6" />, color: "text-pink-600", connected: true, followers: "847K" },
+                      { name: "TikTok", icon: <Video className="w-6 h-6" />, color: "text-black", connected: true, followers: "2.1M" },
+                      { name: "YouTube", icon: <Youtube className="w-6 h-6" />, color: "text-red-600", connected: true, followers: "456K" },
+                      { name: "Twitter", icon: <Twitter className="w-6 h-6" />, color: "text-blue-500", connected: false, followers: "0" },
+                      { name: "LinkedIn", icon: <Linkedin className="w-6 h-6" />, color: "text-blue-700", connected: false, followers: "0" },
+                      { name: "Facebook", icon: <MessageCircle className="w-6 h-6" />, color: "text-blue-600", connected: false, followers: "0" },
                     ].map((platform, index) => (
                       <div key={index} className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-gray-300 transition-colors">
                         <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
@@ -434,7 +458,7 @@ export default function Home() {
                         <div className="flex-1">
                           <div className="text-sm font-medium text-gray-900">{platform.name}</div>
                           <div className={`text-xs ${platform.connected ? "text-green-600" : "text-gray-500"}`}>
-                            {platform.connected ? "Connected" : "Connect"}
+                            {platform.connected ? platform.followers : "Connect"}
                           </div>
                         </div>
                         {platform.connected && (
@@ -444,8 +468,19 @@ export default function Home() {
                     ))}
                   </div>
 
+                  {/* Connection Status */}
+                  <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg p-4 border border-purple-200">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                      <span className="text-sm font-semibold text-gray-700">Auto-sync enabled</span>
+                    </div>
+                    <div className="text-xs text-gray-600">
+                      Content automatically publishes across all connected platforms
+                    </div>
+                  </div>
+
                   <button 
-                    className="w-full bg-gradient-to-r from-purple-600 to-purple-700 text-white py-4 px-6 rounded-xl font-medium hover:shadow-lg transition-all duration-300 hover:scale-105"
+                    className="w-full bg-gradient-to-r from-purple-600 to-purple-700 text-white py-4 px-6 rounded-xl font-medium hover:shadow-lg transition-all duration-300 hover:scale-105 mt-6"
                     onClick={handleFeatureClick}
                   >
                     Connect Your Platforms

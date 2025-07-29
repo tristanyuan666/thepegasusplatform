@@ -306,11 +306,11 @@ function InteractiveDashboardDemo({ isMounted }: { isMounted: boolean }) {
                   </div>
                 </div>
                 <div className="h-40 flex items-end justify-between gap-1">
-                  {[25, 45, 35, 60, 50, 75, 65, 85, 70, 95, 80, 110, 90, 125, 100, 140, 115, 155, 130, 170, 145, 185, 160, 200, 175, 215, 190, 230, 205, 245, 220, 260, 235, 275, 250, 290, 265, 305, 280, 320].map(
+                  {[35, 55, 45, 70, 60, 85, 75, 95, 80, 110, 90, 125, 100, 140].map(
                     (height, index) => (
                       <div
                         key={index}
-                        className="bg-gradient-to-t from-green-500 via-green-400 to-green-300 rounded-t flex-1 hover:scale-y-110 transition-all duration-300 cursor-pointer"
+                        className="bg-gradient-to-t from-blue-500 via-blue-400 to-blue-300 rounded-t flex-1 hover:scale-y-110 transition-all duration-300 cursor-pointer"
                         style={{ 
                           height: `${height}%`, 
                           minHeight: "8px",
@@ -485,7 +485,7 @@ function InteractiveDashboardDemo({ isMounted }: { isMounted: boolean }) {
                 </div>
               </div>
               <div className="h-40 flex items-end justify-between gap-1">
-                {[25, 45, 35, 60, 50, 75, 65, 85, 70, 95, 80, 110, 90, 125, 100, 140, 115, 155, 130, 170, 145, 185, 160, 200, 175, 215, 190, 230, 205, 245, 220, 260, 235, 275, 250, 290, 265, 305, 280, 320].map(
+                {[35, 55, 45, 70, 60, 85, 75, 95, 80, 110, 90, 125, 100, 140].map(
                   (height, index) => (
                     <div
                       key={index}
