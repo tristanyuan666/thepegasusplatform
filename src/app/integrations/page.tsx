@@ -39,6 +39,15 @@ import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
+interface AnalyticsData {
+  total_posts: number;
+  connected_platforms: number;
+  engagement_rate: number;
+  total_reach: number;
+  posts_this_month: number;
+  growth_rate: number;
+}
+
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -49,7 +58,14 @@ export default function IntegrationsPage() {
   const [loading, setLoading] = useState(true);
   const [connectedAccounts, setConnectedAccounts] = useState<any[]>([]);
   const [connectionStatus, setConnectionStatus] = useState<{[key: string]: string}>({});
-  const [analytics, setAnalytics] = useState<any>({});
+  const [analytics, setAnalytics] = useState<AnalyticsData>({
+    total_posts: 0,
+    connected_platforms: 0,
+    engagement_rate: 0,
+    total_reach: 0,
+    posts_this_month: 0,
+    growth_rate: 0
+  });
   const [activeTab, setActiveTab] = useState("overview");
 
   useEffect(() => {
@@ -131,7 +147,7 @@ export default function IntegrationsPage() {
       setConnectionStatus(prev => ({ ...prev, [platform]: "connected" }));
       
       // Update analytics
-      setAnalytics(prev => ({
+      setAnalytics((prev: AnalyticsData) => ({
         ...prev,
         connected_platforms: prev.connected_platforms + 1
       }));
@@ -148,7 +164,7 @@ export default function IntegrationsPage() {
       setConnectionStatus(prev => ({ ...prev, [platform]: "disconnected" }));
       
       // Update analytics
-      setAnalytics(prev => ({
+      setAnalytics((prev: AnalyticsData) => ({
         ...prev,
         connected_platforms: Math.max(0, prev.connected_platforms - 1)
       }));
