@@ -46,6 +46,7 @@ interface AnalyticsData {
   total_reach: number;
   posts_this_month: number;
   growth_rate: number;
+  total_engagement: number;
 }
 
 const supabase = createClient(
@@ -64,7 +65,8 @@ export default function IntegrationsPage() {
     engagement_rate: 0,
     total_reach: 0,
     posts_this_month: 0,
-    growth_rate: 0
+    growth_rate: 0,
+    total_engagement: 0
   });
   const [activeTab, setActiveTab] = useState("overview");
 
