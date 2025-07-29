@@ -68,6 +68,18 @@ interface AnalyticsData {
   content_count: number;
   revenue: number;
   growth_rate: number;
+  platform_breakdown: {
+    instagram: { followers: number; engagement: number; posts: number };
+    tiktok: { followers: number; engagement: number; posts: number };
+    youtube: { followers: number; engagement: number; posts: number };
+    twitter: { followers: number; engagement: number; posts: number };
+  };
+  recent_performance: {
+    date: string;
+    views: number;
+    engagement: number;
+    viral_score: number;
+  }[];
 }
 
 function DashboardContent() {
@@ -219,6 +231,13 @@ function DashboardContent() {
               content_count: 0,
               revenue: 0,
               growth_rate: 0,
+              platform_breakdown: {
+                instagram: { followers: 0, engagement: 0, posts: 0 },
+                tiktok: { followers: 0, engagement: 0, posts: 0 },
+                youtube: { followers: 0, engagement: 0, posts: 0 },
+                twitter: { followers: 0, engagement: 0, posts: 0 },
+              },
+              recent_performance: [],
             });
           }
         } catch (analyticsError) {
@@ -232,6 +251,13 @@ function DashboardContent() {
             content_count: 0,
             revenue: 0,
             growth_rate: 0,
+            platform_breakdown: {
+              instagram: { followers: 0, engagement: 0, posts: 0 },
+              tiktok: { followers: 0, engagement: 0, posts: 0 },
+              youtube: { followers: 0, engagement: 0, posts: 0 },
+              twitter: { followers: 0, engagement: 0, posts: 0 },
+            },
+            recent_performance: [],
           });
         }
       } else {
@@ -244,6 +270,13 @@ function DashboardContent() {
           content_count: 0,
           revenue: 0,
           growth_rate: 0,
+          platform_breakdown: {
+            instagram: { followers: 0, engagement: 0, posts: 0 },
+            tiktok: { followers: 0, engagement: 0, posts: 0 },
+            youtube: { followers: 0, engagement: 0, posts: 0 },
+            twitter: { followers: 0, engagement: 0, posts: 0 },
+          },
+          recent_performance: [],
         });
       }
 
