@@ -197,7 +197,7 @@ export default function FeatureAccessControl({
               </div>
               <CardTitle className="text-2xl">
                 {isUpgrade 
-                  ? `Upgrade to ${requiredPlan?.charAt(0).toUpperCase() + requiredPlan?.slice(1)} Plan`
+                  ? `Upgrade to ${requiredPlan ? requiredPlan.charAt(0).toUpperCase() + requiredPlan.slice(1) : 'Higher'} Plan`
                   : !user 
                     ? "Sign In to Access This Feature"
                     : "Choose a Plan to Get Started"
@@ -205,7 +205,7 @@ export default function FeatureAccessControl({
               </CardTitle>
               <CardDescription className="text-lg">
                 {isUpgrade 
-                  ? `This feature requires the ${requiredPlan} plan or higher. Upgrade now to unlock ${featureName}.`
+                  ? `This feature requires the ${requiredPlan || 'higher'} plan or higher. Upgrade now to unlock ${featureName}.`
                   : !user 
                     ? "Create your account to start using our advanced features and grow your social media presence."
                     : "Select a plan that fits your needs and start creating viral content today."
@@ -221,7 +221,7 @@ export default function FeatureAccessControl({
                       <span className="font-medium">Current Plan: {subscriptionTier.charAt(0).toUpperCase() + subscriptionTier.slice(1)}</span>
                     </div>
                     <p className="text-sm text-orange-700 mt-1">
-                      You need the {requiredPlan} plan to access this feature.
+                      You need the {requiredPlan || 'higher'} plan to access this feature.
                     </p>
                   </div>
                 )}
