@@ -116,74 +116,21 @@ export default function Home() {
         <div className="container mx-auto px-6">
           <div className="flex flex-wrap items-center justify-center gap-8 text-sm text-gray-600">
             <div className="flex items-center gap-2 hover:text-blue-600 transition-colors">
-              <Zap className="w-4 h-4 text-blue-500" />
-              <span>Setup in under 5 minutes</span>
+              <Sparkles className="w-4 h-4 text-blue-500" />
+              <span>AI-Powered Content Creation</span>
             </div>
             <div className="flex items-center gap-2 hover:text-blue-600 transition-colors">
-              <Shield className="w-4 h-4 text-blue-500" />
-              <span>Enterprise-grade security</span>
+              <Target className="w-4 h-4 text-blue-500" />
+              <span>87% Viral Prediction Accuracy</span>
             </div>
             <div className="flex items-center gap-2 hover:text-blue-600 transition-colors">
-              <Award className="w-4 h-4 text-blue-500" />
-              <span>30-day money-back guarantee</span>
+              <TrendingUp className="w-4 h-4 text-blue-500" />
+              <span>340% Average Growth Rate</span>
             </div>
             <div className="flex items-center gap-2 hover:text-blue-600 transition-colors">
               <Users className="w-4 h-4 text-blue-500" />
               <span>50,000+ Active Creators</span>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Key Stats Snapshot */}
-      <section className="py-16 bg-gradient-to-br from-gray-50 to-white">
-        <div className="container mx-auto px-6">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
-            {[
-              {
-                metric: "87%",
-                label: "Viral Prediction Accuracy",
-                icon: <Target className="w-8 h-8" />,
-                color: "from-red-500 to-red-600",
-              },
-              {
-                metric: "340%",
-                label: "Average Growth Rate",
-                icon: <TrendingUp className="w-8 h-8" />,
-                color: "from-green-500 to-green-600",
-              },
-              {
-                metric: "$25M+",
-                label: "Creator Revenue Generated",
-                icon: <DollarSign className="w-8 h-8" />,
-                color: "from-yellow-500 to-yellow-600",
-              },
-              {
-                metric: "1B+",
-                label: "Viral Views Generated",
-                icon: <Eye className="w-8 h-8" />,
-                color: "from-purple-500 to-purple-600",
-              },
-            ].map((item, index) => (
-              <div
-                key={index}
-                className="text-center group hover-target interactive-element button"
-                data-interactive="true"
-                data-button="true"
-              >
-                <div
-                  className={`w-16 h-16 bg-gradient-to-r ${item.color} rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg`}
-                >
-                  <div className="text-white">{item.icon}</div>
-                </div>
-                <div className="text-4xl font-bold text-gray-900 mb-2">
-                  {item.metric}
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  {item.label}
-                </h3>
-              </div>
-            ))}
           </div>
         </div>
       </section>
