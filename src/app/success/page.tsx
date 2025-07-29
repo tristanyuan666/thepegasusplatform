@@ -170,7 +170,7 @@ function SuccessContent() {
         } else {
           window.location.href = "/dashboard";
         }
-      }, 3000);
+      }, 1000);
     }
   }, [loading, needsSignIn, plan, billing, subscriptionFound]);
 
@@ -205,7 +205,7 @@ function SuccessContent() {
   if (redirecting) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-8">
-        <h2 className="text-2xl font-bold mb-4 text-blue-700">Redirecting to your Dashboard…</h2>
+        <h2 className="text-2xl font-bold mb-4 text-blue-700">Setting up your profile...</h2>
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" />
       </div>
     );
@@ -302,7 +302,7 @@ function SuccessContent() {
                     Welcome to {currentPlan.name}!
                   </CardTitle>
                   <CardDescription className="text-lg mt-2">
-                    Your payment was successful and your account is now active
+                    Your payment was successful! Let's set up your creator profile.
                   </CardDescription>
                 </div>
               </div>
@@ -414,13 +414,13 @@ function SuccessContent() {
                         window.location.href = "/onboarding";
                       }
                     } else {
-                      window.location.href = "/dashboard";
+                      window.location.href = "/onboarding";
                     }
                   }}
                   className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
                 >
                   <span className="flex items-center gap-2">
-                    Get Started
+                    {subscriptionFound ? "Get Started" : "Complete Setup"}
                     <ArrowRight className="w-4 h-4" />
                   </span>
                 </Button>

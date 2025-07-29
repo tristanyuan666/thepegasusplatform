@@ -239,15 +239,6 @@ export default function DashboardNavbar({
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
                 <Link
-                  href="/system-test"
-                  className="hover-target interactive-element"
-                  data-interactive="true"
-                >
-                  System Test
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link
                   href="/"
                   className="hover-target interactive-element"
                   data-interactive="true"
