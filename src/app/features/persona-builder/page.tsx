@@ -94,7 +94,6 @@ import {
   Car as CarIcon,
   Bike,
   Dumbbell,
-  Yoga,
   BookOpen as BookOpenIcon,
   PenTool,
   Code,
