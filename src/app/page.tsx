@@ -191,7 +191,7 @@ export default function Home() {
                 },
               ].map((tab, index) => (
                 <button
-                  key={index}
+                      key={index}
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex items-center gap-3 px-10 py-5 rounded-2xl font-semibold transition-all duration-500 hover:scale-105 ${
                     activeTab === tab.id
@@ -288,7 +288,7 @@ export default function Home() {
                               </div>
                             </div>
                           </div>
-                        </div>
+                      </div>
                       </div>
                     </div>
                   )}
@@ -303,7 +303,7 @@ export default function Home() {
                           <h3 className="text-xl font-bold text-gray-900">Analytics Dashboard</h3>
                           <p className="text-sm text-gray-600">Track performance across all platforms</p>
                         </div>
-                      </div>
+                </div>
 
                       {/* Analytics Interface */}
                       <div className="space-y-4">
@@ -660,7 +660,7 @@ export default function Home() {
                     className={`w-20 h-20 bg-gradient-to-r ${step.color} rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg`}
                   >
                     <div className="text-white">{step.icon}</div>
-                  </div>
+                </div>
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-4">
                   {step.title}

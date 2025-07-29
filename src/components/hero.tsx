@@ -622,11 +622,8 @@ function StatsCounter({ isMounted }: { isMounted: boolean }) {
 // Simple floating icons without dynamic import
 function FloatingIcons() {
   const icons = [
-    { Icon: Crown, delay: 0, position: { top: "20%", left: "10%" } },
-    { Icon: Flame, delay: 1, position: { top: "30%", right: "15%" } },
-    { Icon: Rocket, delay: 2, position: { top: "60%", left: "5%" } },
-    { Icon: Star, delay: 3, position: { top: "70%", right: "10%" } },
-    { Icon: Zap, delay: 4, position: { top: "40%", left: "85%" } },
+    { Icon: Rocket, delay: 0, position: { top: "60%", left: "5%" } },
+    { Icon: Star, delay: 1, position: { top: "70%", right: "10%" } },
   ];
 
   return (
@@ -741,6 +738,24 @@ export default function Hero() {
     <div className="relative min-h-screen overflow-hidden hero-gradient">
       <AnimatedBackground isMounted={isMounted} />
       <FloatingIcons />
+
+      {/* Floating Particles */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {Array.from({ length: 40 }, (_, i) => (
+          <div
+            key={i}
+            className="particle"
+            style={{
+              left: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 20}s`,
+              width: `${3 + Math.random() * 5}px`,
+              height: `${3 + Math.random() * 5}px`,
+              background: `linear-gradient(45deg, #3B82F6, #1D4ED8)`,
+              boxShadow: `0 0 ${(3 + Math.random() * 5) * 2}px #3B82F640`,
+            }}
+          />
+        ))}
+      </div>
 
       <div className="relative z-10 pt-24 pb-16">
         <div className="container mx-auto px-6">
