@@ -298,15 +298,15 @@ function InteractiveDashboardDemo({ isMounted }: { isMounted: boolean }) {
               <div className="bg-white rounded-xl p-4 border border-gray-200">
                 <div className="flex items-center justify-between mb-4">
                   <h4 className="font-medium text-gray-900 flex items-center gap-2">
-                    <TrendingUp className="w-4 h-4 text-green-600" />
+                    <TrendingUp className="w-4 h-4 text-blue-600" />
                     Growth Analytics
                   </h4>
-                  <div className="text-sm text-green-600 font-medium">
+                  <div className="text-sm text-blue-600 font-medium">
                     +127% this month
                   </div>
                 </div>
                 <div className="h-40 flex items-end justify-between gap-1">
-                  {[35, 55, 45, 70, 60, 85, 75, 95, 80, 110, 90, 125, 100, 140].map(
+                  {[25, 40, 35, 55, 45, 70, 60, 80, 65, 90, 75, 100, 85, 110].map(
                     (height, index) => (
                       <div
                         key={index}
@@ -477,19 +477,19 @@ function InteractiveDashboardDemo({ isMounted }: { isMounted: boolean }) {
             <div className="bg-white rounded-xl p-4 border border-gray-200">
               <div className="flex items-center justify-between mb-4">
                 <h4 className="font-medium text-gray-900 flex items-center gap-2">
-                    <TrendingUp className="w-4 h-4 text-green-600" />
+                    <TrendingUp className="w-4 h-4 text-blue-600" />
                     Growth Analytics
                   </h4>
-                <div className="text-sm text-green-600 font-medium">
+                <div className="text-sm text-blue-600 font-medium">
                   +127% this month
                 </div>
               </div>
               <div className="h-40 flex items-end justify-between gap-1">
-                {[35, 55, 45, 70, 60, 85, 75, 95, 80, 110, 90, 125, 100, 140].map(
+                {[25, 40, 35, 55, 45, 70, 60, 80, 65, 90, 75, 100, 85, 110].map(
                   (height, index) => (
                     <div
                       key={index}
-                      className="bg-gradient-to-t from-green-500 via-green-400 to-green-300 rounded-t flex-1 hover:scale-y-110 transition-all duration-300 cursor-pointer"
+                      className="bg-gradient-to-t from-blue-500 via-blue-400 to-blue-300 rounded-t flex-1 hover:scale-y-110 transition-all duration-300 cursor-pointer"
                       style={{
                         height: `${height}%`,
                         transitionDelay: `${index * 25}ms`,
