@@ -222,26 +222,71 @@ export default function Home() {
                         </div>
                       </div>
 
-                      {/* Content Generation Interface */}
+                      {/* Enhanced Content Generation Interface */}
                       <div className="space-y-4">
-                        <div className="bg-gray-50 rounded-xl p-4">
-                          <div className="flex items-center gap-2 mb-2">
-                            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                            <span className="text-sm font-medium text-gray-700">Generating content...</span>
+                        <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 border border-blue-200">
+                          <div className="flex items-center gap-3 mb-4">
+                            <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                            <span className="text-sm font-semibold text-gray-700">Generating content...</span>
+                            <div className="flex gap-1">
+                              <div className="w-1 h-1 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                              <div className="w-1 h-1 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                              <div className="w-1 h-1 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                            </div>
                           </div>
-                          <div className="text-sm text-gray-600">
-                            "Transform your morning routine with these 5 productivity hacks that successful entrepreneurs swear by! 💪✨ #ProductivityHacks #MorningRoutine #SuccessTips"
+                          
+                          {/* Content Preview with Icons */}
+                          <div className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+                            <div className="flex items-start gap-3">
+                              <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                                <Sparkles className="w-4 h-4 text-white" />
+                              </div>
+                              <div className="flex-1">
+                                <div className="text-sm text-gray-800 leading-relaxed mb-3">
+                                  "Transform your morning routine with these 5 productivity hacks that successful entrepreneurs swear by! 💪✨"
+                                </div>
+                                <div className="flex items-center gap-2 text-xs text-gray-500">
+                                  <div className="flex items-center gap-1">
+                                    <Eye className="w-3 h-3" />
+                                    <span>High engagement</span>
+                                  </div>
+                                  <div className="flex items-center gap-1">
+                                    <TrendingUp className="w-3 h-3" />
+                                    <span>Viral potential</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
                           </div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-3">
-                          <div className="bg-blue-50 rounded-lg p-3">
-                            <div className="text-xs text-blue-600 font-medium mb-1">Hashtags</div>
-                            <div className="text-sm text-gray-700">#ProductivityHacks #MorningRoutine #SuccessTips</div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-4 border border-blue-200">
+                            <div className="flex items-center gap-2 mb-2">
+                              <div className="w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
+                                <span className="text-white text-xs font-bold">#</span>
+                              </div>
+                              <div className="text-xs text-blue-600 font-semibold">Trending Hashtags</div>
+                            </div>
+                            <div className="flex flex-wrap gap-1">
+                              <span className="text-xs bg-blue-200 text-blue-800 px-2 py-1 rounded-full">#ProductivityHacks</span>
+                              <span className="text-xs bg-blue-200 text-blue-800 px-2 py-1 rounded-full">#MorningRoutine</span>
+                              <span className="text-xs bg-blue-200 text-blue-800 px-2 py-1 rounded-full">#SuccessTips</span>
+                            </div>
                           </div>
-                          <div className="bg-green-50 rounded-lg p-3">
-                            <div className="text-xs text-green-600 font-medium mb-1">Viral Score</div>
-                            <div className="text-sm text-gray-700">94/100</div>
+                          <div className="bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-4 border border-green-200">
+                            <div className="flex items-center gap-2 mb-2">
+                              <div className="w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
+                                <Target className="w-2 h-2 text-white" />
+                              </div>
+                              <div className="text-xs text-green-600 font-semibold">Viral Score</div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <div className="text-lg font-bold text-green-700">94/100</div>
+                              <div className="flex-1 bg-green-200 rounded-full h-2">
+                                <div className="bg-green-500 h-2 rounded-full" style={{ width: '94%' }}></div>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>

@@ -117,7 +117,7 @@ function FloatingParticles({ isMounted }: { isMounted: boolean }) {
     try {
       const colors = ["#3B82F6", "#1D4ED8", "#1E40AF", "#2563EB", "#1E3A8A"];
       setParticles(
-        Array.from({ length: 35 }, (_, i) => ({
+        Array.from({ length: 40 }, (_, i) => ({
           id: i,
           left: Math.random() * 100,
           delay: Math.random() * 20,
@@ -137,7 +137,7 @@ function FloatingParticles({ isMounted }: { isMounted: boolean }) {
       {particles.map((particle) => (
         <div
           key={particle.id}
-          className="absolute rounded-full opacity-60 animate-float"
+          className="particle"
           style={{
             left: `${particle.left}%`,
             animationDelay: `${particle.delay}s`,
@@ -145,7 +145,6 @@ function FloatingParticles({ isMounted }: { isMounted: boolean }) {
             height: `${particle.size}px`,
             background: `linear-gradient(45deg, ${particle.color}, ${particle.color}80)`,
             boxShadow: `0 0 ${particle.size * 2}px ${particle.color}40`,
-            animation: `float-up ${15 + Math.random() * 10}s linear infinite`,
           }}
         />
       ))}
@@ -298,23 +297,34 @@ function InteractiveDashboardDemo({ isMounted }: { isMounted: boolean }) {
             <div className="grid md:grid-cols-2 gap-4">
               <div className="bg-white rounded-xl p-4 border border-gray-200">
                 <div className="flex items-center justify-between mb-4">
-                  <h4 className="font-medium text-gray-900">
+                  <h4 className="font-medium text-gray-900 flex items-center gap-2">
+                    <TrendingUp className="w-4 h-4 text-green-600" />
                     Growth Analytics
                   </h4>
                   <div className="text-sm text-green-600 font-medium">
                     +127% this month
                   </div>
                 </div>
-                <div className="h-24 flex items-end justify-between gap-1">
-                  {[40, 65, 45, 80, 60, 95, 75, 100, 85, 120, 95, 140].map(
+                <div className="h-40 flex items-end justify-between gap-1">
+                  {[25, 45, 35, 60, 50, 75, 65, 85, 70, 95, 80, 110, 90, 125, 100, 140, 115, 155, 130, 170, 145, 185, 160, 200, 175, 215, 190, 230, 205, 245, 220, 260, 235, 275, 250, 290, 265, 305, 280, 320].map(
                     (height, index) => (
                       <div
                         key={index}
-                        className="bg-gradient-to-t from-blue-500 to-blue-400 rounded-t flex-1"
-                        style={{ height: `${height}%`, minHeight: "4px" }}
+                        className="bg-gradient-to-t from-green-500 via-green-400 to-green-300 rounded-t flex-1 hover:scale-y-110 transition-all duration-300 cursor-pointer"
+                        style={{ 
+                          height: `${height}%`, 
+                          minHeight: "8px",
+                          transitionDelay: `${index * 25}ms`
+                        }}
                       />
                     ),
                   )}
+                </div>
+                <div className="flex justify-between text-xs text-gray-500 mt-2">
+                  <span>Week 1</span>
+                  <span>Week 2</span>
+                  <span>Week 3</span>
+                  <span>Week 4</span>
                 </div>
               </div>
               <div className="bg-white rounded-xl p-4 border border-gray-200">
@@ -466,25 +476,34 @@ function InteractiveDashboardDemo({ isMounted }: { isMounted: boolean }) {
           <div className="grid md:grid-cols-2 gap-4">
             <div className="bg-white rounded-xl p-4 border border-gray-200">
               <div className="flex items-center justify-between mb-4">
-                <h4 className="font-medium text-gray-900">Growth Analytics</h4>
+                <h4 className="font-medium text-gray-900 flex items-center gap-2">
+                    <TrendingUp className="w-4 h-4 text-green-600" />
+                    Growth Analytics
+                  </h4>
                 <div className="text-sm text-green-600 font-medium">
                   +127% this month
                 </div>
               </div>
-              <div className="h-24 flex items-end justify-between gap-1">
-                {[40, 65, 45, 80, 60, 95, 75, 100, 85, 120, 95, 140].map(
+              <div className="h-40 flex items-end justify-between gap-1">
+                {[25, 45, 35, 60, 50, 75, 65, 85, 70, 95, 80, 110, 90, 125, 100, 140, 115, 155, 130, 170, 145, 185, 160, 200, 175, 215, 190, 230, 205, 245, 220, 260, 235, 275, 250, 290, 265, 305, 280, 320].map(
                   (height, index) => (
                     <div
                       key={index}
-                      className="bg-gradient-to-t from-blue-500 to-blue-400 rounded-t flex-1 transition-all duration-1000 ease-out shadow-sm"
+                      className="bg-gradient-to-t from-green-500 via-green-400 to-green-300 rounded-t flex-1 hover:scale-y-110 transition-all duration-300 cursor-pointer"
                       style={{
                         height: `${height}%`,
-                        transitionDelay: `${index * 100}ms`,
-                        minHeight: "4px",
+                        transitionDelay: `${index * 25}ms`,
+                        minHeight: "8px",
                       }}
                     />
                   ),
                 )}
+              </div>
+              <div className="flex justify-between text-xs text-gray-500 mt-2">
+                <span>Week 1</span>
+                <span>Week 2</span>
+                <span>Week 3</span>
+                <span>Week 4</span>
               </div>
             </div>
 
