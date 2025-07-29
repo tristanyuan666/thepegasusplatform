@@ -162,7 +162,7 @@ function AnimatedBackground({ isMounted }: { isMounted: boolean }) {
       {/* Enhanced Blue Blur Gradient Circles with More Intensity */}
       <div className="absolute top-10 left-5 w-[500px] h-[500px] bg-gradient-to-r from-blue-500/25 to-cyan-500/18 rounded-full blur-3xl animate-float" />
       <div
-        className="absolute top-20 right-10 w-[450px] h-[450px] bg-gradient-to-r from-cyan-400/25 to-cyan-500/18 rounded-full blur-3xl animate-float"
+        className="absolute top-28 right-10 w-[450px] h-[450px] bg-gradient-to-r from-cyan-400/25 to-cyan-500/18 rounded-full blur-3xl animate-float"
         style={{ animationDelay: "2s" }}
       />
 
