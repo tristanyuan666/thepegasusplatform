@@ -271,19 +271,20 @@ export default function PricingCard({
     }
 
     setIsLoading(true);
+    setPaymentError(null);
 
     try {
       if (onCheckout) {
         await onCheckout(safePlan.id, isYearly);
       } else {
-        // Checkout logic
+        // Enhanced checkout logic with better error handling
         const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://thepegasus.ca";
         const returnUrl = `${baseUrl}/success?plan=${safePlan.id}&billing=${isYearly ? "yearly" : "monthly"}`;
         const cancelUrl = `${baseUrl}/pricing?cancelled=true`;
 
-            // Use the component-level STRIPE_PRICE_IDS constant
-    const priceId =
-      STRIPE_PRICE_IDS[safePlan.id as keyof typeof STRIPE_PRICE_IDS]?.[
+        // Use the component-level STRIPE_PRICE_IDS constant
+        const priceId =
+          STRIPE_PRICE_IDS[safePlan.id as keyof typeof STRIPE_PRICE_IDS]?.[
             isYearly ? "yearly" : "monthly"
           ];
 
@@ -297,6 +298,11 @@ export default function PricingCard({
           throw new Error(
             "User information is incomplete. Please sign in again.",
           );
+        }
+
+        // Validate user data before proceeding
+        if (!user.email.includes("@")) {
+          throw new Error("Invalid email address. Please update your profile.");
         }
 
         const checkoutPayload = {
@@ -313,10 +319,12 @@ export default function PricingCard({
             billing_cycle: isYearly ? "yearly" : "monthly",
             plan_name: safePlan.name,
             timestamp: new Date().toISOString(),
+            user_email: user.email,
+            user_agent: typeof window !== "undefined" ? window.navigator.userAgent : "server",
           },
         };
 
-        // Call Supabase Edge Function
+        // Call Supabase Edge Function with enhanced error handling
         console.log("Invoking Edge Function:", "create-checkout");
         console.log("Payload:", checkoutPayload);
 
@@ -324,17 +332,19 @@ export default function PricingCard({
         const { data: { session } } = await supabase.auth.getSession();
         const accessToken = session?.access_token;
 
+        if (!accessToken) {
+          throw new Error("Authentication token not found. Please sign in again.");
+        }
+
         const { data, error } = await supabase.functions.invoke(
           "create-checkout",
           {
             body: checkoutPayload,
-            headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : undefined,
+            headers: { Authorization: `Bearer ${accessToken}` },
           },
         );
 
         console.log("Checkout response:", { data, error });
-        console.log("Raw error object:", error);
-        console.log("Raw data object:", data);
 
         if (error) {
           console.error("Edge function error details:", {
@@ -342,8 +352,25 @@ export default function PricingCard({
             details: error.details,
             context: error.context,
             hint: error.hint,
+            status: error.status,
           });
-          throw new Error(`Failed to start checkout process: ${error.message}`);
+
+          // Handle specific error cases
+          if (error.message?.includes("already have an active")) {
+            throw new Error("You already have an active subscription for this plan. Please manage your billing in your account settings.");
+          } else if (error.message?.includes("higher-tier plan")) {
+            throw new Error("You already have a higher-tier plan. Downgrades are not allowed through this flow.");
+          } else if (error.message?.includes("Missing required fields")) {
+            throw new Error("Payment configuration error. Please try again or contact support.");
+          } else if (error.status === 401) {
+            throw new Error("Authentication failed. Please sign in again.");
+          } else if (error.status === 429) {
+            throw new Error("Too many requests. Please wait a moment and try again.");
+          } else if (error.status >= 500) {
+            throw new Error("Server error. Please try again in a few minutes.");
+          } else {
+            throw new Error(`Payment setup failed: ${error.message || "Unknown error"}`);
+          }
         }
 
         if (!data) {
@@ -387,6 +414,15 @@ export default function PricingCard({
             // Don't fail checkout for analytics errors
           }
 
+          // Store checkout session info for tracking
+          localStorage.setItem("checkout_session", JSON.stringify({
+            planId: safePlan.id,
+            planName: safePlan.name,
+            isYearly,
+            timestamp: new Date().toISOString(),
+            priceId,
+          }));
+
           window.location.href = data.url;
         } else {
           throw new Error("Window object not available for redirect");
@@ -422,14 +458,6 @@ export default function PricingCard({
       const errorMessage =
         error instanceof Error ? error.message : "Unknown error occurred";
       setPaymentError(errorMessage);
-
-      // Show user-friendly error message with more details for debugging
-      if (typeof window !== "undefined") {
-        const debugInfo = `\n\nDebug Info:\n- Plan: ${safePlan.name}\n- Billing: ${isYearly ? "yearly" : "monthly"}\n- User ID: ${user?.id}\n- Error: ${errorMessage}`;
-        alert(
-          `Payment Error: ${errorMessage}\n\nPlease try again or contact support if the issue persists.${debugInfo}`,
-        );
-      }
     } finally {
       setIsLoading(false);
     }
