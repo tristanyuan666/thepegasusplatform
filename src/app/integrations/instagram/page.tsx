@@ -1,100 +1,277 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { createClient } from "@supabase/supabase-js";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
-import { Instagram, ArrowRight, Camera, Users, BarChart3 } from "lucide-react";
-import Link from "next/link";
+import { Instagram, ArrowRight, Camera, Users, BarChart3, Plus, Settings, AlertCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 export default function InstagramIntegrationPage() {
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [isConnected, setIsConnected] = useState(false);
+  const [accountData, setAccountData] = useState<any>(null);
+
+  useEffect(() => {
+    checkUser();
+    loadInstagramData();
+  }, []);
+
+  const checkUser = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    } catch (error) {
+      console.error("Error checking user:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadInstagramData = async () => {
+    if (!user) return;
+    
+    try {
+      const mockAccountData = {
+        username: "@creative_creator",
+        followers: 15420,
+        following: 892,
+        posts: 234,
+        profile_picture: "https://via.placeholder.com/150",
+        bio: "Digital creator sharing lifestyle & creativity ✨",
+        verified: true
+      };
+      
+      setAccountData(mockAccountData);
+      setIsConnected(true);
+    } catch (error) {
+      console.error("Error loading Instagram data:", error);
+    }
+  };
+
+  const connectInstagram = async () => {
+    try {
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      setIsConnected(true);
+      loadInstagramData();
+    } catch (error) {
+      console.error("Error connecting Instagram:", error);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading Instagram integration...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Authentication Required</h2>
+          <p className="text-gray-600 mb-4">Please sign in to access Instagram integration.</p>
+          <Button onClick={() => window.location.href = "/auth/signin"}>
+            Sign In
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-white">
       <Navbar />
 
-      {/* Hero Section */}
-      <section className="py-24 bg-gradient-to-br from-purple-50 to-white relative overflow-hidden">
-        <div className="container mx-auto px-6 relative z-10">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center px-6 py-3 bg-white/60 backdrop-blur-sm rounded-full mb-8 shadow-lg border border-white/30">
-              <Instagram className="w-5 h-5 text-purple-600 mr-3" />
-              <span className="text-gray-800 text-sm font-semibold">
-                Instagram Integration
-              </span>
-            </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              Connect Your{" "}
-              <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                Instagram Account
-              </span>
-            </h1>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed mb-12">
-              Seamlessly manage your Instagram posts, stories, and reels with
-              AI-powered content creation and scheduling.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                href="/pricing"
-                className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300 hover-target interactive-element"
-                data-interactive="true"
-              >
-                Get Started
-                <ArrowRight className="w-4 h-4 ml-2 inline" />
-              </Link>
-              <Link
-                href="/integrations"
-                className="border border-gray-300 text-gray-700 px-8 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-all duration-300 hover-target interactive-element"
-                data-interactive="true"
-              >
-                View All Integrations
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Features Grid */}
-      <section className="py-24 bg-white">
+      <section className="py-12 bg-gradient-to-br from-purple-50 to-pink-50">
         <div className="container mx-auto px-6">
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
-              <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg flex items-center justify-center mb-6">
-                <Camera className="w-6 h-6 text-white" />
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center">
+                <Instagram className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">
-                Stories & Reels
-              </h3>
-              <p className="text-gray-600 leading-relaxed">
-                Create and schedule Instagram Stories and Reels with
-                AI-generated content and optimal timing.
-              </p>
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                  Instagram Integration
+                </h1>
+                <p className="text-gray-600">
+                  Manage your Instagram content and analytics
+                </p>
+              </div>
             </div>
-
-            <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
-              <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg flex items-center justify-center mb-6">
-                <Users className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">
-                Engagement Tracking
-              </h3>
-              <p className="text-gray-600 leading-relaxed">
-                Monitor likes, comments, and follower growth with detailed
-                analytics and insights.
-              </p>
-            </div>
-
-            <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
-              <div className="w-12 h-12 bg-gradient-to-r from-pink-600 to-pink-700 rounded-lg flex items-center justify-center mb-6">
-                <BarChart3 className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">
-                Feed Optimization
-              </h3>
-              <p className="text-gray-600 leading-relaxed">
-                Optimize your Instagram feed layout and posting strategy for
-                maximum visual impact.
-              </p>
+            <div className="flex items-center gap-4">
+              {isConnected ? (
+                <>
+                  <Badge variant="secondary" className="bg-green-100 text-green-800">
+                    Connected
+                  </Badge>
+                  <Button variant="outline">
+                    <Settings className="w-4 h-4 mr-2" />
+                    Settings
+                  </Button>
+                </>
+              ) : (
+                <Button onClick={connectInstagram}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Connect Instagram
+                </Button>
+              )}
             </div>
           </div>
+
+          {isConnected && accountData && (
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-600">Followers</p>
+                      <p className="text-2xl font-bold text-gray-900">{accountData.followers.toLocaleString()}</p>
+                    </div>
+                    <Users className="w-8 h-8 text-purple-600" />
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-600">Posts</p>
+                      <p className="text-2xl font-bold text-gray-900">{accountData.posts}</p>
+                    </div>
+                    <Camera className="w-8 h-8 text-pink-600" />
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-600">Following</p>
+                      <p className="text-2xl font-bold text-gray-900">{accountData.following}</p>
+                    </div>
+                    <Users className="w-8 h-8 text-blue-600" />
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-600">Engagement</p>
+                      <p className="text-2xl font-bold text-gray-900">9.2%</p>
+                    </div>
+                    <BarChart3 className="w-8 h-8 text-green-600" />
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
         </div>
       </section>
+
+      {isConnected ? (
+        <section className="py-8">
+          <div className="container mx-auto px-6">
+            <div className="grid md:grid-cols-2 gap-8">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Instagram className="w-5 h-5 text-purple-600" />
+                    Account Information
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {accountData && (
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-4">
+                        <img 
+                          src={accountData.profile_picture} 
+                          alt="Profile" 
+                          className="w-16 h-16 rounded-full"
+                        />
+                        <div>
+                          <h3 className="font-semibold text-lg">{accountData.username}</h3>
+                          <p className="text-gray-600">{accountData.bio}</p>
+                          {accountData.verified && (
+                            <Badge variant="secondary" className="bg-blue-100 text-blue-800 mt-2">
+                              Verified
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Plus className="w-5 h-5 text-green-600" />
+                    Quick Actions
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <Button className="w-full bg-gradient-to-r from-purple-500 to-pink-500">
+                      <Plus className="w-4 h-4 mr-2" />
+                      Create New Post
+                    </Button>
+                    <Button variant="outline" className="w-full">
+                      <Camera className="w-4 h-4 mr-2" />
+                      Schedule Content
+                    </Button>
+                    <Button variant="outline" className="w-full">
+                      <BarChart3 className="w-4 h-4 mr-2" />
+                      View Analytics
+                    </Button>
+                    <Button variant="outline" className="w-full">
+                      <Settings className="w-4 h-4 mr-2" />
+                      Account Settings
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
+      ) : (
+        <section className="py-24">
+          <div className="container mx-auto px-6 text-center">
+            <div className="max-w-md mx-auto">
+              <Instagram className="w-16 h-16 text-purple-600 mx-auto mb-6" />
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                Connect Your Instagram Account
+              </h2>
+              <p className="text-gray-600 mb-8">
+                Connect your Instagram account to start managing your content, scheduling posts, and tracking analytics.
+              </p>
+              <Button 
+                className="bg-gradient-to-r from-purple-500 to-pink-500"
+                onClick={connectInstagram}
+              >
+                <Instagram className="w-4 h-4 mr-2" />
+                Connect Instagram
+              </Button>
+            </div>
+          </div>
+        </section>
+      )}
 
       <Footer />
     </div>

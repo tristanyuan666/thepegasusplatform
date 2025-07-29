@@ -259,7 +259,7 @@ export default function AIContentPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <Navbar />
-      
+
       <main className="pt-20 pb-8">
         <div className="container mx-auto px-4">
           {/* Header */}
@@ -367,9 +367,9 @@ export default function AIContentPage() {
                             </button>
                           );
                         })}
-                      </div>
-                    </div>
-                  </div>
+            </div>
+          </div>
+        </div>
 
                   {/* Content Input */}
                   <div className="space-y-3">
@@ -405,7 +405,7 @@ export default function AIContentPage() {
                       )}
                     </Button>
                   </div>
-                </div>
+              </div>
               </Card>
 
               {/* Generated Content */}
@@ -416,7 +416,7 @@ export default function AIContentPage() {
                       <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
                         <CheckCircle className="w-5 h-5 text-green-600" />
                         Generated Content
-                      </h3>
+              </h3>
                       <div className="flex items-center gap-4">
                         <div className="flex items-center gap-2">
                           <Target className="w-4 h-4 text-purple-600" />
@@ -431,13 +431,13 @@ export default function AIContentPage() {
                           </span>
                         </div>
                       </div>
-                    </div>
+            </div>
 
                     <div className="bg-white p-4 rounded-lg border">
                       <pre className="whitespace-pre-wrap text-gray-800 font-medium leading-relaxed">
                         {generatedContent.content}
                       </pre>
-                    </div>
+              </div>
 
                     <div className="flex flex-wrap gap-2">
                       {generatedContent.hashtags.map((tag: string, index: number) => (
@@ -445,7 +445,7 @@ export default function AIContentPage() {
                           {tag}
                         </Badge>
                       ))}
-                    </div>
+            </div>
 
                     {generatedContent.suggestions && (
                       <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
@@ -586,9 +586,9 @@ export default function AIContentPage() {
                         {Math.round(
                           contentIdeas.reduce((acc, idea) => acc + idea.viralScore, 0) / contentIdeas.length || 0
                         )}%
-                      </p>
-                    </div>
-                  </div>
+              </p>
+            </div>
+          </div>
                   <p className="text-sm text-gray-600">Average viral potential</p>
                 </Card>
 

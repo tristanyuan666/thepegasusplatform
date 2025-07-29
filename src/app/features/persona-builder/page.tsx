@@ -414,7 +414,7 @@ export default function PersonaBuilderPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <Navbar />
-      
+
       <main className="pt-20 pb-8">
         <div className="container mx-auto px-4">
           {/* Header */}
@@ -609,9 +609,9 @@ export default function PersonaBuilderPage() {
                                   <SelectItem value="vintage">Vintage & Retro</SelectItem>
                                 </SelectContent>
                               </Select>
-                            </div>
-                          </div>
-                        </div>
+            </div>
+          </div>
+        </div>
                       )}
 
                       {/* Navigation */}
@@ -730,7 +730,7 @@ export default function PersonaBuilderPage() {
                               {niche.competition}
                             </Badge>
                           </div>
-                        </div>
+            </div>
 
                         <Button className="w-full mt-4">
                           <Target className="w-4 h-4 mr-2" />
@@ -786,8 +786,8 @@ export default function PersonaBuilderPage() {
                           <h4 className="text-base font-medium">Body Font</h4>
                           <p className="text-sm text-gray-600">Inter Regular - 16px</p>
                         </div>
-                      </div>
-                    </div>
+              </div>
+            </div>
 
                     <div>
                       <Label>Color Palette</Label>
@@ -826,10 +826,10 @@ export default function PersonaBuilderPage() {
                           <Icon className={`w-6 h-6 text-${theme.color}-600`} />
                         </div>
                         <h4 className="font-medium text-gray-900">{theme.name}</h4>
-                      </div>
+            </div>
                     );
                   })}
-                </div>
+          </div>
               </Card>
             </TabsContent>
           </Tabs>
