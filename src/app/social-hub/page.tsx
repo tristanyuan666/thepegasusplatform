@@ -1,6 +1,7 @@
 import { createClient } from "@/supabase/server";
 import { redirect } from "next/navigation";
 import DashboardNavbar from "@/components/dashboard-navbar";
+import SocialPlatformHub from "@/components/social-platform-hub";
 import { getUserProfile, getUserSubscription, getSubscriptionTier } from "@/utils/auth";
 
 // Force dynamic rendering for authenticated pages
@@ -54,10 +55,13 @@ export default async function SocialHubPage() {
         userProfile={userProfile as any}
         subscription={subscription}
         activeTab="platforms"
-
         hasFeatureAccess={hasFeatureAccess}
       />
-      {/* SocialPlatformHub component is not implemented */}
+      <SocialPlatformHub
+        user={user}
+        hasActiveSubscription={hasActiveSubscription}
+        subscriptionTier={subscriptionTier}
+      />
     </>
   );
 }
