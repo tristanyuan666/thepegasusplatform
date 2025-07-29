@@ -1,7 +1,11 @@
+"use client";
+
 import Hero from "@/components/hero";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
+import { Button } from "@/components/ui/button";
 import { Suspense, lazy } from "react";
+import { useState } from "react";
 const TestimonialCarousel = lazy(() => import("@/components/testimonial-carousel"));
 import {
   CheckCircle2,
@@ -39,6 +43,7 @@ import {
   Check,
   ArrowUpRight,
   Activity,
+  CalendarDays,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -103,6 +108,12 @@ function TestimonialCard({
 }
 
 export default function Home() {
+  const [activeTab, setActiveTab] = useState("ai-generator");
+
+  const handleFeatureClick = () => {
+    window.location.href = "/pricing";
+  };
+
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
@@ -157,34 +168,35 @@ export default function Home() {
           </div>
 
           <div className="max-w-7xl mx-auto">
-            {/* Feature Tabs */}
-            <div className="flex items-center justify-center gap-2 mb-12">
+            {/* Enhanced Feature Tabs */}
+            <div className="flex items-center justify-center gap-3 mb-12">
               {[
                 { 
                   name: "AI Generator", 
                   icon: <Sparkles className="w-5 h-5" />, 
-                  active: true,
+                  id: "ai-generator",
                   color: "from-blue-500 to-blue-600"
                 },
                 { 
-                  name: "Viral Predictor", 
-                  icon: <Target className="w-5 h-5" />, 
-                  active: false,
+                  name: "Analytics Dashboard", 
+                  icon: <BarChart3 className="w-5 h-5" />, 
+                  id: "analytics-dashboard",
                   color: "from-purple-500 to-purple-600"
                 },
                 { 
-                  name: "Growth Engine", 
-                  icon: <Rocket className="w-5 h-5" />, 
-                  active: false,
+                  name: "Content Scheduler", 
+                  icon: <CalendarDays className="w-5 h-5" />, 
+                  id: "content-scheduler",
                   color: "from-green-500 to-green-600"
                 },
               ].map((tab, index) => (
                 <button
                   key={index}
-                  className={`flex items-center gap-3 px-8 py-4 rounded-2xl font-medium transition-all duration-300 ${
-                    tab.active
-                      ? `bg-gradient-to-r ${tab.color} text-white shadow-xl scale-105`
-                      : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex items-center gap-3 px-10 py-5 rounded-2xl font-semibold transition-all duration-500 hover:scale-105 ${
+                    activeTab === tab.id
+                      ? `bg-gradient-to-r ${tab.color} text-white shadow-2xl scale-110`
+                      : "text-gray-600 hover:text-gray-900 hover:bg-gray-100 hover:shadow-lg"
                   }`}
                 >
                   {tab.icon}
@@ -198,45 +210,149 @@ export default function Home() {
               {/* Feature Demo */}
               <div className="glass-premium p-8 hover-lift">
                 <div className="bg-white rounded-2xl p-8 border border-gray-200 shadow-sm">
-                  {/* AI Generator Demo */}
-                  <div className="mb-8">
-                    <div className="flex items-center gap-3 mb-6">
-                      <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
-                        <Sparkles className="w-5 h-5 text-white" />
+                  {activeTab === "ai-generator" && (
+                    <div className="mb-8">
+                      <div className="flex items-center gap-3 mb-6">
+                        <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
+                          <Sparkles className="w-5 h-5 text-white" />
+                        </div>
+                        <div>
+                          <h3 className="text-xl font-bold text-gray-900">AI Content Generator</h3>
+                          <p className="text-sm text-gray-600">Generate viral content in seconds</p>
+                        </div>
                       </div>
-                      <div>
-                        <h3 className="text-xl font-bold text-gray-900">AI Content Generator</h3>
-                        <p className="text-sm text-gray-600">Generate viral content in seconds</p>
+
+                      {/* Content Generation Interface */}
+                      <div className="space-y-4">
+                        <div className="bg-gray-50 rounded-xl p-4">
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                            <span className="text-sm font-medium text-gray-700">Generating content...</span>
+                          </div>
+                          <div className="text-sm text-gray-600">
+                            "Transform your morning routine with these 5 productivity hacks that successful entrepreneurs swear by! 💪✨ #ProductivityHacks #MorningRoutine #SuccessTips"
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-3">
+                          <div className="bg-blue-50 rounded-lg p-3">
+                            <div className="text-xs text-blue-600 font-medium mb-1">Hashtags</div>
+                            <div className="text-sm text-gray-700">#ProductivityHacks #MorningRoutine #SuccessTips</div>
+                          </div>
+                          <div className="bg-green-50 rounded-lg p-3">
+                            <div className="text-xs text-green-600 font-medium mb-1">Viral Score</div>
+                            <div className="text-sm text-gray-700">94/100</div>
+                          </div>
+                        </div>
                       </div>
                     </div>
+                  )}
 
-                    {/* Content Generation Interface */}
-                    <div className="space-y-4">
-                      <div className="bg-gray-50 rounded-xl p-4">
-                        <div className="flex items-center gap-2 mb-2">
-                          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                          <span className="text-sm font-medium text-gray-700">Generating content...</span>
+                  {activeTab === "analytics-dashboard" && (
+                    <div className="mb-8">
+                      <div className="flex items-center gap-3 mb-6">
+                        <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
+                          <BarChart3 className="w-5 h-5 text-white" />
                         </div>
-                        <div className="text-sm text-gray-600">
-                          "Transform your morning routine with these 5 productivity hacks that successful entrepreneurs swear by! 💪✨ #ProductivityHacks #MorningRoutine #SuccessTips"
+                        <div>
+                          <h3 className="text-xl font-bold text-gray-900">Analytics Dashboard</h3>
+                          <p className="text-sm text-gray-600">Track performance across all platforms</p>
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-2 gap-3">
-                        <div className="bg-blue-50 rounded-lg p-3">
-                          <div className="text-xs text-blue-600 font-medium mb-1">Hashtags</div>
-                          <div className="text-sm text-gray-700">#ProductivityHacks #MorningRoutine #SuccessTips</div>
+                      {/* Analytics Interface */}
+                      <div className="space-y-4">
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="bg-purple-50 rounded-lg p-4">
+                            <div className="text-xs text-purple-600 font-medium mb-1">Total Reach</div>
+                            <div className="text-lg font-bold text-gray-900">2.4M</div>
+                            <div className="text-xs text-green-600">+23% this week</div>
+                          </div>
+                          <div className="bg-blue-50 rounded-lg p-4">
+                            <div className="text-xs text-blue-600 font-medium mb-1">Engagement Rate</div>
+                            <div className="text-lg font-bold text-gray-900">8.7%</div>
+                            <div className="text-xs text-green-600">+5% this week</div>
+                          </div>
                         </div>
-                        <div className="bg-green-50 rounded-lg p-3">
-                          <div className="text-xs text-green-600 font-medium mb-1">Viral Score</div>
-                          <div className="text-sm text-gray-700">94/100</div>
+                        
+                        <div className="bg-gray-50 rounded-lg p-4">
+                          <div className="text-xs text-gray-600 font-medium mb-2">Top Performing Content</div>
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between text-sm">
+                              <span className="text-gray-700">Productivity Tips Post</span>
+                              <span className="text-green-600 font-medium">+340%</span>
+                            </div>
+                            <div className="flex items-center justify-between text-sm">
+                              <span className="text-gray-700">Morning Routine Video</span>
+                              <span className="text-green-600 font-medium">+280%</span>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
+                  )}
 
-                  <button className="w-full bg-gradient-to-r from-gray-900 to-gray-800 text-white py-4 px-6 rounded-xl font-medium hover:shadow-lg transition-all duration-300 hover:scale-105">
-                    Generate Content Now
+                  {activeTab === "content-scheduler" && (
+                    <div className="mb-8">
+                      <div className="flex items-center gap-3 mb-6">
+                        <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-green-600 rounded-xl flex items-center justify-center">
+                          <CalendarDays className="w-5 h-5 text-white" />
+                        </div>
+                        <div>
+                          <h3 className="text-xl font-bold text-gray-900">Content Scheduler</h3>
+                          <p className="text-sm text-gray-600">Plan and automate your content</p>
+                        </div>
+                      </div>
+
+                      {/* Enhanced Scheduler Interface */}
+                      <div className="space-y-4">
+                        <div className="bg-green-50 rounded-xl p-6">
+                          <div className="flex items-center justify-between mb-4">
+                            <span className="text-lg font-semibold text-gray-800">Today's Schedule</span>
+                            <button className="text-sm text-green-600 hover:text-green-700 font-medium">+ Add Post</button>
+                          </div>
+                          <div className="space-y-4">
+                            <div className="flex items-center gap-4 p-4 bg-white rounded-xl border border-green-200 shadow-sm">
+                              <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-green-600 rounded-xl flex items-center justify-center text-white text-sm font-bold">
+                                9
+                              </div>
+                              <div className="flex-1">
+                                <div className="text-base font-semibold text-gray-900">Morning Motivation Tips</div>
+                                <div className="text-sm text-gray-500">Instagram, Twitter, LinkedIn</div>
+                              </div>
+                              <div className="text-sm text-green-600 font-semibold">9:00 AM</div>
+                            </div>
+                            <div className="flex items-center gap-4 p-4 bg-white rounded-xl border border-blue-200 shadow-sm">
+                              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl flex items-center justify-center text-white text-sm font-bold">
+                                2
+                              </div>
+                              <div className="flex-1">
+                                <div className="text-base font-semibold text-gray-900">Productivity Hacks</div>
+                                <div className="text-sm text-gray-500">LinkedIn, TikTok, YouTube</div>
+                              </div>
+                              <div className="text-sm text-blue-600 font-semibold">2:00 PM</div>
+                            </div>
+                            <div className="flex items-center gap-4 p-4 bg-white rounded-xl border border-purple-200 shadow-sm">
+                              <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl flex items-center justify-center text-white text-sm font-bold">
+                                6
+                              </div>
+                              <div className="flex-1">
+                                <div className="text-base font-semibold text-gray-900">Weekly Recap Video</div>
+                                <div className="text-sm text-gray-500">YouTube, TikTok, Instagram</div>
+                              </div>
+                              <div className="text-sm text-purple-600 font-semibold">6:00 PM</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  <button 
+                    className="w-full bg-gradient-to-r from-gray-900 to-gray-800 text-white py-4 px-6 rounded-xl font-medium hover:shadow-lg transition-all duration-300 hover:scale-105"
+                    onClick={handleFeatureClick}
+                  >
+                    Try {activeTab === "ai-generator" ? "AI Generator" : activeTab === "analytics-dashboard" ? "Analytics" : "Scheduler"} Now
                   </button>
                 </div>
               </div>
@@ -283,7 +399,10 @@ export default function Home() {
                     ))}
                   </div>
 
-                  <button className="w-full bg-gradient-to-r from-purple-600 to-purple-700 text-white py-4 px-6 rounded-xl font-medium hover:shadow-lg transition-all duration-300 hover:scale-105">
+                  <button 
+                    className="w-full bg-gradient-to-r from-purple-600 to-purple-700 text-white py-4 px-6 rounded-xl font-medium hover:shadow-lg transition-all duration-300 hover:scale-105"
+                    onClick={handleFeatureClick}
+                  >
                     Connect Your Platforms
                   </button>
                 </div>
