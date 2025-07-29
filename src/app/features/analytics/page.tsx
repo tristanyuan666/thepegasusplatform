@@ -417,7 +417,7 @@ export default function AnalyticsPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <Navbar />
-      
+
       <main className="pt-20 pb-8">
         <div className="container mx-auto px-4">
           {/* Header */}
@@ -465,8 +465,8 @@ export default function AnalyticsPage() {
                 <div>
                   <p className="text-sm text-gray-600">Total Followers</p>
                   <p className="text-xl font-bold text-blue-600">{totalFollowers.toLocaleString()}</p>
-                </div>
-              </div>
+          </div>
+        </div>
             </Card>
 
             <Card className="p-4">
@@ -490,7 +490,7 @@ export default function AnalyticsPage() {
                   <p className="text-sm text-gray-600">Total Reach</p>
                   <p className="text-xl font-bold text-purple-600">{totalReach.toLocaleString()}</p>
                 </div>
-              </div>
+            </div>
             </Card>
 
             <Card className="p-4">
@@ -600,8 +600,8 @@ export default function AnalyticsPage() {
                           <p className="text-sm font-medium">{content.views.toLocaleString()} views</p>
                           <p className={`text-xs ${getEngagementColor(content.engagement)}`}>
                             {content.engagement}% engagement
-                          </p>
-                        </div>
+              </p>
+            </div>
                       </div>
                     ))}
                   </div>
@@ -674,10 +674,10 @@ export default function AnalyticsPage() {
                           <p className="text-gray-600">Engagement</p>
                           <p className={`font-medium ${getEngagementColor(content.engagement)}`}>
                             {content.engagement}%
-                          </p>
-                        </div>
-                      </div>
-                    </div>
+              </p>
+            </div>
+          </div>
+        </div>
                   ))}
                 </div>
               </Card>

@@ -119,15 +119,28 @@ interface ContentIdea {
   scheduled_date?: string;
 }
 
+interface Subscription {
+  stripe_id: string;
+  user_id: string;
+  plan_name: string;
+  billing_cycle: string;
+  status: string;
+  current_period_start: number;
+  current_period_end: number;
+  cancel_at_period_end: boolean;
+}
+
 export default function DashboardHome({
   user,
   userProfile,
+  subscription,
   platformConnections,
   analyticsData,
   hasFeatureAccess,
 }: {
   user: User;
   userProfile: UserProfile | null;
+  subscription: Subscription | null;
   platformConnections: PlatformConnection[];
   analyticsData: AnalyticsData | null;
   hasFeatureAccess: (feature: string) => boolean;
