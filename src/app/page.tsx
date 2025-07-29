@@ -135,180 +135,198 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Creator Dashboard */}
+      {/* Feature + Integration Showcase */}
       <section className="py-24 bg-white">
         <div className="container mx-auto px-6">
           <div className="text-center mb-20">
+            <div className="inline-flex items-center px-6 py-3 glass-premium mb-8 hover-lift">
+              <Sparkles className="w-5 h-5 text-blue-600 mr-3" />
+              <span className="text-gray-800 text-sm font-semibold">
+                Experience the Power
+              </span>
+            </div>
             <h2 className="text-5xl font-bold text-black mb-8">
-              Creator{" "}
+              AI-Driven Creation{" "}
               <span className="bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-                Dashboard
+                Platform
               </span>
             </h2>
-            <p className="text-2xl text-black max-w-4xl mx-auto leading-relaxed">
-              Experience the power of AI-driven content creation with real-time
-              analytics
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+              See how our platform transforms content creation across all social platforms with intelligent automation
             </p>
           </div>
 
-          <div className="max-w-6xl mx-auto">
-            <div className="glass-premium p-8 hover-lift transition-all duration-300">
-              <div className="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-6 border border-gray-200">
-                {/* Analytics Header */}
-                <div className="flex items-center justify-between mb-8">
-                  <div>
-                    <h3 className="text-2xl font-bold text-gray-900">
-                      Content Analytics Dashboard
-                    </h3>
-                    <p className="text-gray-600">
-                      Track posts, scheduling, and performance metrics
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-2 text-green-600 bg-green-50 px-4 py-2 rounded-full">
-                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                    <span className="font-medium">Live Data</span>
-                  </div>
-                </div>
+          <div className="max-w-7xl mx-auto">
+            {/* Feature Tabs */}
+            <div className="flex items-center justify-center gap-2 mb-12">
+              {[
+                { 
+                  name: "AI Generator", 
+                  icon: <Sparkles className="w-5 h-5" />, 
+                  active: true,
+                  color: "from-blue-500 to-blue-600"
+                },
+                { 
+                  name: "Viral Predictor", 
+                  icon: <Target className="w-5 h-5" />, 
+                  active: false,
+                  color: "from-purple-500 to-purple-600"
+                },
+                { 
+                  name: "Growth Engine", 
+                  icon: <Rocket className="w-5 h-5" />, 
+                  active: false,
+                  color: "from-green-500 to-green-600"
+                },
+              ].map((tab, index) => (
+                <button
+                  key={index}
+                  className={`flex items-center gap-3 px-8 py-4 rounded-2xl font-medium transition-all duration-300 ${
+                    tab.active
+                      ? `bg-gradient-to-r ${tab.color} text-white shadow-xl scale-105`
+                      : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                  }`}
+                >
+                  {tab.icon}
+                  {tab.name}
+                </button>
+              ))}
+            </div>
 
-                {/* Analytics Grid */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
-                  {[
-                    {
-                      label: "Followers",
-                      value: "847K",
-                      change: "+320%",
-                      color: "text-blue-500",
-                      bgColor: "bg-blue-50",
-                    },
-                    {
-                      label: "Views",
-                      value: "12.4M",
-                      change: "+180%",
-                      color: "text-green-500",
-                      bgColor: "bg-green-50",
-                    },
-                    {
-                      label: "Engagement",
-                      value: "8.7%",
-                      change: "+67%",
-                      color: "text-purple-500",
-                      bgColor: "bg-purple-50",
-                    },
-                    {
-                      label: "Revenue",
-                      value: "$12.4K",
-                      change: "+234%",
-                      color: "text-orange-500",
-                      bgColor: "bg-orange-50",
-                    },
-                  ].map((metric, index) => (
-                    <div
-                      key={index}
-                      className={`${metric.bgColor} rounded-xl p-6 border border-gray-200 hover:shadow-md transition-all duration-300`}
-                    >
-                      <div className="text-sm text-gray-600 mb-2">
-                        {metric.label}
+            {/* Main Demo Area */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Feature Demo */}
+              <div className="glass-premium p-8 hover-lift">
+                <div className="bg-white rounded-2xl p-8 border border-gray-200 shadow-sm">
+                  {/* AI Generator Demo */}
+                  <div className="mb-8">
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
+                        <Sparkles className="w-5 h-5 text-white" />
                       </div>
-                      <div className="text-3xl font-bold text-gray-900 mb-2">
-                        {metric.value}
-                      </div>
-                      <div className={`text-sm font-medium ${metric.color}`}>
-                        {metric.change} this week
+                      <div>
+                        <h3 className="text-xl font-bold text-gray-900">AI Content Generator</h3>
+                        <p className="text-sm text-gray-600">Generate viral content in seconds</p>
                       </div>
                     </div>
-                  ))}
-                </div>
 
-                {/* Content Scheduling & Performance */}
-                <div className="grid md:grid-cols-2 gap-6">
-                  {/* Scheduled Posts */}
-                  <div className="bg-white rounded-xl p-6 border border-gray-200">
-                    <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                      <Calendar className="w-5 h-5 text-blue-500" />
-                      Scheduled Posts
-                    </h4>
-                    <div className="space-y-3">
-                      {[
-                        {
-                          title: "Morning Motivation Tips",
-                          platform: "Social",
-                          time: "Today 9:00 AM",
-                          status: "scheduled",
-                        },
-                        {
-                          title: "Productivity Hacks",
-                          platform: "Social",
-                          time: "Today 2:00 PM",
-                          status: "scheduled",
-                        },
-                        {
-                          title: "Weekly Recap Video",
-                          platform: "Social",
-                          time: "Tomorrow 6:00 PM",
-                          status: "draft",
-                        },
-                      ].map((post, index) => (
-                        <div
-                          key={index}
-                          className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg"
-                        >
-                          <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center text-white text-xs font-bold">
-                            S
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="text-sm font-medium text-gray-900 truncate">
-                              {post.title}
-                            </div>
-                            <div className="text-xs text-gray-500">
-                              {post.time}
-                            </div>
-                          </div>
-                          <div
-                            className={`text-xs px-2 py-1 rounded-full font-medium ${
-                              post.status === "scheduled"
-                                ? "bg-green-100 text-green-700"
-                                : "bg-yellow-100 text-yellow-700"
-                            }`}
-                          >
-                            {post.status}
-                          </div>
+                    {/* Content Generation Interface */}
+                    <div className="space-y-4">
+                      <div className="bg-gray-50 rounded-xl p-4">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                          <span className="text-sm font-medium text-gray-700">Generating content...</span>
                         </div>
-                      ))}
+                        <div className="text-sm text-gray-600">
+                          "Transform your morning routine with these 5 productivity hacks that successful entrepreneurs swear by! 💪✨ #ProductivityHacks #MorningRoutine #SuccessTips"
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="bg-blue-50 rounded-lg p-3">
+                          <div className="text-xs text-blue-600 font-medium mb-1">Hashtags</div>
+                          <div className="text-sm text-gray-700">#ProductivityHacks #MorningRoutine #SuccessTips</div>
+                        </div>
+                        <div className="bg-green-50 rounded-lg p-3">
+                          <div className="text-xs text-green-600 font-medium mb-1">Viral Score</div>
+                          <div className="text-sm text-gray-700">94/100</div>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
-                  {/* Performance Chart */}
-                  <div className="bg-white rounded-xl p-6 border border-gray-200">
-                    <h4 className="text-lg font-semibold text-gray-900 mb-4">
-                      Weekly Performance
-                    </h4>
-                    <div className="h-32 flex items-end justify-between gap-2">
-                      {[
-                        20, 35, 25, 45, 40, 60, 55, 75, 70, 85, 80, 95, 90, 100,
-                      ].map((height, index) => (
-                        <div
-                          key={index}
-                          className="bg-gradient-to-t from-blue-500 to-blue-400 rounded-t flex-1 transition-all duration-1000 ease-out"
-                          style={{
-                            height: `${height}%`,
-                            transitionDelay: `${index * 100}ms`,
-                            minHeight: "8px",
-                          }}
-                        />
-                      ))}
-                    </div>
-                    <div className="flex justify-between text-xs text-gray-500 mt-2">
-                      <span>Mon</span>
-                      <span>Tue</span>
-                      <span>Wed</span>
-                      <span>Thu</span>
-                      <span>Fri</span>
-                      <span>Sat</span>
-                      <span>Sun</span>
-                    </div>
-                  </div>
+                  <button className="w-full bg-gradient-to-r from-gray-900 to-gray-800 text-white py-4 px-6 rounded-xl font-medium hover:shadow-lg transition-all duration-300 hover:scale-105">
+                    Generate Content Now
+                  </button>
                 </div>
               </div>
+
+              {/* Integration Showcase */}
+              <div className="glass-premium p-8 hover-lift">
+                <div className="bg-white rounded-2xl p-8 border border-gray-200 shadow-sm">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
+                      <Globe className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-gray-900">Platform Integration</h3>
+                      <p className="text-sm text-gray-600">Seamless cross-platform publishing</p>
+                    </div>
+                  </div>
+
+                  {/* Platform Grid */}
+                  <div className="grid grid-cols-2 gap-4 mb-6">
+                    {[
+                      { name: "Instagram", icon: <Instagram className="w-6 h-6" />, color: "text-pink-600", connected: true },
+                      { name: "TikTok", icon: <Video className="w-6 h-6" />, color: "text-black", connected: true },
+                      { name: "YouTube", icon: <Youtube className="w-6 h-6" />, color: "text-red-600", connected: true },
+                      { name: "Twitter", icon: <Twitter className="w-6 h-6" />, color: "text-blue-500", connected: false },
+                      { name: "LinkedIn", icon: <Linkedin className="w-6 h-6" />, color: "text-blue-700", connected: false },
+                      { name: "Facebook", icon: <MessageCircle className="w-6 h-6" />, color: "text-blue-600", connected: false },
+                    ].map((platform, index) => (
+                      <div key={index} className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-gray-300 transition-colors">
+                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                          platform.connected ? "bg-gray-50" : "bg-gray-100"
+                        }`}>
+                          <div className={platform.color}>{platform.icon}</div>
+                        </div>
+                        <div className="flex-1">
+                          <div className="text-sm font-medium text-gray-900">{platform.name}</div>
+                          <div className={`text-xs ${platform.connected ? "text-green-600" : "text-gray-500"}`}>
+                            {platform.connected ? "Connected" : "Connect"}
+                          </div>
+                        </div>
+                        {platform.connected && (
+                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+
+                  <button className="w-full bg-gradient-to-r from-purple-600 to-purple-700 text-white py-4 px-6 rounded-xl font-medium hover:shadow-lg transition-all duration-300 hover:scale-105">
+                    Connect Your Platforms
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Live Metrics */}
+            <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+              {[
+                {
+                  label: "Content Generated",
+                  value: "2,847",
+                  change: "+23%",
+                  color: "text-blue-600",
+                  bgColor: "bg-blue-50",
+                  icon: <Sparkles className="w-5 h-5" />
+                },
+                {
+                  label: "Viral Predictions",
+                  value: "94%",
+                  change: "+8%",
+                  color: "text-purple-600",
+                  bgColor: "bg-purple-50",
+                  icon: <Target className="w-5 h-5" />
+                },
+                {
+                  label: "Platform Reach",
+                  value: "12.4M",
+                  change: "+67%",
+                  color: "text-green-600",
+                  bgColor: "bg-green-50",
+                  icon: <Globe className="w-5 h-5" />
+                },
+              ].map((metric, index) => (
+                <div key={index} className={`${metric.bgColor} rounded-xl p-6 border border-gray-200 hover:shadow-md transition-all duration-300`}>
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className={`${metric.color}`}>{metric.icon}</div>
+                    <div className="text-sm text-gray-600">{metric.label}</div>
+                  </div>
+                  <div className="text-2xl font-bold text-gray-900 mb-1">{metric.value}</div>
+                  <div className={`text-sm font-medium ${metric.color}`}>{metric.change} this week</div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
