@@ -131,7 +131,7 @@ import {
   Zap,
   Brain,
   Palette,
-  User,
+  User as UserIcon,
 } from "lucide-react";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
@@ -461,7 +461,7 @@ export default function AnalyticsPage() {
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-blue-100 rounded-lg">
                   <Users className="w-5 h-5 text-blue-600" />
-                </div>
+            </div>
                 <div>
                   <p className="text-sm text-gray-600">Total Followers</p>
                   <p className="text-xl font-bold text-blue-600">{totalFollowers.toLocaleString()}</p>
