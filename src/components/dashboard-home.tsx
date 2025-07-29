@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   TrendingUp,
   Users,
@@ -16,7 +17,35 @@ import {
   DollarSign,
   Instagram,
   Youtube,
-  Music
+  Music,
+  Eye,
+  Heart,
+  Share2,
+  MessageCircle,
+  Globe,
+  Sparkles,
+  Crown,
+  AlertCircle,
+  CheckCircle,
+  Clock,
+  Activity,
+  ArrowRight,
+  Plus,
+  Settings,
+  RefreshCw,
+  Play,
+  Camera,
+  Smartphone,
+  ExternalLink,
+  Star,
+  Gift,
+  Rocket,
+  TrendingDown,
+  Minus,
+  Equal,
+  Info,
+  FileText,
+  Edit3
 } from "lucide-react";
 import Link from "next/link";
 
@@ -38,22 +67,11 @@ interface UserProfile {
   content_format: string | null;
   fame_goals: string | null;
   follower_count: number | null;
-  viral_score: number | null;
-  monetization_forecast: number | null;
-  onboarding_completed: boolean | null;
+  viral_score: number;
+  monetization_forecast: number;
+  onboarding_completed: boolean;
   created_at: string;
   updated_at: string | null;
-}
-
-interface Subscription {
-  stripe_id: string;
-  user_id: string;
-  plan_name: string;
-  billing_cycle: string;
-  status: string;
-  current_period_start: number;
-  current_period_end: number;
-  cancel_at_period_end: boolean;
 }
 
 interface PlatformConnection {
@@ -77,224 +95,239 @@ interface AnalyticsData {
   content_count: number;
   revenue: number;
   growth_rate: number;
+  platform_breakdown: {
+    instagram: { followers: number; engagement: number; posts: number };
+    tiktok: { followers: number; engagement: number; posts: number };
+    youtube: { followers: number; engagement: number; posts: number };
+    twitter: { followers: number; engagement: number; posts: number };
+  };
+  recent_performance: {
+    date: string;
+    views: number;
+    engagement: number;
+    viral_score: number;
+  }[];
 }
 
-interface DashboardHomeProps {
-  user: User;
-  userProfile: UserProfile;
-  subscription: Subscription | null;
-  platformConnections: PlatformConnection[];
-  analyticsData: AnalyticsData | null;
-  hasFeatureAccess: (feature: string) => boolean;
+interface ContentIdea {
+  id: string;
+  title: string;
+  description: string;
+  platform: string;
+  viral_score: number;
+  status: "draft" | "scheduled" | "published";
+  scheduled_date?: string;
 }
 
 export default function DashboardHome({
   user,
   userProfile,
-  subscription,
   platformConnections,
   analyticsData,
   hasFeatureAccess,
-}: DashboardHomeProps) {
+}: {
+  user: User;
+  userProfile: UserProfile | null;
+  platformConnections: PlatformConnection[];
+  analyticsData: AnalyticsData | null;
+  hasFeatureAccess: (feature: string) => boolean;
+}) {
+  const [recentContent, setRecentContent] = useState<ContentIdea[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState("overview");
 
-  // Format numbers with K/M suffixes
-  const formatNumber = (num: number): string => {
-    if (num >= 1000000) {
-      return (num / 1000000).toFixed(1) + "M";
-    } else if (num >= 1000) {
-      return (num / 1000).toFixed(1) + "K";
-    }
+  const hasConnectedPlatforms = platformConnections.length > 0;
+
+  useEffect(() => {
+    loadRecentContent();
+  }, []);
+
+  const loadRecentContent = async () => {
+    // Mock recent content data
+    const mockContent: ContentIdea[] = [
+      {
+        id: "1",
+        title: "Morning Routine for Productivity",
+        description: "Share your optimized morning routine that boosts daily productivity",
+        platform: "All Platforms",
+        viral_score: 87,
+        status: "published",
+      },
+      {
+        id: "2",
+        title: "5 Mistakes Everyone Makes",
+        description: "Common mistakes in your niche that people should avoid",
+        platform: "All Platforms",
+        viral_score: 92,
+        status: "scheduled",
+        scheduled_date: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+      },
+      {
+        id: "3",
+        title: "Behind the Scenes",
+        description: "Show your authentic work process and daily life",
+        platform: "All Platforms",
+        viral_score: 78,
+        status: "draft",
+      },
+    ];
+    setRecentContent(mockContent);
+  };
+
+  const getGrowthIcon = (rate: number) => {
+    if (rate > 0) return <TrendingUp className="w-4 h-4 text-green-600" />;
+    if (rate < 0) return <TrendingDown className="w-4 h-4 text-red-600" />;
+    return <Equal className="w-4 h-4 text-gray-600" />;
+  };
+
+  const getGrowthColor = (rate: number) => {
+    if (rate > 0) return "text-green-600";
+    if (rate < 0) return "text-red-600";
+    return "text-gray-600";
+  };
+
+  const formatNumber = (num: number) => {
+    if (num >= 1000000) return (num / 1000000).toFixed(1) + "M";
+    if (num >= 1000) return (num / 1000).toFixed(1) + "K";
     return num.toString();
   };
 
-  // Get platform icon
-  const getPlatformIcon = (platform: string) => {
-    switch (platform.toLowerCase()) {
-      case "instagram":
-        return <Instagram className="w-5 h-5" />;
-      case "youtube":
-        return <Youtube className="w-5 h-5" />;
-      case "tiktok":
-        return <Music className="w-5 h-5" />;
-      default:
-        return <Video className="w-5 h-5" />;
-    }
-  };
-
-  // Calculate viral score color
-  const getViralScoreColor = (score: number): string => {
+  const getViralScoreColor = (score: number) => {
     if (score >= 80) return "text-green-600";
     if (score >= 60) return "text-yellow-600";
-    if (score >= 40) return "text-orange-600";
     return "text-red-600";
   };
 
-  // Get viral score status
-  const getViralScoreStatus = (score: number): string => {
-    if (score >= 80) return "VIRAL";
-    if (score >= 60) return "Trending";
-    if (score >= 40) return "Growing";
-    return "Needs Work";
+  const getViralScoreBadge = (score: number) => {
+    if (score >= 80) return <Badge className="bg-green-100 text-green-800">Viral</Badge>;
+    if (score >= 60) return <Badge className="bg-yellow-100 text-yellow-800">Good</Badge>;
+    return <Badge className="bg-red-100 text-red-800">Needs Work</Badge>;
   };
-
-  const isPlanActive = subscription && subscription.status === "active";
-  const connectedPlatforms = platformConnections.filter(conn => conn.is_active);
-  const hasConnectedPlatforms = connectedPlatforms.length > 0;
 
   return (
     <div className="space-y-6">
-      {/* Welcome Header */}
-      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+      {/* Welcome Section */}
+      <Card className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+        <CardContent className="p-6">
         <div className="flex items-center justify-between">
             <div>
-            <h1 className="text-2xl font-bold text-gray-900">
-              Welcome back, {userProfile.full_name || user.email}!
+              <h1 className="text-2xl font-bold mb-2">
+                Welcome back, {userProfile?.full_name || userProfile?.name || "Creator"}! 👋
               </h1>
-            <p className="text-gray-600 mt-1">
+              <p className="text-blue-100">
                 Ready to create some viral content today?
               </p>
             </div>
-          <div className="text-right">
-            <Badge 
-              variant={isPlanActive ? "default" : "secondary"}
-              className="text-sm"
-            >
-              {subscription?.plan_name || "No Plan"} ({subscription?.billing_cycle || "none"})
+            <div className="flex items-center gap-2">
+              <Badge variant="secondary" className="bg-white/20 text-white">
+                {userProfile?.subscription || "Free"} Plan
             </Badge>
-            <p className="text-xs text-gray-500 mt-1">
-              {isPlanActive ? "Active" : "Inactive"}
-            </p>
+              <Button variant="outline" size="sm" className="border-white/30 text-white hover:bg-white/10">
+                <Settings className="w-4 h-4 mr-2" />
+                Settings
+              </Button>
+            </div>
           </div>
-        </div>
-        </div>
+        </CardContent>
+      </Card>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Followers</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {hasConnectedPlatforms ? formatNumber(analyticsData?.total_followers || 0) : "0"}
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600">Total Followers</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {analyticsData ? formatNumber(analyticsData.total_followers) : "0"}
+                </p>
+                <div className="flex items-center gap-1 mt-1">
+                  {analyticsData && getGrowthIcon(analyticsData.growth_rate)}
+                  <span className={`text-sm font-medium ${getGrowthColor(analyticsData?.growth_rate || 0)}`}>
+                    {analyticsData?.growth_rate || 0}% this month
+                  </span>
                 </div>
-            {hasConnectedPlatforms && analyticsData?.growth_rate && (
-              <p className="text-xs text-muted-foreground flex items-center">
-                <TrendingUp className="w-3 h-3 mr-1" />
-                +{analyticsData.growth_rate.toFixed(1)}% this month
-              </p>
-            )}
+              </div>
+              <Users className="w-8 h-8 text-blue-600" />
+            </div>
           </CardContent>
             </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Content Queue</CardTitle>
-            <Calendar className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {analyticsData?.content_count || 0}
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600">Total Views</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {analyticsData ? formatNumber(analyticsData.total_views) : "0"}
+                </p>
+                <div className="flex items-center gap-1 mt-1">
+                  <Eye className="w-4 h-4 text-gray-400" />
+                  <span className="text-sm text-gray-600">lifetime views</span>
                 </div>
-            <p className="text-xs text-muted-foreground">
-              Scheduled posts
-            </p>
+              </div>
+              <Eye className="w-8 h-8 text-green-600" />
+            </div>
           </CardContent>
             </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Viral Score</CardTitle>
-            <Zap className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className={`text-2xl font-bold ${getViralScoreColor(analyticsData?.viral_score || 0)}`}>
-              {analyticsData?.viral_score || 0}
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600">Engagement Rate</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {analyticsData ? analyticsData.engagement_rate.toFixed(1) : "0"}%
+                </p>
+                <div className="flex items-center gap-1 mt-1">
+                  <Heart className="w-4 h-4 text-red-400" />
+                  <span className="text-sm text-gray-600">avg engagement</span>
                 </div>
-            <p className="text-xs text-muted-foreground">
-              {getViralScoreStatus(analyticsData?.viral_score || 0)}
-            </p>
+              </div>
+              <Heart className="w-8 h-8 text-red-600" />
+            </div>
           </CardContent>
             </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Monthly Views</CardTitle>
-            <BarChart3 className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {hasConnectedPlatforms ? formatNumber(analyticsData?.total_views || 0) : "0"}
-                </div>
-            <p className="text-xs text-muted-foreground">
-              Across all platforms
-            </p>
-          </CardContent>
-            </Card>
-        </div>
-
-      {/* Platform Connections */}
-      {hasFeatureAccess("platforms") && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Target className="w-5 h-5" />
-              Connected Platforms
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {connectedPlatforms.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {connectedPlatforms.map((connection) => (
-                  <div
-                    key={connection.id}
-                    className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg"
-                  >
-                    {getPlatformIcon(connection.platform)}
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
                       <div>
-                      <p className="font-medium text-sm capitalize">
-                        {connection.platform}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        @{connection.platform_username}
-                      </p>
-                    </div>
-                    <Badge variant="outline" className="ml-auto text-xs">
-                      Connected
-                    </Badge>
-                  </div>
-                ))}
-                </div>
-            ) : (
-              <div className="text-center py-8">
-                <Target className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  No platforms connected
-                </h3>
-                  <p className="text-gray-600 mb-4">
-                  Connect your social media accounts to start tracking analytics and auto-posting content.
+                <p className="text-sm text-gray-600">Viral Score</p>
+                <div className="flex items-center gap-2">
+                  <p className={`text-2xl font-bold ${getViralScoreColor(analyticsData?.viral_score || 0)}`}>
+                    {analyticsData?.viral_score || 0}%
                   </p>
-                <Link href="/dashboard?tab=platforms">
-                  <Button>
-                    Connect Platforms
-                  </Button>
-                </Link>
+                  {analyticsData && getViralScoreBadge(analyticsData.viral_score)}
                 </div>
-            )}
+                <div className="flex items-center gap-1 mt-1">
+                  <Target className="w-4 h-4 text-purple-400" />
+                  <span className="text-sm text-gray-600">content potential</span>
+                </div>
+              </div>
+              <Target className="w-8 h-8 text-purple-600" />
+            </div>
           </CardContent>
               </Card>
-            )}
+      </div>
 
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="content">Content</TabsTrigger>
+          <TabsTrigger value="analytics">Analytics</TabsTrigger>
+          <TabsTrigger value="platforms">Platforms</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="overview" className="space-y-6">
       {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
         {hasFeatureAccess("ai_content") && (
           <Card className="hover:shadow-md transition-shadow cursor-pointer">
-            <Link href="/content-hub">
+                <Link href="/features/ai-content">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg">
-                  <Zap className="w-5 h-5 text-blue-600" />
+                      <Sparkles className="w-5 h-5 text-blue-600" />
                   Create Content
                 </CardTitle>
               </CardHeader>
@@ -351,13 +384,37 @@ export default function DashboardHome({
             </Link>
           </Card>
         )}
+
+            <Card className="hover:shadow-md transition-shadow cursor-pointer">
+              <Link href="/integrations">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <Globe className="w-5 h-5 text-purple-600" />
+                    Connect Platforms
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-gray-600 mb-4">
+                    Link your social media accounts to start posting and tracking performance.
+                  </p>
+                  <Button variant="outline" className="w-full">
+                    {hasConnectedPlatforms ? "Manage" : "Connect"}
+                  </Button>
+                </CardContent>
+              </Link>
+            </Card>
       </div>
 
       {/* Recent Activity */}
       {hasConnectedPlatforms && (
         <Card>
           <CardHeader>
-            <CardTitle>Recent Activity</CardTitle>
+                <CardTitle className="flex items-center justify-between">
+                  Recent Activity
+                  <Button variant="ghost" size="sm" onClick={loadRecentContent}>
+                    <RefreshCw className="w-4 h-4" />
+                  </Button>
+                </CardTitle>
           </CardHeader>
           <CardContent>
                 <div className="space-y-4">
@@ -376,17 +433,316 @@ export default function DashboardHome({
                     {analyticsData.engagement_rate.toFixed(1)}% engagement
                   </Badge>
                 </div>
-              ) : (
-                <div className="text-center py-8 text-gray-500">
-                  <Calendar className="w-8 h-8 mx-auto mb-2" />
-                  <p>No recent activity</p>
-                  <p className="text-sm">Start creating content to see your activity here</p>
+                  ) : null}
+
+                  {recentContent.slice(0, 3).map((content) => (
+                    <div key={content.id} className="flex items-center justify-between p-3 border rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <div className="w-2 h-2 bg-green-600 rounded-full"></div>
+                        <div>
+                          <p className="text-sm font-medium">{content.title}</p>
+                          <p className="text-xs text-gray-600">
+                            {content.platform} • {content.status}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {getViralScoreBadge(content.viral_score)}
+                        <span className="text-xs text-gray-500">
+                          {content.viral_score}% viral
+                        </span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              )}
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Platform Performance */}
+          {analyticsData?.platform_breakdown && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Platform Performance</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {Object.entries(analyticsData.platform_breakdown).map(([platform, data]) => (
+                    <div key={platform} className="p-4 border rounded-lg">
+                      <div className="flex items-center gap-2 mb-3">
+                        {platform === "instagram" && <Camera className="w-4 h-4 text-pink-600" />}
+                        {platform === "tiktok" && <Video className="w-4 h-4 text-black" />}
+                        {platform === "youtube" && <Play className="w-4 h-4 text-red-600" />}
+                        {platform === "twitter" && <MessageCircle className="w-4 h-4 text-blue-600" />}
+                        <span className="font-medium capitalize">{platform}</span>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-600">Followers</span>
+                          <span className="font-medium">{formatNumber(data.followers)}</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-600">Engagement</span>
+                          <span className="font-medium">{data.engagement.toFixed(1)}%</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-600">Posts</span>
+                          <span className="font-medium">{data.posts}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
+
+        <TabsContent value="content" className="space-y-6">
+          {/* Content Overview */}
+          <div className="grid md:grid-cols-3 gap-6">
+            <Card>
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-gray-600">Total Posts</p>
+                    <p className="text-2xl font-bold text-gray-900">
+                      {analyticsData?.content_count || 0}
+                    </p>
+                  </div>
+                  <FileText className="w-8 h-8 text-blue-600" />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-gray-600">Scheduled</p>
+                    <p className="text-2xl font-bold text-gray-900">
+                      {recentContent.filter(c => c.status === "scheduled").length}
+                    </p>
+                  </div>
+                  <Calendar className="w-8 h-8 text-green-600" />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-gray-600">Drafts</p>
+                    <p className="text-2xl font-bold text-gray-900">
+                      {recentContent.filter(c => c.status === "draft").length}
+                    </p>
+                  </div>
+                  <Edit3 className="w-8 h-8 text-yellow-600" />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Recent Content */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Recent Content</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {recentContent.map((content) => (
+                  <div key={content.id} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                        <FileText className="w-5 h-5 text-gray-600" />
+                      </div>
+                      <div>
+                        <h3 className="font-medium text-gray-900">{content.title}</h3>
+                        <p className="text-sm text-gray-600">{content.description}</p>
+                        <div className="flex items-center gap-2 mt-1">
+                          <Badge variant="outline" className="text-xs">
+                            {content.platform}
+                          </Badge>
+                          <Badge 
+                            variant={content.status === "published" ? "default" : "secondary"}
+                            className="text-xs"
+                          >
+                            {content.status}
+                          </Badge>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="text-right">
+                        <p className="text-sm font-medium">{content.viral_score}%</p>
+                        <p className="text-xs text-gray-500">Viral Score</p>
+                      </div>
+                      <Button variant="ghost" size="sm">
+                        <ExternalLink className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="analytics" className="space-y-6">
+          {/* Performance Chart */}
+          {analyticsData?.recent_performance && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Performance Trend</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="h-64 flex items-end justify-between gap-2">
+                  {analyticsData.recent_performance.map((day, index) => (
+                    <div key={index} className="flex-1 flex flex-col items-center">
+                      <div
+                        className="w-full bg-gradient-to-t from-blue-500 to-blue-400 rounded-t transition-all duration-1000 ease-out"
+                        style={{
+                          height: `${(day.views / Math.max(...analyticsData.recent_performance.map(d => d.views))) * 100}%`,
+                          transitionDelay: `${index * 100}ms`,
+                        }}
+                      />
+                      <span className="text-xs text-gray-500 mt-2">
+                        {new Date(day.date).toLocaleDateString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                        })}
+                      </span>
+                    </div>
+                  ))}
             </div>
           </CardContent>
             </Card>
       )}
+
+          {/* Analytics Summary */}
+          <div className="grid md:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Engagement Metrics</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span>Engagement Rate</span>
+                      <span>{analyticsData?.engagement_rate.toFixed(1)}%</span>
+                    </div>
+                    <Progress value={analyticsData?.engagement_rate || 0} className="h-2" />
+                  </div>
+                  <div>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span>Viral Score</span>
+                      <span>{analyticsData?.viral_score}%</span>
+                    </div>
+                    <Progress value={analyticsData?.viral_score || 0} className="h-2" />
+                  </div>
+                  <div>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span>Growth Rate</span>
+                      <span>{analyticsData?.growth_rate}%</span>
+                    </div>
+                    <Progress value={Math.abs(analyticsData?.growth_rate || 0)} className="h-2" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Content Insights</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">Best Performing Platform</span>
+                    <span className="font-medium">Instagram</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">Optimal Posting Time</span>
+                    <span className="font-medium">7-9 PM</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">Content Type</span>
+                    <span className="font-medium">Video</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">Avg. Views</span>
+                    <span className="font-medium">{formatNumber(analyticsData?.total_views || 0)}</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="platforms" className="space-y-6">
+          {/* Connected Platforms */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {platformConnections.map((connection) => (
+              <Card key={connection.id} className="hover:shadow-md transition-shadow">
+                <CardContent className="p-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    {connection.platform === "instagram" && <Camera className="w-6 h-6 text-pink-600" />}
+                    {connection.platform === "tiktok" && <Video className="w-6 h-6 text-black" />}
+                    {connection.platform === "youtube" && <Play className="w-6 h-6 text-red-600" />}
+                    {connection.platform === "twitter" && <MessageCircle className="w-6 h-6 text-blue-600" />}
+                    <div>
+                      <h3 className="font-semibold capitalize">{connection.platform}</h3>
+                      <p className="text-sm text-gray-600">@{connection.platform_username}</p>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Status</span>
+                      <Badge variant="default" className="bg-green-100 text-green-800">
+                        Connected
+                      </Badge>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Connected</span>
+                      <span className="text-gray-900">
+                        {new Date(connection.connected_at).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Last Sync</span>
+                      <span className="text-gray-900">
+                        {new Date(connection.last_sync).toLocaleDateString()}
+                      </span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+
+            {platformConnections.length === 0 && (
+              <Card className="col-span-full">
+                <CardContent className="p-8 text-center">
+                  <Globe className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    No Platforms Connected
+                  </h3>
+                  <p className="text-gray-600 mb-4">
+                    Connect your social media accounts to start tracking performance and creating content.
+                  </p>
+                  <Button asChild>
+                    <Link href="/integrations">
+                      <Plus className="w-4 h-4 mr-2" />
+                      Connect Platforms
+                    </Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
