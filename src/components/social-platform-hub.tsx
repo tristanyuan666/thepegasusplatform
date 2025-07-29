@@ -39,6 +39,7 @@ import {
   Pause,
   Edit,
   Trash2,
+  Copy,
   ExternalLink
 } from "lucide-react";
 
