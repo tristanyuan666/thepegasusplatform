@@ -177,6 +177,31 @@ function AnimatedBackground({ isMounted }: { isMounted: boolean }) {
       {/* Floating Particles */}
       <FloatingParticles isMounted={isMounted} />
 
+      {/* Additional Floating Blue Gradient Particles */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {/* Particle 1 */}
+        <div className="particle" style={{ left: '5%', animationDelay: '0s' }}></div>
+        <div className="particle" style={{ left: '15%', animationDelay: '1s' }}></div>
+        <div className="particle" style={{ left: '25%', animationDelay: '2s' }}></div>
+        <div className="particle" style={{ left: '35%', animationDelay: '3s' }}></div>
+        <div className="particle" style={{ left: '45%', animationDelay: '4s' }}></div>
+        <div className="particle" style={{ left: '55%', animationDelay: '5s' }}></div>
+        <div className="particle" style={{ left: '65%', animationDelay: '6s' }}></div>
+        <div className="particle" style={{ left: '75%', animationDelay: '7s' }}></div>
+        <div className="particle" style={{ left: '85%', animationDelay: '8s' }}></div>
+        <div className="particle" style={{ left: '95%', animationDelay: '9s' }}></div>
+        <div className="particle" style={{ left: '10%', animationDelay: '10s' }}></div>
+        <div className="particle" style={{ left: '20%', animationDelay: '11s' }}></div>
+        <div className="particle" style={{ left: '30%', animationDelay: '12s' }}></div>
+        <div className="particle" style={{ left: '40%', animationDelay: '13s' }}></div>
+        <div className="particle" style={{ left: '50%', animationDelay: '14s' }}></div>
+        <div className="particle" style={{ left: '60%', animationDelay: '15s' }}></div>
+        <div className="particle" style={{ left: '70%', animationDelay: '16s' }}></div>
+        <div className="particle" style={{ left: '80%', animationDelay: '17s' }}></div>
+        <div className="particle" style={{ left: '90%', animationDelay: '18s' }}></div>
+        <div className="particle" style={{ left: '8%', animationDelay: '19s' }}></div>
+      </div>
+
       {/* Grid pattern overlay with premium feel */}
       <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2280%22%20height%3D%2280%22%20viewBox%3D%220%200%2080%2080%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%231d8ff2%22%20fill-opacity%3D%220.03%22%3E%3Ccircle%20cx%3D%2240%22%20cy%3D%2240%22%20r%3D%222%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-60" />
     </>
