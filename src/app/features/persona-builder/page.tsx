@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { createClient } from "../../../supabase/client";
+import { createClient } from "../../../../supabase/client";
 import { User } from "@supabase/supabase-js";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -15,7 +15,7 @@ import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   Brain,
-  User,
+  User as UserIcon,
   Palette,
   Target,
   CheckCircle,
@@ -653,7 +653,7 @@ export default function PersonaBuilderPage() {
                         <p className="text-sm text-gray-600">Be specific about your target audience</p>
                       </div>
                       <div className="flex items-start gap-3">
-                        <User className="w-5 h-5 text-green-600 mt-0.5" />
+                        <UserIcon className="w-5 h-5 text-green-600 mt-0.5" />
                         <p className="text-sm text-gray-600">Stay authentic to your true self</p>
                       </div>
                       <div className="flex items-start gap-3">
