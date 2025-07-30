@@ -8,6 +8,13 @@ import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   DollarSign,
   TrendingUp,
   TrendingDown,
@@ -184,31 +191,31 @@ export default function DashboardRevenue({
       };
 
       // Find top platform and source
-      const platformRevenue = currentMonthTransactions.reduce((acc, t) => {
+      const platformRevenue = currentMonthTransactions.reduce((acc: Record<string, number>, t: RevenueTransaction) => {
         acc[t.platform] = (acc[t.platform] || 0) + t.amount;
         return acc;
       }, {} as Record<string, number>);
 
-      const sourceRevenue = currentMonthTransactions.reduce((acc, t) => {
+      const sourceRevenue = currentMonthTransactions.reduce((acc: Record<string, number>, t: RevenueTransaction) => {
         acc[t.transaction_type] = (acc[t.transaction_type] || 0) + t.amount;
         return acc;
       }, {} as Record<string, number>);
 
-      const topPlatform = Object.entries(platformRevenue).sort(([,a], [,b]) => b - a)[0]?.[0] || "None";
-      const topSource = Object.entries(sourceRevenue).sort(([,a], [,b]) => b - a)[0]?.[0] || "None";
+      const topPlatform = Object.entries(platformRevenue).sort(([,a], [,b]) => (b as number) - (a as number))[0]?.[0] || "None";
+      const topSource = Object.entries(sourceRevenue).sort(([,a], [,b]) => (b as number) - (a as number))[0]?.[0] || "None";
 
       // Generate trends data
       const trends = Array.from({ length: 30 }, (_, i) => {
         const date = new Date();
         date.setDate(date.getDate() - i);
-        const dayTransactions = transactions?.filter(t => {
+        const dayTransactions = transactions?.filter((t: RevenueTransaction) => {
           const tDate = new Date(t.transaction_date);
           return tDate.toDateString() === date.toDateString();
         }) || [];
         
         return {
           date: date.toISOString().split('T')[0],
-          revenue: dayTransactions.reduce((sum, t) => sum + t.amount, 0),
+          revenue: dayTransactions.reduce((sum: number, t: RevenueTransaction) => sum + t.amount, 0),
           transactions: dayTransactions.length,
         };
       }).reverse();
