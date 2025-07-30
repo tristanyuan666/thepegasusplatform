@@ -48,6 +48,7 @@ import {
   Edit3
 } from "lucide-react";
 import Link from "next/link";
+import { createClient } from "../../supabase/client";
 
 interface User {
   id: string;
@@ -152,39 +153,52 @@ export default function DashboardHome({
   const hasConnectedPlatforms = platformConnections.length > 0;
 
   useEffect(() => {
-    loadRecentContent();
-  }, []);
+    if (user?.id) {
+      loadRecentContent();
+      // Set up real-time updates
+      const interval = setInterval(() => {
+        loadRecentContent();
+      }, 30000); // Refresh every 30 seconds
+
+      return () => clearInterval(interval);
+    }
+  }, [user?.id]);
 
   const loadRecentContent = async () => {
-    // Mock recent content data
-    const mockContent: ContentIdea[] = [
-      {
-        id: "1",
-        title: "Morning Routine for Productivity",
-        description: "Share your optimized morning routine that boosts daily productivity",
-        platform: "All Platforms",
-        viral_score: 87,
-        status: "published",
-      },
-      {
-        id: "2",
-        title: "5 Mistakes Everyone Makes",
-        description: "Common mistakes in your niche that people should avoid",
-        platform: "All Platforms",
-        viral_score: 92,
-        status: "scheduled",
-        scheduled_date: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
-      },
-      {
-        id: "3",
-        title: "Behind the Scenes",
-        description: "Show your authentic work process and daily life",
-        platform: "All Platforms",
-        viral_score: 78,
-        status: "draft",
-      },
-    ];
-    setRecentContent(mockContent);
+    if (!user?.id) return;
+    
+    try {
+      setIsLoading(true);
+      
+      const supabase = createClient();
+      
+      // Fetch recent content with enhanced data
+      const { data: content, error } = await supabase
+        .from("content_queue")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(5);
+
+      if (error) throw error;
+
+      // Transform data to match interface
+      const transformedContent: ContentIdea[] = (content || []).map((item: any) => ({
+        id: item.id,
+        title: item.title,
+        description: item.content,
+        platform: item.platform,
+        viral_score: item.viral_score,
+        status: item.status,
+        scheduled_date: item.scheduled_for,
+      }));
+
+      setRecentContent(transformedContent);
+    } catch (error) {
+      console.error("Error loading recent content:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const getGrowthIcon = (rate: number) => {
@@ -215,6 +229,45 @@ export default function DashboardHome({
     if (score >= 80) return <Badge className="bg-green-100 text-green-800">Viral</Badge>;
     if (score >= 60) return <Badge className="bg-yellow-100 text-yellow-800">Good</Badge>;
     return <Badge className="bg-red-100 text-red-800">Needs Work</Badge>;
+  };
+
+  const getQuickActions = () => {
+    const actions = [
+      {
+        title: "Create Content",
+        description: "Generate AI-powered content",
+        icon: Sparkles,
+        href: "/content-hub",
+        color: "from-blue-500 to-blue-600",
+        available: hasFeatureAccess("ai_content")
+      },
+      {
+        title: "View Analytics",
+        description: "Check your performance",
+        icon: BarChart3,
+        href: "/dashboard?tab=analytics",
+        color: "from-green-500 to-green-600",
+        available: hasFeatureAccess("analytics")
+      },
+      {
+        title: "Connect Platforms",
+        description: "Link your social accounts",
+        icon: Globe,
+        href: "/dashboard?tab=platforms",
+        color: "from-purple-500 to-purple-600",
+        available: hasFeatureAccess("platforms")
+      },
+      {
+        title: "Track Revenue",
+        description: "Monitor your earnings",
+        icon: DollarSign,
+        href: "/dashboard?tab=revenue",
+        color: "from-yellow-500 to-yellow-600",
+        available: hasFeatureAccess("revenue")
+      }
+    ];
+
+    return actions.filter(action => action.available);
   };
 
   return (
@@ -335,87 +388,26 @@ export default function DashboardHome({
         <TabsContent value="overview" className="space-y-6">
       {/* Quick Actions */}
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {hasFeatureAccess("ai_content") && (
-          <Card className="hover:shadow-md transition-shadow cursor-pointer">
-                <Link href="/features/ai-content">
+        {getQuickActions().map((action, index) => (
+          <Card key={index} className="hover:shadow-md transition-shadow cursor-pointer">
+            <Link href={action.href}>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg">
-                      <Sparkles className="w-5 h-5 text-blue-600" />
-                  Create Content
+                  <action.icon className="w-5 h-5 text-white" />
+                  {action.title}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-gray-600 mb-4">
-                  Generate viral content with AI and schedule posts across all platforms.
+                  {action.description}
                 </p>
                 <Button className="w-full">
-                  Start Creating
+                  {action.title}
                 </Button>
               </CardContent>
             </Link>
           </Card>
-        )}
-
-        {hasFeatureAccess("analytics") && (
-          <Card className="hover:shadow-md transition-shadow cursor-pointer">
-            <Link href="/dashboard?tab=analytics">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <BarChart3 className="w-5 h-5 text-green-600" />
-                  View Analytics
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-gray-600 mb-4">
-                  Track your performance, engagement rates, and growth across all platforms.
-                </p>
-                <Button variant="outline" className="w-full">
-                  View Insights
-                </Button>
-              </CardContent>
-            </Link>
-          </Card>
-        )}
-
-        {hasFeatureAccess("revenue") && (
-          <Card className="hover:shadow-md transition-shadow cursor-pointer">
-            <Link href="/dashboard?tab=revenue">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <DollarSign className="w-5 h-5 text-green-600" />
-                  Track Revenue
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-gray-600 mb-4">
-                  Monitor your earnings from brand partnerships and sponsored content.
-                </p>
-                <Button variant="outline" className="w-full">
-                  View Earnings
-                </Button>
-              </CardContent>
-            </Link>
-          </Card>
-        )}
-
-            <Card className="hover:shadow-md transition-shadow cursor-pointer">
-              <Link href="/integrations">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-lg">
-                    <Globe className="w-5 h-5 text-blue-600" />
-                    Connect Platforms
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-gray-600 mb-4">
-                    Link your social media accounts to start posting and tracking performance.
-                  </p>
-                  <Button variant="outline" className="w-full">
-                    {hasConnectedPlatforms ? "Manage" : "Connect"}
-                  </Button>
-                </CardContent>
-              </Link>
-            </Card>
+        ))}
       </div>
 
       {/* Recent Activity */}

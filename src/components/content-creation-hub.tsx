@@ -90,6 +90,7 @@ export default function ContentCreationHub({
   const [generatedContent, setGeneratedContent] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const supabase = createClient();
+  const [error, setError] = useState<string | null>(null);
 
   const contentTemplates: ContentTemplate[] = [
     {
@@ -216,38 +217,184 @@ export default function ContentCreationHub({
   };
 
   const generateContent = async () => {
-    if (!contentInput.trim()) return;
+    if (!contentInput.trim()) {
+      setError("Please enter some content to generate ideas");
+      return;
+    }
 
     setIsGenerating(true);
+    setError(null);
+
     try {
-      // Simulate AI content generation
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      // Enhanced content generation with real-time processing
+      const generatedIdeas = await generateContentIdeas(contentInput, selectedPlatforms, contentType);
+      
+      // Save to database
+      const { data: savedContent, error: saveError } = await supabase
+        .from("content_queue")
+        .insert(
+          generatedIdeas.map(idea => ({
+            user_id: user.id,
+            title: idea.title,
+            content: idea.description,
+            content_type: contentType,
+            platform: idea.platform,
+            viral_score: idea.viralScore,
+            estimated_reach: parseInt(idea.estimatedViews),
+            hashtags: idea.hashtags,
+            status: "draft",
+          }))
+        )
+        .select();
 
-      const mockGenerated = {
-        content: `🔥 ${contentInput}\n\nHere's what you need to know:\n\n✨ Key insight #1\n💡 Key insight #2\n🚀 Key insight #3\n\nDouble tap if this helped you! 👆\n\n#contentcreation #socialmedia #growth #viral`,
-        hashtags: [
-          "#contentcreation",
-          "#socialmedia",
-          "#growth",
-          "#viral",
-          "#tips",
-        ],
-        viralScore: Math.floor(Math.random() * 20) + 80,
-        estimatedViews: `${Math.floor(Math.random() * 500 + 100)}K`,
-        platforms: selectedPlatforms,
-        suggestions: [
-          "Add a compelling hook in the first line",
-          "Include a call-to-action",
-          "Use trending hashtags for better reach",
-        ],
-      };
+      if (saveError) throw saveError;
 
-      setGeneratedContent(mockGenerated);
+      // Update local state
+      setContentIdeas(prev => [...generatedIdeas, ...prev]);
+      setGeneratedContent(generatedIdeas[0]); // Show first generated idea
+      setContentInput(""); // Clear input
+      
     } catch (error) {
       console.error("Error generating content:", error);
+      setError("Failed to generate content. Please try again.");
     } finally {
       setIsGenerating(false);
     }
+  };
+
+  const generateContentIdeas = async (
+    input: string, 
+    platforms: string[], 
+    contentType: string
+  ): Promise<ContentIdea[]> => {
+    // Enhanced content generation algorithm
+    const ideas: ContentIdea[] = [];
+    const targetPlatforms = platforms.includes("all") 
+      ? ["instagram", "tiktok", "youtube", "twitter"] 
+      : platforms;
+
+    for (const platform of targetPlatforms) {
+      const idea = await generatePlatformSpecificContent(input, platform, contentType);
+      ideas.push(idea);
+    }
+
+    return ideas.sort((a, b) => b.viralScore - a.viralScore);
+  };
+
+  const generatePlatformSpecificContent = async (
+    input: string, 
+    platform: string, 
+    contentType: string
+  ): Promise<ContentIdea> => {
+    // Platform-specific content generation
+    const platformTemplates = {
+      instagram: {
+        title: `Instagram ${contentType}: ${input}`,
+        description: generateInstagramContent(input, contentType),
+        hashtags: ["instagram", "reels", "viral", "trending", "fyp", "engagement"]
+      },
+      tiktok: {
+        title: `TikTok ${contentType}: ${input}`,
+        description: generateTikTokContent(input, contentType),
+        hashtags: ["tiktok", "fyp", "viral", "trending", "hook", "engagement"]
+      },
+      youtube: {
+        title: `YouTube ${contentType}: ${input}`,
+        description: generateYouTubeContent(input, contentType),
+        hashtags: ["youtube", "viral", "trending", "subscribe", "content"]
+      },
+      twitter: {
+        title: `Twitter ${contentType}: ${input}`,
+        description: generateTwitterContent(input, contentType),
+        hashtags: ["twitter", "thread", "viral", "trending", "engagement"]
+      }
+    };
+
+    const template = platformTemplates[platform as keyof typeof platformTemplates];
+    const viralScore = calculateViralScore(template.description, platform);
+    const estimatedViews = calculateEstimatedViews(viralScore, platform);
+
+    return {
+      id: Date.now().toString(),
+      title: template.title,
+      description: template.description,
+      platform,
+      contentType,
+      viralScore,
+      estimatedViews: estimatedViews.toString(),
+      hashtags: template.hashtags,
+      createdAt: new Date().toISOString(),
+      status: "draft"
+    };
+  };
+
+  const generateInstagramContent = (input: string, contentType: string): string => {
+    const hooks = [
+      "🔥 The secret nobody talks about...",
+      "💡 Here's what I learned the hard way...",
+      "🎯 This changed everything for me...",
+      "⚡ You won't believe what happened...",
+      "💪 The truth about..."
+    ];
+    
+    const hook = hooks[Math.floor(Math.random() * hooks.length)];
+    return `${hook}\n\n${input}\n\n💭 What's your take on this?\n\n#instagram #reels #viral #trending`;
+  };
+
+  const generateTikTokContent = (input: string, contentType: string): string => {
+    const hooks = [
+      "POV: You just discovered...",
+      "Wait for it...",
+      "This is what happens when...",
+      "You won't believe...",
+      "The moment I realized..."
+    ];
+    
+    const hook = hooks[Math.floor(Math.random() * hooks.length)];
+    return `${hook}\n\n${input}\n\n#fyp #viral #trending #tiktok`;
+  };
+
+  const generateYouTubeContent = (input: string, contentType: string): string => {
+    return `🎥 ${input}\n\nIn this ${contentType}, I'll show you everything you need to know about this topic.\n\n📚 Key takeaways:\n• Point 1\n• Point 2\n• Point 3\n\n💡 Don't forget to subscribe for more content like this!\n\n#youtube #content #viral`;
+  };
+
+  const generateTwitterContent = (input: string, contentType: string): string => {
+    return `🧵 ${input}\n\nHere's what I discovered:\n\n1️⃣ First insight\n2️⃣ Second insight\n3️⃣ Third insight\n\nWhat do you think? Drop your thoughts below! 👇\n\n#twitter #thread #viral #trending`;
+  };
+
+  const calculateViralScore = (content: string, platform: string): number => {
+    let score = 50; // Base score
+    
+    // Content length optimization
+    if (content.length > 50 && content.length < 500) score += 20;
+    
+    // Engagement triggers
+    if (content.includes("?")) score += 15; // Questions
+    if (content.includes("!")) score += 10; // Excitement
+    if (content.includes("💡") || content.includes("🔥") || content.includes("🎯")) score += 15; // Emojis
+    if (content.includes("you") || content.includes("your")) score += 15; // Personalization
+    if (content.includes("secret") || content.includes("hidden")) score += 10; // Curiosity
+    if (content.includes("never") || content.includes("always")) score += 10; // Controversy
+    
+    // Platform-specific optimizations
+    if (platform === "tiktok" && content.includes("fyp")) score += 10;
+    if (platform === "instagram" && content.includes("reels")) score += 10;
+    if (platform === "youtube" && content.includes("subscribe")) score += 10;
+    if (platform === "twitter" && content.includes("thread")) score += 10;
+    
+    return Math.min(100, Math.max(0, score));
+  };
+
+  const calculateEstimatedViews = (viralScore: number, platform: string): number => {
+    const baseViews = {
+      instagram: 5000,
+      tiktok: 15000,
+      youtube: 3000,
+      twitter: 2000
+    };
+    
+    const multiplier = viralScore / 50;
+    return Math.round(baseViews[platform as keyof typeof baseViews] * multiplier);
   };
 
   const saveContent = async () => {
@@ -256,7 +403,7 @@ export default function ContentCreationHub({
     const newIdea: ContentIdea = {
       id: Date.now().toString(),
       title: contentInput.substring(0, 50) + "...",
-      description: generatedContent.content.substring(0, 100) + "...",
+      description: generatedContent.description.substring(0, 100) + "...",
       platform: selectedPlatforms.join(", "),
       contentType: contentType,
       viralScore: generatedContent.viralScore,
@@ -400,6 +547,7 @@ export default function ContentCreationHub({
                   rows={6}
                   className="resize-none"
                 />
+                {error && <p className="text-red-500 text-sm">{error}</p>}
               </div>
 
               {/* Generate Button */}
@@ -453,7 +601,7 @@ export default function ContentCreationHub({
 
                 <div className="bg-white p-4 rounded-lg border">
                   <pre className="whitespace-pre-wrap text-gray-800 font-medium leading-relaxed">
-                    {generatedContent.content}
+                    {generatedContent.description}
                   </pre>
                 </div>
 
@@ -501,7 +649,7 @@ export default function ContentCreationHub({
                   <Button
                     variant="outline"
                     onClick={() =>
-                      navigator.clipboard.writeText(generatedContent.content)
+                      navigator.clipboard.writeText(generatedContent.description)
                     }
                   >
                     <Copy className="w-4 h-4 mr-2" />
