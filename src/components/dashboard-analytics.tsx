@@ -332,16 +332,16 @@ export default function DashboardAnalytics({
                   </div>
                 </div>
                 
-                <div className="flex items-center justify-between p-3 bg-purple-50 rounded-lg">
+                                  <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
                   <div className="flex items-center gap-3">
-                    <Share2 className="w-5 h-5 text-purple-600" />
+                    <Share2 className="w-5 h-5 text-blue-600" />
                     <div>
                       <p className="font-medium">Content Performance</p>
                       <p className="text-sm text-gray-600">Posts this month</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-2xl font-bold text-purple-600">
+                    <p className="text-2xl font-bold text-blue-600">
                       {analyticsData?.content_count || 0}
                     </p>
                   </div>
@@ -475,8 +475,8 @@ export default function DashboardAnalytics({
 
             <div className="p-4 border border-gray-200 rounded-lg">
               <div className="flex items-center gap-3 mb-3">
-                <div className="p-2 bg-purple-100 rounded-lg">
-                  <Calendar className="w-5 h-5 text-purple-600" />
+                                  <div className="p-2 bg-blue-100 rounded-lg">
+                  <Calendar className="w-5 h-5 text-blue-600" />
                 </div>
                 <h3 className="font-medium">Scheduled Reports</h3>
               </div>
@@ -492,7 +492,7 @@ export default function DashboardAnalytics({
               >
                 {isScheduling ? (
                   <>
-                    <div className="w-4 h-4 border-2 border-purple-600 border-t-transparent rounded-full animate-spin mr-2" />
+                    <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mr-2" />
                     Scheduling...
                   </>
                 ) : (
@@ -529,7 +529,7 @@ export default function DashboardAnalytics({
               </div>
             </div>
             <div className="flex items-start gap-3">
-              <div className="w-2 h-2 bg-purple-600 rounded-full mt-2"></div>
+                              <div className="w-2 h-2 bg-blue-600 rounded-full mt-2"></div>
               <div>
                 <p className="font-medium">Compare performance across platforms</p>
                 <p className="text-sm text-gray-600">Identify which platforms work best for your content</p>

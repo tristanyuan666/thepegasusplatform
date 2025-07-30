@@ -832,10 +832,10 @@ function DashboardHeader() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" className="hover-target">
+            <Button variant="outline" size="sm" className="hover-target text-gray-700 hover:text-blue-600 border-gray-300 hover:border-blue-300">
               <Bell className="w-4 h-4" />
             </Button>
-            <Button variant="outline" size="sm" className="hover-target">
+            <Button variant="outline" size="sm" className="hover-target text-gray-700 hover:text-blue-600 border-gray-300 hover:border-blue-300">
               <Settings className="w-4 h-4" />
             </Button>
           </div>

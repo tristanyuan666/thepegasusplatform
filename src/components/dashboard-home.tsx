@@ -220,7 +220,7 @@ export default function DashboardHome({
   return (
     <div className="space-y-6">
       {/* Welcome Section */}
-      <Card className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+                    <Card className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
         <CardContent className="p-6">
         <div className="flex items-center justify-between">
             <div>
@@ -318,7 +318,7 @@ export default function DashboardHome({
                   <span className="text-sm text-gray-600">content potential</span>
                 </div>
               </div>
-              <Target className="w-8 h-8 text-purple-600" />
+                              <Target className="w-8 h-8 text-blue-600" />
             </div>
           </CardContent>
               </Card>
@@ -402,7 +402,7 @@ export default function DashboardHome({
               <Link href="/integrations">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-lg">
-                    <Globe className="w-5 h-5 text-purple-600" />
+                    <Globe className="w-5 h-5 text-blue-600" />
                     Connect Platforms
                   </CardTitle>
                 </CardHeader>

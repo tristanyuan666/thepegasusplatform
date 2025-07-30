@@ -227,7 +227,7 @@ export function DashboardQuickActions() {
       name: "Connect Platforms",
       href: "/social-hub",
       icon: LinkIcon,
-      color: "from-purple-500 to-purple-600",
+      color: "from-blue-500 to-blue-600",
     },
     {
       name: "Upgrade Plan",

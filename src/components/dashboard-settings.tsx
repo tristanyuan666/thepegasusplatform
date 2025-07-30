@@ -255,7 +255,7 @@ export default function DashboardSettings({
       case "creator":
         return "bg-blue-100 text-blue-800";
       case "influencer":
-        return "bg-purple-100 text-purple-800";
+        return "bg-blue-100 text-blue-800";
       case "superstar":
         return "bg-yellow-100 text-yellow-800";
       default:
@@ -572,7 +572,7 @@ export default function DashboardSettings({
             <Button 
               onClick={handleUpgradePlan} 
               disabled={isUpgrading}
-              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+                              className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
             >
               {isUpgrading ? (
                 <>

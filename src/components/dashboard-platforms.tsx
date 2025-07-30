@@ -73,7 +73,7 @@ const PLATFORMS = [
     id: "instagram",
     name: "Instagram",
     icon: Instagram,
-    color: "from-pink-500 to-purple-600",
+            color: "from-blue-500 to-blue-600",
     description: "Share photos, stories, and reels",
     features: ["Post scheduling", "Story creation", "Reel optimization"],
     oauthUrl: "https://www.facebook.com/v18.0/dialog/oauth",

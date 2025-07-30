@@ -95,7 +95,7 @@ export default function DashboardNavbar({
       case "creator":
         return "bg-blue-100 text-blue-800";
       case "influencer":
-        return "bg-purple-100 text-purple-800";
+        return "bg-blue-100 text-blue-800";
       case "superstar":
         return "bg-yellow-100 text-yellow-800";
       default:
@@ -199,9 +199,9 @@ export default function DashboardNavbar({
           
           <Link href="/dashboard?tab=settings">
             <Button
-              variant={activeTab === "settings" ? "default" : "ghost"}
+              variant={activeTab === "settings" ? "default" : "outline"}
               size="sm"
-              className="hover-target interactive-element"
+              className="hover-target interactive-element text-gray-700 hover:text-blue-600 border-gray-300 hover:border-blue-300"
               data-interactive="true"
             >
               <Settings className="h-4 w-4 mr-2" />
