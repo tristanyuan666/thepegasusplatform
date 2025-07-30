@@ -81,6 +81,7 @@ export default function PlatformConnections({
 }: PlatformConnectionsProps) {
   const [isConnecting, setIsConnecting] = useState<string | null>(null);
   const [isRefreshing, setIsRefreshing] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const supabase = createClient();
 
   const getConnectionStatus = (platformId: string) => {
