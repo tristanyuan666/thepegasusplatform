@@ -212,9 +212,9 @@ export default function SubscriptionManagement({
         platformsConnected: connections.length,
         storageUsed: Math.floor(content.length * 0.1) + 1, // Estimate storage based on content
         apiCalls: content.length * 3 + connections.length * 2, // Estimate API calls
-        aiGenerations: content.filter(item => item.viral_score > 70).length,
-        scheduledPosts: content.filter(item => item.status === "scheduled").length,
-        viralPredictions: content.filter(item => item.viral_score > 80).length,
+        aiGenerations: content.filter((item: any) => item.viral_score > 70).length,
+        scheduledPosts: content.filter((item: any) => item.status === "scheduled").length,
+        viralPredictions: content.filter((item: any) => item.viral_score > 80).length,
         analyticsReports: Math.floor(content.length / 10) + 1,
       };
 
