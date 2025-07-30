@@ -125,7 +125,7 @@ export default function PlatformConnections({
         .from("platform_connections")
         .upsert({
           user_id: userId,
-          platform: platformId,
+          platform: platformId === "x" ? "x" : platformId, // Ensure X is stored as "x"
           is_active: true, // Set to true for demo
           connection_attempted_at: new Date().toISOString(),
           connected_at: new Date().toISOString(),
@@ -140,7 +140,7 @@ export default function PlatformConnections({
       }
 
       // Show success message
-      setError(`Successfully connected to ${platformId}! Demo mode active.`);
+      setError(`Successfully connected to ${platformId === "x" ? "X" : platformId}! Demo mode active.`);
       setTimeout(() => setError(null), 3000);
 
     } catch (error) {

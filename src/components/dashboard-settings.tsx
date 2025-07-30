@@ -523,12 +523,42 @@ export default function DashboardSettings({
       )}
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="profile">Profile</TabsTrigger>
-          <TabsTrigger value="notifications">Notifications</TabsTrigger>
-          <TabsTrigger value="privacy">Privacy</TabsTrigger>
-          <TabsTrigger value="security">Security</TabsTrigger>
-          <TabsTrigger value="billing">Billing</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-5 h-12 bg-gray-50 border border-gray-200 rounded-lg p-1">
+          <TabsTrigger 
+            value="profile" 
+            className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 rounded-md transition-all duration-200"
+          >
+            <User className="w-4 h-4" />
+            <span className="font-medium">Profile</span>
+          </TabsTrigger>
+          <TabsTrigger 
+            value="notifications" 
+            className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 rounded-md transition-all duration-200"
+          >
+            <Bell className="w-4 h-4" />
+            <span className="font-medium">Notifications</span>
+          </TabsTrigger>
+          <TabsTrigger 
+            value="privacy" 
+            className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 rounded-md transition-all duration-200"
+          >
+            <Shield className="w-4 h-4" />
+            <span className="font-medium">Privacy</span>
+          </TabsTrigger>
+          <TabsTrigger 
+            value="security" 
+            className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 rounded-md transition-all duration-200"
+          >
+            <Lock className="w-4 h-4" />
+            <span className="font-medium">Security</span>
+          </TabsTrigger>
+          <TabsTrigger 
+            value="billing" 
+            className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 rounded-md transition-all duration-200"
+          >
+            <CreditCard className="w-4 h-4" />
+            <span className="font-medium">Billing</span>
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="profile" className="space-y-6">

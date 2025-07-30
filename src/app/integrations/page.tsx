@@ -72,16 +72,23 @@ export default function IntegrationsPage() {
 
   useEffect(() => {
     checkUser();
-    loadConnectedAccounts();
-    loadAnalytics();
   }, []);
+
+  useEffect(() => {
+    if (user) {
+      loadConnectedAccounts();
+      loadAnalytics();
+    }
+  }, [user]);
 
   const checkUser = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user }, error } = await supabase.auth.getUser();
+      if (error) throw error;
       setUser(user);
     } catch (error) {
       console.error("Error checking user:", error);
+      setUser(null);
     } finally {
       setLoading(false);
     }

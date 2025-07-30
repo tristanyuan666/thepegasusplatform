@@ -509,20 +509,13 @@ export default function DashboardAnalytics({
 
       {/* Detailed Analytics */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-3 h-12 bg-gray-50 border border-gray-200 rounded-lg p-1">
+        <TabsList className="grid w-full grid-cols-2 h-12 bg-gray-50 border border-gray-200 rounded-lg p-1">
           <TabsTrigger 
             value="overview" 
             className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 rounded-md transition-all duration-200"
           >
             <BarChart3 className="w-4 h-4" />
             <span className="font-medium">Overview</span>
-          </TabsTrigger>
-          <TabsTrigger 
-            value="platforms" 
-            className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 rounded-md transition-all duration-200"
-          >
-            <Globe className="w-4 h-4" />
-            <span className="font-medium">Platforms</span>
           </TabsTrigger>
           <TabsTrigger 
             value="content" 
@@ -602,53 +595,6 @@ export default function DashboardAnalytics({
                 <Download className="w-4 h-4 mr-2" />
                 Export Data
               </Button>
-            </div>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="platforms" className="space-y-8 mt-8">
-          {/* Platform Breakdown */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-gray-900">Platform Performance</h3>
-              <span className="text-sm text-gray-500">Cross-platform insights</span>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {Object.entries(data?.platform_breakdown || {}).map(([platform, stats]: [string, any]) => (
-                <Card key={platform} className="border border-gray-200 hover:shadow-md transition-shadow">
-                  <CardHeader className="pb-4">
-                    <CardTitle className="flex items-center gap-3 capitalize text-gray-900">
-                      {platform === "instagram" && <Camera className="w-5 h-5 text-pink-600" />}
-                      {platform === "tiktok" && <Video className="w-5 h-5 text-black" />}
-                      {platform === "youtube" && <Play className="w-5 h-5 text-red-600" />}
-                      {platform === "twitter" && <MessageCircle className="w-5 h-5 text-blue-600" />}
-                      {platform}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="text-center p-3 bg-gray-50 rounded-lg">
-                        <p className="text-2xl font-bold text-gray-900">{stats.followers.toLocaleString()}</p>
-                        <p className="text-xs text-gray-600">Followers</p>
-                      </div>
-                      <div className="text-center p-3 bg-gray-50 rounded-lg">
-                        <p className="text-2xl font-bold text-gray-900">{stats.posts}</p>
-                        <p className="text-xs text-gray-600">Posts</p>
-                      </div>
-                    </div>
-                    <div className="space-y-3">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-600">Views</span>
-                        <span className="font-medium text-gray-900">{stats.views.toLocaleString()}</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-600">Engagement</span>
-                        <span className="font-medium text-gray-900">{stats.engagement.toFixed(1)}%</span>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
             </div>
           </div>
         </TabsContent>

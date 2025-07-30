@@ -514,11 +514,21 @@ export default function DashboardRevenue({
       {revenueData && (
         <>
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="transactions">Transactions</TabsTrigger>
-              <TabsTrigger value="breakdown">Breakdown</TabsTrigger>
-              <TabsTrigger value="projections">Projections</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-2 h-12 bg-gray-50 border border-gray-200 rounded-lg p-1">
+              <TabsTrigger 
+                value="overview" 
+                className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 rounded-md transition-all duration-200"
+              >
+                <BarChart3 className="w-4 h-4" />
+                <span className="font-medium">Overview</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="projections" 
+                className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 rounded-md transition-all duration-200"
+              >
+                <TrendingUp className="w-4 h-4" />
+                <span className="font-medium">Projections</span>
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="overview" className="space-y-8 mt-8">
@@ -687,125 +697,6 @@ export default function DashboardRevenue({
                             <h4 className="font-medium text-gray-900 mb-1">{insight.title}</h4>
                             <p className="text-sm text-gray-600">{insight.description}</p>
                           </div>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="transactions" className="space-y-6">
-              {/* Transactions List */}
-              <Card>
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle>Recent Transactions</CardTitle>
-                    <div className="flex items-center gap-2">
-                      <Select value={filterPeriod} onValueChange={setFilterPeriod}>
-                        <SelectTrigger className="w-32">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="week">This Week</SelectItem>
-                          <SelectItem value="month">This Month</SelectItem>
-                          <SelectItem value="quarter">This Quarter</SelectItem>
-                          <SelectItem value="year">This Year</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      
-                      <Select value={sortBy} onValueChange={setSortBy}>
-                        <SelectTrigger className="w-40">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="date">Date</SelectItem>
-                          <SelectItem value="amount">Amount</SelectItem>
-                          <SelectItem value="platform">Platform</SelectItem>
-                          <SelectItem value="type">Type</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
-                      >
-                        {sortOrder === "asc" ? <SortAsc className="w-4 h-4" /> : <SortDesc className="w-4 h-4" />}
-                      </Button>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {getFilteredAndSortedTransactions().map((transaction) => (
-                      <div key={transaction.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
-                        <div className="flex items-center gap-4">
-                          <div className="flex items-center gap-2">
-                            {getPlatformIcon(transaction.platform)}
-                            <span className="font-medium capitalize">{transaction.platform}</span>
-                          </div>
-                          <div>
-                            <p className="font-medium">{getTransactionTypeLabel(transaction.transaction_type)}</p>
-                            <p className="text-sm text-gray-600">{transaction.description}</p>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <p className="font-bold text-green-600">{formatCurrency(transaction.amount)}</p>
-                          <p className="text-sm text-gray-600">
-                            {new Date(transaction.transaction_date).toLocaleDateString()}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="breakdown" className="space-y-6">
-              {/* Detailed Breakdown */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Platform Performance</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      {revenueData?.transactions ? Object.entries(revenueData.transactions.reduce((acc: Record<string, number>, t: RevenueTransaction) => {
-                        acc[t.platform] = (acc[t.platform] || 0) + t.amount;
-                        return acc;
-                      }, {} as Record<string, number>)).map(([platform, amount]) => (
-                        <div key={platform} className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            {getPlatformIcon(platform)}
-                            <span className="capitalize">{platform}</span>
-                          </div>
-                          <span className="font-medium">{formatCurrency(amount)}</span>
-                        </div>
-                      )) : (
-                        <div className="text-center py-8 text-gray-500">
-                          <BarChart3 className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                          <p>No transaction data available</p>
-                        </div>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Revenue Sources</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      {Object.entries(revenueData.transactions.reduce((acc, t) => {
-                        acc[t.transaction_type] = (acc[t.transaction_type] || 0) + t.amount;
-                        return acc;
-                      }, {} as Record<string, number>)).map(([type, amount]) => (
-                        <div key={type} className="flex items-center justify-between">
-                          <span className="capitalize">{getTransactionTypeLabel(type)}</span>
-                          <span className="font-medium">{formatCurrency(amount)}</span>
                         </div>
                       ))}
                     </div>

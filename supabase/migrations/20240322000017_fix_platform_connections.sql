@@ -10,6 +10,15 @@ BEGIN
     END IF;
 END $$;
 
+-- Remove duplicate entries before adding unique constraint
+DELETE FROM public.platform_connections 
+WHERE id IN (
+    SELECT id FROM (
+        SELECT id, ROW_NUMBER() OVER (PARTITION BY user_id, platform ORDER BY created_at DESC) as rn
+        FROM public.platform_connections
+    ) t WHERE t.rn > 1
+);
+
 -- Add the correct unique constraint
 ALTER TABLE public.platform_connections ADD CONSTRAINT platform_connections_user_id_platform_unique UNIQUE (user_id, platform);
 
