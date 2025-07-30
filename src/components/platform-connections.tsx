@@ -18,6 +18,8 @@ import {
   Play,
   Camera,
   Music,
+  MessageCircle,
+  FileText,
 } from "lucide-react";
 import { createClient } from "../../supabase/client";
 import { SocialConnection } from "@/utils/auth";
