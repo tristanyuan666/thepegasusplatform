@@ -187,6 +187,9 @@ export default function ContentCreationHub({
 
   const loadContentIdeas = async () => {
     try {
+      setIsLoading(true);
+      setError(null);
+      
       // Load real content ideas from database
       const { data: contentData, error } = await supabase
         .from("content_queue")
@@ -195,7 +198,12 @@ export default function ContentCreationHub({
         .order("created_at", { ascending: false })
         .limit(10);
 
-      if (error) throw error;
+      if (error) {
+        console.error("Database error:", error);
+        // Don't throw error, just continue with empty array
+        setContentIdeas([]);
+        return;
+      }
 
       // Transform database data to match interface
       const realIdeas: ContentIdea[] = (contentData || []).map((item: any) => ({
@@ -214,6 +222,10 @@ export default function ContentCreationHub({
       setContentIdeas(realIdeas);
     } catch (error) {
       console.error("Error loading content ideas:", error);
+      // Don't show error to user, just continue with empty array
+      setContentIdeas([]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -289,7 +301,7 @@ export default function ContentCreationHub({
     // Enhanced content generation algorithm
     const ideas: ContentIdea[] = [];
     const targetPlatforms = platforms.includes("all") 
-      ? ["instagram", "tiktok", "youtube", "twitter"] 
+      ? ["instagram", "tiktok", "youtube", "x"] 
       : platforms;
 
     for (const platform of targetPlatforms) {
@@ -322,10 +334,10 @@ export default function ContentCreationHub({
         description: generateYouTubeContent(input, contentType),
         hashtags: ["youtube", "viral", "trending", "subscribe", "content"]
       },
-      twitter: {
-        title: `Twitter ${contentType}: ${input}`,
+      x: {
+        title: `X ${contentType}: ${input}`,
         description: generateTwitterContent(input, contentType),
-        hashtags: ["twitter", "thread", "viral", "trending", "engagement"]
+        hashtags: ["x", "thread", "viral", "trending", "engagement"]
       }
     };
 
@@ -378,7 +390,8 @@ export default function ContentCreationHub({
   };
 
   const generateTwitterContent = (input: string, contentType: string): string => {
-    return `🧵 ${input}\n\nHere's what I discovered:\n\n1️⃣ First insight\n2️⃣ Second insight\n3️⃣ Third insight\n\nWhat do you think? Drop your thoughts below! 👇\n\n#twitter #thread #viral #trending`;
+    const baseContent = `🎯 ${input}\n\n💭 What do you think? Drop your thoughts below! 👇\n\n#X #thread #viral #trending`;
+    return contentType === "thread" ? `${baseContent}\n\n🧵 Thread below 👇` : baseContent;
   };
 
   const calculateViralScore = (content: string, platform: string): number => {
@@ -399,7 +412,7 @@ export default function ContentCreationHub({
     if (platform === "tiktok" && content.includes("fyp")) score += 10;
     if (platform === "instagram" && content.includes("reels")) score += 10;
     if (platform === "youtube" && content.includes("subscribe")) score += 10;
-    if (platform === "twitter" && content.includes("thread")) score += 10;
+    if (platform === "x" && content.includes("thread")) score += 10;
     
     return Math.min(100, Math.max(0, score));
   };
@@ -409,7 +422,7 @@ export default function ContentCreationHub({
       instagram: 5000,
       tiktok: 15000,
       youtube: 3000,
-      twitter: 2000
+      x: 2000
     };
     
     const multiplier = viralScore / 50;

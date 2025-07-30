@@ -74,7 +74,7 @@ const PLATFORMS = [
     id: "instagram",
     name: "Instagram",
     icon: Instagram,
-            color: "from-blue-500 to-blue-600",
+    color: "from-pink-500 to-purple-600",
     description: "Share photos, stories, and reels",
     features: ["Post scheduling", "Story creation", "Reel optimization"],
     oauthUrl: "https://www.facebook.com/v18.0/dialog/oauth",
@@ -101,11 +101,11 @@ const PLATFORMS = [
     scopes: ["user.info.basic", "video.list", "video.upload"]
   },
   {
-    id: "twitter",
-    name: "Twitter",
-    icon: Twitter,
-    color: "from-blue-400 to-blue-600",
-    description: "Share thoughts and engage with community",
+    id: "x",
+    name: "X",
+    icon: X,
+    color: "from-black to-gray-700",
+    description: "Share thoughts and engage with your audience",
     features: ["Tweet scheduling", "Thread creation", "Engagement tracking"],
     oauthUrl: "https://twitter.com/i/oauth2/authorize",
     scopes: ["tweet.read", "tweet.write", "users.read"]
@@ -114,21 +114,21 @@ const PLATFORMS = [
     id: "facebook",
     name: "Facebook",
     icon: Facebook,
-    color: "from-blue-600 to-blue-800",
+    color: "from-blue-500 to-blue-700",
     description: "Connect with friends and family",
-    features: ["Page management", "Post scheduling", "Audience insights"],
+    features: ["Post creation", "Page management", "Group engagement"],
     oauthUrl: "https://www.facebook.com/v18.0/dialog/oauth",
-    scopes: ["pages_manage_posts", "pages_read_engagement", "pages_show_list"]
+    scopes: ["public_profile", "email", "pages_manage_posts"]
   },
   {
     id: "linkedin",
     name: "LinkedIn",
     icon: Linkedin,
-    color: "from-blue-700 to-blue-900",
-    description: "Professional networking and content",
-    features: ["Article publishing", "Company updates", "Professional networking"],
+    color: "from-blue-600 to-blue-800",
+    description: "Build your professional network",
+    features: ["Article publishing", "Network building", "Professional content"],
     oauthUrl: "https://www.linkedin.com/oauth/v2/authorization",
-    scopes: ["r_liteprofile", "w_member_social", "r_organization_social"]
+    scopes: ["r_liteprofile", "w_member_social"]
   }
 ];
 
@@ -243,7 +243,9 @@ export default function DashboardPlatforms({
       instagram: process.env.NEXT_PUBLIC_INSTAGRAM_CLIENT_ID || "mock_instagram_client_id",
       youtube: process.env.NEXT_PUBLIC_YOUTUBE_CLIENT_ID || "mock_youtube_client_id",
       tiktok: process.env.NEXT_PUBLIC_TIKTOK_CLIENT_ID || "mock_tiktok_client_id",
-      twitter: process.env.NEXT_PUBLIC_TWITTER_CLIENT_ID || "mock_twitter_client_id",
+      x: process.env.NEXT_PUBLIC_X_CLIENT_ID || "mock_x_client_id",
+      facebook: process.env.NEXT_PUBLIC_FACEBOOK_CLIENT_ID || "mock_facebook_client_id",
+      linkedin: process.env.NEXT_PUBLIC_LINKEDIN_CLIENT_ID || "mock_linkedin_client_id",
     };
     return clientIds[platformId as keyof typeof clientIds] || "mock_client_id";
   };

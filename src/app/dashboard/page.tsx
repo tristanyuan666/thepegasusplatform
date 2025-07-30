@@ -72,7 +72,7 @@ interface AnalyticsData {
     instagram: { followers: number; engagement: number; posts: number };
     tiktok: { followers: number; engagement: number; posts: number };
     youtube: { followers: number; engagement: number; posts: number };
-    twitter: { followers: number; engagement: number; posts: number };
+    x: { followers: number; engagement: number; posts: number };
   };
   recent_performance: {
     date: string;
@@ -100,13 +100,25 @@ function DashboardContent() {
 
   // Check if user has access to specific features based on plan
   const hasFeatureAccess = (feature: string): boolean => {
+    // Allow basic features for all authenticated users
+    switch (feature) {
+      case "settings":
+        return true; // Settings should be available to all users
+      case "home":
+        return true;
+      case "platforms":
+        return true; // Allow platforms for all users temporarily
+      default:
+        break;
+    }
+    
     if (!subscription || subscription.status !== "active") {
       // Allow basic features for free users
       switch (feature) {
-        case "settings":
-          return true; // Settings should be available to all users
-        case "home":
-          return true;
+        case "analytics":
+          return true; // Allow analytics for all users temporarily
+        case "revenue":
+          return true; // Allow revenue for all users temporarily
         default:
           return false;
       }
@@ -249,7 +261,7 @@ function DashboardContent() {
                 instagram: { followers: 0, engagement: 0, posts: 0 },
                 tiktok: { followers: 0, engagement: 0, posts: 0 },
                 youtube: { followers: 0, engagement: 0, posts: 0 },
-                twitter: { followers: 0, engagement: 0, posts: 0 },
+                x: { followers: 0, engagement: 0, posts: 0 },
               },
               recent_performance: [],
             });
@@ -269,7 +281,7 @@ function DashboardContent() {
               instagram: { followers: 0, engagement: 0, posts: 0 },
               tiktok: { followers: 0, engagement: 0, posts: 0 },
               youtube: { followers: 0, engagement: 0, posts: 0 },
-              twitter: { followers: 0, engagement: 0, posts: 0 },
+              x: { followers: 0, engagement: 0, posts: 0 },
             },
             recent_performance: [],
           });
@@ -288,7 +300,7 @@ function DashboardContent() {
             instagram: { followers: 0, engagement: 0, posts: 0 },
             tiktok: { followers: 0, engagement: 0, posts: 0 },
             youtube: { followers: 0, engagement: 0, posts: 0 },
-            twitter: { followers: 0, engagement: 0, posts: 0 },
+            x: { followers: 0, engagement: 0, posts: 0 },
           },
           recent_performance: [],
         });

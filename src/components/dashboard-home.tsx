@@ -104,7 +104,7 @@ interface AnalyticsData {
     instagram: { followers: number; engagement: number; posts: number };
     tiktok: { followers: number; engagement: number; posts: number };
     youtube: { followers: number; engagement: number; posts: number };
-    twitter: { followers: number; engagement: number; posts: number };
+    x: { followers: number; engagement: number; posts: number };
   };
   recent_performance: {
     date: string;
@@ -515,7 +515,7 @@ export default function DashboardHome({
                           {platform === "instagram" && <Camera className="w-5 h-5 text-pink-600" />}
                           {platform === "tiktok" && <Video className="w-5 h-5 text-black" />}
                           {platform === "youtube" && <Play className="w-5 h-5 text-red-600" />}
-                          {platform === "twitter" && <MessageCircle className="w-5 h-5 text-blue-600" />}
+                          {platform === "x" && <MessageCircle className="w-5 h-5 text-blue-600" />}
                           <span className="font-medium capitalize text-gray-900">{platform}</span>
                         </div>
                         <div className="space-y-3">
@@ -770,7 +770,7 @@ export default function DashboardHome({
                     {connection.platform === "instagram" && <Camera className="w-6 h-6 text-pink-600" />}
                     {connection.platform === "tiktok" && <Video className="w-6 h-6 text-black" />}
                     {connection.platform === "youtube" && <Play className="w-6 h-6 text-red-600" />}
-                    {connection.platform === "twitter" && <MessageCircle className="w-6 h-6 text-blue-600" />}
+                    {connection.platform === "x" && <MessageCircle className="w-6 h-6 text-blue-600" />}
                     <div>
                       <h3 className="font-semibold capitalize">{connection.platform}</h3>
                       <p className="text-sm text-gray-600">@{connection.platform_username}</p>

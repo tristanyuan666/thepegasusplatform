@@ -47,12 +47,10 @@ interface RealAnalyticsData {
   revenue: number;
   growth_rate: number;
   platform_breakdown: {
-    [platform: string]: {
-      followers: number;
-      engagement: number;
-      posts: number;
-      views: number;
-    };
+    instagram: { followers: number; engagement: number; posts: number };
+    tiktok: { followers: number; engagement: number; posts: number };
+    youtube: { followers: number; engagement: number; posts: number };
+    x: { followers: number; engagement: number; posts: number };
   };
   recent_performance: {
     date: string;
@@ -535,32 +533,32 @@ export default function DashboardAnalytics({
             </div>
             <Card className="border border-gray-200">
               <CardContent className="p-6">
-                {data?.recent_performance && data.recent_performance.length > 0 ? (
-                  <div className="space-y-4">
+              {data?.recent_performance && data.recent_performance.length > 0 ? (
+                <div className="space-y-4">
                     {data.recent_performance.map((item: any, index: number) => (
                       <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
-                        <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-4">
                           <span className="text-sm font-medium text-gray-900">{item.date}</span>
                           <span className="font-semibold text-gray-900">{item.views.toLocaleString()} views</span>
-                        </div>
-                        <div className="flex items-center gap-4">
-                          <span className="text-sm text-gray-600">{item.engagement}% engagement</span>
-                          <span className={`text-sm font-medium ${getViralScoreColor(item.viral_score)}`}>
-                            {item.viral_score}% viral score
-                          </span>
-                        </div>
                       </div>
-                    ))}
-                  </div>
-                ) : (
+                        <div className="flex items-center gap-4">
+                        <span className="text-sm text-gray-600">{item.engagement}% engagement</span>
+                          <span className={`text-sm font-medium ${getViralScoreColor(item.viral_score)}`}>
+                          {item.viral_score}% viral score
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
                   <div className="text-center py-12 text-gray-500">
-                    <BarChart3 className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                  <BarChart3 className="w-12 h-12 mx-auto mb-4 text-gray-300" />
                     <p className="text-gray-600">No performance data available</p>
                     <p className="text-sm text-gray-500 mt-1">Connect your platforms to see analytics</p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+                </div>
+              )}
+            </CardContent>
+          </Card>
           </div>
 
           {/* Quick Actions */}
@@ -569,40 +567,40 @@ export default function DashboardAnalytics({
               <h3 className="text-lg font-semibold text-gray-900">Analytics Actions</h3>
               <span className="text-sm text-gray-500">Manage your reports</span>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Button
-                variant="outline"
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Button
+              variant="outline"
                 className="w-full h-12 border-gray-200 hover:border-blue-300 hover:bg-blue-50"
-                onClick={handleScheduleReports}
-                disabled={isScheduling}
-              >
-                {isScheduling ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                    Scheduling...
-                  </>
-                ) : (
-                  <>
-                    <Calendar className="w-4 h-4 mr-2" />
-                    Schedule Reports
-                  </>
-                )}
-              </Button>
+              onClick={handleScheduleReports}
+              disabled={isScheduling}
+            >
+              {isScheduling ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                  Scheduling...
+                </>
+              ) : (
+                <>
+                  <Calendar className="w-4 h-4 mr-2" />
+                  Schedule Reports
+                </>
+              )}
+            </Button>
               <Button 
                 variant="outline" 
                 className="w-full h-12 border-gray-200 hover:border-blue-300 hover:bg-blue-50"
               >
-                <Download className="w-4 h-4 mr-2" />
-                Export Data
-              </Button>
-            </div>
+              <Download className="w-4 h-4 mr-2" />
+              Export Data
+            </Button>
+          </div>
           </div>
         </TabsContent>
 
         <TabsContent value="content" className="space-y-8 mt-8">
           {/* Content Performance */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
               <h3 className="text-lg font-semibold text-gray-900">Content Performance</h3>
               <span className="text-sm text-gray-500">Your best performing content</span>
             </div>
@@ -622,7 +620,7 @@ export default function DashboardAnalytics({
                       <div className="flex items-center gap-2 mb-2">
                         <TrendingUp className="w-4 h-4 text-green-600" />
                         <span className="font-medium">Top Performing</span>
-                      </div>
+                </div>
                       <p className="text-2xl font-bold">{data?.viral_score?.toFixed(0) || 0}%</p>
                       <p className="text-sm text-gray-600">Viral score</p>
                     </div>
@@ -630,7 +628,7 @@ export default function DashboardAnalytics({
                       <div className="flex items-center gap-2 mb-2">
                         <Eye className="w-4 h-4 text-purple-600" />
                         <span className="font-medium">Avg Views</span>
-                      </div>
+                  </div>
                       <p className="text-2xl font-bold">{data?.total_views ? Math.floor(data.total_views / (data.content_count || 1)) : 0}</p>
                       <p className="text-sm text-gray-600">Per post</p>
                     </div>
@@ -677,10 +675,10 @@ export default function DashboardAnalytics({
                   <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
                     <h4 className="font-medium text-purple-900 mb-2">Use Trending Hashtags</h4>
                     <p className="text-sm text-purple-700">Posts with trending hashtags get 2x more reach. Research current trends.</p>
-                  </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </CardContent>
+          </Card>
           </div>
         </TabsContent>
       </Tabs>
