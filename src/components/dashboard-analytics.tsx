@@ -120,7 +120,7 @@ export default function DashboardAnalytics({
       const content = contentData.data || [];
 
       // Calculate total followers from real platform connections
-      const totalFollowers = platforms.reduce((sum, platform) => {
+      const totalFollowers = platforms.reduce((sum: number, platform: any) => {
         const connection = platformConnections.find(conn => conn.platform === platform.platform);
         return sum + (connection?.follower_count || 0);
       }, 0);
