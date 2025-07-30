@@ -93,9 +93,10 @@ export default function PersonaBuilder({
   hasFeatureAccess,
 }: PersonaBuilderProps) {
   const [personas, setPersonas] = useState<Persona[]>([]);
+  const [personaTemplates, setPersonaTemplates] = useState<PersonaTemplate[]>([]);
   const [currentPersona, setCurrentPersona] = useState<Partial<Persona>>({});
   const [isCreating, setIsCreating] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("create");
@@ -231,7 +232,7 @@ export default function PersonaBuilder({
     // Filter based on user's niche
     const userNiche = userProfile?.niche || "lifestyle";
     const filteredTemplates = templates.filter(template => template.niche === userNiche);
-    return filteredTemplates;
+    setPersonaTemplates(filteredTemplates);
   };
 
   const calculateCompletionProgress = () => {
@@ -736,7 +737,7 @@ export default function PersonaBuilder({
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {loadPersonaTemplates().map((template) => (
+                {personaTemplates.map((template) => (
                   <div key={template.id} className="border border-gray-200 rounded-lg p-4">
                     <h4 className="font-semibold text-gray-900 mb-2">{template.name}</h4>
                     <p className="text-sm text-gray-600 mb-3">{template.description}</p>
