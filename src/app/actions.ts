@@ -5,6 +5,49 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/supabase/server";
 import { AuthError } from "@supabase/supabase-js";
 
+// Enhanced error handling with consistent messaging
+const getAuthErrorMessage = (error: any): string => {
+  const message = error.message?.toLowerCase() || "";
+  
+  // Email verification errors
+  if (message.includes("email not confirmed") || message.includes("not confirmed")) {
+    return "Please verify your email address before signing in. Check your inbox for a verification link.";
+  }
+  
+  // Invalid credentials
+  if (message.includes("invalid login credentials") || message.includes("invalid credentials")) {
+    return "Invalid email or password. Please check your credentials and try again.";
+  }
+  
+  // User not found
+  if (message.includes("user not found") || message.includes("email not found")) {
+    return "No account found with this email address. Please sign up first.";
+  }
+  
+  // Rate limiting
+  if (message.includes("too many requests") || message.includes("rate limit")) {
+    return "Too many sign-in attempts. Please wait a few minutes before trying again.";
+  }
+  
+  // Invalid email
+  if (message.includes("invalid email")) {
+    return "Please enter a valid email address.";
+  }
+  
+  // Signup disabled
+  if (message.includes("signup is disabled") || message.includes("signups not allowed")) {
+    return "Account registration is currently disabled. Please contact support.";
+  }
+  
+  // Password requirements
+  if (message.includes("password should be at least")) {
+    return "Password must be at least 6 characters long.";
+  }
+  
+  // Generic fallback
+  return "An error occurred during authentication. Please try again.";
+};
+
 export const signUpAction = async (formData: FormData) => {
   const email = formData.get("email")?.toString();
   const password = formData.get("password")?.toString();
@@ -14,15 +57,19 @@ export const signUpAction = async (formData: FormData) => {
     return { error: "Email and password are required" };
   }
 
-  // Basic email validation
+  // Enhanced email validation
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
     return { error: "Please enter a valid email address" };
   }
 
-  // Password validation
-  if (password.length < 6) {
-    return { error: "Password must be at least 6 characters long" };
+  // Enhanced password validation
+  if (password.length < 8) {
+    return { error: "Password must be at least 8 characters long" };
+  }
+  
+  if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password)) {
+    return { error: "Password must contain at least one uppercase letter, one lowercase letter, and one number" };
   }
 
   try {
@@ -47,49 +94,7 @@ export const signUpAction = async (formData: FormData) => {
 
     if (error) {
       console.error("Signup error:", error);
-
-      // Handle specific Supabase auth errors
-      if (
-        error.message.includes("User already registered") ||
-        error.message.includes("already registered") ||
-        error.message.includes("already been registered")
-      ) {
-        return {
-          error:
-            "An account with this email already exists. Please sign in instead.",
-        };
-      }
-
-      if (error.message.includes("Invalid email")) {
-        return {
-          error: "Please enter a valid email address",
-        };
-      }
-
-      if (error.message.includes("Password should be at least")) {
-        return {
-          error: "Password must be at least 6 characters long",
-        };
-      }
-
-      if (error.message.includes("Signup is disabled")) {
-        return {
-          error:
-            "Account registration is currently disabled. Please contact support.",
-        };
-      }
-
-      if (error.message.includes("Email rate limit exceeded")) {
-        return {
-          error:
-            "Too many signup attempts. Please wait a few minutes before trying again.",
-        };
-      }
-
-      // Generic error fallback
-      return {
-        error: error.message || "Failed to create account. Please try again.",
-      };
+      return { error: getAuthErrorMessage(error) };
     }
 
     if (!user) {
@@ -107,12 +112,10 @@ export const signUpAction = async (formData: FormData) => {
     // Check if email confirmation is required
     if (!user.email_confirmed_at) {
       console.log("Email confirmation required for user:", user.email);
-      // Redirect to sign-in page with success message about email verification
       redirect(
         "/sign-in?success=Account created successfully! Please check your email and click the verification link before signing in.",
       );
     } else {
-      // Email already confirmed (shouldn't happen in most setups)
       console.log("Email already confirmed for user:", user.email);
       redirect(
         "/sign-in?success=Account created and verified successfully! You can now sign in.",
@@ -127,7 +130,6 @@ export const signUpAction = async (formData: FormData) => {
       typeof error.digest === "string" &&
       error.digest.includes("NEXT_REDIRECT")
     ) {
-      // This is expected redirect behavior, re-throw it without logging as error
       throw error;
     }
     console.error("Unexpected signup error:", error);
@@ -145,7 +147,7 @@ export const signInAction = async (formData: FormData) => {
     return { error: "Email and password are required" };
   }
 
-  // Basic email validation
+  // Enhanced email validation
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
     return { error: "Please enter a valid email address" };
@@ -163,75 +165,7 @@ export const signInAction = async (formData: FormData) => {
 
     if (error) {
       console.error("Sign in error:", error);
-      console.error("Error details:", {
-        message: error.message,
-        status: error.status,
-        code: error instanceof AuthError ? "AuthError" : "Unknown",
-      });
-
-      // Handle specific Supabase auth errors with user-friendly messages
-      if (
-        error.message === "Email not confirmed" ||
-        error.message.includes("email not confirmed") ||
-        error.message.includes("not confirmed")
-      ) {
-        return {
-          error:
-            "Please verify your email address before signing in. Check your inbox for a verification link. If you didn't receive it, try signing up again.",
-        };
-      }
-
-      // Enhanced handling for "Invalid login credentials"
-      if (
-        error.message === "Invalid login credentials" ||
-        error.message.includes("invalid credentials") ||
-        error.message.includes("Invalid email or password")
-      ) {
-        // Note: We can't check user verification status directly from client
-        // Supabase sometimes returns "invalid credentials" for unverified emails
-
-        return {
-          error:
-            "Invalid email or password. Please check your credentials and try again. If you just signed up, make sure you've verified your email address first.",
-        };
-      }
-
-      if (
-        error.message.includes("Email not found") ||
-        error.message.includes("User not found")
-      ) {
-        return {
-          error:
-            "No account found with this email address. Please sign up first.",
-        };
-      }
-
-      if (
-        error.message.includes("Too many requests") ||
-        error.message.includes("rate limit")
-      ) {
-        return {
-          error:
-            "Too many sign-in attempts. Please wait a few minutes before trying again.",
-        };
-      }
-
-      if (error.message.includes("Invalid email")) {
-        return {
-          error: "Please enter a valid email address",
-        };
-      }
-
-      if (error.message.includes("Signups not allowed")) {
-        return {
-          error: "Sign-in is currently disabled. Please contact support.",
-        };
-      }
-
-      // Generic error fallback with more helpful message
-      return {
-        error: `Sign in failed: ${error.message}. If you just signed up, please verify your email first. Otherwise, check your credentials and try again.`,
-      };
+      return { error: getAuthErrorMessage(error) };
     }
 
     if (!data.user) {
@@ -245,7 +179,7 @@ export const signInAction = async (formData: FormData) => {
       emailConfirmed: data.user.email_confirmed_at,
     });
 
-    // Ensure user profile exists - but don't block sign in if it fails
+    // Ensure user profile exists with enhanced error handling
     try {
       const { error: profileError } = await supabase.from("users").upsert(
         {
@@ -273,26 +207,48 @@ export const signInAction = async (formData: FormData) => {
       // Continue with sign in even if profile update fails
     }
 
-    // Check if user has active subscription
-    const { data: subscription, error: subError } = await supabase
-      .from("subscriptions")
-      .select("*")
-      .eq("user_id", data.user.id)
-      .eq("status", "active")
-      .single();
+    // Check if user has active subscription with enhanced error handling
+    let subscription = null;
+    try {
+      const { data: subData, error: subError } = await supabase
+        .from("subscriptions")
+        .select("*")
+        .eq("user_id", data.user.id)
+        .eq("status", "active")
+        .single();
 
-    if (subError && subError.code !== "PGRST116") {
-      console.error("Subscription check error:", subError);
-      // Continue with sign in even if subscription check fails
+      if (subError && subError.code !== "PGRST116") {
+        console.error("Subscription check error:", subError);
+      } else {
+        subscription = subData;
+      }
+    } catch (subError) {
+      console.error("Subscription check exception:", subError);
     }
 
     console.log("Subscription status:", { hasSubscription: !!subscription });
 
-    // Redirect to pricing page if no active subscription, otherwise to dashboard
+    // Enhanced redirect logic
     if (!subscription) {
       redirect("/pricing?welcome=true");
     } else {
-      redirect("/dashboard");
+      // Check if user completed onboarding
+      try {
+        const { data: userProfile } = await supabase
+          .from("users")
+          .select("onboarding_completed")
+          .eq("user_id", data.user.id)
+          .single();
+
+        if (!userProfile?.onboarding_completed) {
+          redirect("/onboarding");
+        } else {
+          redirect("/dashboard");
+        }
+      } catch (onboardingError) {
+        console.error("Onboarding check error:", onboardingError);
+        redirect("/dashboard");
+      }
     }
   } catch (error) {
     // Check if this is a redirect error (which is expected)
@@ -303,7 +259,6 @@ export const signInAction = async (formData: FormData) => {
       typeof error.digest === "string" &&
       error.digest.includes("NEXT_REDIRECT")
     ) {
-      // This is expected redirect behavior, re-throw it without logging as error
       throw error;
     }
     console.error("Unexpected sign in error:", error);

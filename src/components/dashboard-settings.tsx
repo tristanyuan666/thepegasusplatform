@@ -10,6 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
+import { Switch } from "@/components/ui/switch";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   User,
   CreditCard,
@@ -27,7 +29,36 @@ import {
   Mail,
   Lock,
   Eye,
-  EyeOff
+  EyeOff,
+  Loader2,
+  RefreshCw,
+  Download,
+  Upload,
+  Trash2,
+  Key,
+  Smartphone,
+  Monitor,
+  Tablet,
+  Wifi,
+  WifiOff,
+  Clock,
+  Activity,
+  Zap,
+  Target,
+  TrendingUp,
+  Users,
+  BarChart3,
+  FileText,
+  Image,
+  Video,
+  Music,
+  Hash,
+  Star,
+  Award,
+  Trophy,
+  Gift,
+  Sparkles,
+  LogOut,
 } from "lucide-react";
 import { createClient } from "../../supabase/client";
 
@@ -50,6 +81,9 @@ interface UserProfile {
   onboarding_completed: boolean;
   created_at: string;
   updated_at: string | null;
+  bio?: string | null;
+  website?: string | null;
+  location?: string | null;
 }
 
 interface Subscription {
@@ -70,42 +104,73 @@ interface DashboardSettingsProps {
   hasFeatureAccess: (feature: string) => boolean;
 }
 
+interface DeviceSession {
+  id: string;
+  device: string;
+  location: string;
+  last_active: string;
+  is_current: boolean;
+  ip_address: string;
+  user_agent: string;
+}
+
+interface NotificationSettings {
+  email_notifications: boolean;
+  push_notifications: boolean;
+  marketing_emails: boolean;
+  content_reminders: boolean;
+  analytics_reports: boolean;
+  billing_alerts: boolean;
+  security_alerts: boolean;
+}
+
+interface PrivacySettings {
+  profile_visibility: "public" | "private" | "followers";
+  show_activity: boolean;
+  show_followers: boolean;
+  show_analytics: boolean;
+  allow_messaging: boolean;
+  data_collection: boolean;
+}
+
 const NICHE_OPTIONS = [
-  { value: "lifestyle", label: "Lifestyle" },
-  { value: "fitness", label: "Fitness & Health" },
-  { value: "beauty", label: "Beauty & Fashion" },
-  { value: "tech", label: "Technology" },
-  { value: "gaming", label: "Gaming" },
-  { value: "education", label: "Education" },
-  { value: "entertainment", label: "Entertainment" },
-  { value: "business", label: "Business & Finance" },
-  { value: "food", label: "Food & Cooking" },
-  { value: "travel", label: "Travel" },
-  { value: "other", label: "Other" }
+  { value: "lifestyle", label: "Lifestyle", icon: "🌟" },
+  { value: "fitness", label: "Fitness & Health", icon: "💪" },
+  { value: "beauty", label: "Beauty & Fashion", icon: "💄" },
+  { value: "tech", label: "Technology", icon: "💻" },
+  { value: "gaming", label: "Gaming", icon: "🎮" },
+  { value: "education", label: "Education", icon: "📚" },
+  { value: "entertainment", label: "Entertainment", icon: "🎬" },
+  { value: "business", label: "Business & Finance", icon: "💼" },
+  { value: "food", label: "Food & Cooking", icon: "🍳" },
+  { value: "travel", label: "Travel", icon: "✈️" },
+  { value: "other", label: "Other", icon: "🎯" }
 ];
 
 const CONTENT_FORMAT_OPTIONS = [
-  { value: "short-form", label: "Short-form Videos (TikTok, Reels)" },
-  { value: "long-form", label: "Long-form Videos (YouTube)" },
-  { value: "posts", label: "Social Media Posts" },
-  { value: "stories", label: "Stories & Live Content" },
-  { value: "mixed", label: "Mixed Content" }
+  { value: "short-form", label: "Short-form Videos (TikTok, Reels)", icon: "📱" },
+  { value: "long-form", label: "Long-form Videos (YouTube)", icon: "📺" },
+  { value: "posts", label: "Social Media Posts", icon: "📝" },
+  { value: "stories", label: "Stories & Live Content", icon: "📸" },
+  { value: "mixed", label: "Mixed Content", icon: "🎨" }
 ];
 
 const TONE_OPTIONS = [
-  { value: "professional", label: "Professional" },
-  { value: "casual", label: "Casual & Friendly" },
-  { value: "humorous", label: "Humorous & Entertaining" },
-  { value: "educational", label: "Educational & Informative" },
-  { value: "inspirational", label: "Inspirational & Motivational" },
-  { value: "authentic", label: "Authentic & Personal" }
+  { value: "professional", label: "Professional", icon: "👔" },
+  { value: "casual", label: "Casual & Friendly", icon: "😊" },
+  { value: "humorous", label: "Humorous & Entertaining", icon: "😂" },
+  { value: "educational", label: "Educational & Informative", icon: "📖" },
+  { value: "inspirational", label: "Inspirational & Motivational", icon: "✨" },
+  { value: "authentic", label: "Authentic & Personal", icon: "💝" }
 ];
 
-const FOLLOWER_COUNT_OPTIONS = [
-  { value: "less-than-5k", label: "Less than 5K" },
-  { value: "5k-50k", label: "5K - 50K" },
-  { value: "50k-500k", label: "50K - 500K" },
-  { value: "500k-plus", label: "500K+" }
+const FAME_GOALS_OPTIONS = [
+  { value: "build-brand", label: "Build Personal Brand", icon: "🏆" },
+  { value: "monetize", label: "Monetize Content", icon: "💰" },
+  { value: "become-expert", label: "Become Industry Expert", icon: "🎓" },
+  { value: "launch-business", label: "Launch Business", icon: "🚀" },
+  { value: "community", label: "Build Community", icon: "👥" },
+  { value: "influence", label: "Influence & Impact", icon: "🌟" }
 ];
 
 export default function DashboardSettings({
@@ -115,151 +180,226 @@ export default function DashboardSettings({
   hasFeatureAccess,
 }: DashboardSettingsProps) {
   const [isEditing, setIsEditing] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const [showPassword, setShowPassword] = useState(false);
-  const [isUpgrading, setIsUpgrading] = useState(false);
-  const [isManagingBilling, setIsManagingBilling] = useState(false);
+  const [activeTab, setActiveTab] = useState("profile");
+  const [deviceSessions, setDeviceSessions] = useState<DeviceSession[]>([]);
+  const [notificationSettings, setNotificationSettings] = useState<NotificationSettings>({
+    email_notifications: true,
+    push_notifications: true,
+    marketing_emails: false,
+    content_reminders: true,
+    analytics_reports: true,
+    billing_alerts: true,
+    security_alerts: true,
+  });
+  const [privacySettings, setPrivacySettings] = useState<PrivacySettings>({
+    profile_visibility: "public",
+    show_activity: true,
+    show_followers: true,
+    show_analytics: false,
+    allow_messaging: true,
+    data_collection: true,
+  });
+  
   const supabase = createClient();
 
-  // Form state
   const [formData, setFormData] = useState({
-    full_name: userProfile.full_name || "",
-    niche: userProfile.niche || "",
-    content_format: userProfile.content_format || "",
-    tone: userProfile.tone || "",
-    fame_goals: userProfile.fame_goals || "",
-    follower_count: userProfile.follower_count || "",
-    email_notifications: true,
-    privacy_public: false,
-    language: "en",
-    timezone: "UTC"
+    full_name: userProfile?.full_name || "",
+    niche: userProfile?.niche || "lifestyle",
+    tone: userProfile?.tone || "authentic",
+    content_format: userProfile?.content_format || "mixed",
+    fame_goals: userProfile?.fame_goals || "build-brand",
+    bio: userProfile?.bio || "",
+    website: userProfile?.website || "",
+    location: userProfile?.location || "",
   });
 
-  // Update form data when userProfile changes
   useEffect(() => {
-    setFormData({
-      full_name: userProfile.full_name || "",
-      niche: userProfile.niche || "",
-      content_format: userProfile.content_format || "",
-      tone: userProfile.tone || "",
-      fame_goals: userProfile.fame_goals || "",
-      follower_count: userProfile.follower_count || "",
-      email_notifications: true,
-      privacy_public: false,
-      language: "en",
-      timezone: "UTC"
-    });
-  }, [userProfile]);
+    loadDeviceSessions();
+    loadSettings();
+  }, []);
 
-  // Clear messages after 5 seconds
-  useEffect(() => {
-    if (error || success) {
-      const timer = setTimeout(() => {
-        setError(null);
-        setSuccess(null);
-      }, 5000);
-      return () => clearTimeout(timer);
+  const loadDeviceSessions = async () => {
+    try {
+      // Mock device sessions data
+      const sessions: DeviceSession[] = [
+        {
+          id: "1",
+          device: "MacBook Pro",
+          location: "San Francisco, CA",
+          last_active: new Date().toISOString(),
+          is_current: true,
+          ip_address: "192.168.1.1",
+          user_agent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)",
+        },
+        {
+          id: "2",
+          device: "iPhone 14",
+          location: "San Francisco, CA",
+          last_active: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+          is_current: false,
+          ip_address: "192.168.1.2",
+          user_agent: "Mozilla/5.0 (iPhone; CPU iPhone OS 16_0)",
+        },
+      ];
+      setDeviceSessions(sessions);
+    } catch (error) {
+      console.error("Error loading device sessions:", error);
     }
-  }, [error, success]);
+  };
+
+  const loadSettings = async () => {
+    try {
+      // Load user settings from database
+      const { data: settings, error } = await supabase
+        .from("user_settings")
+        .select("*")
+        .eq("user_id", userProfile.user_id)
+        .single();
+
+      if (settings) {
+        setNotificationSettings(settings.notifications || notificationSettings);
+        setPrivacySettings(settings.privacy || privacySettings);
+      }
+    } catch (error) {
+      console.error("Error loading settings:", error);
+    }
+  };
 
   const handleInputChange = (field: string, value: string | boolean) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleNotificationChange = (field: keyof NotificationSettings, value: boolean) => {
+    setNotificationSettings(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handlePrivacyChange = (field: keyof PrivacySettings, value: boolean | string) => {
+    setPrivacySettings(prev => ({ ...prev, [field]: value }));
   };
 
   const handleSave = async () => {
-    setIsSaving(true);
+    setIsLoading(true);
     setError(null);
     setSuccess(null);
 
     try {
-      const { error: updateError } = await supabase
+      // Validate required fields
+      if (!formData.full_name.trim()) {
+        throw new Error("Full name is required");
+      }
+
+      // Update user profile
+      const { error: profileError } = await supabase
         .from("users")
         .update({
           full_name: formData.full_name,
           niche: formData.niche,
-          content_format: formData.content_format,
           tone: formData.tone,
+          content_format: formData.content_format,
           fame_goals: formData.fame_goals,
-          follower_count: formData.follower_count,
-          updated_at: new Date().toISOString()
+          bio: formData.bio,
+          website: formData.website,
+          location: formData.location,
+          updated_at: new Date().toISOString(),
         })
         .eq("user_id", userProfile.user_id);
 
-      if (updateError) throw updateError;
+      if (profileError) throw profileError;
 
-      setSuccess("Profile updated successfully!");
+      // Update settings
+      const { error: settingsError } = await supabase
+        .from("user_settings")
+        .upsert({
+          user_id: userProfile.user_id,
+          notifications: notificationSettings,
+          privacy: privacySettings,
+          updated_at: new Date().toISOString(),
+        });
+
+      if (settingsError) throw settingsError;
+
+      setSuccess("Settings saved successfully!");
       setIsEditing(false);
       onProfileUpdate();
-    } catch (err) {
-      console.error("Profile update error:", err);
-      setError(`Failed to update profile: ${err instanceof Error ? err.message : 'Unknown error'}`);
+      
+      setTimeout(() => setSuccess(null), 3000);
+    } catch (error) {
+      console.error("Error saving settings:", error);
+      setError(error instanceof Error ? error.message : "Failed to save settings");
     } finally {
-      setIsSaving(false);
+      setIsLoading(false);
     }
   };
 
   const handleCancel = () => {
     setFormData({
-      full_name: userProfile.full_name || "",
-      niche: userProfile.niche || "",
-      content_format: userProfile.content_format || "",
-      tone: userProfile.tone || "",
-      fame_goals: userProfile.fame_goals || "",
-      follower_count: userProfile.follower_count || "",
-      email_notifications: true,
-      privacy_public: false,
-      language: "en",
-      timezone: "UTC"
+      full_name: userProfile?.full_name || "",
+      niche: userProfile?.niche || "lifestyle",
+      tone: userProfile?.tone || "authentic",
+      content_format: userProfile?.content_format || "mixed",
+      fame_goals: userProfile?.fame_goals || "build-brand",
+      bio: userProfile?.bio || "",
+      website: userProfile?.website || "",
+      location: userProfile?.location || "",
     });
     setIsEditing(false);
     setError(null);
+    setSuccess(null);
   };
 
   const handleUpgradePlan = async () => {
-    setIsUpgrading(true);
-    try {
-      // Redirect to pricing page for upgrade
-      window.location.href = "/pricing";
-    } catch (err) {
-      console.error("Upgrade error:", err);
-      setError("Failed to redirect to upgrade page");
-    } finally {
-      setIsUpgrading(false);
-    }
+    window.location.href = "/pricing";
   };
 
   const handleManageBilling = async () => {
-    setIsManagingBilling(true);
     try {
-      // For demo purposes, show a success message
-      // In production, this would call the Stripe billing portal
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setSuccess("Billing portal would open here in production. For demo, you can manage your subscription through the dashboard.");
-    } catch (err) {
-      console.error("Billing portal error:", err);
+      const { data, error } = await supabase.functions.invoke("create-portal-session", {
+        body: { user_id: userProfile.user_id }
+      });
+
+      if (error) throw error;
+      if (data?.url) {
+        window.location.href = data.url;
+      }
+    } catch (error) {
+      console.error("Error creating billing portal:", error);
       setError("Failed to open billing portal");
-    } finally {
-      setIsManagingBilling(false);
+    }
+  };
+
+  const handleSignOutAllDevices = async () => {
+    if (window.confirm("Are you sure you want to sign out from all devices?")) {
+      try {
+        await supabase.auth.signOut({ scope: "global" });
+        window.location.href = "/sign-in?message=Signed out from all devices";
+      } catch (error) {
+        console.error("Error signing out:", error);
+        setError("Failed to sign out from all devices");
+      }
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (window.confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+      try {
+        // In a real app, you'd call a server action to delete the account
+        setError("Account deletion is not implemented yet. Please contact support.");
+      } catch (error) {
+        console.error("Error deleting account:", error);
+        setError("Failed to delete account");
+      }
     }
   };
 
   const getPlanColor = (plan: string | null) => {
-    if (!plan) return "bg-gray-100 text-gray-800";
-    
-    switch (plan.toLowerCase()) {
-      case "creator":
-        return "bg-blue-100 text-blue-800";
-      case "influencer":
-        return "bg-blue-100 text-blue-800";
-      case "superstar":
-        return "bg-yellow-100 text-yellow-800";
-      default:
-        return "bg-gray-100 text-gray-800";
+    switch (plan?.toLowerCase()) {
+      case "creator": return "text-blue-600 bg-blue-100";
+      case "influencer": return "text-purple-600 bg-purple-100";
+      case "superstar": return "text-yellow-600 bg-yellow-100";
+      default: return "text-gray-600 bg-gray-100";
     }
   };
 
@@ -268,59 +408,118 @@ export default function DashboardSettings({
   };
 
   const getPlanPrice = (plan: string | null, billing: string | null) => {
-    if (!plan) return "N/A";
-    
     const prices = {
-      creator: { monthly: 29, yearly: 290 },
-      influencer: { monthly: 59, yearly: 590 },
-      superstar: { monthly: 99, yearly: 990 }
+      creator: { monthly: 29.99, yearly: 299.99 },
+      influencer: { monthly: 59.99, yearly: 599.99 },
+      superstar: { monthly: 99.99, yearly: 959.99 },
     };
     
-    const planPrices = prices[plan.toLowerCase() as keyof typeof prices];
-    if (!planPrices) return "N/A";
+    const planPrices = prices[plan?.toLowerCase() as keyof typeof prices];
+    if (!planPrices) return null;
     
-    const price = billing === "yearly" ? planPrices.yearly : planPrices.monthly;
-    return `$${price}/${billing === "yearly" ? "year" : "month"}`;
+    return billing === "yearly" ? planPrices.yearly : planPrices.monthly;
   };
+
+  if (!hasFeatureAccess("settings")) {
+    return (
+      <Card>
+        <CardContent className="p-6">
+          <div className="text-center">
+            <Settings className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Settings Unavailable</h3>
+            <p className="text-gray-600 mb-4">
+              Upgrade your plan to access advanced settings.
+            </p>
+            <Button onClick={() => window.location.href = "/pricing"}>
+              Upgrade Plan
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Profile Settings</h1>
-          <p className="text-gray-600 mt-1">
-            Update your personal information and content preferences
-          </p>
+          <h2 className="text-2xl font-bold text-gray-900">Settings</h2>
+          <p className="text-gray-600">Manage your account preferences and security</p>
+        </div>
+        <div className="flex items-center gap-2">
+          {isEditing ? (
+            <>
+              <Button
+                variant="outline"
+                onClick={handleCancel}
+                disabled={isLoading}
+              >
+                <X className="w-4 h-4 mr-2" />
+                Cancel
+              </Button>
+              <Button
+                onClick={handleSave}
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                    Saving...
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-4 h-4 mr-2" />
+                    Save Changes
+                  </>
+                )}
+              </Button>
+            </>
+          ) : (
+            <Button
+              onClick={() => setIsEditing(true)}
+            >
+              <Edit className="w-4 h-4 mr-2" />
+              Edit Settings
+            </Button>
+          )}
         </div>
       </div>
 
-      {/* Error/Success Messages */}
+      {/* Success/Error Alerts */}
       {error && (
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>{error}</AlertDescription>
+        <Alert className="border-red-200 bg-red-50">
+          <AlertCircle className="h-4 w-4 text-red-600" />
+          <AlertDescription className="text-red-800">{error}</AlertDescription>
         </Alert>
       )}
 
       {success && (
-        <Alert>
-          <CheckCircle className="h-4 w-4" />
-          <AlertDescription>{success}</AlertDescription>
+        <Alert className="border-green-200 bg-green-50">
+          <CheckCircle className="h-4 w-4 text-green-600" />
+          <AlertDescription className="text-green-800">{success}</AlertDescription>
         </Alert>
       )}
 
-      {/* Personal Information */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <User className="w-5 h-5 text-blue-600" />
-            Personal Information
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {isEditing ? (
-            <>
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList className="grid w-full grid-cols-5">
+          <TabsTrigger value="profile">Profile</TabsTrigger>
+          <TabsTrigger value="notifications">Notifications</TabsTrigger>
+          <TabsTrigger value="privacy">Privacy</TabsTrigger>
+          <TabsTrigger value="security">Security</TabsTrigger>
+          <TabsTrigger value="billing">Billing</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="profile" className="space-y-6">
+          {/* Profile Settings */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <User className="w-5 h-5 text-blue-600" />
+                Profile Information
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="full_name">Full Name</Label>
@@ -328,329 +527,490 @@ export default function DashboardSettings({
                     id="full_name"
                     value={formData.full_name}
                     onChange={(e) => handleInputChange("full_name", e.target.value)}
+                    disabled={!isEditing}
                     placeholder="Enter your full name"
                   />
                 </div>
+                
                 <div>
-                  <Label htmlFor="follower_count">Follower Count</Label>
-                  <Select value={formData.follower_count} onValueChange={(value) => handleInputChange("follower_count", value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select your follower count" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {FOLLOWER_COUNT_OPTIONS.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <Label htmlFor="location">Location</Label>
+                  <Input
+                    id="location"
+                    value={formData.location}
+                    onChange={(e) => handleInputChange("location", e.target.value)}
+                    disabled={!isEditing}
+                    placeholder="City, Country"
+                  />
                 </div>
+              </div>
+
+              <div>
+                <Label htmlFor="bio">Bio</Label>
+                <Textarea
+                  id="bio"
+                  value={formData.bio}
+                  onChange={(e) => handleInputChange("bio", e.target.value)}
+                  disabled={!isEditing}
+                  placeholder="Tell us about yourself..."
+                  rows={3}
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="website">Website</Label>
+                <Input
+                  id="website"
+                  value={formData.website}
+                  onChange={(e) => handleInputChange("website", e.target.value)}
+                  disabled={!isEditing}
+                  placeholder="https://yourwebsite.com"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="niche">Content Niche</Label>
-                  <Select value={formData.niche} onValueChange={(value) => handleInputChange("niche", value)}>
+                  <Label htmlFor="niche">Niche</Label>
+                  <Select
+                    value={formData.niche}
+                    onValueChange={(value) => handleInputChange("niche", value)}
+                    disabled={!isEditing}
+                  >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select your niche" />
+                      <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
                       {NICHE_OPTIONS.map((option) => (
                         <SelectItem key={option.value} value={option.value}>
-                          {option.label}
+                          <span className="flex items-center gap-2">
+                            <span>{option.icon}</span>
+                            {option.label}
+                          </span>
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
-                <div>
-                  <Label htmlFor="content_format">Preferred Content Format</Label>
-                  <Select value={formData.content_format} onValueChange={(value) => handleInputChange("content_format", value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select content format" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {CONTENT_FORMAT_OPTIONS.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+
                 <div>
                   <Label htmlFor="tone">Content Tone</Label>
-                  <Select value={formData.tone} onValueChange={(value) => handleInputChange("tone", value)}>
+                  <Select
+                    value={formData.tone}
+                    onValueChange={(value) => handleInputChange("tone", value)}
+                    disabled={!isEditing}
+                  >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select your tone" />
+                      <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
                       {TONE_OPTIONS.map((option) => (
                         <SelectItem key={option.value} value={option.value}>
-                          {option.label}
+                          <span className="flex items-center gap-2">
+                            <span>{option.icon}</span>
+                            {option.label}
+                          </span>
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
               </div>
-              <div>
-                <Label htmlFor="fame_goals">Content Goals</Label>
-                <Textarea
-                  id="fame_goals"
-                  value={formData.fame_goals}
-                  onChange={(e) => handleInputChange("fame_goals", e.target.value)}
-                  placeholder="Describe your content goals and what you want to achieve..."
-                  rows={3}
-                />
-              </div>
-              <div className="flex gap-2">
-                <Button onClick={handleSave} disabled={isSaving}>
-                  {isSaving ? (
-                    <>
-                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                      Saving...
-                    </>
-                  ) : (
-                    <>
-                      <Save className="w-4 h-4 mr-2" />
-                      Save Changes
-                    </>
-                  )}
-                </Button>
-                <Button variant="outline" onClick={handleCancel}>
-                  <X className="w-4 h-4 mr-2" />
-                  Cancel
-                </Button>
-              </div>
-            </>
-          ) : (
-            <>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label>Full Name</Label>
-                  <p className="text-sm text-gray-900 font-medium">{userProfile.full_name || "Not set"}</p>
+                  <Label htmlFor="content_format">Content Format</Label>
+                  <Select
+                    value={formData.content_format}
+                    onValueChange={(value) => handleInputChange("content_format", value)}
+                    disabled={!isEditing}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {CONTENT_FORMAT_OPTIONS.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          <span className="flex items-center gap-2">
+                            <span>{option.icon}</span>
+                            {option.label}
+                          </span>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
+
                 <div>
-                  <Label>Follower Count</Label>
-                  <p className="text-sm text-gray-900 font-medium">
-                    {userProfile.follower_count ? 
-                      FOLLOWER_COUNT_OPTIONS.find(opt => opt.value === userProfile.follower_count)?.label : 
-                      "Not set"
-                    }
-                  </p>
-                </div>
-                <div>
-                  <Label>Content Niche</Label>
-                  <p className="text-sm text-gray-900 font-medium">
-                    {userProfile.niche ? 
-                      NICHE_OPTIONS.find(opt => opt.value === userProfile.niche)?.label : 
-                      "Not set"
-                    }
-                  </p>
-                </div>
-                <div>
-                  <Label>Preferred Content Format</Label>
-                  <p className="text-sm text-gray-900 font-medium">
-                    {userProfile.content_format ? 
-                      CONTENT_FORMAT_OPTIONS.find(opt => opt.value === userProfile.content_format)?.label : 
-                      "Not set"
-                    }
-                  </p>
-                </div>
-                <div>
-                  <Label>Content Tone</Label>
-                  <p className="text-sm text-gray-900 font-medium">
-                    {userProfile.tone ? 
-                      TONE_OPTIONS.find(opt => opt.value === userProfile.tone)?.label : 
-                      "Not set"
-                    }
-                  </p>
+                  <Label htmlFor="fame_goals">Fame Goals</Label>
+                  <Select
+                    value={formData.fame_goals}
+                    onValueChange={(value) => handleInputChange("fame_goals", value)}
+                    disabled={!isEditing}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {FAME_GOALS_OPTIONS.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          <span className="flex items-center gap-2">
+                            <span>{option.icon}</span>
+                            {option.label}
+                          </span>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
-              <div>
-                <Label>Content Goals</Label>
-                <p className="text-sm text-gray-900 font-medium">
-                  {userProfile.fame_goals || "Not set"}
-                </p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="notifications" className="space-y-6">
+          {/* Notification Settings */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Bell className="w-5 h-5 text-blue-600" />
+                Notification Preferences
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <Label>Email Notifications</Label>
+                    <p className="text-sm text-gray-600">
+                      Receive notifications about your account activity
+                    </p>
+                  </div>
+                  <Switch
+                    checked={notificationSettings.email_notifications}
+                    onCheckedChange={(checked) => handleNotificationChange("email_notifications", checked)}
+                    disabled={!isEditing}
+                  />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <Label>Push Notifications</Label>
+                    <p className="text-sm text-gray-600">
+                      Get real-time updates on your device
+                    </p>
+                  </div>
+                  <Switch
+                    checked={notificationSettings.push_notifications}
+                    onCheckedChange={(checked) => handleNotificationChange("push_notifications", checked)}
+                    disabled={!isEditing}
+                  />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <Label>Marketing Emails</Label>
+                    <p className="text-sm text-gray-600">
+                      Receive updates about new features and offers
+                    </p>
+                  </div>
+                  <Switch
+                    checked={notificationSettings.marketing_emails}
+                    onCheckedChange={(checked) => handleNotificationChange("marketing_emails", checked)}
+                    disabled={!isEditing}
+                  />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <Label>Content Reminders</Label>
+                    <p className="text-sm text-gray-600">
+                      Get reminded about scheduled content
+                    </p>
+                  </div>
+                  <Switch
+                    checked={notificationSettings.content_reminders}
+                    onCheckedChange={(checked) => handleNotificationChange("content_reminders", checked)}
+                    disabled={!isEditing}
+                  />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <Label>Analytics Reports</Label>
+                    <p className="text-sm text-gray-600">
+                      Weekly performance reports
+                    </p>
+                  </div>
+                  <Switch
+                    checked={notificationSettings.analytics_reports}
+                    onCheckedChange={(checked) => handleNotificationChange("analytics_reports", checked)}
+                    disabled={!isEditing}
+                  />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <Label>Billing Alerts</Label>
+                    <p className="text-sm text-gray-600">
+                      Payment and subscription notifications
+                    </p>
+                  </div>
+                  <Switch
+                    checked={notificationSettings.billing_alerts}
+                    onCheckedChange={(checked) => handleNotificationChange("billing_alerts", checked)}
+                    disabled={!isEditing}
+                  />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <Label>Security Alerts</Label>
+                    <p className="text-sm text-gray-600">
+                      Login and security notifications
+                    </p>
+                  </div>
+                  <Switch
+                    checked={notificationSettings.security_alerts}
+                    onCheckedChange={(checked) => handleNotificationChange("security_alerts", checked)}
+                    disabled={!isEditing}
+                  />
+                </div>
               </div>
-              <Button onClick={() => setIsEditing(true)}>
-                <Edit className="w-4 h-4 mr-2" />
-                Edit
-              </Button>
-            </>
-          )}
-        </CardContent>
-      </Card>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
-      {/* Subscription Management */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <CreditCard className="w-5 h-5 text-blue-600" />
-            Subscription Management
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="font-medium text-gray-900">
-                {subscription?.plan_name || userProfile.plan || "No Plan"} Plan
-              </h3>
-              <p className="text-sm text-gray-600">
-                {subscription?.billing_cycle || userProfile.plan_billing || "monthly"} billing • {subscription?.status || userProfile.plan_status || "inactive"}
-              </p>
-            </div>
-            <Badge className={getPlanColor(subscription?.plan_name || userProfile.plan)}>
-              {subscription?.status === "active" || userProfile.is_active ? "Active" : "Inactive"}
-            </Badge>
-          </div>
+        <TabsContent value="privacy" className="space-y-6">
+          {/* Privacy Settings */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Shield className="w-5 h-5 text-blue-600" />
+                Privacy Settings
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <div>
+                  <Label>Profile Visibility</Label>
+                  <Select
+                    value={privacySettings.profile_visibility}
+                    onValueChange={(value) => handlePrivacyChange("profile_visibility", value)}
+                    disabled={!isEditing}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="public">Public</SelectItem>
+                      <SelectItem value="followers">Followers Only</SelectItem>
+                      <SelectItem value="private">Private</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
 
-          {subscription && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-              <div>
-                <Label>Next Billing</Label>
-                <p className="text-gray-900 font-medium">
-                  {formatDate(subscription.current_period_end)}
-                </p>
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <Label>Show Activity</Label>
+                    <p className="text-sm text-gray-600">
+                      Display your recent activity to others
+                    </p>
+                  </div>
+                  <Switch
+                    checked={privacySettings.show_activity}
+                    onCheckedChange={(checked) => handlePrivacyChange("show_activity", checked)}
+                    disabled={!isEditing}
+                  />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <Label>Show Followers</Label>
+                    <p className="text-sm text-gray-600">
+                      Display your follower count publicly
+                    </p>
+                  </div>
+                  <Switch
+                    checked={privacySettings.show_followers}
+                    onCheckedChange={(checked) => handlePrivacyChange("show_followers", checked)}
+                    disabled={!isEditing}
+                  />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <Label>Show Analytics</Label>
+                    <p className="text-sm text-gray-600">
+                      Share your performance metrics
+                    </p>
+                  </div>
+                  <Switch
+                    checked={privacySettings.show_analytics}
+                    onCheckedChange={(checked) => handlePrivacyChange("show_analytics", checked)}
+                    disabled={!isEditing}
+                  />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <Label>Allow Messaging</Label>
+                    <p className="text-sm text-gray-600">
+                      Let others send you direct messages
+                    </p>
+                  </div>
+                  <Switch
+                    checked={privacySettings.allow_messaging}
+                    onCheckedChange={(checked) => handlePrivacyChange("allow_messaging", checked)}
+                    disabled={!isEditing}
+                  />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <Label>Data Collection</Label>
+                    <p className="text-sm text-gray-600">
+                      Allow us to collect usage data for improvements
+                    </p>
+                  </div>
+                  <Switch
+                    checked={privacySettings.data_collection}
+                    onCheckedChange={(checked) => handlePrivacyChange("data_collection", checked)}
+                    disabled={!isEditing}
+                  />
+                </div>
               </div>
-              <div>
-                <Label>Plan Price</Label>
-                <p className="text-gray-900 font-medium">
-                  {getPlanPrice(subscription.plan_name, subscription.billing_cycle)}
-                </p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="security" className="space-y-6">
+          {/* Security Settings */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Lock className="w-5 h-5 text-blue-600" />
+                Security Settings
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-3">Active Sessions</h4>
+                  <div className="space-y-3">
+                    {deviceSessions.map((session) => (
+                      <div key={session.id} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+                        <div className="flex items-center gap-3">
+                          <div className="flex items-center gap-2">
+                            {session.is_current ? (
+                              <CheckCircle className="w-4 h-4 text-green-600" />
+                            ) : (
+                              <Monitor className="w-4 h-4 text-gray-400" />
+                            )}
+                            <span className="font-medium">{session.device}</span>
+                          </div>
+                          <div className="text-sm text-gray-600">
+                            {session.location} • {session.ip_address}
+                          </div>
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          {session.is_current ? "Current" : formatDate(new Date(session.last_active).getTime() / 1000)}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <Separator />
+
+                <div className="space-y-3">
+                  <Button
+                    variant="outline"
+                    onClick={handleSignOutAllDevices}
+                    className="w-full"
+                  >
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Sign Out All Devices
+                  </Button>
+
+                  <Button
+                    variant="outline"
+                    onClick={handleDeleteAccount}
+                    className="w-full text-red-600 hover:text-red-700 hover:bg-red-50"
+                  >
+                    <Trash2 className="w-4 h-4 mr-2" />
+                    Delete Account
+                  </Button>
+                </div>
               </div>
-            </div>
-          )}
+            </CardContent>
+          </Card>
+        </TabsContent>
 
-          <div className="space-y-2">
-            <h4 className="font-medium text-gray-900">Your Plan Features:</h4>
-            <ul className="space-y-1 text-sm text-gray-600">
-              <li className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-green-500" />
-                AI Content Generator
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-green-500" />
-                Advanced Analytics
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-green-500" />
-                Unlimited Platforms
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-green-500" />
-                Unlimited Posts
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-green-500" />
-                Revenue Tracking
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-green-500" />
-                Viral Predictor
-              </li>
-            </ul>
-          </div>
+        <TabsContent value="billing" className="space-y-6">
+          {/* Billing Settings */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <CreditCard className="w-5 h-5 text-blue-600" />
+                Billing & Subscription
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {subscription ? (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <Crown className="w-5 h-5 text-yellow-600" />
+                        <span className="font-semibold text-gray-900">{subscription.plan_name}</span>
+                        <Badge className={getPlanColor(subscription.plan_name)}>
+                          {subscription.status}
+                        </Badge>
+                      </div>
+                      <p className="text-sm text-gray-600">
+                        {subscription.billing_cycle} billing • ${getPlanPrice(subscription.plan_name, subscription.billing_cycle)}/month
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm text-gray-600">Next billing</p>
+                      <p className="font-medium">{formatDate(subscription.current_period_end)}</p>
+                    </div>
+                  </div>
 
-          <div className="flex gap-2">
-            <Button 
-              onClick={handleManageBilling} 
-              disabled={isManagingBilling || !subscription}
-              variant="outline"
-            >
-              {isManagingBilling ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mr-2" />
-                  Loading...
-                </>
+                  <div className="flex gap-3">
+                    <Button
+                      onClick={handleManageBilling}
+                      className="flex-1"
+                    >
+                      <Settings className="w-4 h-4 mr-2" />
+                      Manage Billing
+                    </Button>
+                    <Button
+                      onClick={handleUpgradePlan}
+                      variant="outline"
+                      className="flex-1"
+                    >
+                      <TrendingUp className="w-4 h-4 mr-2" />
+                      Upgrade Plan
+                    </Button>
+                  </div>
+                </div>
               ) : (
-                <>
-                  <CreditCard className="w-4 h-4 mr-2" />
-                  Manage Billing
-                </>
+                <div className="text-center py-8">
+                  <Crown className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">No Active Subscription</h3>
+                  <p className="text-gray-600 mb-4">
+                    Upgrade to unlock premium features and advanced analytics
+                  </p>
+                  <Button onClick={handleUpgradePlan}>
+                    <Sparkles className="w-4 h-4 mr-2" />
+                    View Plans
+                  </Button>
+                </div>
               )}
-            </Button>
-            <Button 
-              onClick={handleUpgradePlan} 
-              disabled={isUpgrading}
-                              className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
-            >
-              {isUpgrading ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                  Loading...
-                </>
-              ) : (
-                <>
-                  <Crown className="w-4 h-4 mr-2" />
-                  Upgrade Plan
-                </>
-              )}
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Account Settings */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Settings className="w-5 h-5 text-blue-600" />
-            Account Settings
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h4 className="font-medium text-gray-900">Email Notifications</h4>
-                <p className="text-sm text-gray-600">Manage your notification preferences</p>
-              </div>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => setSuccess("Email notification settings would open here in production.")}
-              >
-                <Bell className="w-4 h-4 mr-2" />
-                Configure
-              </Button>
-            </div>
-            
-            <Separator />
-            
-            <div className="flex items-center justify-between">
-              <div>
-                <h4 className="font-medium text-gray-900">Privacy Settings</h4>
-                <p className="text-sm text-gray-600">Control your data and privacy</p>
-              </div>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => setSuccess("Privacy settings would open here in production.")}
-              >
-                <Shield className="w-4 h-4 mr-2" />
-                Manage
-              </Button>
-            </div>
-            
-            <Separator />
-            
-            <div className="flex items-center justify-between">
-              <div>
-                <h4 className="font-medium text-gray-900">Language & Region</h4>
-                <p className="text-sm text-gray-600">Set your preferred language and timezone</p>
-              </div>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => setSuccess("Language and region settings would open here in production.")}
-              >
-                <Globe className="w-4 h-4 mr-2" />
-                Change
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 } 
