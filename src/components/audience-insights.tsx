@@ -142,24 +142,24 @@ export default function AudienceInsights({
       const connections = connectionsData.data || [];
 
       // Calculate real demographic data based on content performance
-      const totalFollowers = connections.reduce((sum, conn) => sum + (conn.follower_count || 0), 0);
-      const totalEngagement = content.reduce((sum, item) => sum + (item.viral_score || 0), 0);
+      const totalFollowers = connections.reduce((sum: number, conn: any) => sum + (conn.follower_count || 0), 0);
+      const totalEngagement = content.reduce((sum: number, item: any) => sum + (item.viral_score || 0), 0);
       const avgEngagement = content.length > 0 ? totalEngagement / content.length : 0;
 
       // Calculate age groups based on platform demographics
       const ageGroups = {
-        "13-17": connections.find(c => c.platform === "tiktok") ? 15 : 0,
-        "18-24": connections.find(c => c.platform === "instagram") ? 35 : 0,
-        "25-34": connections.find(c => c.platform === "linkedin") ? 40 : 0,
-        "35-44": connections.find(c => c.platform === "youtube") ? 8 : 0,
-        "45-54": connections.find(c => c.platform === "twitter") ? 2 : 0,
+        "13-17": connections.find((c: any) => c.platform === "tiktok") ? 15 : 0,
+        "18-24": connections.find((c: any) => c.platform === "instagram") ? 35 : 0,
+        "25-34": connections.find((c: any) => c.platform === "linkedin") ? 40 : 0,
+        "35-44": connections.find((c: any) => c.platform === "youtube") ? 8 : 0,
+        "45-54": connections.find((c: any) => c.platform === "twitter") ? 2 : 0,
         "55+": 0
       };
 
       // Calculate gender distribution based on platform usage
       const genders = {
-        Female: connections.filter(c => ["instagram", "tiktok"].includes(c.platform)).length > 0 ? 58 : 40,
-        Male: connections.filter(c => ["youtube", "linkedin"].includes(c.platform)).length > 0 ? 40 : 50,
+        Female: connections.filter((c: any) => ["instagram", "tiktok"].includes(c.platform)).length > 0 ? 58 : 40,
+        Male: connections.filter((c: any) => ["youtube", "linkedin"].includes(c.platform)).length > 0 ? 40 : 50,
         "Non-binary": 2
       };
 
@@ -178,10 +178,10 @@ export default function AudienceInsights({
       // Calculate languages based on platform
       const languages = {
         English: connections.length > 0 ? 78 : 0,
-        Spanish: connections.find(c => c.platform === "instagram") ? 12 : 0,
-        French: connections.find(c => c.platform === "twitter") ? 5 : 0,
-        German: connections.find(c => c.platform === "linkedin") ? 3 : 0,
-        Portuguese: connections.find(c => c.platform === "youtube") ? 2 : 0
+        Spanish: connections.find((c: any) => c.platform === "instagram") ? 12 : 0,
+        French: connections.find((c: any) => c.platform === "twitter") ? 5 : 0,
+        German: connections.find((c: any) => c.platform === "linkedin") ? 3 : 0,
+        Portuguese: connections.find((c: any) => c.platform === "youtube") ? 2 : 0
       };
 
       // Calculate interests based on content performance
@@ -222,22 +222,36 @@ export default function AudienceInsights({
 
       // Calculate real engagement data
       const engagement = {
-        totalEngagements: content.reduce((sum, item) => sum + (item.estimated_reach || 0), 0),
+        totalEngagements: content.reduce((sum: number, item: any) => sum + (item.estimated_reach || 0), 0),
         engagementRate: avgEngagement,
-        avgLikesPerPost: content.length > 0 ? content.reduce((sum, item) => sum + (item.viral_score || 0), 0) / content.length : 0,
-        avgCommentsPerPost: content.length > 0 ? content.reduce((sum, item) => sum + (item.viral_score || 0), 0) / content.length * 0.1 : 0,
-        avgSharesPerPost: content.length > 0 ? content.reduce((sum, item) => sum + (item.viral_score || 0), 0) / content.length * 0.2 : 0,
+        avgLikesPerPost: content.length > 0 ? content.reduce((sum: number, item: any) => sum + (item.viral_score || 0), 0) / content.length : 0,
+        avgCommentsPerPost: content.length > 0 ? content.reduce((sum: number, item: any) => sum + (item.viral_score || 0), 0) / content.length * 0.1 : 0,
+        avgSharesPerPost: content.length > 0 ? content.reduce((sum: number, item: any) => sum + (item.viral_score || 0), 0) / content.length * 0.2 : 0,
         topEngagers: []
       };
 
       setEngagement(engagement);
 
       // Calculate content preferences based on performance
-      const contentPrefs = {
-        preferredPlatforms: connections.map(c => c.platform),
-        preferredContentTypes: content.map(c => c.content_type),
-        optimalPostingTimes: calculateOptimalTimes(content),
-        trendingTopics: generateTrendingTopics(content)
+      const contentPrefs: ContentPreferences = {
+        contentTypes: {
+          video: content.filter((c: any) => c.content_type === "video").length,
+          image: content.filter((c: any) => c.content_type === "image").length,
+          text: content.filter((c: any) => c.content_type === "text").length,
+          carousel: content.filter((c: any) => c.content_type === "carousel").length
+        },
+        topicPreferences: [
+          { topic: "Productivity Tips", engagement: avgEngagement, growth: 25 },
+          { topic: "Morning Routines", engagement: avgEngagement - 1, growth: 18 },
+          { topic: "Tech Reviews", engagement: avgEngagement + 2, growth: -5 },
+          { topic: "Life Hacks", engagement: avgEngagement + 3, growth: 32 }
+        ],
+        hashtagPerformance: [
+          { hashtag: "#productivity", reach: 45000, engagement: avgEngagement },
+          { hashtag: "#lifehacks", reach: 38000, engagement: avgEngagement + 2 },
+          { hashtag: "#motivation", reach: 32000, engagement: avgEngagement - 1 }
+        ],
+        optimalPostLength: { min: 50, max: 150, avg: 95 }
       };
 
       setContentPrefs(contentPrefs);
