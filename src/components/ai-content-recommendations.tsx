@@ -375,7 +375,7 @@ export default function AIContentRecommendations({
 
   const scheduleContent = (recommendation: ContentRecommendation) => {
     // This would integrate with your content scheduler
-    console.log("Scheduling content:", recommendation);
+    
   };
 
   const getViralScoreColor = (score: number) => {

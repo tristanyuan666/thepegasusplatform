@@ -147,7 +147,7 @@ export default function OnboardingPage() {
     setError(null);
     
     try {
-      console.log("Submitting onboarding data:", onboardingData);
+
       
       // Update user profile with onboarding data
       const { error: updateError } = await supabase

@@ -153,120 +153,58 @@ export default function PricingCard({
   // Test function to verify Edge Function connectivity
   const testEdgeFunction = async () => {
     try {
-      console.log("Testing Edge Function connectivity...");
+      setTestResult("Testing connection...");
       const { data, error } = await supabase.functions.invoke(
         "create-checkout",
         {
           body: {
-            test_mode: true,
-            price_id: "test",
-            user_id: "test",
-            timestamp: new Date().toISOString(),
+            planId: "test",
+            isYearly: false,
+            userId: user?.id || "test",
+            userEmail: user?.email || "test@example.com",
           },
-        },
+        }
       );
-
-      console.log("Test result:", { data, error });
 
       if (error) {
         setTestResult(`Test FAILED: ${error.message}`);
-      } else if (data?.success) {
-        setTestResult(`Test PASSED: ${data.message}`);
       } else {
-        setTestResult(`Test FAILED: Unexpected response`);
+        setTestResult("Test PASSED: Edge Function is working");
       }
     } catch (error) {
-      console.error("Test error:", error);
       setTestResult(
         `Test ERROR: ${error instanceof Error ? error.message : "Unknown error"}`,
       );
     }
   };
-  // Use either plan prop or item prop, fallback to default plans if neither
-  const actualPlan = plan || item;
-
-  // If no plan is provided, use the first default plan
-  if (!actualPlan) {
-    const defaultPlan = defaultPlans[0];
-    return (
-      <PricingCard
-        plan={{
-          id: "creator",
-          name: "Creator",
-          price: { monthly: 39.99, yearly: 383.88 },
-          description: "Perfect for aspiring creators",
-          gradient: "from-blue-500 to-blue-600",
-          icon: <Sparkles className="w-6 h-6" />,
-          features: [
-            { name: "AI Persona Builder", included: true },
-            { name: "50 AI Posts/Month", included: true },
-            { name: "2 Social Platforms", included: true },
-            { name: "Basic Analytics", included: true },
-            { name: "Email Support", included: true },
-            { name: "Advanced AI Content", included: false },
-            { name: "Unlimited Posts", included: false },
-            { name: "All Platforms", included: false },
-          ],
-        }}
-        user={user}
-      />
-    );
-  }
-
-  // Ensure all required properties exist with defaults
-  const safePlan = {
-    id: actualPlan.id || "starter",
-    name: actualPlan.name || "Plan",
-    price: actualPlan.price || { monthly: 0, yearly: 0 },
-    popular: actualPlan.popular || false,
-    description: actualPlan.description || "Description",
-    features: actualPlan.features || [],
-    gradient: actualPlan.gradient || "from-blue-500 to-cyan-500",
-    icon: actualPlan.icon || <Sparkles className="w-6 h-6" />,
-  };
 
   // Ensure price object exists with defaults
-  const priceData = safePlan.price;
+  const safePlan = plan || {
+    id: "starter",
+    name: "Starter",
+    price: { monthly: 0, yearly: 0 },
+    description: "Get started with basic features",
+    features: [],
+    gradient: "from-gray-500 to-gray-700",
+    icon: <Zap className="w-6 h-6" />,
+  };
 
-  // Helper to round to .99
+  // Helper function to format prices
   function to99(n: number) {
-    return Math.floor(n) + 0.99;
+    return Math.round(n / 100) * 100;
   }
-
-  // Calculate current and original prices
-  const currentPrice = isYearly ? to99(priceData.yearly) : to99(priceData.monthly);
-  const originalPrice = to99(currentPrice * 2);
-
-  // For annual, calculate per month price (ending in .99)
-  const perMonthAnnual = isYearly ? to99(priceData.yearly / 12) : null;
-  const originalPerMonthAnnual = isYearly ? to99((priceData.yearly / 12) * 2) : null;
 
   // Calculate savings
   const savings =
-    isYearly && priceData.monthly > 0
-      ? Math.round(
-          ((priceData.monthly * 12 - priceData.yearly) /
-            (priceData.monthly * 12)) *
-            100,
-        )
+    isYearly && safePlan.price.monthly > 0
+      ? ((safePlan.price.monthly * 12 - safePlan.price.yearly) /
+          (safePlan.price.monthly * 12)) *
+        100
       : 0;
-
-  // Use displayPrice directly to avoid hydration issues
 
   const handleCheckout = async () => {
     if (!user) {
-      if (typeof window !== "undefined") {
-        // Store the selected plan in localStorage for after sign-in
-        localStorage.setItem(
-          "selectedPlan",
-          JSON.stringify({
-            planId: safePlan.id,
-            isYearly: isYearly,
-            planName: safePlan.name,
-          }),
-        );
-        window.location.href = `/sign-in?redirect=${encodeURIComponent(`/pricing?plan=${safePlan.id}&billing=${isYearly ? "yearly" : "monthly"}`)}`;
-      }
+      setPaymentError("Please sign in to continue");
       return;
     }
 
@@ -274,190 +212,84 @@ export default function PricingCard({
     setPaymentError(null);
 
     try {
-      if (onCheckout) {
-        await onCheckout(safePlan.id, isYearly);
+      // Call Supabase Edge Function with enhanced error handling
+      const checkoutPayload = {
+        planId: safePlan.id,
+        isYearly,
+        userId: user.id,
+        userEmail: user.email,
+        planName: safePlan.name,
+        planPrice: isYearly ? safePlan.price.yearly : safePlan.price.monthly,
+      };
+
+      const { data, error } = await supabase.functions.invoke(
+        "create-checkout",
+        {
+          body: checkoutPayload,
+        }
+      );
+
+      if (error) {
+        if (error.message?.includes("rate limit")) {
+          throw new Error("Too many requests. Please wait a moment and try again.");
+        }
+        throw new Error(`Payment setup failed: ${error.message || "Unknown error"}`);
+      }
+
+      if (!data) {
+        throw new Error("No response data received from checkout function");
+      }
+
+      if (data.error) {
+        throw new Error(data?.error || "Checkout function returned failure");
+      }
+
+      if (!data.url) {
+        throw new Error("No checkout URL in response");
+      }
+
+      // Track checkout initiation for analytics
+      if (typeof window !== "undefined") {
+        try {
+          if ((window as any).gtag) {
+            (window as any).gtag("event", "begin_checkout", {
+              currency: "USD",
+              value: isYearly
+                ? safePlan.price.yearly / 100
+                : safePlan.price.monthly / 100,
+              items: [
+                {
+                  item_id: safePlan.id,
+                  item_name: safePlan.name,
+                  category: "subscription",
+                  quantity: 1,
+                  price: isYearly
+                    ? safePlan.price.yearly / 100
+                    : safePlan.price.monthly / 100,
+                },
+              ],
+            });
+          }
+        } catch (analyticsError) {
+          // Don't fail checkout for analytics errors
+        }
+
+        // Store checkout session info for tracking
+        localStorage.setItem("checkout_session", JSON.stringify({
+          planId: safePlan.id,
+          planName: safePlan.name,
+          isYearly,
+          timestamp: new Date().toISOString(),
+        }));
+
+        window.location.href = data.url;
       } else {
-        // Enhanced checkout logic with better error handling
-        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://thepegasus.ca";
-        const returnUrl = `${baseUrl}/success?plan=${safePlan.id}&billing=${isYearly ? "yearly" : "monthly"}`;
-        const cancelUrl = `${baseUrl}/pricing?cancelled=true`;
-
-        // Use the component-level STRIPE_PRICE_IDS constant
-        const priceId =
-          STRIPE_PRICE_IDS[safePlan.id as keyof typeof STRIPE_PRICE_IDS]?.[
-            isYearly ? "yearly" : "monthly"
-          ];
-
-        if (!priceId) {
-          throw new Error(
-            `Price configuration not found for ${safePlan.name} (${isYearly ? "yearly" : "monthly"})`,
-          );
-        }
-
-        if (!user.id || !user.email) {
-          throw new Error(
-            "User information is incomplete. Please sign in again.",
-          );
-        }
-
-        // Validate user data before proceeding
-        if (!user.email.includes("@")) {
-          throw new Error("Invalid email address. Please update your profile.");
-        }
-
-        const checkoutPayload = {
-          price_id: priceId,
-          user_id: user.id,
-          return_url: returnUrl,
-          cancel_url: cancelUrl,
-          customer_email: user.email,
-          plan_name: safePlan.name,
-          billing_cycle: isYearly ? "yearly" : "monthly",
-          metadata: {
-            user_id: user.id,
-            plan_id: safePlan.id,
-            billing_cycle: isYearly ? "yearly" : "monthly",
-            plan_name: safePlan.name,
-            timestamp: new Date().toISOString(),
-            user_email: user.email,
-            user_agent: typeof window !== "undefined" ? window.navigator.userAgent : "server",
-          },
-        };
-
-        // Call Supabase Edge Function with enhanced error handling
-        console.log("Invoking Edge Function:", "create-checkout");
-        console.log("Payload:", checkoutPayload);
-
-        // Get the user's access token for authorization
-        const { data: { session } } = await supabase.auth.getSession();
-        const accessToken = session?.access_token;
-
-        if (!accessToken) {
-          throw new Error("Authentication token not found. Please sign in again.");
-        }
-
-        const { data, error } = await supabase.functions.invoke(
-          "create-checkout",
-          {
-            body: checkoutPayload,
-            headers: { Authorization: `Bearer ${accessToken}` },
-          },
-        );
-
-        console.log("Checkout response:", { data, error });
-
-        if (error) {
-          console.error("Edge function error details:", {
-            message: error.message,
-            details: error.details,
-            context: error.context,
-            hint: error.hint,
-            status: error.status,
-          });
-
-          // Handle specific error cases
-          if (error.message?.includes("already have an active")) {
-            throw new Error("You already have an active subscription for this plan. Please manage your billing in your account settings.");
-          } else if (error.message?.includes("higher-tier plan")) {
-            throw new Error("You already have a higher-tier plan. Downgrades are not allowed through this flow.");
-          } else if (error.message?.includes("Missing required fields")) {
-            throw new Error("Payment configuration error. Please try again or contact support.");
-          } else if (error.status === 401) {
-            throw new Error("Authentication failed. Please sign in again.");
-          } else if (error.status === 429) {
-            throw new Error("Too many requests. Please wait a moment and try again.");
-          } else if (error.status >= 500) {
-            throw new Error("Server error. Please try again in a few minutes.");
-          } else {
-            throw new Error(`Payment setup failed: ${error.message || "Unknown error"}`);
-          }
-        }
-
-        if (!data) {
-          throw new Error("No response data received from checkout function");
-        }
-
-        if (!data.success) {
-          console.error("Checkout function returned failure:", data);
-          throw new Error(data?.error || "Checkout function returned failure");
-        }
-
-        if (!data.url) {
-          console.error("No checkout URL in response:", data);
-          throw new Error("No checkout URL received from Stripe");
-        }
-
-        // Track checkout initiation for analytics
-        if (typeof window !== "undefined") {
-          try {
-            if ((window as any).gtag) {
-              (window as any).gtag("event", "begin_checkout", {
-                currency: "USD",
-                value: isYearly
-                  ? safePlan.price.yearly / 100
-                  : safePlan.price.monthly / 100,
-                items: [
-                  {
-                    item_id: safePlan.id,
-                    item_name: safePlan.name,
-                    category: "subscription",
-                    quantity: 1,
-                    price: isYearly
-                      ? safePlan.price.yearly / 100
-                      : safePlan.price.monthly / 100,
-                  },
-                ],
-              });
-            }
-          } catch (analyticsError) {
-            console.warn("Analytics tracking failed:", analyticsError);
-            // Don't fail checkout for analytics errors
-          }
-
-          // Store checkout session info for tracking
-          localStorage.setItem("checkout_session", JSON.stringify({
-            planId: safePlan.id,
-            planName: safePlan.name,
-            isYearly,
-            timestamp: new Date().toISOString(),
-            priceId,
-          }));
-
-          window.location.href = data.url;
-        } else {
-          throw new Error("Window object not available for redirect");
-        }
+        throw new Error("Window object not available for redirect");
       }
     } catch (error) {
-      console.error("=== CHECKOUT ERROR DETAILS ===");
-      console.error("Error type:", typeof error);
-      console.error("Error:", error);
-      console.error(
-        "Error message:",
-        error instanceof Error ? error.message : "Unknown",
+      setPaymentError(
+        error instanceof Error ? error.message : "Unknown error occurred",
       );
-      console.error(
-        "Error stack:",
-        error instanceof Error ? error.stack : "No stack",
-      );
-      console.error("User context:", {
-        userId: user?.id,
-        userEmail: user?.email,
-        planId: safePlan.id,
-        planName: safePlan.name,
-        isYearly,
-        priceId:
-          STRIPE_PRICE_IDS[safePlan.id as keyof typeof STRIPE_PRICE_IDS]?.[
-            isYearly ? "yearly" : "monthly"
-          ],
-      });
-      console.error("Supabase client info:", {
-        hasAuth: !!supabase.auth,
-      });
-
-      const errorMessage =
-        error instanceof Error ? error.message : "Unknown error occurred";
-      setPaymentError(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -499,17 +331,6 @@ export default function PricingCard({
     !!userPlan &&
     ["creator", "influencer", "superstar"].indexOf(safePlan.id) <
       ["creator", "influencer", "superstar"].indexOf(userPlan);
-
-  console.log("Pricing card state:", {
-    userPlan,
-    safePlanId: safePlan.id,
-    safePlanName: safePlan.name,
-    userBilling,
-    isYearly,
-    isCurrentPlan,
-    isUpgrade,
-    isDowngrade
-  });
 
   return (
     <div
@@ -569,10 +390,10 @@ export default function PricingCard({
           <div className="flex flex-col items-center mb-6">
             <div className="flex items-center gap-2 mb-2">
               <span className="text-3xl font-bold text-gray-900">
-                {isYearly ? `$${perMonthAnnual?.toFixed(2)}` : `$${currentPrice.toFixed(2)}`}
+                {isYearly ? `$${to99(safePlan.price.yearly / 12).toFixed(2)}` : `$${to99(safePlan.price.monthly).toFixed(2)}`}
               </span>
               <span className="text-lg text-gray-400 line-through">
-                {isYearly ? `$${originalPerMonthAnnual?.toFixed(2)}` : `$${originalPrice.toFixed(2)}`}
+                {isYearly ? `$${to99(safePlan.price.yearly / 12 * 2).toFixed(2)}` : `$${to99(safePlan.price.monthly * 2).toFixed(2)}`}
               </span>
               <span className="ml-2 px-2 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full animate-pulse">
                 50% OFF
@@ -582,7 +403,7 @@ export default function PricingCard({
               {isYearly ? `/month` : "/month"}
             </span>
             {isYearly && (
-              <span className="text-xs text-gray-400 mt-1">Billed annually at ${currentPrice.toFixed(2)}</span>
+              <span className="text-xs text-gray-400 mt-1">Billed annually at ${to99(safePlan.price.monthly).toFixed(2)}</span>
             )}
           </div>
 
@@ -659,31 +480,7 @@ export default function PricingCard({
             </div>
           )}
 
-          {/* Test Section - Temporary for debugging */}
-          {process.env.NODE_ENV === "development" && (
-            <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-medium text-yellow-800">
-                  Debug Mode
-                </span>
-                <Button
-                  onClick={testEdgeFunction}
-                  variant="outline"
-                  size="sm"
-                  className="text-xs"
-                >
-                  Test Connection
-                </Button>
-              </div>
-              {testResult && (
-                <div
-                  className={`text-xs p-2 rounded ${testResult.includes("PASSED") ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}
-                >
-                  {testResult}
-                </div>
-              )}
-            </div>
-          )}
+
 
           {/* CTA Button */}
           <div className="space-y-2">

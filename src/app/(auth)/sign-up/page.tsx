@@ -133,7 +133,7 @@ export default function SignUpPage() {
       }
 
       if (data.user) {
-        console.log("Sign up successful:", data.user.id);
+
         setSuccess(true);
 
         // Show success message for a few seconds then redirect

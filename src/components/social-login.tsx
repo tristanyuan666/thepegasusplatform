@@ -26,7 +26,7 @@ export default function SocialLogin({
           ? window.location.origin
           : "https://thepegasus.ca";
 
-      console.log("Attempting Google OAuth login...");
+
 
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "google",
@@ -68,7 +68,7 @@ export default function SocialLogin({
         }
       } else if (data?.url) {
         // OAuth initiated successfully, user will be redirected
-        console.log("Google OAuth initiated successfully");
+
         // The browser will redirect to Google's OAuth page
       }
     } catch (error) {

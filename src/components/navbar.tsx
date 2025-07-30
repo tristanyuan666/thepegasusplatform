@@ -294,7 +294,7 @@ export default function Navbar({ user = null }: NavbarProps) {
     
     setIsLoadingSubscription(true);
     try {
-      console.log("🔍 Checking subscription for user:", currentUser.id);
+      
       const { data, error } = await supabase
         .from("subscriptions")
         .select("*")
@@ -305,7 +305,7 @@ export default function Navbar({ user = null }: NavbarProps) {
       if (error) {
         console.error("❌ Error checking subscription:", error);
       } else {
-        console.log("📋 Subscription check result:", data);
+
         setHasActiveSubscription(!!data);
         setUserPlan(data?.plan_name || null);
       }
@@ -350,7 +350,7 @@ export default function Navbar({ user = null }: NavbarProps) {
   useEffect(() => {
     const handleUrlChange = () => {
       if (window.location.pathname === "/success" || window.location.pathname === "/dashboard") {
-        console.log("🔄 URL changed to success/dashboard, refreshing subscription status");
+
         // Add a small delay to ensure the webhook has processed
         setTimeout(() => {
           checkSubscription();
@@ -360,7 +360,7 @@ export default function Navbar({ user = null }: NavbarProps) {
     
     // Also check on page load if we're on success or dashboard
     if (window.location.pathname === "/success" || window.location.pathname === "/dashboard") {
-      console.log("📍 On success/dashboard page, checking subscription");
+      
       setTimeout(() => {
         checkSubscription();
       }, 2000);
