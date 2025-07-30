@@ -96,6 +96,7 @@ export default function SocialPlatformHub({
   const [scheduledContent, setScheduledContent] = useState<ScheduledContent[]>([]);
   const [activeTab, setActiveTab] = useState("overview");
   const [selectedPlatform, setSelectedPlatform] = useState<string>("all");
+  const [error, setError] = useState<string | null>(null);
   const supabase = createClient();
 
   const platforms = [
