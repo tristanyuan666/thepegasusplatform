@@ -21,6 +21,7 @@ import {
   MessageCircle,
   FileText,
   Video,
+  Globe,
 } from "lucide-react";
 import { createClient } from "../../supabase/client";
 import { SocialConnection } from "@/utils/auth";
@@ -65,13 +66,33 @@ const platforms = [
   },
   {
     id: "x",
-    name: "X (Twitter)",
+    name: "X",
     icon: MessageCircle,
     color: "from-black to-gray-900",
     bgColor: "bg-gradient-to-r from-black to-gray-900",
     borderColor: "border-gray-200",
     textColor: "text-black",
     description: "Share thoughts and engage with followers"
+  },
+  {
+    id: "linkedin",
+    name: "LinkedIn",
+    icon: FileText,
+    color: "from-blue-600 to-blue-700",
+    bgColor: "bg-gradient-to-r from-blue-600 to-blue-700",
+    borderColor: "border-blue-200",
+    textColor: "text-blue-600",
+    description: "Share professional content and network"
+  },
+  {
+    id: "facebook",
+    name: "Facebook",
+    icon: Globe,
+    color: "from-blue-500 to-blue-600",
+    bgColor: "bg-gradient-to-r from-blue-500 to-blue-600",
+    borderColor: "border-blue-200",
+    textColor: "text-blue-600",
+    description: "Connect with friends and family"
   }
 ];
 

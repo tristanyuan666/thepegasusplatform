@@ -335,19 +335,28 @@ export default function DashboardRevenue({
   };
 
   const getRevenueInsights = () => {
-    if (!revenueData) return null;
+    if (!revenueData) return [];
     
-    const insights = {
-      topPerformingPlatform: revenueData.top_platform,
-      topRevenueSource: revenueData.top_source,
-      growthRate: revenueData.growth_percentage,
-      goalProgress: (revenueData.current_month / revenueData.monthly_goal) * 100,
-      projectedAnnualRevenue: revenueData.current_month * 12,
-      averageTransactionValue: revenueData.transactions.length > 0 
-        ? revenueData.transactions.reduce((sum: number, t: RevenueTransaction) => sum + t.amount, 0) / revenueData.transactions.length 
-        : 0,
-      transactionFrequency: revenueData.transactions.length / 30, // per day
-    };
+    const insights = [
+      {
+        title: "Increase Your Monthly Revenue",
+        description: "Review your top-performing platforms and sources to identify opportunities for growth.",
+        icon: <Sparkles className="w-6 h-6 text-blue-600" />,
+        color: "bg-blue-100",
+      },
+      {
+        title: "Optimize Ad Spend",
+        description: "Analyze your ad revenue and identify which platforms are generating the most clicks and conversions.",
+        icon: <Zap className="w-6 h-6 text-purple-600" />,
+        color: "bg-purple-100",
+      },
+      {
+        title: "Expand Your Brand Partnerships",
+        description: "Leverage your brand deals and sponsored posts to increase your monthly revenue.",
+        icon: <Award className="w-6 h-6 text-green-600" />,
+        color: "bg-green-100",
+      },
+    ];
     
     return insights;
   };
@@ -504,92 +513,6 @@ export default function DashboardRevenue({
 
       {revenueData && (
         <>
-          {/* Revenue Overview Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-gray-600">Current Month</p>
-                    <p className="text-2xl font-bold text-gray-900">
-                      {formatCurrency(revenueData.current_month)}
-                    </p>
-                    <div className="flex items-center gap-1 mt-1">
-                      {revenueData.growth_percentage >= 0 ? (
-                        <TrendingUp className="w-4 h-4 text-green-600" />
-                      ) : (
-                        <TrendingDown className="w-4 h-4 text-red-600" />
-                      )}
-                      <span className={`text-sm ${revenueData.growth_percentage >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                        {Math.abs(revenueData.growth_percentage).toFixed(1)}% from last month
-                      </span>
-                    </div>
-                  </div>
-                  <DollarSign className="w-8 h-8 text-green-600" />
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-gray-600">Monthly Goal</p>
-                    <p className="text-2xl font-bold text-gray-900">
-                      {formatCurrency(revenueData.monthly_goal)}
-                    </p>
-                    <div className="mt-2">
-                      <Progress 
-                        value={(revenueData.current_month / revenueData.monthly_goal) * 100} 
-                        className="h-2"
-                      />
-                      <p className="text-xs text-gray-600 mt-1">
-                        {((revenueData.current_month / revenueData.monthly_goal) * 100).toFixed(1)}% complete
-                      </p>
-                    </div>
-                  </div>
-                  <Target className="w-8 h-8 text-blue-600" />
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-gray-600">Top Platform</p>
-                    <p className="text-2xl font-bold text-gray-900 capitalize">
-                      {revenueData.top_platform}
-                    </p>
-                    <div className="flex items-center gap-1 mt-1">
-                      {getPlatformIcon(revenueData.top_platform)}
-                      <span className="text-sm text-gray-600">highest revenue</span>
-                    </div>
-                  </div>
-                  <Share2 className="w-8 h-8 text-purple-600" />
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-gray-600">Top Source</p>
-                    <p className="text-2xl font-bold text-gray-900">
-                      {getTransactionTypeLabel(revenueData.top_source)}
-                    </p>
-                    <div className="flex items-center gap-1 mt-1">
-                      <Star className="w-4 h-4 text-yellow-500" />
-                      <span className="text-sm text-gray-600">best performing</span>
-                    </div>
-                  </div>
-                  <Award className="w-8 h-8 text-yellow-600" />
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="overview">Overview</TabsTrigger>
@@ -598,61 +521,171 @@ export default function DashboardRevenue({
               <TabsTrigger value="projections">Projections</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="overview" className="space-y-6">
-              {/* Revenue Breakdown */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Revenue Breakdown</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                          <span className="text-sm">Sponsored Posts</span>
+            <TabsContent value="overview" className="space-y-8 mt-8">
+              {/* Revenue Overview */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-semibold text-gray-900">Revenue Overview</h3>
+                  <span className="text-sm text-gray-500">This month's performance</span>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <Card className="border border-gray-200">
+                    <CardContent className="p-6">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="p-2 bg-green-100 rounded-lg">
+                          <DollarSign className="w-5 h-5 text-green-600" />
                         </div>
-                        <span className="font-medium">{formatCurrency(revenueData.breakdown.sponsored_posts)}</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                          <span className="text-sm">Ad Revenue</span>
+                        <div>
+                          <p className="text-sm text-gray-600">Total Revenue</p>
+                          <p className="text-2xl font-bold text-gray-900">
+                            {formatCurrency(revenueData?.current_month || 0)}
+                          </p>
                         </div>
-                        <span className="font-medium">{formatCurrency(revenueData.breakdown.ad_revenue)}</span>
                       </div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
-                          <span className="text-sm">Brand Deals</span>
-                        </div>
-                        <span className="font-medium">{formatCurrency(revenueData.breakdown.brand_deals)}</span>
+                      <div className="flex items-center gap-2">
+                        {revenueData?.growth_percentage >= 0 ? (
+                          <TrendingUp className="w-4 h-4 text-green-600" />
+                        ) : (
+                          <TrendingDown className="w-4 h-4 text-red-600" />
+                        )}
+                        <span className={`text-sm font-medium ${
+                          revenueData?.growth_percentage >= 0 ? 'text-green-600' : 'text-red-600'
+                        }`}>
+                          {revenueData?.growth_percentage >= 0 ? '+' : ''}{revenueData?.growth_percentage?.toFixed(1) || 0}%
+                        </span>
+                        <span className="text-sm text-gray-600">vs last month</span>
                       </div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
-                          <span className="text-sm">Affiliate</span>
-                        </div>
-                        <span className="font-medium">{formatCurrency(revenueData.breakdown.affiliate)}</span>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
 
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Revenue Trends</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      {revenueData.trends.slice(-7).map((trend, index) => (
-                        <div key={index} className="flex items-center justify-between">
-                          <span className="text-sm text-gray-600">
-                            {new Date(trend.date).toLocaleDateString()}
+                  <Card className="border border-gray-200">
+                    <CardContent className="p-6">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="p-2 bg-blue-100 rounded-lg">
+                          <Target className="w-5 h-5 text-blue-600" />
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-600">Monthly Goal</p>
+                          <p className="text-2xl font-bold text-gray-900">
+                            {formatCurrency(revenueData?.monthly_goal || 0)}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-600">Progress</span>
+                          <span className="font-medium text-gray-900">
+                            {revenueData?.monthly_goal ? Math.round((revenueData.current_month / revenueData.monthly_goal) * 100) : 0}%
                           </span>
-                          <div className="flex items-center gap-4">
-                            <span className="text-sm">{trend.transactions} transactions</span>
-                            <span className="font-medium">{formatCurrency(trend.revenue)}</span>
+                        </div>
+                        <Progress 
+                          value={revenueData?.monthly_goal ? (revenueData.current_month / revenueData.monthly_goal) * 100 : 0} 
+                          className="w-full" 
+                        />
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border border-gray-200">
+                    <CardContent className="p-6">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="p-2 bg-purple-100 rounded-lg">
+                          <BarChart3 className="w-5 h-5 text-purple-600" />
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-600">Top Platform</p>
+                          <p className="text-2xl font-bold text-gray-900 capitalize">
+                            {revenueData?.top_platform || 'N/A'}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm text-gray-600">Revenue source</span>
+                        <span className="text-sm font-medium text-gray-900 capitalize">
+                          {revenueData?.top_source || 'N/A'}
+                        </span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+
+              {/* Revenue Breakdown */}
+              {revenueData?.breakdown && (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-semibold text-gray-900">Revenue Breakdown</h3>
+                    <span className="text-sm text-gray-500">By source</span>
+                  </div>
+                  <Card className="border border-gray-200">
+                    <CardContent className="p-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Instagram className="w-4 h-4 text-blue-600" />
+                            <span className="font-medium text-blue-900">Sponsored Posts</span>
+                          </div>
+                          <p className="text-2xl font-bold text-blue-900">
+                            {formatCurrency(revenueData.breakdown?.sponsored_posts || 0)}
+                          </p>
+                          <p className="text-sm text-blue-700">Brand partnerships</p>
+                        </div>
+                        
+                        <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Youtube className="w-4 h-4 text-green-600" />
+                            <span className="font-medium text-green-900">Ad Revenue</span>
+                          </div>
+                          <p className="text-2xl font-bold text-green-900">
+                            {formatCurrency(revenueData.breakdown?.ad_revenue || 0)}
+                          </p>
+                          <p className="text-sm text-green-700">Platform ads</p>
+                        </div>
+                        
+                        <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Star className="w-4 h-4 text-purple-600" />
+                            <span className="font-medium text-purple-900">Brand Deals</span>
+                          </div>
+                          <p className="text-2xl font-bold text-purple-900">
+                            {formatCurrency(revenueData.breakdown?.brand_deals || 0)}
+                          </p>
+                          <p className="text-sm text-purple-700">Direct partnerships</p>
+                        </div>
+                        
+                        <div className="p-4 bg-orange-50 rounded-lg border border-orange-200">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Share2 className="w-4 h-4 text-orange-600" />
+                            <span className="font-medium text-orange-900">Affiliate</span>
+                          </div>
+                          <p className="text-2xl font-bold text-orange-900">
+                            {formatCurrency(revenueData.breakdown?.affiliate || 0)}
+                          </p>
+                          <p className="text-sm text-orange-700">Commission sales</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              )}
+
+              {/* Revenue Insights */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-semibold text-gray-900">Revenue Insights</h3>
+                  <span className="text-sm text-gray-500">Actionable tips</span>
+                </div>
+                <Card className="border border-gray-200">
+                  <CardContent className="p-6">
+                    <div className="space-y-4">
+                      {getRevenueInsights().map((insight, index) => (
+                        <div key={index} className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                          <div className={`p-2 rounded-lg ${insight.color}`}>
+                            {insight.icon}
+                          </div>
+                          <div>
+                            <h4 className="font-medium text-gray-900 mb-1">{insight.title}</h4>
+                            <p className="text-sm text-gray-600">{insight.description}</p>
                           </div>
                         </div>
                       ))}
@@ -739,7 +772,7 @@ export default function DashboardRevenue({
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      {Object.entries(revenueData.transactions.reduce((acc, t) => {
+                      {revenueData?.transactions ? Object.entries(revenueData.transactions.reduce((acc: Record<string, number>, t: RevenueTransaction) => {
                         acc[t.platform] = (acc[t.platform] || 0) + t.amount;
                         return acc;
                       }, {} as Record<string, number>)).map(([platform, amount]) => (
@@ -750,7 +783,12 @@ export default function DashboardRevenue({
                           </div>
                           <span className="font-medium">{formatCurrency(amount)}</span>
                         </div>
-                      ))}
+                      )) : (
+                        <div className="text-center py-8 text-gray-500">
+                          <BarChart3 className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                          <p>No transaction data available</p>
+                        </div>
+                      )}
                     </div>
                   </CardContent>
                 </Card>
