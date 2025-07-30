@@ -23,6 +23,10 @@ import {
   Settings,
   Loader2,
   FileText,
+  Globe,
+  Camera,
+  Video,
+  Play,
 } from "lucide-react";
 import { createClient } from "../../supabase/client";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -504,102 +508,155 @@ export default function DashboardAnalytics({
       </div>
 
       {/* Detailed Analytics */}
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="platforms">Platforms</TabsTrigger>
-          <TabsTrigger value="content">Content</TabsTrigger>
-          <TabsTrigger value="growth">Growth</TabsTrigger>
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid w-full grid-cols-4 h-12 bg-gray-50 border border-gray-200 rounded-lg p-1">
+          <TabsTrigger 
+            value="overview" 
+            className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 rounded-md transition-all duration-200"
+          >
+            <BarChart3 className="w-4 h-4" />
+            <span className="font-medium">Overview</span>
+          </TabsTrigger>
+          <TabsTrigger 
+            value="platforms" 
+            className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 rounded-md transition-all duration-200"
+          >
+            <Globe className="w-4 h-4" />
+            <span className="font-medium">Platforms</span>
+          </TabsTrigger>
+          <TabsTrigger 
+            value="content" 
+            className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 rounded-md transition-all duration-200"
+          >
+            <FileText className="w-4 h-4" />
+            <span className="font-medium">Content</span>
+          </TabsTrigger>
+          <TabsTrigger 
+            value="growth" 
+            className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 rounded-md transition-all duration-200"
+          >
+            <TrendingUp className="w-4 h-4" />
+            <span className="font-medium">Growth</span>
+          </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="overview" className="space-y-6">
+        <TabsContent value="overview" className="space-y-8 mt-8">
           {/* Performance Chart */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Performance Over Time</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {data?.recent_performance && data.recent_performance.length > 0 ? (
-                <div className="space-y-4">
-                  {data.recent_performance.map((item: any, index: number) => (
-                    <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                      <div className="flex items-center gap-4">
-                        <span className="text-sm text-gray-600">{item.date}</span>
-                        <span className="font-medium">{item.views.toLocaleString()} views</span>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-gray-900">Performance Over Time</h3>
+              <span className="text-sm text-gray-500">Last 30 days</span>
+            </div>
+            <Card className="border border-gray-200">
+              <CardContent className="p-6">
+                {data?.recent_performance && data.recent_performance.length > 0 ? (
+                  <div className="space-y-4">
+                    {data.recent_performance.map((item: any, index: number) => (
+                      <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
+                        <div className="flex items-center gap-4">
+                          <span className="text-sm font-medium text-gray-900">{item.date}</span>
+                          <span className="font-semibold text-gray-900">{item.views.toLocaleString()} views</span>
+                        </div>
+                        <div className="flex items-center gap-4">
+                          <span className="text-sm text-gray-600">{item.engagement}% engagement</span>
+                          <span className={`text-sm font-medium ${getViralScoreColor(item.viral_score)}`}>
+                            {item.viral_score}% viral score
+                          </span>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm text-gray-600">{item.engagement}% engagement</span>
-                        <span className={`text-sm ${getViralScoreColor(item.viral_score)}`}>
-                          {item.viral_score}% viral score
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-8 text-gray-500">
-                  <BarChart3 className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                  <p>No performance data available</p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12 text-gray-500">
+                    <BarChart3 className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                    <p className="text-gray-600">No performance data available</p>
+                    <p className="text-sm text-gray-500 mt-1">Connect your platforms to see analytics</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
 
           {/* Quick Actions */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Button
-              variant="outline"
-              className="w-full"
-              onClick={handleScheduleReports}
-              disabled={isScheduling}
-            >
-              {isScheduling ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                  Scheduling...
-                </>
-              ) : (
-                <>
-                  <Calendar className="w-4 h-4 mr-2" />
-                  Schedule Reports
-                </>
-              )}
-            </Button>
-            <Button variant="outline" className="w-full">
-              <Download className="w-4 h-4 mr-2" />
-              Export Data
-            </Button>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-gray-900">Analytics Actions</h3>
+              <span className="text-sm text-gray-500">Manage your reports</span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Button
+                variant="outline"
+                className="w-full h-12 border-gray-200 hover:border-blue-300 hover:bg-blue-50"
+                onClick={handleScheduleReports}
+                disabled={isScheduling}
+              >
+                {isScheduling ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                    Scheduling...
+                  </>
+                ) : (
+                  <>
+                    <Calendar className="w-4 h-4 mr-2" />
+                    Schedule Reports
+                  </>
+                )}
+              </Button>
+              <Button 
+                variant="outline" 
+                className="w-full h-12 border-gray-200 hover:border-blue-300 hover:bg-blue-50"
+              >
+                <Download className="w-4 h-4 mr-2" />
+                Export Data
+              </Button>
+            </div>
           </div>
         </TabsContent>
 
-        <TabsContent value="platforms" className="space-y-6">
+        <TabsContent value="platforms" className="space-y-8 mt-8">
           {/* Platform Breakdown */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {Object.entries(data?.platform_breakdown || {}).map(([platform, stats]: [string, any]) => (
-              <Card key={platform}>
-                <CardHeader>
-                  <CardTitle className="capitalize">{platform}</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex justify-between">
-                    <span className="text-sm text-gray-600">Followers</span>
-                    <span className="font-medium">{stats.followers.toLocaleString()}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm text-gray-600">Posts</span>
-                    <span className="font-medium">{stats.posts}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm text-gray-600">Views</span>
-                    <span className="font-medium">{stats.views.toLocaleString()}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm text-gray-600">Engagement</span>
-                    <span className="font-medium">{stats.engagement.toFixed(1)}%</span>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-gray-900">Platform Performance</h3>
+              <span className="text-sm text-gray-500">Cross-platform insights</span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {Object.entries(data?.platform_breakdown || {}).map(([platform, stats]: [string, any]) => (
+                <Card key={platform} className="border border-gray-200 hover:shadow-md transition-shadow">
+                  <CardHeader className="pb-4">
+                    <CardTitle className="flex items-center gap-3 capitalize text-gray-900">
+                      {platform === "instagram" && <Camera className="w-5 h-5 text-pink-600" />}
+                      {platform === "tiktok" && <Video className="w-5 h-5 text-black" />}
+                      {platform === "youtube" && <Play className="w-5 h-5 text-red-600" />}
+                      {platform === "twitter" && <MessageCircle className="w-5 h-5 text-blue-600" />}
+                      {platform}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="text-center p-3 bg-gray-50 rounded-lg">
+                        <p className="text-2xl font-bold text-gray-900">{stats.followers.toLocaleString()}</p>
+                        <p className="text-xs text-gray-600">Followers</p>
+                      </div>
+                      <div className="text-center p-3 bg-gray-50 rounded-lg">
+                        <p className="text-2xl font-bold text-gray-900">{stats.posts}</p>
+                        <p className="text-xs text-gray-600">Posts</p>
+                      </div>
+                    </div>
+                    <div className="space-y-3">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Views</span>
+                        <span className="font-medium text-gray-900">{stats.views.toLocaleString()}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Engagement</span>
+                        <span className="font-medium text-gray-900">{stats.engagement.toFixed(1)}%</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </div>
         </TabsContent>
 

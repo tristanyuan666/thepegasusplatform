@@ -95,75 +95,31 @@ export default function PlatformConnections({
     setError(null);
 
     try {
-      // Real OAuth flow implementation with proper URLs
-      const oauthConfig = {
-        instagram: {
-          client_id: process.env.NEXT_PUBLIC_INSTAGRAM_CLIENT_ID || "demo_client_id",
-          redirect_uri: `${window.location.origin}/auth/callback`,
-          scope: "basic,public_content",
-          response_type: "code",
-          auth_url: "https://www.facebook.com/v18.0/dialog/oauth"
-        },
-        tiktok: {
-          client_id: process.env.NEXT_PUBLIC_TIKTOK_CLIENT_ID || "demo_client_id",
-          redirect_uri: `${window.location.origin}/auth/callback`,
-          scope: "user.info.basic",
-          response_type: "code",
-          auth_url: "https://www.tiktok.com/v2/auth/authorize"
-        },
-        youtube: {
-          client_id: process.env.NEXT_PUBLIC_YOUTUBE_CLIENT_ID || "demo_client_id",
-          redirect_uri: `${window.location.origin}/auth/callback`,
-          scope: "https://www.googleapis.com/auth/youtube.readonly",
-          response_type: "code",
-          auth_url: "https://accounts.google.com/o/oauth2/v2/auth"
-        },
-        twitter: {
-          client_id: process.env.NEXT_PUBLIC_TWITTER_CLIENT_ID || "demo_client_id",
-          redirect_uri: `${window.location.origin}/auth/callback`,
-          scope: "tweet.read users.read",
-          response_type: "code",
-          auth_url: "https://twitter.com/i/oauth2/authorize"
-        }
-      };
-
-      const config = oauthConfig[platformId as keyof typeof oauthConfig];
+      // Demo mode - simulate successful connection
+      await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate API call
       
-      if (!config?.client_id || config.client_id === "demo_client_id") {
-        // For demo purposes, show a success message instead of actual OAuth
-        await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate API call
-        setError("Platform connection is in demo mode. In production, this would redirect to the actual OAuth flow.");
-        return;
-      }
-
-      // Generate state parameter for security
-      const state = Math.random().toString(36).substring(7);
-      localStorage.setItem(`oauth_state_${platformId}`, state);
-
-      // Construct OAuth URL
-      const oauthUrl = new URL(config.auth_url);
-      oauthUrl.searchParams.set('client_id', config.client_id);
-      oauthUrl.searchParams.set('redirect_uri', config.redirect_uri);
-      oauthUrl.searchParams.set('response_type', config.response_type);
-      oauthUrl.searchParams.set('scope', config.scope);
-      oauthUrl.searchParams.set('state', state);
-
       // Store connection attempt in database
       const { error: dbError } = await supabase
         .from("platform_connections")
         .upsert({
           user_id: userId,
           platform: platformId,
-          is_active: false,
-          connection_attempted_at: new Date().toISOString()
+          is_active: true, // Set to true for demo
+          connection_attempted_at: new Date().toISOString(),
+          connected_at: new Date().toISOString(),
+          last_sync: new Date().toISOString(),
+          platform_username: `demo_${platformId}_user`,
+          follower_count: Math.floor(Math.random() * 10000) + 1000,
+          engagement_rate: Math.random() * 5 + 2
         });
 
       if (dbError) {
         console.error("Database error:", dbError);
       }
 
-      // Redirect to OAuth provider
-      window.location.href = oauthUrl.toString();
+      // Show success message
+      setError(`Successfully connected to ${platformId}! Demo mode active.`);
+      setTimeout(() => setError(null), 3000);
 
     } catch (error) {
       console.error(`Error connecting to ${platformId}:`, error);

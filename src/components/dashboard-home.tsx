@@ -379,147 +379,165 @@ export default function DashboardHome({
         </Card>
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="overview" className="flex items-center gap-2">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid w-full grid-cols-4 h-12 bg-gray-50 border border-gray-200 rounded-lg p-1">
+          <TabsTrigger 
+            value="overview" 
+            className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 rounded-md transition-all duration-200"
+          >
             <Activity className="w-4 h-4" />
-            Overview
+            <span className="font-medium">Overview</span>
           </TabsTrigger>
-          <TabsTrigger value="content" className="flex items-center gap-2">
+          <TabsTrigger 
+            value="content" 
+            className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 rounded-md transition-all duration-200"
+          >
             <FileText className="w-4 h-4" />
-            Content
+            <span className="font-medium">Content</span>
           </TabsTrigger>
-          <TabsTrigger value="analytics" className="flex items-center gap-2">
+          <TabsTrigger 
+            value="analytics" 
+            className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 rounded-md transition-all duration-200"
+          >
             <BarChart3 className="w-4 h-4" />
-            Analytics
+            <span className="font-medium">Analytics</span>
           </TabsTrigger>
-          <TabsTrigger value="platforms" className="flex items-center gap-2">
+          <TabsTrigger 
+            value="platforms" 
+            className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 rounded-md transition-all duration-200"
+          >
             <Globe className="w-4 h-4" />
-            Platforms
+            <span className="font-medium">Platforms</span>
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="overview" className="space-y-6">
+        <TabsContent value="overview" className="space-y-8 mt-8">
           {/* Quick Actions */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {getQuickActions().map((action, index) => (
-              <Card key={index} className="hover:shadow-md transition-shadow cursor-pointer">
-                <Link href={action.href}>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-lg">
-                      <action.icon className="w-5 h-5 text-white" />
-                      {action.title}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-gray-600 mb-4">
-                      {action.description}
-                    </p>
-                    <Button className="w-full">
-                      {action.title}
-                    </Button>
-                  </CardContent>
-                </Link>
-              </Card>
-            ))}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-gray-900">Quick Actions</h3>
+              <span className="text-sm text-gray-500">Get started with your content strategy</span>
+            </div>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {getQuickActions().map((action, index) => (
+                <Card key={index} className="hover:shadow-lg transition-all duration-200 border border-gray-200">
+                  <Link href={action.href}>
+                    <CardHeader className="pb-4">
+                      <CardTitle className="flex items-center gap-3 text-lg">
+                        <div className={`p-2 rounded-lg bg-gradient-to-r ${action.color}`}>
+                          <action.icon className="w-5 h-5 text-white" />
+                        </div>
+                        {action.title}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      <p className="text-sm text-gray-600 mb-4 leading-relaxed">
+                        {action.description}
+                      </p>
+                      <Button className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800">
+                        Get Started
+                      </Button>
+                    </CardContent>
+                  </Link>
+                </Card>
+              ))}
+            </div>
           </div>
 
           {/* Recent Activity */}
           {hasConnectedPlatforms && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Clock className="w-5 h-5" />
-                    Recent Activity
-                  </div>
-                  <Button variant="ghost" size="sm" onClick={loadRecentContent}>
-                    <RefreshCw className="w-4 h-4" />
-                  </Button>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {analyticsData?.content_count ? (
-                    <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
-                      <div className="flex items-center gap-3">
-                        <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
-                        <div>
-                          <p className="text-sm font-medium">Content Performance</p>
-                          <p className="text-xs text-gray-600">
-                            {analyticsData.content_count} posts published this month
-                          </p>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-gray-900">Recent Activity</h3>
+                <Button variant="ghost" size="sm" onClick={loadRecentContent} className="text-blue-600 hover:text-blue-700">
+                  <RefreshCw className="w-4 h-4 mr-2" />
+                  Refresh
+                </Button>
+              </div>
+              <Card className="border border-gray-200">
+                <CardContent className="p-6">
+                  <div className="space-y-4">
+                    {analyticsData?.content_count ? (
+                      <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <div className="flex items-center gap-4">
+                          <div className="w-3 h-3 bg-blue-600 rounded-full"></div>
+                          <div>
+                            <p className="text-sm font-medium text-gray-900">Content Performance</p>
+                            <p className="text-xs text-gray-600">
+                              {analyticsData.content_count} posts published this month
+                            </p>
+                          </div>
                         </div>
+                        <Badge variant="outline" className="text-xs border-blue-200 text-blue-700">
+                          {analyticsData.engagement_rate.toFixed(1)}% engagement
+                        </Badge>
                       </div>
-                      <Badge variant="outline" className="text-xs">
-                        {analyticsData.engagement_rate.toFixed(1)}% engagement
-                      </Badge>
-                    </div>
-                  ) : null}
+                    ) : null}
 
-                  {recentContent.slice(0, 3).map((content) => (
-                    <div key={content.id} className="flex items-center justify-between p-3 border rounded-lg">
-                      <div className="flex items-center gap-3">
-                        <div className="w-2 h-2 bg-green-600 rounded-full"></div>
-                        <div>
-                          <p className="text-sm font-medium">{content.title}</p>
-                          <p className="text-xs text-gray-600">
-                            {content.platform} • {content.status}
-                          </p>
+                    {recentContent.slice(0, 3).map((content) => (
+                      <div key={content.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                        <div className="flex items-center gap-4">
+                          <div className="w-3 h-3 bg-green-600 rounded-full"></div>
+                          <div>
+                            <p className="text-sm font-medium text-gray-900">{content.title}</p>
+                            <p className="text-xs text-gray-600">
+                              {content.platform} • {content.status}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          {getViralScoreBadge(content.viral_score)}
+                          <span className="text-xs text-gray-500">
+                            {content.viral_score}% viral
+                          </span>
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        {getViralScoreBadge(content.viral_score)}
-                        <span className="text-xs text-gray-500">
-                          {content.viral_score}% viral
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           )}
 
           {/* Platform Performance */}
           {analyticsData?.platform_breakdown && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Globe className="w-5 h-5" />
-                  Platform Performance
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-                  {Object.entries(analyticsData.platform_breakdown).map(([platform, data]) => (
-                    <div key={platform} className="p-4 border rounded-lg">
-                      <div className="flex items-center gap-2 mb-3">
-                        {platform === "instagram" && <Camera className="w-4 h-4 text-pink-600" />}
-                        {platform === "tiktok" && <Video className="w-4 h-4 text-black" />}
-                        {platform === "youtube" && <Play className="w-4 h-4 text-red-600" />}
-                        {platform === "twitter" && <MessageCircle className="w-4 h-4 text-blue-600" />}
-                        <span className="font-medium capitalize">{platform}</span>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-gray-900">Platform Performance</h3>
+                <span className="text-sm text-gray-500">Cross-platform insights</span>
+              </div>
+              <Card className="border border-gray-200">
+                <CardContent className="p-6">
+                  <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {Object.entries(analyticsData.platform_breakdown).map(([platform, data]) => (
+                      <div key={platform} className="p-4 border border-gray-200 rounded-lg bg-gray-50">
+                        <div className="flex items-center gap-3 mb-4">
+                          {platform === "instagram" && <Camera className="w-5 h-5 text-pink-600" />}
+                          {platform === "tiktok" && <Video className="w-5 h-5 text-black" />}
+                          {platform === "youtube" && <Play className="w-5 h-5 text-red-600" />}
+                          {platform === "twitter" && <MessageCircle className="w-5 h-5 text-blue-600" />}
+                          <span className="font-medium capitalize text-gray-900">{platform}</span>
+                        </div>
+                        <div className="space-y-3">
+                          <div className="flex justify-between text-sm">
+                            <span className="text-gray-600">Followers</span>
+                            <span className="font-medium text-gray-900">{formatNumber(data.followers)}</span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span className="text-gray-600">Engagement</span>
+                            <span className="font-medium text-gray-900">{data.engagement.toFixed(1)}%</span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span className="text-gray-600">Posts</span>
+                            <span className="font-medium text-gray-900">{data.posts}</span>
+                          </div>
+                        </div>
                       </div>
-                      <div className="space-y-2">
-                        <div className="flex justify-between text-sm">
-                          <span className="text-gray-600">Followers</span>
-                          <span className="font-medium">{formatNumber(data.followers)}</span>
-                        </div>
-                        <div className="flex justify-between text-sm">
-                          <span className="text-gray-600">Engagement</span>
-                          <span className="font-medium">{data.engagement.toFixed(1)}%</span>
-                        </div>
-                        <div className="flex justify-between text-sm">
-                          <span className="text-gray-600">Posts</span>
-                          <span className="font-medium">{data.posts}</span>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           )}
         </TabsContent>
 

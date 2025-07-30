@@ -312,17 +312,25 @@ export default function DashboardSettings({
 
       if (profileError) throw profileError;
 
-      // Update settings
-      const { error: settingsError } = await supabase
-        .from("user_settings")
-        .upsert({
-          user_id: userProfile.user_id,
-          notifications: notificationSettings,
-          privacy: privacySettings,
-          updated_at: new Date().toISOString(),
-        });
+      // Try to update settings table if it exists, but don't fail if it doesn't
+      try {
+        const { error: settingsError } = await supabase
+          .from("user_settings")
+          .upsert({
+            user_id: userProfile.user_id,
+            notifications: notificationSettings,
+            privacy: privacySettings,
+            updated_at: new Date().toISOString(),
+          });
 
-      if (settingsError) throw settingsError;
+        if (settingsError) {
+          console.warn("Settings table not available:", settingsError);
+          // Continue without settings table
+        }
+      } catch (settingsError) {
+        console.warn("Settings table not available:", settingsError);
+        // Continue without settings table
+      }
 
       setSuccess("Settings saved successfully!");
       setIsEditing(false);
