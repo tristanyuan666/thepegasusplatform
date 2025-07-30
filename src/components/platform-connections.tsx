@@ -91,31 +91,75 @@ export default function PlatformConnections({
 
   const handleConnect = async (platformId: string) => {
     setIsConnecting(platformId);
+    setError(null);
 
     try {
-      // Simulate OAuth flow - in real implementation, this would redirect to platform OAuth
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      // Mock successful connection
-      const mockConnection = {
-        user_id: userId,
-        platform: platformId,
-        platform_user_id: `mock_${platformId}_${Date.now()}`,
-        username: `user_${platformId}`,
-        follower_count: Math.floor(Math.random() * 10000) + 1000,
-        is_active: true,
+      // Real OAuth flow implementation
+      const oauthConfig = {
+        instagram: {
+          client_id: process.env.NEXT_PUBLIC_INSTAGRAM_CLIENT_ID,
+          redirect_uri: `${window.location.origin}/auth/callback`,
+          scope: "basic,public_content",
+          response_type: "code"
+        },
+        tiktok: {
+          client_id: process.env.NEXT_PUBLIC_TIKTOK_CLIENT_ID,
+          redirect_uri: `${window.location.origin}/auth/callback`,
+          scope: "user.info.basic",
+          response_type: "code"
+        },
+        youtube: {
+          client_id: process.env.NEXT_PUBLIC_YOUTUBE_CLIENT_ID,
+          redirect_uri: `${window.location.origin}/auth/callback`,
+          scope: "https://www.googleapis.com/auth/youtube.readonly",
+          response_type: "code"
+        },
+        twitter: {
+          client_id: process.env.NEXT_PUBLIC_TWITTER_CLIENT_ID,
+          redirect_uri: `${window.location.origin}/auth/callback`,
+          scope: "tweet.read users.read",
+          response_type: "code"
+        }
       };
 
-      const { error } = await supabase
-        .from("social_connections")
-        .insert(mockConnection);
+      const config = oauthConfig[platformId as keyof typeof oauthConfig];
+      
+      if (!config?.client_id) {
+        throw new Error(`${platformId} OAuth is not configured yet. Please try again later.`);
+      }
 
-      if (error) throw error;
+      // Generate state parameter for security
+      const state = Math.random().toString(36).substring(7);
+      localStorage.setItem(`oauth_state_${platformId}`, state);
 
-      // onConnectionUpdate(); // Removed as per edit hint
+      // Construct OAuth URL
+      const oauthUrl = new URL(`https://api.${platformId}.com/oauth/authorize`);
+      oauthUrl.searchParams.set('client_id', config.client_id);
+      oauthUrl.searchParams.set('redirect_uri', config.redirect_uri);
+      oauthUrl.searchParams.set('response_type', config.response_type);
+      oauthUrl.searchParams.set('scope', config.scope);
+      oauthUrl.searchParams.set('state', state);
+
+      // Store connection attempt in database
+      const { error: dbError } = await supabase
+        .from("platform_connections")
+        .upsert({
+          user_id: userProfile?.user_id,
+          platform: platformId,
+          is_active: false,
+          connection_attempted_at: new Date().toISOString()
+        });
+
+      if (dbError) {
+        console.error("Database error:", dbError);
+      }
+
+      // Redirect to OAuth provider
+      window.location.href = oauthUrl.toString();
+
     } catch (error) {
       console.error(`Error connecting to ${platformId}:`, error);
-      alert(`Failed to connect to ${platformId}. Please try again.`);
+      setError(error instanceof Error ? error.message : `Failed to connect to ${platformId}. Please try again.`);
     } finally {
       setIsConnecting(null);
     }

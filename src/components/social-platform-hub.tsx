@@ -113,86 +113,87 @@ export default function SocialPlatformHub({
 
   const loadSocialData = async () => {
     try {
-      // Mock connected accounts data
-      const mockAccounts: PlatformAccount[] = [
-        {
-          id: "1",
-          platform: "instagram",
-          username: "@creative_creator",
-          followers: 15420,
-          following: 892,
-          posts: 234,
-          engagement_rate: 9.2,
-          connected_at: "2024-01-15T10:30:00Z",
-          status: "active",
-          profile_picture: "https://via.placeholder.com/150"
-        },
-        {
-          id: "2",
-          platform: "twitter",
-          username: "@tech_innovator",
-          followers: 8920,
-          following: 456,
-          posts: 156,
-          engagement_rate: 7.8,
-          connected_at: "2024-01-10T14:20:00Z",
-          status: "active"
-        },
-        {
-          id: "3",
-          platform: "youtube",
-          username: "Creative Creator",
-          followers: 23400,
-          following: 0,
-          posts: 89,
-          engagement_rate: 12.5,
-          connected_at: "2024-01-05T09:15:00Z",
-          status: "active"
-        }
-      ];
+      // Load real connected accounts from database
+      const { data: connectionsData, error: connectionsError } = await supabase
+        .from("platform_connections")
+        .select("*")
+        .eq("user_id", user.id)
+        .eq("is_active", true);
 
-      setConnectedAccounts(mockAccounts);
+      if (connectionsError) throw connectionsError;
 
-      // Mock cross-platform analytics
-      const mockAnalytics: CrossPlatformAnalytics = {
-        total_followers: 47740,
-        total_engagement: 45678,
-        total_posts: 479,
-        engagement_rate: 9.8,
-        reach_this_month: 125000,
-        impressions_this_month: 189000,
-        followers_growth: 12.5,
-        top_performing_platform: "Instagram",
-        best_posting_time: "18:00"
+      // Transform database data to match interface
+      const realAccounts: PlatformAccount[] = (connectionsData || []).map((conn: any) => ({
+        id: conn.id,
+        platform: conn.platform,
+        username: conn.username || `user_${conn.platform}`,
+        followers: conn.follower_count || 0,
+        following: conn.following_count || 0,
+        posts: conn.post_count || 0,
+        engagement_rate: conn.engagement_rate || 0,
+        connected_at: conn.connected_at || conn.created_at,
+        status: conn.is_active ? "active" : "inactive",
+        profile_picture: conn.profile_picture || `https://via.placeholder.com/150?text=${conn.platform}`
+      }));
+
+      setConnectedAccounts(realAccounts);
+
+      // Calculate real cross-platform analytics
+      const totalFollowers = realAccounts.reduce((sum, acc) => sum + acc.followers, 0);
+      const totalPosts = realAccounts.reduce((sum, acc) => sum + acc.posts, 0);
+      const avgEngagement = realAccounts.length > 0 
+        ? realAccounts.reduce((sum, acc) => sum + acc.engagement_rate, 0) / realAccounts.length 
+        : 0;
+
+      // Load content data for analytics
+      const { data: contentData, error: contentError } = await supabase
+        .from("content_queue")
+        .select("*")
+        .eq("user_id", user.id)
+        .gte("created_at", new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString());
+
+      if (contentError) throw contentError;
+
+      const content = contentData || [];
+      const totalReach = content.reduce((sum, item) => sum + (item.estimated_reach || 0), 0);
+      const totalImpressions = content.reduce((sum, item) => sum + (item.estimated_reach || 0) * 1.5, 0);
+
+      const realAnalytics: CrossPlatformAnalytics = {
+        total_followers: totalFollowers,
+        total_engagement: Math.floor(totalFollowers * avgEngagement / 100),
+        total_posts: totalPosts,
+        engagement_rate: avgEngagement,
+        reach_this_month: totalReach,
+        impressions_this_month: totalImpressions,
+        followers_growth: 0, // Would need historical data to calculate
+        top_performing_platform: realAccounts.length > 0 ? realAccounts[0].platform : "None",
+        best_posting_time: "18:00" // Would need analytics data to determine
       };
 
-      setAnalytics(mockAnalytics);
+      setAnalytics(realAnalytics);
 
-      // Mock scheduled content
-      const mockScheduled: ScheduledContent[] = [
-        {
-          id: "1",
-          title: "Product Launch Announcement",
-          content: "🚀 Exciting news! Our new product is launching next week...",
-          platforms: ["instagram", "twitter", "linkedin"],
-          scheduled_time: "2024-01-25T10:00:00Z",
-          status: "scheduled",
-          estimated_reach: 25000,
-          content_type: "post"
-        },
-        {
-          id: "2",
-          title: "Behind the Scenes",
-          content: "A day in the life of a content creator...",
-          platforms: ["instagram", "tiktok"],
-          scheduled_time: "2024-01-26T15:30:00Z",
-          status: "draft",
-          estimated_reach: 18000,
-          content_type: "story"
-        }
-      ];
+      // Load real scheduled content
+      const { data: scheduledData, error: scheduledError } = await supabase
+        .from("content_queue")
+        .select("*")
+        .eq("user_id", user.id)
+        .in("status", ["scheduled", "draft"])
+        .order("scheduled_date", { ascending: true });
 
-      setScheduledContent(mockScheduled);
+      if (scheduledError) throw scheduledError;
+
+      const realScheduled: ScheduledContent[] = (scheduledData || []).map((item: any) => ({
+        id: item.id,
+        title: item.title,
+        content: item.content,
+        platforms: [item.platform],
+        scheduled_time: item.scheduled_date || item.created_at,
+        status: item.status,
+        estimated_reach: item.estimated_reach || 0,
+        content_type: item.content_type || "post"
+      }));
+
+      setScheduledContent(realScheduled);
     } catch (error) {
       console.error("Error loading social data:", error);
     } finally {
@@ -202,24 +203,67 @@ export default function SocialPlatformHub({
 
   const connectPlatform = async (platformId: string) => {
     try {
-      // Simulate platform connection
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      const newAccount: PlatformAccount = {
-        id: Date.now().toString(),
-        platform: platformId,
-        username: `@user_${platformId}`,
-        followers: Math.floor(Math.random() * 10000) + 1000,
-        following: Math.floor(Math.random() * 500) + 100,
-        posts: Math.floor(Math.random() * 100) + 10,
-        engagement_rate: Math.random() * 15 + 5,
-        connected_at: new Date().toISOString(),
-        status: "active"
+      // Real platform connection using OAuth
+      const oauthConfig = {
+        instagram: {
+          client_id: process.env.NEXT_PUBLIC_INSTAGRAM_CLIENT_ID,
+          redirect_uri: `${window.location.origin}/auth/callback`,
+          scope: "basic,public_content"
+        },
+        tiktok: {
+          client_id: process.env.NEXT_PUBLIC_TIKTOK_CLIENT_ID,
+          redirect_uri: `${window.location.origin}/auth/callback`,
+          scope: "user.info.basic"
+        },
+        youtube: {
+          client_id: process.env.NEXT_PUBLIC_YOUTUBE_CLIENT_ID,
+          redirect_uri: `${window.location.origin}/auth/callback`,
+          scope: "https://www.googleapis.com/auth/youtube.readonly"
+        },
+        twitter: {
+          client_id: process.env.NEXT_PUBLIC_TWITTER_CLIENT_ID,
+          redirect_uri: `${window.location.origin}/auth/callback`,
+          scope: "tweet.read users.read"
+        }
       };
 
-      setConnectedAccounts(prev => [...prev, newAccount]);
+      const config = oauthConfig[platformId as keyof typeof oauthConfig];
+      
+      if (!config?.client_id) {
+        throw new Error(`${platformId} OAuth is not configured yet. Please try again later.`);
+      }
+
+      // Generate state parameter for security
+      const state = Math.random().toString(36).substring(7);
+      localStorage.setItem(`oauth_state_${platformId}`, state);
+
+      // Construct OAuth URL
+      const oauthUrl = new URL(`https://api.${platformId}.com/oauth/authorize`);
+      oauthUrl.searchParams.set('client_id', config.client_id);
+      oauthUrl.searchParams.set('redirect_uri', config.redirect_uri);
+      oauthUrl.searchParams.set('response_type', 'code');
+      oauthUrl.searchParams.set('scope', config.scope);
+      oauthUrl.searchParams.set('state', state);
+
+      // Store connection attempt in database
+      const { error: dbError } = await supabase
+        .from("platform_connections")
+        .upsert({
+          user_id: user.id,
+          platform: platformId,
+          is_active: false,
+          connection_attempted_at: new Date().toISOString()
+        });
+
+      if (dbError) {
+        console.error("Database error:", dbError);
+      }
+
+      // Redirect to OAuth provider
+      window.location.href = oauthUrl.toString();
     } catch (error) {
       console.error(`Error connecting to ${platformId}:`, error);
+      setError(error instanceof Error ? error.message : `Failed to connect to ${platformId}. Please try again.`);
     }
   };
 

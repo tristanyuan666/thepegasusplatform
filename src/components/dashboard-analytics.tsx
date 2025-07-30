@@ -119,16 +119,10 @@ export default function DashboardAnalytics({
       const platforms = platformData.data || [];
       const content = contentData.data || [];
 
-      // Calculate real metrics
+      // Calculate total followers from real platform connections
       const totalFollowers = platforms.reduce((sum, platform) => {
-        // Mock follower count based on platform type (in real app, this would come from API)
-        const mockFollowers = {
-          instagram: Math.floor(Math.random() * 50000) + 1000,
-          tiktok: Math.floor(Math.random() * 100000) + 2000,
-          youtube: Math.floor(Math.random() * 25000) + 500,
-          twitter: Math.floor(Math.random() * 15000) + 300
-        };
-        return sum + (mockFollowers[platform.platform as keyof typeof mockFollowers] || 0);
+        const connection = platformConnections.find(conn => conn.platform === platform.platform);
+        return sum + (connection?.follower_count || 0);
       }, 0);
 
       const totalViews = content.reduce((sum, item) => sum + (item.estimated_reach || 0), 0);
