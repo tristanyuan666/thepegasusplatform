@@ -125,37 +125,37 @@ export default function DashboardAnalytics({
         return sum + (connection?.follower_count || 0);
       }, 0);
 
-      const totalViews = content.reduce((sum, item) => sum + (item.estimated_reach || 0), 0);
+      const totalViews = content.reduce((sum: number, item: any) => sum + (item.estimated_reach || 0), 0);
       const engagementRate = content.length > 0 
-        ? content.reduce((sum, item) => sum + (item.viral_score || 0), 0) / content.length 
+        ? content.reduce((sum: number, item: any) => sum + (item.viral_score || 0), 0) / content.length 
         : 0;
 
       // Calculate growth rate
-      const recentContent = content.filter(item => 
+      const recentContent = content.filter((item: any) => 
         new Date(item.created_at) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
       );
-      const previousContent = content.filter(item => {
+      const previousContent = content.filter((item: any) => {
         const date = new Date(item.created_at);
         const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
         const twoWeeksAgo = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000);
         return date <= weekAgo && date > twoWeeksAgo;
       });
 
-      const recentViews = recentContent.reduce((sum, item) => sum + (item.estimated_reach || 0), 0);
-      const previousViews = previousContent.reduce((sum, item) => sum + (item.estimated_reach || 0), 0);
+      const recentViews = recentContent.reduce((sum: number, item: any) => sum + (item.estimated_reach || 0), 0);
+      const previousViews = previousContent.reduce((sum: number, item: any) => sum + (item.estimated_reach || 0), 0);
       const growthRate = previousViews > 0 ? ((recentViews - previousViews) / previousViews) * 100 : 0;
 
       // Build platform breakdown with real data
-      const platformBreakdown = platforms.reduce((acc, platform) => {
+      const platformBreakdown = platforms.reduce((acc: any, platform: any) => {
         // Get real platform data from connections
         const connection = platformConnections.find(conn => conn.platform === platform.platform);
         
         if (connection && connection.is_active) {
           // Calculate real metrics based on content performance
-          const platformContent = content.filter(item => item.platform === platform.platform);
-          const totalViews = platformContent.reduce((sum, item) => sum + (item.estimated_reach || 0), 0);
+          const platformContent = content.filter((item: any) => item.platform === platform.platform);
+          const totalViews = platformContent.reduce((sum: number, item: any) => sum + (item.estimated_reach || 0), 0);
           const avgEngagement = platformContent.length > 0 
-            ? platformContent.reduce((sum, item) => sum + (item.viral_score || 0), 0) / platformContent.length 
+            ? platformContent.reduce((sum: number, item: any) => sum + (item.viral_score || 0), 0) / platformContent.length 
             : 0;
           
           acc[platform.platform] = {
@@ -180,19 +180,19 @@ export default function DashboardAnalytics({
       const recentPerformance = Array.from({ length: 7 }, (_, i) => {
         const date = new Date();
         date.setDate(date.getDate() - i);
-        const dayContent = content.filter(item => {
+        const dayContent = content.filter((item: any) => {
           const itemDate = new Date(item.created_at);
           return itemDate.toDateString() === date.toDateString();
         });
         
         return {
           date: date.toISOString().split('T')[0],
-          views: dayContent.reduce((sum, item) => sum + (item.estimated_reach || 0), 0),
+          views: dayContent.reduce((sum: number, item: any) => sum + (item.estimated_reach || 0), 0),
           engagement: dayContent.length > 0 
-            ? dayContent.reduce((sum, item) => sum + (item.viral_score || 0), 0) / dayContent.length 
+            ? dayContent.reduce((sum: number, item: any) => sum + (item.viral_score || 0), 0) / dayContent.length 
             : 0,
           viral_score: dayContent.length > 0 
-            ? dayContent.reduce((sum, item) => sum + (item.viral_score || 0), 0) / dayContent.length 
+            ? dayContent.reduce((sum: number, item: any) => sum + (item.viral_score || 0), 0) / dayContent.length 
             : 0
         };
       }).reverse();
@@ -202,7 +202,7 @@ export default function DashboardAnalytics({
         total_views: totalViews,
         engagement_rate: engagementRate,
         viral_score: content.length > 0 
-          ? content.reduce((sum, item) => sum + (item.viral_score || 0), 0) / content.length 
+          ? content.reduce((sum: number, item: any) => sum + (item.viral_score || 0), 0) / content.length 
           : 0,
         content_count: content.length,
         revenue: 0, // Would come from revenue tracking
@@ -520,7 +520,7 @@ export default function DashboardAnalytics({
             <CardContent>
               {data?.recent_performance && data.recent_performance.length > 0 ? (
                 <div className="space-y-4">
-                  {data.recent_performance.map((item, index) => (
+                  {data.recent_performance.map((item: any, index: number) => (
                     <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                       <div className="flex items-center gap-4">
                         <span className="text-sm text-gray-600">{item.date}</span>
