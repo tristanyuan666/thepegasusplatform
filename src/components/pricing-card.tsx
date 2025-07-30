@@ -187,6 +187,7 @@ export default function PricingCard({
     features: [],
     gradient: "from-gray-500 to-gray-700",
     icon: <Zap className="w-6 h-6" />,
+    popular: false,
   };
 
   // Helper function to format prices
