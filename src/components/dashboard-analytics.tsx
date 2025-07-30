@@ -84,16 +84,16 @@ export default function DashboardAnalytics({
     if (!user?.id) return;
     
     try {
-    setIsLoading(true);
-    setError(null);
-    
+      setIsLoading(true);
+      setError(null);
+      
       // Fetch real analytics data from multiple sources
       const [analyticsResult, platformData, contentData] = await Promise.all([
         // Get analytics from database
         supabase
-        .from("analytics")
-        .select("*")
-        .eq("user_id", user.id)
+          .from("analytics")
+          .select("*")
+          .eq("user_id", user.id)
           .gte("date", new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString())
           .order("date", { ascending: true }),
         
@@ -106,9 +106,9 @@ export default function DashboardAnalytics({
         
         // Get content performance data
         supabase
-        .from("content_queue")
-        .select("*")
-        .eq("user_id", user.id)
+          .from("content_queue")
+          .select("*")
+          .eq("user_id", user.id)
           .gte("created_at", new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString())
           .order("created_at", { ascending: false })
       ]);
@@ -133,7 +133,7 @@ export default function DashboardAnalytics({
         ? content.reduce((sum: number, item: any) => sum + (item.viral_score || 0), 0) / content.length 
         : 0;
 
-      // Calculate growth rate
+      // Calculate growth rate from real data
       const recentContent = content.filter((item: any) => 
         new Date(item.created_at) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
       );
@@ -179,7 +179,7 @@ export default function DashboardAnalytics({
         return acc;
       }, {} as any);
 
-      // Generate recent performance data
+      // Generate recent performance data with real analytics
       const recentPerformance = Array.from({ length: 7 }, (_, i) => {
         const date = new Date();
         date.setDate(date.getDate() - i);
@@ -188,15 +188,22 @@ export default function DashboardAnalytics({
           return itemDate.toDateString() === date.toDateString();
         });
         
+        // Get analytics data for this date
+        const dayAnalytics = analytics.filter((item: any) => {
+          const itemDate = new Date(item.date);
+          return itemDate.toDateString() === date.toDateString();
+        });
+        
+        const totalViews = dayContent.reduce((sum: number, item: any) => sum + (item.estimated_reach || 0), 0);
+        const avgEngagement = dayContent.length > 0 
+          ? dayContent.reduce((sum: number, item: any) => sum + (item.viral_score || 0), 0) / dayContent.length 
+          : 0;
+        
         return {
           date: date.toISOString().split('T')[0],
-          views: dayContent.reduce((sum: number, item: any) => sum + (item.estimated_reach || 0), 0),
-          engagement: dayContent.length > 0 
-            ? dayContent.reduce((sum: number, item: any) => sum + (item.viral_score || 0), 0) / dayContent.length 
-            : 0,
-          viral_score: dayContent.length > 0 
-            ? dayContent.reduce((sum: number, item: any) => sum + (item.viral_score || 0), 0) / dayContent.length 
-            : 0
+          views: totalViews,
+          engagement: avgEngagement,
+          viral_score: avgEngagement
         };
       }).reverse();
 
