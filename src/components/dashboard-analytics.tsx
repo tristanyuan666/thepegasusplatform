@@ -81,16 +81,16 @@ export default function DashboardAnalytics({
     if (!user?.id) return;
     
     try {
-      setIsLoading(true);
-      setError(null);
-
+    setIsLoading(true);
+    setError(null);
+    
       // Fetch real analytics data from multiple sources
       const [analyticsResult, platformData, contentData] = await Promise.all([
         // Get analytics from database
         supabase
-          .from("analytics")
-          .select("*")
-          .eq("user_id", user.id)
+        .from("analytics")
+        .select("*")
+        .eq("user_id", user.id)
           .gte("date", new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString())
           .order("date", { ascending: true }),
         
@@ -103,9 +103,9 @@ export default function DashboardAnalytics({
         
         // Get content performance data
         supabase
-          .from("content_queue")
-          .select("*")
-          .eq("user_id", user.id)
+        .from("content_queue")
+        .select("*")
+        .eq("user_id", user.id)
           .gte("created_at", new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString())
           .order("created_at", { ascending: false })
       ]);

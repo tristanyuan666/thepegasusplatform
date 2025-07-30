@@ -45,7 +45,11 @@ import {
   Equal,
   Info,
   FileText,
-  Edit3
+  Edit3,
+  User,
+  Bell,
+  Search,
+  Filter
 } from "lucide-react";
 import Link from "next/link";
 import { createClient } from "../../supabase/client";
@@ -254,7 +258,7 @@ export default function DashboardHome({
         description: "Link your social accounts",
         icon: Globe,
         href: "/dashboard?tab=platforms",
-        color: "from-purple-500 to-purple-600",
+        color: "from-orange-500 to-orange-600",
         available: hasFeatureAccess("platforms")
       },
       {
@@ -272,26 +276,24 @@ export default function DashboardHome({
 
   return (
     <div className="space-y-6">
-      {/* Welcome Section */}
-                    <Card className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
+      {/* Welcome Section - Removed Settings Button */}
+      <Card className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
         <CardContent className="p-6">
-        <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold mb-2">
-                Welcome back, {userProfile?.full_name || userProfile?.name || "Creator"}! 👋
+              <h1 className="text-2xl font-bold mb-2 flex items-center gap-2">
+                <User className="w-6 h-6" />
+                Welcome back, {userProfile?.full_name || userProfile?.name || "Creator"}!
               </h1>
-              <p className="text-blue-100">
+              <p className="text-blue-100 flex items-center gap-2">
+                <Rocket className="w-4 h-4" />
                 Ready to create some viral content today?
               </p>
             </div>
             <div className="flex items-center gap-2">
               <Badge variant="secondary" className="bg-white/20 text-white">
                 {userProfile?.subscription || "Free"} Plan
-            </Badge>
-              <Button variant="outline" size="sm" className="border-white/30 text-white hover:bg-white/10">
-                <Settings className="w-4 h-4 mr-2" />
-                Settings
-              </Button>
+              </Badge>
             </div>
           </div>
         </CardContent>
@@ -317,7 +319,7 @@ export default function DashboardHome({
               <Users className="w-8 h-8 text-blue-600" />
             </div>
           </CardContent>
-            </Card>
+        </Card>
 
         <Card>
           <CardContent className="p-6">
@@ -335,7 +337,7 @@ export default function DashboardHome({
               <Eye className="w-8 h-8 text-green-600" />
             </div>
           </CardContent>
-            </Card>
+        </Card>
 
         <Card>
           <CardContent className="p-6">
@@ -353,12 +355,12 @@ export default function DashboardHome({
               <Heart className="w-8 h-8 text-red-600" />
             </div>
           </CardContent>
-            </Card>
+        </Card>
 
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
-                      <div>
+              <div>
                 <p className="text-sm text-gray-600">Viral Score</p>
                 <div className="flex items-center gap-2">
                   <p className={`text-2xl font-bold ${getViralScoreColor(analyticsData?.viral_score || 0)}`}>
@@ -367,77 +369,92 @@ export default function DashboardHome({
                   {analyticsData && getViralScoreBadge(analyticsData.viral_score)}
                 </div>
                 <div className="flex items-center gap-1 mt-1">
-                  <Target className="w-4 h-4 text-purple-400" />
+                  <Target className="w-4 h-4 text-blue-400" />
                   <span className="text-sm text-gray-600">content potential</span>
                 </div>
               </div>
-                              <Target className="w-8 h-8 text-blue-600" />
+              <Target className="w-8 h-8 text-blue-600" />
             </div>
           </CardContent>
-              </Card>
+        </Card>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="content">Content</TabsTrigger>
-          <TabsTrigger value="analytics">Analytics</TabsTrigger>
-          <TabsTrigger value="platforms">Platforms</TabsTrigger>
+          <TabsTrigger value="overview" className="flex items-center gap-2">
+            <Activity className="w-4 h-4" />
+            Overview
+          </TabsTrigger>
+          <TabsTrigger value="content" className="flex items-center gap-2">
+            <FileText className="w-4 h-4" />
+            Content
+          </TabsTrigger>
+          <TabsTrigger value="analytics" className="flex items-center gap-2">
+            <BarChart3 className="w-4 h-4" />
+            Analytics
+          </TabsTrigger>
+          <TabsTrigger value="platforms" className="flex items-center gap-2">
+            <Globe className="w-4 h-4" />
+            Platforms
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
-      {/* Quick Actions */}
+          {/* Quick Actions */}
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {getQuickActions().map((action, index) => (
-          <Card key={index} className="hover:shadow-md transition-shadow cursor-pointer">
-            <Link href={action.href}>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <action.icon className="w-5 h-5 text-white" />
-                  {action.title}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-gray-600 mb-4">
-                  {action.description}
-                </p>
-                <Button className="w-full">
-                  {action.title}
-                </Button>
-              </CardContent>
-            </Link>
-          </Card>
-        ))}
-      </div>
+            {getQuickActions().map((action, index) => (
+              <Card key={index} className="hover:shadow-md transition-shadow cursor-pointer">
+                <Link href={action.href}>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-lg">
+                      <action.icon className="w-5 h-5 text-white" />
+                      {action.title}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-gray-600 mb-4">
+                      {action.description}
+                    </p>
+                    <Button className="w-full">
+                      {action.title}
+                    </Button>
+                  </CardContent>
+                </Link>
+              </Card>
+            ))}
+          </div>
 
-      {/* Recent Activity */}
-      {hasConnectedPlatforms && (
-        <Card>
-          <CardHeader>
+          {/* Recent Activity */}
+          {hasConnectedPlatforms && (
+            <Card>
+              <CardHeader>
                 <CardTitle className="flex items-center justify-between">
-                  Recent Activity
+                  <div className="flex items-center gap-2">
+                    <Clock className="w-5 h-5" />
+                    Recent Activity
+                  </div>
                   <Button variant="ghost" size="sm" onClick={loadRecentContent}>
                     <RefreshCw className="w-4 h-4" />
                   </Button>
                 </CardTitle>
-          </CardHeader>
-          <CardContent>
+              </CardHeader>
+              <CardContent>
                 <div className="space-y-4">
-              {analyticsData?.content_count ? (
-                <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
-                      <div>
-                      <p className="text-sm font-medium">Content Performance</p>
-                      <p className="text-xs text-gray-600">
-                        {analyticsData.content_count} posts published this month
-                      </p>
+                  {analyticsData?.content_count ? (
+                    <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+                        <div>
+                          <p className="text-sm font-medium">Content Performance</p>
+                          <p className="text-xs text-gray-600">
+                            {analyticsData.content_count} posts published this month
+                          </p>
+                        </div>
+                      </div>
+                      <Badge variant="outline" className="text-xs">
+                        {analyticsData.engagement_rate.toFixed(1)}% engagement
+                      </Badge>
                     </div>
-                  </div>
-                  <Badge variant="outline" className="text-xs">
-                    {analyticsData.engagement_rate.toFixed(1)}% engagement
-                  </Badge>
-                </div>
                   ) : null}
 
                   {recentContent.slice(0, 3).map((content) => (
@@ -468,7 +485,10 @@ export default function DashboardHome({
           {analyticsData?.platform_breakdown && (
             <Card>
               <CardHeader>
-                <CardTitle>Platform Performance</CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                  <Globe className="w-5 h-5" />
+                  Platform Performance
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -552,7 +572,10 @@ export default function DashboardHome({
           {/* Recent Content */}
           <Card>
             <CardHeader>
-              <CardTitle>Recent Content</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <FileText className="w-5 h-5" />
+                Recent Content
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -599,7 +622,10 @@ export default function DashboardHome({
           {analyticsData?.recent_performance && (
             <Card>
               <CardHeader>
-                <CardTitle>Performance Trend</CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                  <TrendingUp className="w-5 h-5" />
+                  Performance Trend
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="h-64 flex items-end justify-between gap-2">
@@ -620,16 +646,19 @@ export default function DashboardHome({
                       </span>
                     </div>
                   ))}
-            </div>
-          </CardContent>
+                </div>
+              </CardContent>
             </Card>
-      )}
+          )}
 
           {/* Analytics Summary */}
           <div className="grid md:grid-cols-2 gap-6">
             <Card>
               <CardHeader>
-                <CardTitle>Engagement Metrics</CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                  <BarChart3 className="w-5 h-5" />
+                  Engagement Metrics
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
@@ -660,7 +689,10 @@ export default function DashboardHome({
 
             <Card>
               <CardHeader>
-                <CardTitle>Content Insights</CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                  <Info className="w-5 h-5" />
+                  Content Insights
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">

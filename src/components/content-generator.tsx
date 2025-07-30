@@ -745,28 +745,28 @@ export default function ContentGenerator({
                   ];
                   
                   return templates.map((template) => (
-                    <div key={template.id} className="border border-gray-200 rounded-lg p-4">
-                      <h4 className="font-semibold text-gray-900 mb-2">{template.name}</h4>
-                      <p className="text-sm text-gray-600 mb-3">{template.description}</p>
-                      <div className="flex items-center gap-2 mb-3">
-                        <Badge variant="outline" className="text-xs">
-                          {template.platform}
-                        </Badge>
-                        <Badge variant="outline" className="text-xs">
-                          {template.content_type}
-                        </Badge>
-                      </div>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                          setSelectedTemplate(template.id);
-                          setActiveTab("generate");
-                        }}
-                      >
-                        Use Template
-                      </Button>
+                  <div key={template.id} className="border border-gray-200 rounded-lg p-4">
+                    <h4 className="font-semibold text-gray-900 mb-2">{template.name}</h4>
+                    <p className="text-sm text-gray-600 mb-3">{template.description}</p>
+                    <div className="flex items-center gap-2 mb-3">
+                      <Badge variant="outline" className="text-xs">
+                        {template.platform}
+                      </Badge>
+                      <Badge variant="outline" className="text-xs">
+                        {template.content_type}
+                      </Badge>
                     </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setSelectedTemplate(template.id);
+                        setActiveTab("generate");
+                      }}
+                    >
+                  Use Template
+                </Button>
+              </div>
                   ));
                 })()}
               </div>
