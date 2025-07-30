@@ -58,6 +58,7 @@ interface PlatformConnection {
   is_active: boolean;
   connected_at: string;
   last_sync: string;
+  follower_count?: number; // Added for new getPlatformStats
 }
 
 interface DashboardPlatformsProps {
@@ -143,7 +144,29 @@ export default function DashboardPlatforms({
   const [isSyncing, setIsSyncing] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [content, setContent] = useState<any[]>([]);
   const supabase = createClient();
+
+  useEffect(() => {
+    loadContentData();
+  }, [userProfile?.user_id]);
+
+  const loadContentData = async () => {
+    if (!userProfile?.user_id) return;
+    
+    try {
+      const { data: contentData, error } = await supabase
+        .from("content_queue")
+        .select("*")
+        .eq("user_id", userProfile.user_id)
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      setContent(contentData || []);
+    } catch (error) {
+      console.error("Error loading content data:", error);
+    }
+  };
 
   // Clear messages after 5 seconds
   useEffect(() => {
@@ -298,44 +321,47 @@ export default function DashboardPlatforms({
   };
 
   const getPlatformStats = (platformId: string) => {
-    // Enhanced platform statistics with real-time data
-    const stats = {
-      instagram: {
-        followers: 15420,
-        posts: 67,
-        engagement: 4.8,
-        reach: 125000,
-        growth: 12.5
-      },
-      tiktok: {
-        followers: 45680,
-        posts: 89,
-        engagement: 7.2,
-        reach: 890000,
-        growth: 23.1
-      },
-      youtube: {
-        followers: 8230,
-        posts: 34,
-        engagement: 3.4,
-        reach: 45000,
-        growth: 8.7
-      },
-      twitter: {
-        followers: 12340,
-        posts: 156,
-        engagement: 2.9,
-        reach: 67000,
-        growth: 15.2
-      }
-    };
+    // Get real platform statistics from user's data
+    const connection = platformConnections.find(conn => conn.platform === platformId);
     
-    return stats[platformId as keyof typeof stats] || {
-      followers: 0,
-      posts: 0,
-      engagement: 0,
-      reach: 0,
-      growth: 0
+    if (!connection || !connection.is_active) {
+      return {
+        followers: 0,
+        posts: 0,
+        engagement: 0,
+        reach: 0,
+        growth: 0
+      };
+    }
+
+    // Calculate real metrics from content performance
+    const platformContent = content?.filter((item: any) => item.platform === platformId) || [];
+    const totalViews = platformContent.reduce((sum: number, item: any) => sum + (item.estimated_reach || 0), 0);
+    const avgEngagement = platformContent.length > 0 
+      ? platformContent.reduce((sum: number, item: any) => sum + (item.viral_score || 0), 0) / platformContent.length 
+      : 0;
+    
+    // Calculate growth based on recent vs older content
+    const recentContent = platformContent.filter((item: any) => 
+      new Date(item.created_at) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+    );
+    const olderContent = platformContent.filter((item: any) => {
+      const date = new Date(item.created_at);
+      const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+      const twoWeeksAgo = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000);
+      return date <= weekAgo && date > twoWeeksAgo;
+    });
+    
+    const recentViews = recentContent.reduce((sum: number, item: any) => sum + (item.estimated_reach || 0), 0);
+    const olderViews = olderContent.reduce((sum: number, item: any) => sum + (item.estimated_reach || 0), 0);
+    const growth = olderViews > 0 ? ((recentViews - olderViews) / olderViews) * 100 : 0;
+
+    return {
+      followers: connection.follower_count || 0,
+      posts: platformContent.length,
+      engagement: avgEngagement,
+      reach: totalViews,
+      growth: growth
     };
   };
 

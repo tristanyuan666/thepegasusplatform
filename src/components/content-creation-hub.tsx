@@ -165,52 +165,31 @@ export default function ContentCreationHub({
 
   const loadContentIdeas = async () => {
     try {
-      // Mock data for demonstration
-      const mockIdeas: ContentIdea[] = [
-        {
-          id: "1",
-          title: "Morning Routine for Productivity",
-          description:
-            "Share your optimized morning routine that boosts daily productivity",
-          platform: "Social Media",
-          contentType: "post",
-          viralScore: 87,
-          estimatedViews: "125K",
-          hashtags: [
-            "#productivity",
-            "#morningroutine",
-            "#success",
-            "#motivation",
-          ],
-          createdAt: new Date().toISOString(),
-          status: "draft",
-        },
-        {
-          id: "2",
-          title: "5 Mistakes Everyone Makes",
-          description: "Common mistakes in your niche that people should avoid",
-          platform: "Social Media",
-          contentType: "video",
-          viralScore: 92,
-          estimatedViews: "250K",
-          hashtags: ["#mistakes", "#tips", "#advice", "#learn"],
-          createdAt: new Date().toISOString(),
-          status: "scheduled",
-        },
-        {
-          id: "3",
-          title: "Behind the Scenes",
-          description: "Show your authentic work process and daily life",
-          platform: "Social Media",
-          contentType: "story",
-          viralScore: 78,
-          estimatedViews: "89K",
-          hashtags: ["#behindthescenes", "#authentic", "#reallife", "#work"],
-          createdAt: new Date().toISOString(),
-          status: "published",
-        },
-      ];
-      setContentIdeas(mockIdeas);
+      // Load real content ideas from database
+      const { data: contentData, error } = await supabase
+        .from("content_queue")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(10);
+
+      if (error) throw error;
+
+      // Transform database data to match interface
+      const realIdeas: ContentIdea[] = (contentData || []).map((item: any) => ({
+        id: item.id,
+        title: item.title,
+        description: item.content,
+        platform: item.platform,
+        contentType: item.content_type,
+        viralScore: item.viral_score,
+        estimatedViews: item.estimated_reach?.toString() || "0",
+        hashtags: item.hashtags || [],
+        createdAt: item.created_at,
+        status: item.status
+      }));
+
+      setContentIdeas(realIdeas);
     } catch (error) {
       console.error("Error loading content ideas:", error);
     }

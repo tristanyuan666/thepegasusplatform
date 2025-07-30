@@ -222,31 +222,34 @@ export default function DashboardSettings({
   }, []);
 
   const loadDeviceSessions = async () => {
+    if (!userProfile?.user_id) return;
+    
     try {
-      // Mock device sessions data
-      const sessions: DeviceSession[] = [
-        {
-          id: "1",
-          device: "MacBook Pro",
-          location: "San Francisco, CA",
-          last_active: new Date().toISOString(),
-          is_current: true,
-          ip_address: "192.168.1.1",
-          user_agent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)",
-        },
-        {
-          id: "2",
-          device: "iPhone 14",
-          location: "San Francisco, CA",
-          last_active: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-          is_current: false,
-          ip_address: "192.168.1.2",
-          user_agent: "Mozilla/5.0 (iPhone; CPU iPhone OS 16_0)",
-        },
-      ];
-      setDeviceSessions(sessions);
+      // Load real device sessions from database
+      const { data: sessionsData, error } = await supabase
+        .from("user_sessions")
+        .select("*")
+        .eq("user_id", userProfile.user_id)
+        .order("last_active", { ascending: false });
+
+      if (error) throw error;
+
+      // Transform database data to match interface
+      const realSessions: DeviceSession[] = (sessionsData || []).map((session: any) => ({
+        id: session.id,
+        device: session.device_type || "Unknown Device",
+        location: session.location || "Unknown Location",
+        last_active: session.last_active,
+        is_current: session.is_current || false,
+        ip_address: session.ip_address || "Unknown",
+        user_agent: session.user_agent || "Unknown Browser"
+      }));
+
+      setDeviceSessions(realSessions);
     } catch (error) {
       console.error("Error loading device sessions:", error);
+      // Fallback to empty array if error
+      setDeviceSessions([]);
     }
   };
 

@@ -151,18 +151,34 @@ export default function DashboardAnalytics({
       const previousViews = previousContent.reduce((sum, item) => sum + (item.estimated_reach || 0), 0);
       const growthRate = previousViews > 0 ? ((recentViews - previousViews) / previousViews) * 100 : 0;
 
-      // Build platform breakdown
+      // Build platform breakdown with real data
       const platformBreakdown = platforms.reduce((acc, platform) => {
-        const mockData = {
-          instagram: { followers: 15000, engagement: 4.2, posts: 45, views: 125000 },
-          tiktok: { followers: 35000, engagement: 6.8, posts: 67, views: 890000 },
-          youtube: { followers: 8000, engagement: 3.1, posts: 23, views: 45000 },
-          twitter: { followers: 12000, engagement: 2.9, posts: 89, views: 67000 }
-        };
+        // Get real platform data from connections
+        const connection = platformConnections.find(conn => conn.platform === platform.platform);
         
-        acc[platform.platform] = mockData[platform.platform as keyof typeof mockData] || {
-          followers: 0, engagement: 0, posts: 0, views: 0
-        };
+        if (connection && connection.is_active) {
+          // Calculate real metrics based on content performance
+          const platformContent = content.filter(item => item.platform === platform.platform);
+          const totalViews = platformContent.reduce((sum, item) => sum + (item.estimated_reach || 0), 0);
+          const avgEngagement = platformContent.length > 0 
+            ? platformContent.reduce((sum, item) => sum + (item.viral_score || 0), 0) / platformContent.length 
+            : 0;
+          
+          acc[platform.platform] = {
+            followers: connection.follower_count || 0,
+            engagement: avgEngagement,
+            posts: platformContent.length,
+            views: totalViews
+          };
+        } else {
+          // Platform not connected
+          acc[platform.platform] = {
+            followers: 0,
+            engagement: 0,
+            posts: 0,
+            views: 0
+          };
+        }
         return acc;
       }, {} as any);
 
