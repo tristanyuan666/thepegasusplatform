@@ -401,18 +401,18 @@ export default function DashboardAnalytics({
   const data = realAnalytics || analyticsData;
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
+    <div className="space-y-8">
+      {/* Premium Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Analytics</h2>
-          <p className="text-gray-600">Track your content performance and growth</p>
+          <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Analytics Dashboard</h2>
+          <p className="text-gray-600 mt-1">Track your content performance and growth with premium insights</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <select
             value={dateRange}
             onChange={(e) => setDateRange(e.target.value)}
-            className="border border-gray-300 rounded-md px-3 py-1 text-sm"
+            className="border border-gray-300 rounded-lg px-4 py-2 text-sm bg-white shadow-sm focus:border-blue-500 focus:ring-blue-500"
           >
             <option value="7d">Last 7 days</option>
             <option value="30d">Last 30 days</option>
@@ -423,237 +423,246 @@ export default function DashboardAnalytics({
             size="sm"
             onClick={handleRefresh}
             disabled={isRefreshing}
+            className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200 hover:from-blue-100 hover:to-indigo-100 transition-all duration-300"
           >
             <RefreshCw className={`w-4 h-4 ${isRefreshing ? "animate-spin" : ""}`} />
           </Button>
         </div>
       </div>
 
-      {/* Key Metrics */}
+      {/* Premium Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card>
+        <Card className="group border border-gray-200 hover:border-gray-300 transition-all duration-300 hover:shadow-xl hover:scale-105 bg-gradient-to-br from-white to-gray-50">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Total Followers</p>
+                <p className="text-sm text-gray-600 font-medium">Total Followers</p>
                 <div className="flex items-center gap-2">
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
                     {data?.total_followers?.toLocaleString() || "0"}
                   </p>
                   {data?.growth_rate && (
-                    <span className={`text-sm ${data.growth_rate >= 0 ? "text-green-600" : "text-red-600"}`}>
+                    <span className={`text-sm font-bold px-2 py-1 rounded-full ${data.growth_rate >= 0 ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
                       {data.growth_rate >= 0 ? "+" : ""}{data.growth_rate.toFixed(1)}%
                     </span>
                   )}
                 </div>
               </div>
-              <Users className="w-8 h-8 text-blue-600" />
+              <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300">
+                <Users className="w-6 h-6 text-white" />
+              </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="group border border-gray-200 hover:border-gray-300 transition-all duration-300 hover:shadow-xl hover:scale-105 bg-gradient-to-br from-white to-gray-50">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Total Views</p>
-                <p className="text-2xl font-bold text-gray-900">
+                <p className="text-sm text-gray-600 font-medium">Total Views</p>
+                <p className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
                   {data?.total_views?.toLocaleString() || "0"}
                 </p>
                 <div className="flex items-center gap-1 mt-1">
                   <Eye className="w-4 h-4 text-green-500" />
-                  <span className="text-sm text-gray-600">content reach</span>
+                  <span className="text-sm text-gray-600 font-medium">content reach</span>
                 </div>
               </div>
-              <Eye className="w-8 h-8 text-green-600" />
+              <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300">
+                <Eye className="w-6 h-6 text-white" />
+              </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="group border border-gray-200 hover:border-gray-300 transition-all duration-300 hover:shadow-xl hover:scale-105 bg-gradient-to-br from-white to-gray-50">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Engagement Rate</p>
+                <p className="text-sm text-gray-600 font-medium">Engagement Rate</p>
                 <div className="flex items-center gap-2">
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-3xl font-bold bg-gradient-to-r from-red-600 to-pink-600 bg-clip-text text-transparent">
                     {data?.engagement_rate?.toFixed(1) || "0"}%
                   </p>
                 </div>
                 <div className="flex items-center gap-1 mt-1">
                   <Heart className="w-4 h-4 text-red-500" />
-                  <span className="text-sm text-gray-600">avg engagement</span>
+                  <span className="text-sm text-gray-600 font-medium">avg engagement</span>
                 </div>
               </div>
-              <Heart className="w-8 h-8 text-red-600" />
+              <div className="w-12 h-12 bg-gradient-to-r from-red-500 to-pink-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300">
+                <Heart className="w-6 h-6 text-white" />
+              </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="group border border-gray-200 hover:border-gray-300 transition-all duration-300 hover:shadow-xl hover:scale-105 bg-gradient-to-br from-white to-gray-50">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Viral Score</p>
+                <p className="text-sm text-gray-600 font-medium">Viral Score</p>
                 <div className="flex items-center gap-2">
-                  <p className={`text-2xl font-bold ${getViralScoreColor(data?.viral_score || 0)}`}>
+                  <p className={`text-3xl font-bold ${getViralScoreColor(data?.viral_score || 0)}`}>
                     {data?.viral_score?.toFixed(0) || "0"}%
                   </p>
                   {data && getViralScoreBadge(data.viral_score)}
                 </div>
                 <div className="flex items-center gap-1 mt-1">
                   <Target className="w-4 h-4 text-blue-400" />
-                  <span className="text-sm text-gray-600">content potential</span>
+                  <span className="text-sm text-gray-600 font-medium">content potential</span>
                 </div>
               </div>
-              <Target className="w-8 h-8 text-blue-600" />
+              <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300">
+                <Target className="w-6 h-6 text-white" />
+              </div>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Detailed Analytics */}
+      {/* Premium Detailed Analytics */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-2 h-12 bg-gray-50 border border-gray-200 rounded-lg p-1">
+        <TabsList className="grid w-full grid-cols-2 h-14 bg-gradient-to-r from-gray-50 to-blue-50 border border-gray-200 rounded-xl p-1">
           <TabsTrigger 
             value="overview" 
-            className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 rounded-md transition-all duration-200"
+            className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:text-blue-600 rounded-lg transition-all duration-300 font-medium"
           >
-            <BarChart3 className="w-4 h-4" />
-            <span className="font-medium">Overview</span>
+            <BarChart3 className="w-5 h-5" />
+            <span>Overview</span>
           </TabsTrigger>
           <TabsTrigger 
             value="content" 
-            className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 rounded-md transition-all duration-200"
+            className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:text-blue-600 rounded-lg transition-all duration-300 font-medium"
           >
-            <FileText className="w-4 h-4" />
-            <span className="font-medium">Content</span>
+            <FileText className="w-5 h-5" />
+            <span>Content</span>
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-8 mt-8">
-          {/* Performance Chart */}
+          {/* Premium Performance Chart */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-gray-900">Performance Over Time</h3>
-              <span className="text-sm text-gray-500">Last 30 days</span>
+              <h3 className="text-xl font-bold text-gray-900">Performance Over Time</h3>
+              <span className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">Last 30 days</span>
             </div>
-            <Card className="border border-gray-200">
+            <Card className="border border-gray-200 bg-gradient-to-br from-white to-gray-50 shadow-lg">
               <CardContent className="p-6">
-              {data?.recent_performance && data.recent_performance.length > 0 ? (
-                <div className="space-y-4">
+                {data?.recent_performance && data.recent_performance.length > 0 ? (
+                  <div className="space-y-4">
                     {data.recent_performance.map((item: any, index: number) => (
-                      <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
-                      <div className="flex items-center gap-4">
-                          <span className="text-sm font-medium text-gray-900">{item.date}</span>
-                          <span className="font-semibold text-gray-900">{item.views.toLocaleString()} views</span>
-                      </div>
+                      <div key={index} className="flex items-center justify-between p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-100 hover:shadow-md transition-all duration-300">
                         <div className="flex items-center gap-4">
-                        <span className="text-sm text-gray-600">{item.engagement}% engagement</span>
-                          <span className={`text-sm font-medium ${getViralScoreColor(item.viral_score)}`}>
-                          {item.viral_score}% viral score
-                        </span>
+                          <span className="text-sm font-bold text-gray-900 bg-white px-3 py-1 rounded-full shadow-sm">{item.date}</span>
+                          <span className="text-lg font-bold text-gray-900">{item.views.toLocaleString()} views</span>
+                        </div>
+                        <div className="flex items-center gap-4">
+                          <span className="text-sm text-gray-600 bg-white px-3 py-1 rounded-full">{item.engagement}% engagement</span>
+                          <span className={`text-sm font-bold px-3 py-1 rounded-full ${getViralScoreColor(item.viral_score)} bg-white`}>
+                            {item.viral_score}% viral score
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
+                    ))}
+                  </div>
+                ) : (
                   <div className="text-center py-12 text-gray-500">
-                  <BarChart3 className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                    <p className="text-gray-600">No performance data available</p>
-                    <p className="text-sm text-gray-500 mt-1">Connect your platforms to see analytics</p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+                    <BarChart3 className="w-16 h-16 mx-auto mb-4 text-gray-300" />
+                    <p className="text-gray-600 text-lg font-medium">No performance data available</p>
+                    <p className="text-sm text-gray-500 mt-1">Connect your platforms to see premium analytics</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
           </div>
 
-          {/* Quick Actions */}
+          {/* Premium Quick Actions */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-gray-900">Analytics Actions</h3>
-              <span className="text-sm text-gray-500">Manage your reports</span>
+              <h3 className="text-xl font-bold text-gray-900">Analytics Actions</h3>
+              <span className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">Manage your reports</span>
             </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Button
-              variant="outline"
-                className="w-full h-12 border-gray-200 hover:border-blue-300 hover:bg-blue-50"
-              onClick={handleScheduleReports}
-              disabled={isScheduling}
-            >
-              {isScheduling ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                  Scheduling...
-                </>
-              ) : (
-                <>
-                  <Calendar className="w-4 h-4 mr-2" />
-                  Schedule Reports
-                </>
-              )}
-            </Button>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Button
+                variant="outline"
+                className="w-full h-14 border-gray-200 hover:border-blue-300 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-300 shadow-sm hover:shadow-md"
+                onClick={handleScheduleReports}
+                disabled={isScheduling}
+              >
+                {isScheduling ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin mr-3" />
+                    Scheduling...
+                  </>
+                ) : (
+                  <>
+                    <Calendar className="w-5 h-5 mr-3" />
+                    Schedule Reports
+                  </>
+                )}
+              </Button>
               <Button 
                 variant="outline" 
-                className="w-full h-12 border-gray-200 hover:border-blue-300 hover:bg-blue-50"
+                className="w-full h-14 border-gray-200 hover:border-green-300 hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 transition-all duration-300 shadow-sm hover:shadow-md"
               >
-              <Download className="w-4 h-4 mr-2" />
-              Export Data
-            </Button>
-          </div>
+                <Download className="w-5 h-5 mr-3" />
+                Export Data
+              </Button>
+            </div>
           </div>
         </TabsContent>
 
         <TabsContent value="content" className="space-y-8 mt-8">
-          {/* Content Performance */}
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-gray-900">Content Performance</h3>
-              <span className="text-sm text-gray-500">Your best performing content</span>
+          {/* Premium Content Performance */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-xl font-bold text-gray-900">Content Performance</h3>
+              <span className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">Your best performing content</span>
             </div>
-            <Card className="border border-gray-200">
+            <Card className="border border-gray-200 bg-gradient-to-br from-white to-gray-50 shadow-lg">
               <CardContent className="p-6">
-                <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="p-4 border rounded-lg">
-                      <div className="flex items-center gap-2 mb-2">
-                        <FileText className="w-4 h-4 text-blue-600" />
-                        <span className="font-medium">Total Posts</span>
+                <div className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="p-6 border border-blue-200 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50">
+                      <div className="flex items-center gap-3 mb-3">
+                        <FileText className="w-5 h-5 text-blue-600" />
+                        <span className="font-bold text-gray-900">Total Posts</span>
                       </div>
-                      <p className="text-2xl font-bold">{data?.content_count || 0}</p>
-                      <p className="text-sm text-gray-600">This month</p>
+                      <p className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">{data?.content_count || 0}</p>
+                      <p className="text-sm text-gray-600 font-medium">This month</p>
                     </div>
-                    <div className="p-4 border rounded-lg">
-                      <div className="flex items-center gap-2 mb-2">
-                        <TrendingUp className="w-4 h-4 text-green-600" />
-                        <span className="font-medium">Top Performing</span>
-                </div>
-                      <p className="text-2xl font-bold">{data?.viral_score?.toFixed(0) || 0}%</p>
-                      <p className="text-sm text-gray-600">Viral score</p>
+                    <div className="p-6 border border-green-200 rounded-xl bg-gradient-to-br from-green-50 to-emerald-50">
+                      <div className="flex items-center gap-3 mb-3">
+                        <TrendingUp className="w-5 h-5 text-green-600" />
+                        <span className="font-bold text-gray-900">Top Performing</span>
+                      </div>
+                      <p className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">{data?.viral_score?.toFixed(0) || 0}%</p>
+                      <p className="text-sm text-gray-600 font-medium">Viral score</p>
                     </div>
-                    <div className="p-4 border rounded-lg">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Eye className="w-4 h-4 text-purple-600" />
-                        <span className="font-medium">Avg Views</span>
+                    <div className="p-6 border border-purple-200 rounded-xl bg-gradient-to-br from-purple-50 to-pink-50">
+                      <div className="flex items-center gap-3 mb-3">
+                        <Eye className="w-5 h-5 text-purple-600" />
+                        <span className="font-bold text-gray-900">Avg Views</span>
+                      </div>
+                      <p className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">{data?.total_views ? Math.floor(data.total_views / (data.content_count || 1)) : 0}</p>
+                      <p className="text-sm text-gray-600 font-medium">Per post</p>
+                    </div>
                   </div>
-                      <p className="text-2xl font-bold">{data?.total_views ? Math.floor(data.total_views / (data.content_count || 1)) : 0}</p>
-                      <p className="text-sm text-gray-600">Per post</p>
-                    </div>
-                  </div>
-                  <div className="mt-6">
-                    <h4 className="font-medium mb-3">Content Insights</h4>
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
-                        <span className="text-sm">Video content performs 3x better than images</span>
+                  <div className="mt-8">
+                    <h4 className="font-bold text-lg mb-4 text-gray-900">Content Insights</h4>
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-100">
+                        <div className="w-3 h-3 bg-blue-600 rounded-full"></div>
+                        <span className="text-sm font-medium text-gray-900">Video content performs 3x better than images</span>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-green-600 rounded-full"></div>
-                        <span className="text-sm">Posts with questions get 40% more engagement</span>
+                      <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border border-green-100">
+                        <div className="w-3 h-3 bg-green-600 rounded-full"></div>
+                        <span className="text-sm font-medium text-gray-900">Posts with questions get 40% more engagement</span>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-purple-600 rounded-full"></div>
-                        <span className="text-sm">Optimal posting time: 7-9 PM</span>
+                      <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-100">
+                        <div className="w-3 h-3 bg-purple-600 rounded-full"></div>
+                        <span className="text-sm font-medium text-gray-900">Optimal posting time: 7-9 PM</span>
                       </div>
                     </div>
                   </div>
@@ -662,30 +671,30 @@ export default function DashboardAnalytics({
             </Card>
           </div>
 
-          {/* Content Recommendations */}
+          {/* Premium Content Recommendations */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-gray-900">Content Recommendations</h3>
-              <span className="text-sm text-gray-500">Based on your performance</span>
+              <h3 className="text-xl font-bold text-gray-900">Content Recommendations</h3>
+              <span className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">Based on your performance</span>
             </div>
-            <Card className="border border-gray-200">
+            <Card className="border border-gray-200 bg-gradient-to-br from-white to-gray-50 shadow-lg">
               <CardContent className="p-6">
                 <div className="space-y-4">
-                  <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-                    <h4 className="font-medium text-blue-900 mb-2">Try Video Content</h4>
+                  <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
+                    <h4 className="font-bold text-blue-900 mb-2">Try Video Content</h4>
                     <p className="text-sm text-blue-700">Your audience engages 3x more with video content. Consider creating more video posts.</p>
                   </div>
-                  <div className="p-4 bg-green-50 rounded-lg border border-green-200">
-                    <h4 className="font-medium text-green-900 mb-2">Post More Frequently</h4>
+                  <div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
+                    <h4 className="font-bold text-green-900 mb-2">Post More Frequently</h4>
                     <p className="text-sm text-green-700">Increasing your posting frequency by 20% could boost engagement by 15%.</p>
                   </div>
-                  <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
-                    <h4 className="font-medium text-purple-900 mb-2">Use Trending Hashtags</h4>
+                  <div className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border border-purple-200">
+                    <h4 className="font-bold text-purple-900 mb-2">Use Trending Hashtags</h4>
                     <p className="text-sm text-purple-700">Posts with trending hashtags get 2x more reach. Research current trends.</p>
+                  </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
           </div>
         </TabsContent>
       </Tabs>
