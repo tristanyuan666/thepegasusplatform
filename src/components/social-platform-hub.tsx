@@ -155,8 +155,8 @@ export default function SocialPlatformHub({
       if (contentError) throw contentError;
 
       const content = contentData || [];
-      const totalReach = content.reduce((sum, item) => sum + (item.estimated_reach || 0), 0);
-      const totalImpressions = content.reduce((sum, item) => sum + (item.estimated_reach || 0) * 1.5, 0);
+      const totalReach = content.reduce((sum: number, item: any) => sum + (item.estimated_reach || 0), 0);
+      const totalImpressions = content.reduce((sum: number, item: any) => sum + (item.estimated_reach || 0) * 1.5, 0);
 
       const realAnalytics: CrossPlatformAnalytics = {
         total_followers: totalFollowers,
