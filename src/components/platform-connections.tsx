@@ -145,7 +145,7 @@ export default function PlatformConnections({
       const { error: dbError } = await supabase
         .from("platform_connections")
         .upsert({
-          user_id: userProfile?.user_id,
+          user_id: userId,
           platform: platformId,
           is_active: false,
           connection_attempted_at: new Date().toISOString()
