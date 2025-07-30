@@ -276,8 +276,8 @@ export default function DashboardHome({
 
   return (
     <div className="space-y-6">
-      {/* Welcome Section - Removed Settings Button */}
-      <Card className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
+      {/* Welcome Section - Enhanced Gradient */}
+      <Card className="bg-gradient-to-r from-blue-600 via-blue-500 to-blue-700 text-white">
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div>

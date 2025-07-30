@@ -476,9 +476,13 @@ export default function DashboardRevenue({
             <RefreshCw className={`w-4 h-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
             Refresh
           </Button>
-          <Button onClick={handleAddTransaction}>
-            <Plus className="w-4 h-4 mr-2" />
-            Add Transaction
+          <Button
+            variant="outline"
+            onClick={handleExportData}
+            disabled={!revenueData}
+          >
+            <Download className="w-4 h-4 mr-2" />
+            Export Data
           </Button>
         </div>
       </div>

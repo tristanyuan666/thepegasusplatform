@@ -100,7 +100,17 @@ function DashboardContent() {
 
   // Check if user has access to specific features based on plan
   const hasFeatureAccess = (feature: string): boolean => {
-    if (!subscription || subscription.status !== "active") return false;
+    if (!subscription || subscription.status !== "active") {
+      // Allow basic features for free users
+      switch (feature) {
+        case "settings":
+          return true; // Settings should be available to all users
+        case "home":
+          return true;
+        default:
+          return false;
+      }
+    }
     
     const plan = subscription.plan_name.toLowerCase();
     
@@ -119,6 +129,10 @@ function DashboardContent() {
         return ["influencer", "superstar"].includes(plan);
       case "team_collaboration":
         return ["superstar"].includes(plan);
+      case "settings":
+        return true; // Settings available to all users
+      case "home":
+        return true; // Home available to all users
       default:
         return false;
     }
