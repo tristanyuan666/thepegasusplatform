@@ -371,13 +371,23 @@ export default function DashboardSettings({
         body: { user_id: userProfile.user_id }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Billing portal error:", error);
+        // Fallback to pricing page
+        window.location.href = "/pricing";
+        return;
+      }
+      
       if (data?.url) {
         window.location.href = data.url;
+      } else {
+        // Fallback to pricing page
+        window.location.href = "/pricing";
       }
     } catch (error) {
       console.error("Error creating billing portal:", error);
-      setError("Failed to open billing portal");
+      // Fallback to pricing page instead of showing error
+      window.location.href = "/pricing";
     }
   };
 

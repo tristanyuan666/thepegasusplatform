@@ -20,6 +20,7 @@ import {
   Music,
   MessageCircle,
   FileText,
+  Video,
 } from "lucide-react";
 import { createClient } from "../../supabase/client";
 import { SocialConnection } from "@/utils/auth";
@@ -33,45 +34,45 @@ interface PlatformConnectionsProps {
 
 const platforms = [
   {
-    id: "tiktok",
-    name: "TikTok",
-    icon: Music,
-    color: "bg-black",
-    description: "Connect to auto-post short videos and track viral content",
-    features: ["Auto-posting", "Viral tracking", "Hashtag optimization"],
-  },
-  {
     id: "instagram",
     name: "Instagram",
     icon: Camera,
-    color: "bg-gradient-to-r from-purple-500 to-pink-500",
-    description: "Share posts, stories, and reels automatically",
-    features: ["Posts & Stories", "Reels", "Analytics"],
+    color: "from-pink-500 to-purple-600",
+    bgColor: "bg-gradient-to-r from-pink-500 to-purple-600",
+    borderColor: "border-pink-200",
+    textColor: "text-pink-600",
+    description: "Share photos and stories with your audience"
+  },
+  {
+    id: "tiktok",
+    name: "TikTok",
+    icon: Video,
+    color: "from-black to-gray-800",
+    bgColor: "bg-gradient-to-r from-black to-gray-800",
+    borderColor: "border-gray-200",
+    textColor: "text-black",
+    description: "Create short-form video content"
   },
   {
     id: "youtube",
     name: "YouTube",
     icon: Play,
-    color: "bg-red-600",
-    description: "Upload shorts and track performance metrics",
-    features: ["YouTube Shorts", "Performance tracking", "SEO optimization"],
+    color: "from-red-500 to-red-600",
+    bgColor: "bg-gradient-to-r from-red-500 to-red-600",
+    borderColor: "border-red-200",
+    textColor: "text-red-600",
+    description: "Upload videos and grow your channel"
   },
   {
-    id: "twitter",
-    name: "Twitter/X",
+    id: "x",
+    name: "X (Twitter)",
     icon: MessageCircle,
-    color: "bg-blue-400",
-    description: "Post tweets and engage with your audience",
-    features: ["Tweet scheduling", "Thread creation", "Engagement tracking"],
-  },
-  {
-    id: "linkedin",
-    name: "LinkedIn",
-    icon: FileText,
-    color: "bg-blue-700",
-    description: "Share professional content and network",
-    features: ["Professional posts", "Article publishing", "Network growth"],
-  },
+    color: "from-black to-gray-900",
+    bgColor: "bg-gradient-to-r from-black to-gray-900",
+    borderColor: "border-gray-200",
+    textColor: "text-black",
+    description: "Share thoughts and engage with followers"
+  }
 ];
 
 export default function PlatformConnections({
@@ -215,7 +216,7 @@ export default function PlatformConnections({
             return (
               <div key={platform.id} className="text-center">
                 <div
-                  className={`w-12 h-12 ${platform.color} rounded-full flex items-center justify-center mx-auto mb-2 relative`}
+                  className={`w-12 h-12 ${platform.bgColor} rounded-full flex items-center justify-center mx-auto mb-2 relative`}
                 >
                   <Icon className="w-6 h-6 text-white" />
                   {connection && (
@@ -251,7 +252,7 @@ export default function PlatformConnections({
               <div className="flex items-start justify-between">
                 <div className="flex items-start gap-4">
                   <div
-                    className={`w-16 h-16 ${platform.color} rounded-xl flex items-center justify-center`}
+                    className={`w-16 h-16 ${platform.bgColor} rounded-xl flex items-center justify-center`}
                   >
                     <Icon className="w-8 h-8 text-white" />
                   </div>
@@ -273,18 +274,6 @@ export default function PlatformConnections({
                       )}
                     </div>
                     <p className="text-gray-600 mb-4">{platform.description}</p>
-
-                    {/* Features */}
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {platform.features.map((feature, index) => (
-                        <span
-                          key={index}
-                          className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm"
-                        >
-                          {feature}
-                        </span>
-                      ))}
-                    </div>
 
                     {/* Connection Stats */}
                     {connection && (

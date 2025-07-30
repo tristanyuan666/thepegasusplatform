@@ -45,6 +45,7 @@ import {
   Camera,
 } from "lucide-react";
 import { createClient } from "../../supabase/client";
+import Link from "next/link";
 
 interface ContentCreationHubProps {
   user: User;
@@ -89,8 +90,29 @@ export default function ContentCreationHub({
   const [contentType, setContentType] = useState("post");
   const [generatedContent, setGeneratedContent] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const supabase = createClient();
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const supabase = createClient();
+
+  // Add error boundary
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-8">
+        <div className="max-w-md w-full text-center">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <AlertCircle className="w-8 h-8 text-red-600" />
+          </div>
+          <h2 className="text-xl font-bold text-gray-900 mb-2">Authentication Required</h2>
+          <p className="text-gray-600 mb-4">
+            Please sign in to access the content creation hub.
+          </p>
+          <Button asChild>
+            <Link href="/sign-in">Sign In</Link>
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   const contentTemplates: ContentTemplate[] = [
     {
@@ -203,11 +225,17 @@ export default function ContentCreationHub({
 
     setIsGenerating(true);
     setError(null);
+    setSuccess(null);
 
     try {
       // Enhanced content generation with real-time processing
       const generatedIdeas = await generateContentIdeas(contentInput, selectedPlatforms, contentType);
       
+      if (!generatedIdeas || generatedIdeas.length === 0) {
+        setError("No content ideas were generated. Please try with different input.");
+        return;
+      }
+
       // Save to database with better error handling
       try {
         const { data: savedContent, error: saveError } = await supabase
@@ -242,8 +270,8 @@ export default function ContentCreationHub({
       setContentInput(""); // Clear input
       
       // Show success message
-      setError("Content generated successfully! Check your content ideas below.");
-      setTimeout(() => setError(null), 3000);
+      setSuccess(`Successfully generated ${generatedIdeas.length} content ideas!`);
+      setTimeout(() => setSuccess(null), 5000);
       
     } catch (error) {
       console.error("Error generating content:", error);
@@ -539,6 +567,7 @@ export default function ContentCreationHub({
                   className="resize-none"
                 />
                 {error && <p className="text-red-500 text-sm">{error}</p>}
+                {success && <p className="text-green-500 text-sm">{success}</p>}
               </div>
 
               {/* Generate Button */}

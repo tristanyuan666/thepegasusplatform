@@ -509,7 +509,7 @@ export default function DashboardAnalytics({
 
       {/* Detailed Analytics */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-4 h-12 bg-gray-50 border border-gray-200 rounded-lg p-1">
+        <TabsList className="grid w-full grid-cols-3 h-12 bg-gray-50 border border-gray-200 rounded-lg p-1">
           <TabsTrigger 
             value="overview" 
             className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 rounded-md transition-all duration-200"
@@ -530,13 +530,6 @@ export default function DashboardAnalytics({
           >
             <FileText className="w-4 h-4" />
             <span className="font-medium">Content</span>
-          </TabsTrigger>
-          <TabsTrigger 
-            value="growth" 
-            className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 rounded-md transition-all duration-200"
-          >
-            <TrendingUp className="w-4 h-4" />
-            <span className="font-medium">Growth</span>
           </TabsTrigger>
         </TabsList>
 
@@ -660,105 +653,89 @@ export default function DashboardAnalytics({
           </div>
         </TabsContent>
 
-        <TabsContent value="content" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Content Performance</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="p-4 border rounded-lg">
-                    <div className="flex items-center gap-2 mb-2">
-                      <FileText className="w-4 h-4 text-blue-600" />
-                      <span className="font-medium">Total Posts</span>
+        <TabsContent value="content" className="space-y-8 mt-8">
+          {/* Content Performance */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-gray-900">Content Performance</h3>
+              <span className="text-sm text-gray-500">Your best performing content</span>
+            </div>
+            <Card className="border border-gray-200">
+              <CardContent className="p-6">
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="p-4 border rounded-lg">
+                      <div className="flex items-center gap-2 mb-2">
+                        <FileText className="w-4 h-4 text-blue-600" />
+                        <span className="font-medium">Total Posts</span>
+                      </div>
+                      <p className="text-2xl font-bold">{data?.content_count || 0}</p>
+                      <p className="text-sm text-gray-600">This month</p>
                     </div>
-                    <p className="text-2xl font-bold">{data?.content_count || 0}</p>
-                    <p className="text-sm text-gray-600">This month</p>
+                    <div className="p-4 border rounded-lg">
+                      <div className="flex items-center gap-2 mb-2">
+                        <TrendingUp className="w-4 h-4 text-green-600" />
+                        <span className="font-medium">Top Performing</span>
+                      </div>
+                      <p className="text-2xl font-bold">{data?.viral_score?.toFixed(0) || 0}%</p>
+                      <p className="text-sm text-gray-600">Viral score</p>
+                    </div>
+                    <div className="p-4 border rounded-lg">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Eye className="w-4 h-4 text-purple-600" />
+                        <span className="font-medium">Avg Views</span>
+                      </div>
+                      <p className="text-2xl font-bold">{data?.total_views ? Math.floor(data.total_views / (data.content_count || 1)) : 0}</p>
+                      <p className="text-sm text-gray-600">Per post</p>
+                    </div>
                   </div>
-                  
-                  <div className="p-4 border rounded-lg">
-                    <div className="flex items-center gap-2 mb-2">
-                      <TrendingUp className="w-4 h-4 text-green-600" />
-                      <span className="font-medium">Top Performing</span>
+                  <div className="mt-6">
+                    <h4 className="font-medium mb-3">Content Insights</h4>
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+                        <span className="text-sm">Video content performs 3x better than images</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-green-600 rounded-full"></div>
+                        <span className="text-sm">Posts with questions get 40% more engagement</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-purple-600 rounded-full"></div>
+                        <span className="text-sm">Optimal posting time: 7-9 PM</span>
+                      </div>
                     </div>
-                    <p className="text-2xl font-bold">{data?.viral_score?.toFixed(0) || 0}%</p>
-                    <p className="text-sm text-gray-600">Viral score</p>
-                  </div>
-                  
-                  <div className="p-4 border rounded-lg">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Eye className="w-4 h-4 text-purple-600" />
-                      <span className="font-medium">Avg Views</span>
-                    </div>
-                    <p className="text-2xl font-bold">{data?.total_views ? Math.floor(data.total_views / (data.content_count || 1)) : 0}</p>
-                    <p className="text-sm text-gray-600">Per post</p>
                   </div>
                 </div>
-                
-                <div className="mt-6">
-                  <h4 className="font-medium mb-3">Content Insights</h4>
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
-                      <span className="text-sm">Video content performs 3x better than images</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-green-600 rounded-full"></div>
-                      <span className="text-sm">Posts with questions get 40% more engagement</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-purple-600 rounded-full"></div>
-                      <span className="text-sm">Optimal posting time: 7-9 PM</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
+              </CardContent>
+            </Card>
+          </div>
 
-        <TabsContent value="growth" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Growth Insights</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">Follower Growth</span>
-                  <span className={`font-medium ${data?.growth_rate >= 0 ? "text-green-600" : "text-red-600"}`}>
-                    {data?.growth_rate >= 0 ? "+" : ""}{data?.growth_rate?.toFixed(1) || "0"}%
-                  </span>
-                </div>
-                <Progress value={Math.min(100, Math.max(0, data?.growth_rate || 0))} className="w-full" />
-                
-                <div className="mt-6 space-y-3">
-                  <div className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-blue-600 rounded-full mt-2"></div>
-                    <div>
-                      <p className="font-medium">Focus on engagement rate over follower count</p>
-                      <p className="text-sm text-gray-600">High engagement indicates quality audience</p>
-                    </div>
+          {/* Content Recommendations */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-gray-900">Content Recommendations</h3>
+              <span className="text-sm text-gray-500">Based on your performance</span>
+            </div>
+            <Card className="border border-gray-200">
+              <CardContent className="p-6">
+                <div className="space-y-4">
+                  <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                    <h4 className="font-medium text-blue-900 mb-2">Try Video Content</h4>
+                    <p className="text-sm text-blue-700">Your audience engages 3x more with video content. Consider creating more video posts.</p>
                   </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-green-600 rounded-full mt-2"></div>
-                    <div>
-                      <p className="font-medium">Track viral score trends over time</p>
-                      <p className="text-sm text-gray-600">Consistent improvement shows content strategy success</p>
-                    </div>
+                  <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+                    <h4 className="font-medium text-green-900 mb-2">Post More Frequently</h4>
+                    <p className="text-sm text-green-700">Increasing your posting frequency by 20% could boost engagement by 15%.</p>
                   </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-purple-600 rounded-full mt-2"></div>
-                    <div>
-                      <p className="font-medium">Optimize posting times for maximum reach</p>
-                      <p className="text-sm text-gray-600">Use analytics to find your audience's peak activity</p>
-                    </div>
+                  <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
+                    <h4 className="font-medium text-purple-900 mb-2">Use Trending Hashtags</h4>
+                    <p className="text-sm text-purple-700">Posts with trending hashtags get 2x more reach. Research current trends.</p>
                   </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
       </Tabs>
     </div>
