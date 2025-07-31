@@ -215,12 +215,13 @@ export default function PricingCard({
     try {
       // Call Supabase Edge Function with enhanced error handling
       const checkoutPayload = {
-        planId: safePlan.id,
-        isYearly,
-        userId: user.id,
-        userEmail: user.email,
-        planName: safePlan.name,
-        planPrice: isYearly ? safePlan.price.yearly : safePlan.price.monthly,
+        price_id: STRIPE_PRICE_IDS[safePlan.id][isYearly ? "yearly" : "monthly"],
+        billing_cycle: isYearly ? "yearly" : "monthly",
+        user_id: user.id,
+        customer_email: user.email,
+        plan_name: safePlan.name,
+        return_url: `${window.location.origin}/success`,
+        cancel_url: `${window.location.origin}/pricing?cancelled=true`,
       };
 
       const { data, error } = await supabase.functions.invoke(
@@ -391,20 +392,24 @@ export default function PricingCard({
           <div className="flex flex-col items-center mb-6">
             <div className="flex items-center gap-2 mb-2">
               <span className="text-3xl font-bold text-gray-900">
-                {isYearly ? `$${to99(safePlan.price.yearly / 12).toFixed(2)}` : `$${to99(safePlan.price.monthly).toFixed(2)}`}
+                ${isYearly ? (safePlan.price.yearly / 100).toFixed(2) : (safePlan.price.monthly / 100).toFixed(2)}
               </span>
-              <span className="text-lg text-gray-400 line-through">
-                {isYearly ? `$${to99(safePlan.price.yearly / 12 * 2).toFixed(2)}` : `$${to99(safePlan.price.monthly * 2).toFixed(2)}`}
-              </span>
-              <span className="ml-2 px-2 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full animate-pulse">
-                50% OFF
-              </span>
+              {isYearly && (
+                <span className="text-lg text-gray-400 line-through">
+                  ${((safePlan.price.monthly / 100) * 12).toFixed(2)}
+                </span>
+              )}
+              {isYearly && (
+                <span className="ml-2 px-2 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full animate-pulse">
+                  Save 20%
+                </span>
+              )}
             </div>
             <span className="text-xs text-gray-500">
-              {isYearly ? `/month` : "/month"}
+              {isYearly ? "/month, billed annually" : "/month"}
             </span>
             {isYearly && (
-              <span className="text-xs text-gray-400 mt-1">Billed annually at ${to99(safePlan.price.monthly).toFixed(2)}</span>
+              <span className="text-xs text-gray-400 mt-1">Total: ${(safePlan.price.yearly / 100).toFixed(2)}/year</span>
             )}
           </div>
 
