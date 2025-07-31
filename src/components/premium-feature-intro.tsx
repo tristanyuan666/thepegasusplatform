@@ -200,10 +200,10 @@ export default function PremiumFeatureIntro({
                 </div>
                 
                 <div className="space-y-6">
-                  <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 leading-tight">
+                  <h1 className="text-[3.18rem] lg:text-[4.24rem] font-bold text-gray-900 leading-tight">
                     {featureName}
                   </h1>
-                  <p className="text-base text-gray-600 leading-relaxed max-w-2xl">
+                  <p className="text-[1.06rem] text-gray-600 leading-relaxed max-w-2xl">
                     {featureDescription}
                   </p>
                   
@@ -358,7 +358,7 @@ export default function PremiumFeatureIntro({
               content and build their influence. Start your journey today.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+            <div className="flex justify-center items-center">
                               <Button 
                   asChild 
                   className="group relative px-12 py-6 bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-bold text-xl rounded-2xl shadow-xl hover-lift overflow-hidden transition-all duration-300"
@@ -378,14 +378,6 @@ export default function PremiumFeatureIntro({
                   <div className="absolute inset-0 bg-gradient-to-r from-blue-700 to-blue-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </Link>
               </Button>
-              
-              {!user && (
-                <Button variant="outline" asChild size="lg" className="py-6 px-8 text-lg border-2">
-                  <Link href="/faq">
-                    Learn More
-                  </Link>
-                </Button>
-              )}
             </div>
 
             {/* Trust Indicators */}

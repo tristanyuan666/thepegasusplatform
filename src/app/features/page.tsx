@@ -170,7 +170,7 @@ export default function FeaturesPage() {
             {features.map((feature, index) => (
               <div
                 key={index}
-                className="group glass-premium p-8 hover-lift transition-all duration-300 hover:shadow-premium-lg card-3d relative overflow-hidden"
+                className="group glass-premium p-8 hover-lift transition-all duration-200 hover:shadow-premium-lg card-3d relative overflow-hidden"
               >
                 {/* Premium badge */}
                 {feature.premium && (
@@ -182,16 +182,16 @@ export default function FeaturesPage() {
 
                 {/* Background gradient overlay */}
                 <div
-                  className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-5 group-hover:opacity-10 transition-opacity duration-300`}
+                  className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-5 group-hover:opacity-10 transition-opacity duration-200`}
                 />
 
                 <div className="relative z-10">
-                  <div
-                    className={`inline-flex p-4 rounded-2xl bg-gradient-to-r ${feature.gradient} mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg`}
-                  >
+                                  <div
+                  className={`inline-flex p-4 rounded-2xl bg-gradient-to-r ${feature.gradient} mb-6 group-hover:scale-105 transition-transform duration-200 shadow-lg`}
+                >
                     <div className="text-white">{feature.icon}</div>
                   </div>
-                  <h3 className="text-xl font-semibold mb-3 text-gray-900 group-hover:gradient-text-premium transition-all duration-300">
+                  <h3 className="text-xl font-semibold mb-3 text-gray-900 group-hover:gradient-text-premium transition-all duration-200">
                     {feature.title}
                   </h3>
                   <p className="text-gray-600 leading-relaxed mb-6">
@@ -225,33 +225,7 @@ export default function FeaturesPage() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-24 bg-gradient-to-br from-blue-900 to-purple-900 relative overflow-hidden">
-        <div className="container mx-auto px-6 text-center relative z-10">
-          <h2 className="text-4xl md:text-5xl font-bold mb-8 text-white">
-            Ready to Start{" "}
-            <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-              Creating?
-            </span>
-          </h2>
-          <p className="text-xl text-gray-200 mb-12 max-w-3xl mx-auto">
-            Join thousands of creators who are already building their influence
-            with Pegasus AI
-          </p>
-          <div className="flex flex-col sm:flex-row gap-6 justify-center">
-            <Link
-              href="/pricing"
-              className="group relative px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-bold text-lg rounded-xl shadow-lg hover-lift overflow-hidden"
-            >
-              <span className="relative z-10 flex items-center gap-2">
-                Get Started Now
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </span>
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-700 to-blue-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            </Link>
-          </div>
-        </div>
-      </section>
+
 
       <Footer />
     </div>
