@@ -127,7 +127,7 @@ const PLATFORMS = [
     name: "X",
     icon: X,
     color: "from-black to-gray-700",
-    description: "Monitor your X/Twitter account metrics",
+            description: "Monitor your X account metrics",
     features: ["Follower tracking", "Engagement analytics", "Tweet performance"],
     manualFields: ["username"],
     fieldLabels: {

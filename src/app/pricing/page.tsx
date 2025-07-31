@@ -390,7 +390,7 @@ export default function PricingPage({ searchParams }: PricingPageProps) {
     {
       question: "What social platforms do you support?",
       answer:
-        "We support all major social media platforms including TikTok, Instagram, YouTube, Twitter, LinkedIn, and Facebook. Our Influencer and Superstar plans include access to all platforms.",
+        "We support all major social media platforms including TikTok, Instagram, YouTube, X, LinkedIn, and Facebook. Our Influencer and Superstar plans include access to all platforms.",
     },
     {
       question: "Is there a free trial available?",

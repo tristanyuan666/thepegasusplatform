@@ -363,7 +363,7 @@ export default function Home() {
                               </div>
                               <div className="flex-1">
                                 <div className="text-base font-semibold text-gray-900">Morning Motivation Tips</div>
-                                <div className="text-sm text-gray-500">Instagram, Twitter, LinkedIn</div>
+                                <div className="text-sm text-gray-500">Instagram, X, LinkedIn</div>
                               </div>
                               <div className="text-sm text-green-600 font-semibold">9:00 AM</div>
                             </div>
@@ -445,7 +445,7 @@ export default function Home() {
                       { name: "Instagram", icon: <Instagram className="w-6 h-6" />, color: "text-pink-600", connected: true, followers: "847K" },
                       { name: "TikTok", icon: <Video className="w-6 h-6" />, color: "text-black", connected: true, followers: "2.1M" },
                       { name: "YouTube", icon: <Youtube className="w-6 h-6" />, color: "text-red-600", connected: true, followers: "456K" },
-                      { name: "Twitter", icon: <Twitter className="w-6 h-6" />, color: "text-blue-500", connected: false, followers: "0" },
+                      { name: "X", icon: <Twitter className="w-6 h-6" />, color: "text-blue-500", connected: false, followers: "0" },
                       { name: "LinkedIn", icon: <Linkedin className="w-6 h-6" />, color: "text-blue-700", connected: false, followers: "0" },
                       { name: "Facebook", icon: <MessageCircle className="w-6 h-6" />, color: "text-blue-600", connected: false, followers: "0" },
                     ].map((platform, index) => (

@@ -392,7 +392,7 @@ export default function ContentGenerator({
       tiktok: ["fyp", "viral", "trending", "tiktok"],
       instagram: ["instagram", "reels", "viral", "trending"],
       youtube: ["youtube", "viral", "trending", "shorts"],
-      twitter: ["twitter", "viral", "trending", "thread"],
+              twitter: ["x", "viral", "trending", "thread"],
     };
     
     const nicheTags = baseHashtags[niche as keyof typeof baseHashtags] || ["viral", "trending"];
@@ -577,7 +577,7 @@ export default function ContentGenerator({
                       <SelectItem value="tiktok">TikTok</SelectItem>
                       <SelectItem value="instagram">Instagram</SelectItem>
                       <SelectItem value="youtube">YouTube</SelectItem>
-                      <SelectItem value="twitter">Twitter</SelectItem>
+                      <SelectItem value="twitter">X</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -794,7 +794,7 @@ export default function ContentGenerator({
                       <SelectItem value="tiktok">TikTok</SelectItem>
                       <SelectItem value="instagram">Instagram</SelectItem>
                       <SelectItem value="youtube">YouTube</SelectItem>
-                      <SelectItem value="twitter">Twitter</SelectItem>
+                      <SelectItem value="twitter">X</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

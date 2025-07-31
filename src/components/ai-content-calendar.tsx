@@ -372,7 +372,7 @@ export default function AIContentCalendar({
         "#engagement",
       ],
       youtube: ["#youtube", "#shorts", "#creator", "#viral", "#content"],
-      twitter: ["#twitter", "#thread", "#viral", "#content", "#creator"],
+              twitter: ["#x", "#thread", "#viral", "#content", "#creator"],
       linkedin: [
         "#linkedin",
         "#professional",
@@ -522,7 +522,7 @@ export default function AIContentCalendar({
               <SelectItem value="tiktok">🎵 TikTok</SelectItem>
               <SelectItem value="instagram">📸 Instagram</SelectItem>
               <SelectItem value="youtube">📺 YouTube</SelectItem>
-              <SelectItem value="twitter">🐦 Twitter</SelectItem>
+              <SelectItem value="twitter">🐦 X</SelectItem>
               <SelectItem value="linkedin">💼 LinkedIn</SelectItem>
             </SelectContent>
           </Select>

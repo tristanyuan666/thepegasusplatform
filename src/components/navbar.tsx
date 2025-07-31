@@ -163,8 +163,8 @@ export default function Navbar({ user = null }: NavbarProps) {
       feature: undefined,
     },
     {
-      title: "Twitter/X",
-      description: "Post to Twitter/X",
+      title: "X",
+      description: "Post to X",
       icon: <Twitter className="w-5 h-5 text-blue-600" />,
       href: "/integrations/twitter",
       feature: undefined,
@@ -262,8 +262,8 @@ export default function Navbar({ user = null }: NavbarProps) {
       feature: "platforms",
     },
     {
-      title: "Twitter/X",
-      description: "Post to Twitter/X",
+      title: "X",
+      description: "Post to X",
       icon: <Twitter className="w-5 h-5 text-blue-600" />,
       href: "/dashboard?tab=platforms",
       feature: "platforms",

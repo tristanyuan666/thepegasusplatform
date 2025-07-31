@@ -444,7 +444,7 @@ export default function ViralScoreMeter({
                       <SelectItem value="tiktok">TikTok</SelectItem>
                       <SelectItem value="instagram">Instagram</SelectItem>
                       <SelectItem value="youtube">YouTube</SelectItem>
-                      <SelectItem value="twitter">Twitter</SelectItem>
+                      <SelectItem value="twitter">X</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

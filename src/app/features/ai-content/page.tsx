@@ -23,7 +23,7 @@ export default function AIContentPage() {
         },
         {
           title: "Multi-Platform Support",
-          description: "Generate optimized content for Instagram, TikTok, YouTube, Twitter, LinkedIn, and more",
+          description: "Generate optimized content for Instagram, TikTok, YouTube, X, LinkedIn, and more",
           icon: <Globe className="w-8 h-8 text-green-600" />
         },
         {

@@ -216,7 +216,7 @@ export default function ContentCreationHub({
       instagram: ["#viral", "#trending", "#instagram", "#reels", "#engagement", "#growth"],
       tiktok: ["#tiktok", "#viral", "#fyp", "#trending", "#foryou", "#challenge"],
       youtube: ["#youtube", "#viral", "#trending", "#subscribe", "#content", "#creator"],
-      x: ["#twitter", "#viral", "#trending", "#engagement", "#growth", "#content"]
+              x: ["#x", "#viral", "#trending", "#engagement", "#growth", "#content"]
     };
     
     return hashtags[platform] || ["#viral", "#trending", "#content"];

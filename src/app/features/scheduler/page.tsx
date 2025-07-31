@@ -18,7 +18,7 @@ export default function SchedulerPage() {
         },
         {
           title: "Multi-Platform Publishing",
-          description: "Schedule content across Instagram, TikTok, YouTube, Twitter, LinkedIn, and more",
+          description: "Schedule content across Instagram, TikTok, YouTube, X, LinkedIn, and more",
           icon: <Globe className="w-8 h-8 text-purple-600" />
         },
         {

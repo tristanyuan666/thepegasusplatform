@@ -101,7 +101,7 @@ export default function SocialPlatformHub({
 
   const platforms = [
     { id: "instagram", name: "Instagram", icon: Instagram, color: "from-purple-500 to-pink-500" },
-    { id: "twitter", name: "Twitter/X", icon: Twitter, color: "from-blue-500 to-blue-600" },
+    { id: "twitter", name: "X", icon: Twitter, color: "from-blue-500 to-blue-600" },
     { id: "youtube", name: "YouTube", icon: Youtube, color: "from-red-500 to-red-600" },
     { id: "linkedin", name: "LinkedIn", icon: Linkedin, color: "from-blue-600 to-blue-700" },
     { id: "facebook", name: "Facebook", icon: Facebook, color: "from-blue-700 to-blue-800" },

@@ -23,7 +23,7 @@ export default function AnalyticsPage() {
         },
         {
           title: "Cross-Platform Tracking",
-          description: "Track performance across Instagram, TikTok, YouTube, Twitter, LinkedIn, and more",
+          description: "Track performance across Instagram, TikTok, YouTube, X, LinkedIn, and more",
           icon: <Globe className="w-8 h-8 text-green-600" />
         },
         {

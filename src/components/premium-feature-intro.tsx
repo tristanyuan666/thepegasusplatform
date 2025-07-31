@@ -75,7 +75,7 @@ interface PremiumFeatureIntroProps {
 const platformIcons: { [key: string]: React.ReactNode } = {
   instagram: <Instagram className="w-6 h-6" />,
   facebook: <Facebook className="w-6 h-6" />,
-  twitter: <Twitter className="w-6 h-6" />,
+  x: <Twitter className="w-6 h-6" />,
   linkedin: <Linkedin className="w-6 h-6" />,
   youtube: <Youtube className="w-6 h-6" />,
   tiktok: <Tiktok className="w-6 h-6" />,
