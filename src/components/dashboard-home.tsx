@@ -254,11 +254,11 @@ export default function DashboardHome({
         available: hasFeatureAccess("analytics")
       },
       {
-        title: "Connect Platforms",
-        description: "Link your social accounts",
+        title: "Manage Platforms",
+        description: "Manage your connections",
         icon: Globe,
         href: "/dashboard?tab=platforms",
-        color: "from-orange-500 to-orange-600",
+        color: "from-purple-500 to-purple-600",
         available: hasFeatureAccess("platforms")
       },
       {
@@ -496,6 +496,69 @@ export default function DashboardHome({
                   </div>
                 </CardContent>
               </Card>
+            </div>
+          )}
+
+          {/* Connected Platforms */}
+          {hasConnectedPlatforms && (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-gray-900">Connected Platforms</h3>
+                <Badge variant="secondary" className="bg-green-100 text-green-800">
+                  {platformConnections.filter(p => p.is_active).length} Connected
+                </Badge>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {platformConnections.filter(p => p.is_active).map((connection) => {
+                  const platformName = connection.platform.charAt(0).toUpperCase() + connection.platform.slice(1);
+                  const platformStats = analyticsData?.platform_breakdown?.[connection.platform as keyof typeof analyticsData.platform_breakdown];
+                  
+                  return (
+                    <Card key={connection.id} className="border-green-200 bg-gradient-to-br from-green-50 to-emerald-50 shadow-lg hover:shadow-xl transition-all duration-300">
+                      <CardContent className="p-4">
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg flex items-center justify-center shadow-md">
+                              <span className="text-white font-bold text-sm">
+                                {platformName.charAt(0)}
+                              </span>
+                            </div>
+                            <div>
+                              <h4 className="font-semibold text-gray-900">{platformName}</h4>
+                              <p className="text-xs text-gray-600">@{connection.platform_username}</p>
+                            </div>
+                          </div>
+                          <Badge className="bg-green-500 text-white border-0">
+                            <CheckCircle className="w-3 h-3 mr-1" />
+                            Active
+                          </Badge>
+                        </div>
+                        
+                        <div className="grid grid-cols-3 gap-2 text-center">
+                          <div className="bg-white/50 p-2 rounded-lg border border-green-100">
+                            <div className="text-lg font-bold text-gray-900">
+                              {platformStats?.followers?.toLocaleString() || "0"}
+                            </div>
+                            <div className="text-xs text-gray-600">Followers</div>
+                          </div>
+                          <div className="bg-white/50 p-2 rounded-lg border border-green-100">
+                            <div className="text-lg font-bold text-gray-900">
+                              {platformStats?.posts || "0"}
+                            </div>
+                            <div className="text-xs text-gray-600">Posts</div>
+                          </div>
+                          <div className="bg-white/50 p-2 rounded-lg border border-green-100">
+                            <div className="text-lg font-bold text-gray-900">
+                              {platformStats?.engagement?.toFixed(1) || "0"}%
+                            </div>
+                            <div className="text-xs text-gray-600">Engagement</div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
             </div>
           )}
 

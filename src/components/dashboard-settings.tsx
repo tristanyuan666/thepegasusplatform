@@ -294,7 +294,7 @@ export default function DashboardSettings({
         throw new Error("Full name is required");
       }
 
-      // Update user profile
+      // Update user profile first
       const { error: profileError } = await supabase
         .from("users")
         .update({
@@ -310,26 +310,45 @@ export default function DashboardSettings({
         })
         .eq("user_id", userProfile.user_id);
 
-      if (profileError) throw profileError;
+      if (profileError) {
+        console.error("Profile update error:", profileError);
+        throw new Error("Failed to update profile. Please try again.");
+      }
 
-      // Try to update settings table if it exists, but don't fail if it doesn't
+      // Update settings with better error handling
       try {
-        const { error: settingsError } = await supabase
+        // First try to insert, if it fails due to unique constraint, then update
+        const { error: insertError } = await supabase
           .from("user_settings")
-          .upsert({
+          .insert({
             user_id: userProfile.user_id,
             notifications: notificationSettings,
             privacy: privacySettings,
             updated_at: new Date().toISOString(),
           });
 
-        if (settingsError) {
-          console.warn("Settings table not available:", settingsError);
-          // Continue without settings table
+        if (insertError && insertError.code === '23505') {
+          // Unique constraint violation, try update instead
+          const { error: updateError } = await supabase
+            .from("user_settings")
+            .update({
+              notifications: notificationSettings,
+              privacy: privacySettings,
+              updated_at: new Date().toISOString(),
+            })
+            .eq("user_id", userProfile.user_id);
+
+          if (updateError) {
+            console.warn("Settings update error:", updateError);
+            // Continue without settings table - profile was saved successfully
+          }
+        } else if (insertError) {
+          console.warn("Settings insert error:", insertError);
+          // Continue without settings table - profile was saved successfully
         }
       } catch (settingsError) {
         console.warn("Settings table not available:", settingsError);
-        // Continue without settings table
+        // Continue without settings table - profile was saved successfully
       }
 
       setSuccess("Settings saved successfully!");
@@ -339,7 +358,7 @@ export default function DashboardSettings({
       setTimeout(() => setSuccess(null), 3000);
     } catch (error) {
       console.error("Error saving settings:", error);
-      setError(error instanceof Error ? error.message : "Failed to save settings");
+      setError(error instanceof Error ? error.message : "Failed to save settings. Please try again.");
     } finally {
       setIsLoading(false);
     }

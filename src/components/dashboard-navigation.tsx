@@ -224,10 +224,10 @@ export function DashboardQuickActions() {
       color: "from-green-500 to-green-600",
     },
     {
-      name: "Connect Platforms",
-      href: "/social-hub",
+      name: "Manage Platforms",
+      href: "/dashboard?tab=platforms",
       icon: LinkIcon,
-      color: "from-blue-500 to-blue-600",
+      color: "from-purple-500 to-purple-600",
     },
     {
       name: "Upgrade Plan",

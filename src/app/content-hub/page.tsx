@@ -41,19 +41,81 @@ export default async function ContentHubPage() {
       return redirect("/sign-in");
     }
 
-    // Fetch user profile with error handling
-    const { data: userProfile, error: profileError } = await supabase
-      .from("users")
-      .select("*")
-      .eq("user_id", user.id)
-      .single();
+    // Fetch user profile with better error handling
+    let userProfile = null;
+    try {
+      const { data: profileData, error: profileError } = await supabase
+        .from("users")
+        .select("*")
+        .eq("user_id", user.id)
+        .single();
 
-    if (profileError) {
-      console.error("Profile fetch error:", profileError);
-      // Continue with null profile rather than failing
+      if (profileError) {
+        console.error("Profile fetch error:", profileError);
+        // Create a basic profile if none exists
+        userProfile = {
+          id: user.id,
+          user_id: user.id,
+          email: user.email,
+          full_name: user.user_metadata?.full_name || null,
+          plan: null,
+          plan_status: null,
+          plan_billing: null,
+          is_active: true,
+          niche: null,
+          tone: null,
+          content_format: null,
+          fame_goals: null,
+          bio: null,
+          website: null,
+          location: null,
+          follower_count: null,
+          viral_score: 0,
+          monetization_forecast: 0,
+          onboarding_completed: false,
+          created_at: new Date().toISOString(),
+          updated_at: null,
+        };
+      } else {
+        userProfile = profileData;
+      }
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
+      // Create a basic profile as fallback
+      userProfile = {
+        id: user.id,
+        user_id: user.id,
+        email: user.email,
+        full_name: user.user_metadata?.full_name || null,
+        plan: null,
+        plan_status: null,
+        plan_billing: null,
+        is_active: true,
+        niche: null,
+        tone: null,
+        content_format: null,
+        fame_goals: null,
+        bio: null,
+        website: null,
+        location: null,
+        follower_count: null,
+        viral_score: 0,
+        monetization_forecast: 0,
+        onboarding_completed: false,
+        created_at: new Date().toISOString(),
+        updated_at: null,
+      };
     }
 
-    const subscriptionData = await getUserSubscription(user.id);
+    // Fetch subscription data with error handling
+    let subscriptionData = null;
+    try {
+      subscriptionData = await getUserSubscription(user.id);
+    } catch (error) {
+      console.error("Error fetching subscription:", error);
+      subscriptionData = null;
+    }
+
     const subscriptionTier = getSubscriptionTier(subscriptionData);
     const hasActiveSubscription = !!(subscriptionData && subscriptionData.status === "active");
 

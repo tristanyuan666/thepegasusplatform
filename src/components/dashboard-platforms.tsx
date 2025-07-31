@@ -522,11 +522,17 @@ export default function DashboardPlatforms({
           const stats = getPlatformStats(platform.id);
 
           return (
-            <Card key={platform.id} className="group border border-gray-200 hover:border-gray-300 transition-all duration-300 hover:shadow-xl hover:scale-105 bg-gradient-to-br from-white to-gray-50">
+            <Card key={platform.id} className={`group border transition-all duration-300 hover:shadow-xl hover:scale-105 ${
+              connection?.is_active 
+                ? 'border-green-200 bg-gradient-to-br from-green-50 to-emerald-50 shadow-lg' 
+                : 'border-gray-200 hover:border-gray-300 bg-gradient-to-br from-white to-gray-50'
+            }`}>
               <CardHeader className="pb-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-r ${platform.color} flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110`}>
+                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-r ${platform.color} flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110 ${
+                      connection?.is_active ? 'ring-2 ring-green-200' : ''
+                    }`}>
                       <platform.icon className="w-6 h-6 text-white" />
                     </div>
                     <div>
@@ -535,9 +541,9 @@ export default function DashboardPlatforms({
                     </div>
                   </div>
                   {connection?.is_active && (
-                    <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white border-0 shadow-lg">
+                    <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white border-0 shadow-lg animate-pulse">
                       <CheckCircle className="w-3 h-3 mr-1" />
-                      Premium Connected
+                      Connected
                     </Badge>
                   )}
                 </div>
@@ -547,13 +553,13 @@ export default function DashboardPlatforms({
                 {/* Connection Status */}
                 {connection?.is_active ? (
                   <div className="space-y-4">
-                    <div className="flex items-center justify-between text-sm bg-gradient-to-r from-blue-50 to-indigo-50 p-3 rounded-lg border border-blue-100">
+                    <div className="flex items-center justify-between text-sm bg-gradient-to-r from-green-50 to-emerald-50 p-3 rounded-lg border border-green-100">
                       <span className="text-gray-600 font-medium">Username:</span>
                       <span className="font-bold text-gray-900">@{connection.platform_username}</span>
                     </div>
                     
                     {/* Premium Platform Stats */}
-                    <div className="grid grid-cols-3 gap-4 pt-4 border-t border-gray-100">
+                    <div className="grid grid-cols-3 gap-4 pt-4 border-t border-green-100">
                       <div className="text-center bg-gradient-to-br from-blue-50 to-indigo-50 p-3 rounded-lg border border-blue-100">
                         <div className="text-xl font-bold text-gray-900 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
                           {stats.followers.toLocaleString()}
@@ -575,7 +581,7 @@ export default function DashboardPlatforms({
                     </div>
 
                     {/* Premium Action Buttons */}
-                    <div className="flex gap-2 pt-4 border-t border-gray-100">
+                    <div className="flex gap-2 pt-4 border-t border-green-100">
                       <Button
                         variant="outline"
                         size="sm"
@@ -649,8 +655,8 @@ export default function DashboardPlatforms({
                         <div className="space-y-4">
                           <Tabs value={connectionType} onValueChange={(value) => setConnectionType(value as "oauth" | "manual")}>
                             <TabsList className="grid w-full grid-cols-2 bg-gray-100 p-1 rounded-lg">
-                              <TabsTrigger value="manual" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">Manual</TabsTrigger>
-                              <TabsTrigger value="oauth" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">OAuth</TabsTrigger>
+                              <TabsTrigger value="manual" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">Connection</TabsTrigger>
+                              <TabsTrigger value="oauth" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">Integrations</TabsTrigger>
                             </TabsList>
                             <TabsContent value="manual" className="space-y-4">
                               <div className="space-y-4">
@@ -739,16 +745,16 @@ export default function DashboardPlatforms({
                             <TabsContent value="oauth" className="space-y-4">
                               <div className="text-center py-8">
                                 <ExternalLink className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                                <h3 className="text-lg font-semibold text-gray-900 mb-2">OAuth Connection</h3>
+                                <h3 className="text-lg font-semibold text-gray-900 mb-2">Integrations</h3>
                                 <p className="text-gray-600 mb-4">
-                                  OAuth integration is currently being developed. Please use manual connection for now.
+                                  Advanced integrations are currently being developed. Please use manual connection for now.
                                 </p>
                                 <Button
                                   variant="outline"
                                   onClick={() => setConnectionType("manual")}
                                   className="border-gray-300 hover:bg-gray-50"
                                 >
-                                  Switch to Manual
+                                  Switch to Connection
                                 </Button>
                               </div>
                             </TabsContent>
