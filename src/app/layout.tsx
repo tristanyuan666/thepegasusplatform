@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     description:
       "Transform into a viral sensation with AI-powered content creation and growth tools",
   },
-  x: {
+  twitter: {
     card: "summary_large_image",
     title: "Pegasus - AI Fame Creator & Influencer Manager",
     description:
@@ -77,13 +77,13 @@ export default function RootLayout({
           content="https://thepegasus.ca"
         />
         <meta property="og:site_name" content="Pegasus AI" />
-        <meta name="x:card" content="summary_large_image" />
+        <meta name="twitter:card" content="summary_large_image" />
         <meta
-          name="x:title"
+          name="twitter:title"
           content="Pegasus - AI Fame Creator & Influencer Manager"
         />
         <meta
-          name="x:description"
+          name="twitter:description"
           content="Transform into a viral sensation with AI-powered content creation and growth tools"
         />
       </head>
