@@ -7,22 +7,22 @@ export default function AnalyticsPage() {
   return (
     <PremiumFeatureIntro
       featureName="Advanced Analytics"
-      featureDescription="Get deep insights into your social media performance with AI-powered analytics. Track engagement, audience growth, and content performance across all platforms in one comprehensive dashboard."
+      featureDescription="Gain deep insights into your social media performance with enterprise-grade analytics. Track engagement, audience growth, and content performance across all platforms with comprehensive data-driven insights."
       requiredPlan="creator"
       icon={<BarChart3 className="w-6 h-6 text-white" />}
       features={[
         {
-          title: "Real-Time Analytics",
-          description: "Monitor your performance metrics in real-time with instant updates and live data",
+          title: "Real-Time Performance Tracking",
+          description: "Monitor your metrics in real-time with instant updates and live data visualization",
           icon: <Activity className="w-8 h-8 text-blue-600" />
         },
         {
           title: "AI-Powered Insights",
-          description: "Get intelligent recommendations and predictions based on your data patterns",
+          description: "Get intelligent recommendations and predictions based on comprehensive data analysis",
           icon: <Brain className="w-8 h-8 text-purple-600" />
         },
         {
-          title: "Cross-Platform Tracking",
+          title: "Cross-Platform Analytics",
           description: "Track performance across Instagram, TikTok, YouTube, X, LinkedIn, and more",
           icon: <Globe className="w-8 h-8 text-green-600" />
         },
@@ -37,7 +37,7 @@ export default function AnalyticsPage() {
           icon: <TrendingUp className="w-8 h-8 text-indigo-600" />
         },
         {
-          title: "Custom Reports",
+          title: "Custom Reporting",
           description: "Create personalized reports and dashboards tailored to your specific needs",
           icon: <PieChart className="w-8 h-8 text-pink-600" />
         }
@@ -49,7 +49,7 @@ export default function AnalyticsPage() {
           stat: "89%"
         },
         {
-          title: "Faster Growth",
+          title: "Accelerated Growth",
           description: "Optimize your strategy with insights that accelerate your audience growth",
           stat: "4x"
         },
@@ -57,62 +57,6 @@ export default function AnalyticsPage() {
           title: "Higher ROI",
           description: "Maximize your social media investment with proven optimization strategies",
           stat: "156%"
-        }
-      ]}
-      testimonials={[
-        {
-          name: "Maria Santos",
-          role: "Marketing Director",
-          content: "The analytics dashboard gives us insights we never had before. Our engagement rates increased by 60% in just 2 months!"
-        },
-        {
-          name: "Ryan Thompson",
-          role: "Content Creator",
-          content: "I can now see exactly what content works and what doesn't. My growth strategy is completely data-driven now."
-        },
-        {
-          name: "Lisa Park",
-          role: "Brand Manager",
-          content: "The cross-platform analytics are incredible. We track all our social media performance in one place."
-        }
-      ]}
-      pricing={[
-        {
-          plan: "Creator",
-          price: "$29",
-          features: [
-            "Basic Analytics Dashboard",
-            "Real-Time Metrics",
-            "Content Performance Tracking",
-            "Audience Insights",
-            "Export Reports",
-            "Email Support"
-          ]
-        },
-        {
-          plan: "Influencer",
-          price: "$79",
-          features: [
-            "Everything in Creator",
-            "AI-Powered Insights",
-            "Advanced Demographics",
-            "Custom Reports",
-            "Cross-Platform Analytics",
-            "Priority Support"
-          ],
-          popular: true
-        },
-        {
-          plan: "Superstar",
-          price: "$199",
-          features: [
-            "Everything in Influencer",
-            "Predictive Analytics",
-            "White-label Reports",
-            "API Access",
-            "Dedicated Analytics Manager",
-            "Custom Integrations"
-          ]
         }
       ]}
     />

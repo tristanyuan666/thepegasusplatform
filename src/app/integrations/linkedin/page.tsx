@@ -60,62 +60,6 @@ export default function LinkedInIntegrationPage() {
           stat: "4x"
         }
       ]}
-      testimonials={[
-        {
-          name: "Dr. Emily Chen",
-          role: "Business Consultant",
-          content: "The LinkedIn integration helped me establish myself as a thought leader in my industry. My network grew by 300%!"
-        },
-        {
-          name: "James Rodriguez",
-          role: "Sales Director",
-          content: "I can now schedule professional content that drives real business opportunities. My lead generation increased by 200%."
-        },
-        {
-          name: "Lisa Thompson",
-          role: "Marketing Executive",
-          content: "The B2B audience insights are invaluable. I can now target content to the right professional audience."
-        }
-      ]}
-      pricing={[
-        {
-          plan: "Creator",
-          price: "$29",
-          features: [
-            "LinkedIn Integration",
-            "Basic Analytics",
-            "Content Scheduling",
-            "Article Management",
-            "1 LinkedIn Account",
-            "Email Support"
-          ]
-        },
-        {
-          plan: "Influencer",
-          price: "$79",
-          features: [
-            "Everything in Creator",
-            "Advanced Analytics",
-            "B2B Audience Insights",
-            "Thought Leadership Tools",
-            "Professional Networking",
-            "Priority Support"
-          ],
-          popular: true
-        },
-        {
-          plan: "Superstar",
-          price: "$199",
-          features: [
-            "Everything in Influencer",
-            "Custom Professional Tools",
-            "White-label Solutions",
-            "API Access",
-            "Dedicated Success Manager",
-            "Custom Integrations"
-          ]
-        }
-      ]}
     />
   );
 } 

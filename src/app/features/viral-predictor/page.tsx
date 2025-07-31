@@ -1,13 +1,13 @@
 "use client";
 
-import { TrendingUp, Sparkles, Zap, Target, Users, BarChart3, Brain, Globe, Camera, Video, Play, FileText, CheckCircle, Star, Activity, PieChart, Zap as Lightning } from "lucide-react";
+import { TrendingUp, Sparkles, Zap, Target, Users, BarChart3, Brain, Globe, Camera, Video, Play, FileText, CheckCircle, Star, Activity, PieChart } from "lucide-react";
 import PremiumFeatureIntro from "@/components/premium-feature-intro";
 
 export default function ViralPredictorPage() {
   return (
     <PremiumFeatureIntro
       featureName="Viral Predictor"
-      featureDescription="Predict which content will go viral before you post it. Our AI-powered viral predictor analyzes millions of data points to give you accurate predictions and recommendations for creating viral content."
+      featureDescription="Predict which content will go viral before you publish it. Our AI-powered viral predictor analyzes millions of data points to give you accurate predictions and recommendations for creating viral content."
       requiredPlan="influencer"
       icon={<TrendingUp className="w-6 h-6 text-white" />}
       features={[
@@ -57,62 +57,6 @@ export default function ViralPredictorPage() {
           title: "Faster Growth",
           description: "Grow your audience faster by creating more viral content",
           stat: "5x"
-        }
-      ]}
-      testimonials={[
-        {
-          name: "Emma Davis",
-          role: "Lifestyle Influencer",
-          content: "The Viral Predictor is incredibly accurate. I've had 12 posts go viral this year alone!"
-        },
-        {
-          name: "Marcus Lee",
-          role: "Comedy Creator",
-          content: "I can now predict which videos will perform best before I even finish editing. Game-changer!"
-        },
-        {
-          name: "Lisa Rodriguez",
-          role: "Fitness Coach",
-          content: "The trend analysis feature helped me catch viral trends early. My growth exploded!"
-        }
-      ]}
-      pricing={[
-        {
-          plan: "Creator",
-          price: "$49",
-          features: [
-            "Basic Viral Prediction",
-            "Content Optimization",
-            "Viral Score Tracking",
-            "Trend Analysis",
-            "50 predictions/month",
-            "Email Support"
-          ]
-        },
-        {
-          plan: "Influencer",
-          price: "$99",
-          features: [
-            "Everything in Creator",
-            "Advanced AI Predictions",
-            "Competitor Monitoring",
-            "Predictive Analytics",
-            "Unlimited Predictions",
-            "Priority Support"
-          ],
-          popular: true
-        },
-        {
-          plan: "Superstar",
-          price: "$249",
-          features: [
-            "Everything in Influencer",
-            "Custom Prediction Models",
-            "White-label Solutions",
-            "API Access",
-            "Dedicated Success Manager",
-            "Custom Integrations"
-          ]
         }
       ]}
     />

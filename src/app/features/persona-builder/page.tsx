@@ -7,7 +7,7 @@ export default function PersonaBuilderPage() {
   return (
     <PremiumFeatureIntro
       featureName="Persona Builder"
-      featureDescription="Create detailed audience personas and understand your target market like never before. Our AI-powered persona builder analyzes your audience data to create comprehensive profiles that drive better content and marketing strategies."
+      featureDescription="Create detailed audience personas and understand your target market with precision. Our AI-powered persona builder analyzes your audience data to create comprehensive profiles that drive better content and marketing strategies."
       requiredPlan="creator"
       icon={<Users className="w-6 h-6 text-white" />}
       features={[
@@ -57,62 +57,6 @@ export default function PersonaBuilderPage() {
           title: "Faster Growth",
           description: "Grow your audience faster with persona-driven content strategies",
           stat: "3x"
-        }
-      ]}
-      testimonials={[
-        {
-          name: "Amanda Chen",
-          role: "Marketing Manager",
-          content: "The Persona Builder helped us understand our audience so much better. Our content engagement increased by 75%!"
-        },
-        {
-          name: "James Wilson",
-          role: "Content Creator",
-          content: "I now create content specifically for each persona. My audience growth rate doubled in just 2 months."
-        },
-        {
-          name: "Rachel Green",
-          role: "Brand Strategist",
-          content: "The behavioral analysis is incredible. We can now predict what content will perform best before we create it."
-        }
-      ]}
-      pricing={[
-        {
-          plan: "Creator",
-          price: "$29",
-          features: [
-            "Basic Persona Builder",
-            "Demographic Analysis",
-            "Behavioral Insights",
-            "Content Recommendations",
-            "3 Personas",
-            "Email Support"
-          ]
-        },
-        {
-          plan: "Influencer",
-          price: "$79",
-          features: [
-            "Everything in Creator",
-            "AI Persona Generation",
-            "Advanced Behavioral Analysis",
-            "Persona Validation",
-            "Unlimited Personas",
-            "Priority Support"
-          ],
-          popular: true
-        },
-        {
-          plan: "Superstar",
-          price: "$199",
-          features: [
-            "Everything in Influencer",
-            "Custom Persona Models",
-            "White-label Solutions",
-            "API Access",
-            "Dedicated Strategy Manager",
-            "Custom Integrations"
-          ]
         }
       ]}
     />

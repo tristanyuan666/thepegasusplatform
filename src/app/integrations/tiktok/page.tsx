@@ -60,62 +60,6 @@ export default function TikTokIntegrationPage() {
           stat: "73%"
         }
       ]}
-      testimonials={[
-        {
-          name: "Emma Wilson",
-          role: "TikTok Creator",
-          content: "The TikTok integration helped me go viral 5 times this month! The trend analysis is incredibly accurate."
-        },
-        {
-          name: "Jake Chen",
-          role: "Dance Creator",
-          content: "I can now identify trending sounds before they blow up. My follower growth increased by 400%!"
-        },
-        {
-          name: "Sophie Rodriguez",
-          role: "Comedy Creator",
-          content: "The viral prediction feature is spot-on. I've had 3 videos reach over 1M views this month."
-        }
-      ]}
-      pricing={[
-        {
-          plan: "Creator",
-          price: "$49",
-          features: [
-            "TikTok Integration",
-            "Basic Analytics",
-            "Trend Analysis",
-            "Hashtag Suggestions",
-            "1 TikTok Account",
-            "Email Support"
-          ]
-        },
-        {
-          plan: "Influencer",
-          price: "$99",
-          features: [
-            "Everything in Creator",
-            "Advanced Analytics",
-            "Viral Prediction",
-            "Content Scheduling",
-            "Audience Insights",
-            "Priority Support"
-          ],
-          popular: true
-        },
-        {
-          plan: "Superstar",
-          price: "$249",
-          features: [
-            "Everything in Influencer",
-            "Custom Trend Analysis",
-            "White-label Solutions",
-            "API Access",
-            "Dedicated Success Manager",
-            "Custom Integrations"
-          ]
-        }
-      ]}
     />
   );
 }

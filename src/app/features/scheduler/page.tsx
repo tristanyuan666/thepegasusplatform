@@ -59,62 +59,6 @@ export default function SchedulerPage() {
           stat: "45%"
         }
       ]}
-      testimonials={[
-        {
-          name: "Tom Anderson",
-          role: "Digital Creator",
-          content: "I used to spend 2 hours every day posting content. Now I schedule everything for the week in 30 minutes!"
-        },
-        {
-          name: "Sarah Martinez",
-          role: "Small Business Owner",
-          content: "The AI scheduling feature is incredible. My posts now get 3x more engagement than before."
-        },
-        {
-          name: "Kevin Park",
-          role: "Agency Owner",
-          content: "Managing 20+ client accounts is now effortless. The bulk scheduling feature is a game-changer."
-        }
-      ]}
-      pricing={[
-        {
-          plan: "Creator",
-          price: "$29",
-          features: [
-            "Content Scheduler",
-            "AI-Optimized Timing",
-            "Multi-Platform Support",
-            "Content Calendar",
-            "100 scheduled posts/month",
-            "Email Support"
-          ]
-        },
-        {
-          plan: "Influencer",
-          price: "$79",
-          features: [
-            "Everything in Creator",
-            "Bulk Scheduling",
-            "Auto-Reposting",
-            "Performance Analytics",
-            "Unlimited Scheduling",
-            "Priority Support"
-          ],
-          popular: true
-        },
-        {
-          plan: "Superstar",
-          price: "$199",
-          features: [
-            "Everything in Influencer",
-            "Custom Scheduling Rules",
-            "White-label Solutions",
-            "API Access",
-            "Dedicated Success Manager",
-            "Custom Integrations"
-          ]
-        }
-      ]}
     />
   );
 }

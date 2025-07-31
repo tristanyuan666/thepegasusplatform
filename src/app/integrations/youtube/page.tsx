@@ -60,62 +60,6 @@ export default function YouTubeIntegrationPage() {
           stat: "4x"
         }
       ]}
-      testimonials={[
-        {
-          name: "Alex Rivera",
-          role: "Tech YouTuber",
-          content: "The YouTube integration helped me grow from 50K to 500K subscribers in just 8 months. The analytics are incredible!"
-        },
-        {
-          name: "Sarah Kim",
-          role: "Lifestyle Creator",
-          content: "The SEO optimization feature is a game-changer. My videos now rank higher in search results."
-        },
-        {
-          name: "Mike Johnson",
-          role: "Educational Content Creator",
-          content: "The audience retention analysis helped me create more engaging content. My watch time increased by 80%!"
-        }
-      ]}
-      pricing={[
-        {
-          plan: "Creator",
-          price: "$49",
-          features: [
-            "YouTube Integration",
-            "Basic Analytics",
-            "SEO Optimization",
-            "Thumbnail Tools",
-            "1 YouTube Channel",
-            "Email Support"
-          ]
-        },
-        {
-          plan: "Influencer",
-          price: "$99",
-          features: [
-            "Everything in Creator",
-            "Advanced Analytics",
-            "Audience Retention Analysis",
-            "Comment Management",
-            "Competitor Analysis",
-            "Priority Support"
-          ],
-          popular: true
-        },
-        {
-          plan: "Superstar",
-          price: "$249",
-          features: [
-            "Everything in Influencer",
-            "Custom Analytics",
-            "White-label Solutions",
-            "API Access",
-            "Dedicated Success Manager",
-            "Custom Integrations"
-          ]
-        }
-      ]}
     />
   );
 } 

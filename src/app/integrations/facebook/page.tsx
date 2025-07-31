@@ -60,62 +60,6 @@ export default function FacebookIntegrationPage() {
           stat: "6hrs/week"
         }
       ]}
-      testimonials={[
-        {
-          name: "Jennifer Smith",
-          role: "Business Owner",
-          content: "The Facebook integration helped us grow our page from 5K to 50K followers in just 6 months. The scheduling and analytics are incredible!"
-        },
-        {
-          name: "Robert Chen",
-          role: "Marketing Manager",
-          content: "Managing multiple client Facebook pages is now effortless. The engagement analytics help us optimize every post."
-        },
-        {
-          name: "Amanda Wilson",
-          role: "Content Creator",
-          content: "The audience insights feature helped me understand my followers better. My engagement rate increased by 40%!"
-        }
-      ]}
-      pricing={[
-        {
-          plan: "Creator",
-          price: "$29",
-          features: [
-            "Facebook Integration",
-            "Basic Analytics",
-            "Content Scheduling",
-            "Page Management",
-            "1 Facebook Page",
-            "Email Support"
-          ]
-        },
-        {
-          plan: "Influencer",
-          price: "$79",
-          features: [
-            "Everything in Creator",
-            "Advanced Analytics",
-            "Multiple Page Management",
-            "Ad Performance Tracking",
-            "Community Management",
-            "Priority Support"
-          ],
-          popular: true
-        },
-        {
-          plan: "Superstar",
-          price: "$199",
-          features: [
-            "Everything in Influencer",
-            "Custom Automation Rules",
-            "White-label Solutions",
-            "API Access",
-            "Dedicated Success Manager",
-            "Custom Integrations"
-          ]
-        }
-      ]}
     />
   );
 } 
