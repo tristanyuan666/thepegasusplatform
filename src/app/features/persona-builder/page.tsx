@@ -13,6 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import FeatureAccessControl from "@/components/feature-access-control";
 import {
   Brain,
   User as UserIcon,
@@ -161,7 +162,7 @@ interface BrandElement {
   description: string;
 }
 
-export default function PersonaBuilderPage() {
+function PersonaBuilderPage() {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [personas, setPersonas] = useState<Persona[]>([]);
@@ -837,5 +838,18 @@ export default function PersonaBuilderPage() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function PersonaBuilderPageWrapper() {
+  return (
+    <FeatureAccessControl
+      featureName="Persona Builder"
+      featureDescription="Build your creator identity with AI-powered persona development, brand voice analysis, and audience targeting tools."
+      requiredPlan="creator"
+      icon={<Brain className="w-10 h-10 text-white" />}
+    >
+      <PersonaBuilderPage />
+    </FeatureAccessControl>
   );
 }

@@ -52,19 +52,15 @@ export async function middleware(req: NextRequest) {
     // Protected routes - require authentication
     const protectedRoutes = [
       "/dashboard",
-      "/features/ai-content",
-      "/features/analytics",
-      "/features/growth-engine",
-      "/features/persona-builder",
-      "/features/scheduler",
-      "/features/viral-predictor",
-      "/integrations",
+      "/content-hub",
     ];
 
-    // Skip middleware for content-hub to prevent authentication issues
-    if (req.nextUrl.pathname === "/content-hub") {
-      return NextResponse.next();
-    }
+    // Feature and integration pages are accessible to all users
+    // The FeatureAccessControl component will handle access control
+    const featureRoutes = [
+      "/features",
+      "/integrations",
+    ];
 
     const isProtectedRoute = protectedRoutes.some((route) =>
       req.nextUrl.pathname.startsWith(route),

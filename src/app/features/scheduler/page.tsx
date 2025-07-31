@@ -14,6 +14,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import FeatureAccessControl from "@/components/feature-access-control";
 import {
   Calendar as CalendarIcon,
   Clock,
@@ -82,7 +83,7 @@ interface PlatformStats {
   bestTime: string;
 }
 
-export default function SchedulerPage() {
+function SchedulerPage() {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [date, setDate] = useState<Date | undefined>(new Date());
@@ -652,5 +653,18 @@ export default function SchedulerPage() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function SchedulerPageWrapper() {
+  return (
+    <FeatureAccessControl
+      featureName="Content Scheduler"
+      featureDescription="Schedule your content across multiple platforms with AI-powered timing optimization and automated publishing."
+      requiredPlan="creator"
+      icon={<CalendarIcon className="w-10 h-10 text-white" />}
+    >
+      <SchedulerPage />
+    </FeatureAccessControl>
   );
 }

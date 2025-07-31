@@ -13,6 +13,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import FeatureAccessControl from "@/components/feature-access-control";
+import Navbar from "@/components/navbar";
+import Footer from "@/components/footer";
 import {
   BarChart3,
   TrendingUp,
@@ -98,42 +101,7 @@ import {
   Paintbrush,
   Camera as CameraIcon2,
   Video as VideoIcon2,
-  Mic as MicIcon,
-  Type,
-  Bold,
-  Italic,
-  Underline,
-  AlignLeft,
-  AlignCenter,
-  AlignRight,
-  List,
-  ListOrdered,
-  Quote,
-  Link,
-  Image as ImageIcon2,
-  Palette as PaletteIcon2,
-  Droplets,
-  Sun,
-  Moon,
-  Star as StarIcon,
-  Sparkles as SparklesIcon,
-  Calendar,
-  Download,
-  Upload,
-  PieChart,
-  LineChart,
-  BarChart,
-  ScatterChart,
-  AreaChart,
-  Activity as ActivityIcon,
-  Target,
-  Zap,
-  Brain,
-  Palette,
-  User as UserIcon,
 } from "lucide-react";
-import Navbar from "@/components/navbar";
-import Footer from "@/components/footer";
 
 interface AnalyticsData {
   id: string;
@@ -182,7 +150,7 @@ interface TrendData {
   impressions: number;
 }
 
-export default function AnalyticsPage() {
+function AnalyticsPage() {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [analyticsData, setAnalyticsData] = useState<AnalyticsData[]>([]);
@@ -203,14 +171,9 @@ export default function AnalyticsPage() {
   const checkUser = async () => {
     try {
       const { data: { user: currentUser } } = await supabase.auth.getUser();
-      if (!currentUser) {
-        window.location.href = "/sign-in";
-        return;
-      }
       setUser(currentUser);
     } catch (error) {
       console.error("Error checking user:", error);
-      window.location.href = "/sign-in";
     } finally {
       setIsLoading(false);
     }
@@ -279,81 +242,42 @@ export default function AnalyticsPage() {
               { location: "Other", percentage: 10 },
             ],
             interests: [
-              { interest: "Fitness", percentage: 35 },
+              { interest: "Fitness & Health", percentage: 35 },
               { interest: "Technology", percentage: 25 },
-              { interest: "Business", percentage: 20 },
-              { interest: "Lifestyle", percentage: 15 },
-              { interest: "Education", percentage: 5 },
+              { interest: "Travel", percentage: 20 },
+              { interest: "Fashion", percentage: 15 },
+              { interest: "Food", percentage: 5 },
             ],
           },
           performanceTrends: [
-            { date: "2024-01-01", followers: 10000, engagement: 3.8, reach: 40000, impressions: 80000 },
-            { date: "2024-01-08", followers: 10500, engagement: 4.0, reach: 42000, impressions: 84000 },
-            { date: "2024-01-15", followers: 11000, engagement: 4.1, reach: 43000, impressions: 86000 },
-            { date: "2024-01-22", followers: 11500, engagement: 4.2, reach: 44000, impressions: 88000 },
-            { date: "2024-01-29", followers: 12000, engagement: 4.3, reach: 45000, impressions: 90000 },
-          ],
-          createdAt: new Date().toISOString(),
-        },
-        {
-          id: "2",
-          platform: "TikTok",
-          followers: 8500,
-          engagement: 6.8,
-          reach: 35000,
-          impressions: 75000,
-          likes: 12000,
-          shares: 2500,
-          comments: 1800,
-          growthRate: 18.2,
-          viralScore: 85,
-          topContent: [
             {
-              id: "3",
-              title: "Tutorial Video",
-              platform: "TikTok",
-              contentType: "video",
-              views: 25000,
-              likes: 1800,
-              shares: 450,
-              comments: 320,
-              engagement: 10.2,
-              viralScore: 92,
-              postedAt: new Date().toISOString(),
+              date: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+              followers: 11000,
+              engagement: 3.8,
+              reach: 40000,
+              impressions: 75000,
             },
-          ],
-          audienceDemographics: {
-            ageGroups: [
-              { range: "13-17", percentage: 15 },
-              { range: "18-24", percentage: 45 },
-              { range: "25-34", percentage: 30 },
-              { range: "35+", percentage: 10 },
-            ],
-            genders: [
-              { gender: "Female", percentage: 55 },
-              { gender: "Male", percentage: 45 },
-            ],
-            locations: [
-              { location: "United States", percentage: 50 },
-              { location: "United Kingdom", percentage: 20 },
-              { location: "Canada", percentage: 15 },
-              { location: "Australia", percentage: 10 },
-              { location: "Other", percentage: 5 },
-            ],
-            interests: [
-              { interest: "Entertainment", percentage: 40 },
-              { interest: "Fitness", percentage: 25 },
-              { interest: "Technology", percentage: 20 },
-              { interest: "Education", percentage: 10 },
-              { interest: "Lifestyle", percentage: 5 },
-            ],
-          },
-          performanceTrends: [
-            { date: "2024-01-01", followers: 7000, engagement: 6.0, reach: 30000, impressions: 65000 },
-            { date: "2024-01-08", followers: 7500, engagement: 6.2, reach: 32000, impressions: 68000 },
-            { date: "2024-01-15", followers: 8000, engagement: 6.5, reach: 33000, impressions: 72000 },
-            { date: "2024-01-22", followers: 8250, engagement: 6.7, reach: 34000, impressions: 74000 },
-            { date: "2024-01-29", followers: 8500, engagement: 6.8, reach: 35000, impressions: 75000 },
+            {
+              date: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString(),
+              followers: 11500,
+              engagement: 4.0,
+              reach: 42000,
+              impressions: 80000,
+            },
+            {
+              date: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+              followers: 12000,
+              engagement: 4.1,
+              reach: 43000,
+              impressions: 85000,
+            },
+            {
+              date: new Date().toISOString(),
+              followers: 12500,
+              engagement: 4.2,
+              reach: 45000,
+              impressions: 89000,
+            },
           ],
           createdAt: new Date().toISOString(),
         },
@@ -361,43 +285,32 @@ export default function AnalyticsPage() {
       setAnalyticsData(mockAnalytics);
     } catch (error) {
       console.error("Error loading analytics data:", error);
+      setError("Failed to load analytics data");
     }
   };
 
   const refreshAnalytics = async () => {
     setIsRefreshing(true);
-    setError(null);
-    setSuccess(null);
-
     try {
-      // Simulate data refresh
-      await new Promise((resolve) => setTimeout(resolve, 2000));
       await loadAnalyticsData();
-      setSuccess("Analytics data refreshed successfully!");
+      setSuccess("Analytics data refreshed successfully");
     } catch (error) {
-      console.error("Error refreshing analytics:", error);
-      setError("Failed to refresh analytics. Please try again.");
+      setError("Failed to refresh analytics data");
     } finally {
       setIsRefreshing(false);
     }
   };
 
   const getGrowthColor = (rate: number) => {
-    if (rate > 0) return "text-green-600";
-    if (rate < 0) return "text-red-600";
-    return "text-gray-600";
+    return rate > 0 ? "text-green-600" : "text-red-600";
   };
 
   const getEngagementColor = (rate: number) => {
-    if (rate >= 5) return "text-green-600";
-    if (rate >= 3) return "text-yellow-600";
-    return "text-red-600";
+    return rate > 5 ? "text-green-600" : rate > 3 ? "text-yellow-600" : "text-red-600";
   };
 
   const getViralScoreColor = (score: number) => {
-    if (score >= 80) return "text-green-600";
-    if (score >= 60) return "text-yellow-600";
-    return "text-red-600";
+    return score > 80 ? "text-green-600" : score > 60 ? "text-yellow-600" : "text-red-600";
   };
 
   const totalFollowers = analyticsData.reduce((sum, data) => sum + data.followers, 0);
@@ -460,12 +373,12 @@ export default function AnalyticsPage() {
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-blue-100 rounded-lg">
                   <Users className="w-5 h-5 text-blue-600" />
-            </div>
+                </div>
                 <div>
                   <p className="text-sm text-gray-600">Total Followers</p>
                   <p className="text-xl font-bold text-blue-600">{totalFollowers.toLocaleString()}</p>
-          </div>
-        </div>
+                </div>
+              </div>
             </Card>
 
             <Card className="p-4">
@@ -489,7 +402,7 @@ export default function AnalyticsPage() {
                   <p className="text-sm text-gray-600">Total Reach</p>
                   <p className="text-xl font-bold text-purple-600">{totalReach.toLocaleString()}</p>
                 </div>
-            </div>
+              </div>
             </Card>
 
             <Card className="p-4">
@@ -505,7 +418,56 @@ export default function AnalyticsPage() {
             </Card>
           </div>
 
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          {/* Controls */}
+          <div className="flex flex-wrap items-center gap-4 mb-6">
+            <div className="flex items-center gap-2">
+              <Label htmlFor="platform-select" className="text-sm font-medium">
+                Platform:
+              </Label>
+              <Select value={selectedPlatform} onValueChange={setSelectedPlatform}>
+                <SelectTrigger className="w-32">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Platforms</SelectItem>
+                  <SelectItem value="instagram">Instagram</SelectItem>
+                  <SelectItem value="tiktok">TikTok</SelectItem>
+                  <SelectItem value="youtube">YouTube</SelectItem>
+                  <SelectItem value="twitter">Twitter/X</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Label htmlFor="date-range" className="text-sm font-medium">
+                Date Range:
+              </Label>
+              <Select value={dateRange} onValueChange={setDateRange}>
+                <SelectTrigger className="w-32">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="7d">Last 7 days</SelectItem>
+                  <SelectItem value="30d">Last 30 days</SelectItem>
+                  <SelectItem value="90d">Last 90 days</SelectItem>
+                  <SelectItem value="1y">Last year</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <Button
+              onClick={refreshAnalytics}
+              disabled={isRefreshing}
+              variant="outline"
+              size="sm"
+            >
+              <RefreshCw className={`w-4 h-4 mr-2 ${isRefreshing ? "animate-spin" : ""}`} />
+              Refresh
+            </Button>
+          </div>
+
+          {/* Analytics Tabs */}
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="overview">Overview</TabsTrigger>
               <TabsTrigger value="content">Content</TabsTrigger>
@@ -515,168 +477,101 @@ export default function AnalyticsPage() {
 
             <TabsContent value="overview" className="space-y-6">
               {/* Platform Performance */}
-              <Card className="p-6">
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-lg font-semibold text-gray-900">Platform Performance</h3>
-                  <Button onClick={refreshAnalytics} disabled={isRefreshing}>
-                    {isRefreshing ? (
-                      <>
-                        <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                        Refreshing...
-                      </>
-                    ) : (
-                      <>
-                        <RefreshCw className="w-4 h-4 mr-2" />
-                        Refresh
-                      </>
-                    )}
-                  </Button>
-                </div>
+              <div className="grid md:grid-cols-2 gap-6">
+                {analyticsData.map((data) => (
+                  <Card key={data.id} className="p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-lg font-semibold text-gray-900">
+                        {data.platform} Performance
+                      </h3>
+                      <Badge variant="outline" className={getViralScoreColor(data.viralScore)}>
+                        {data.viralScore}% viral
+                      </Badge>
+                    </div>
 
-                <div className="space-y-4">
-                  {analyticsData.map((data) => (
-                    <div key={data.id} className="p-4 border border-gray-200 rounded-lg">
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                            <span className="text-sm font-medium">{data.platform.charAt(0)}</span>
-                          </div>
-                          <div>
-                            <h4 className="font-semibold text-gray-900">{data.platform}</h4>
-                            <p className="text-sm text-gray-600">{data.followers.toLocaleString()} followers</p>
-                          </div>
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="text-center">
+                          <p className="text-sm text-gray-600">Followers</p>
+                          <p className="text-2xl font-bold text-blue-600">
+                            {data.followers.toLocaleString()}
+                          </p>
+                          <p className={`text-xs ${getGrowthColor(data.growthRate)}`}>
+                            +{data.growthRate}% from last month
+                          </p>
                         </div>
-                        <div className="text-right">
-                          <Badge className={getGrowthColor(data.growthRate)}>
-                            +{data.growthRate}% growth
-                          </Badge>
-                        </div>
-                      </div>
-
-                      <div className="grid md:grid-cols-4 gap-4">
                         <div className="text-center">
                           <p className="text-sm text-gray-600">Engagement</p>
-                          <p className={`text-lg font-bold ${getEngagementColor(data.engagement)}`}>
+                          <p className={`text-2xl font-bold ${getEngagementColor(data.engagement)}`}>
                             {data.engagement}%
                           </p>
-                        </div>
-                        <div className="text-center">
-                          <p className="text-sm text-gray-600">Reach</p>
-                          <p className="text-lg font-bold text-blue-600">
-                            {data.reach.toLocaleString()}
-                          </p>
-                        </div>
-                        <div className="text-center">
-                          <p className="text-sm text-gray-600">Impressions</p>
-                          <p className="text-lg font-bold text-purple-600">
-                            {data.impressions.toLocaleString()}
-                          </p>
-                        </div>
-                        <div className="text-center">
-                          <p className="text-sm text-gray-600">Viral Score</p>
-                          <p className={`text-lg font-bold ${getViralScoreColor(data.viralScore)}`}>
-                            {data.viralScore}%
-                          </p>
+                          <p className="text-xs text-gray-500">Avg engagement rate</p>
                         </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              </Card>
 
-              {/* Performance Insights */}
-              <div className="grid md:grid-cols-2 gap-6">
-                <Card className="p-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Top Performing Content</h3>
-                  <div className="space-y-3">
-                    {analyticsData[0]?.topContent.slice(0, 3).map((content) => (
-                      <div key={content.id} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+                      <div className="grid grid-cols-3 gap-4 text-center">
                         <div>
-                          <h4 className="font-medium text-gray-900">{content.title}</h4>
-                          <p className="text-sm text-gray-600">{content.platform} • {content.contentType}</p>
+                          <p className="text-sm text-gray-600">Likes</p>
+                          <p className="text-lg font-semibold text-green-600">
+                            {data.likes.toLocaleString()}
+                          </p>
                         </div>
-                        <div className="text-right">
-                          <p className="text-sm font-medium">{content.views.toLocaleString()} views</p>
-                          <p className={`text-xs ${getEngagementColor(content.engagement)}`}>
-                            {content.engagement}% engagement
-              </p>
-            </div>
-                      </div>
-                    ))}
-                  </div>
-                </Card>
-
-                <Card className="p-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Insights</h3>
-                  <div className="space-y-3">
-                    <div className="flex items-start gap-3 p-3 bg-green-50 rounded-lg">
-                      <TrendingUp className="w-5 h-5 text-green-600 mt-0.5" />
-                      <div>
-                        <h4 className="font-medium text-green-800">Growing Strong</h4>
-                        <p className="text-sm text-green-700">Your engagement rate is above average for your niche</p>
+                        <div>
+                          <p className="text-sm text-gray-600">Shares</p>
+                          <p className="text-lg font-semibold text-purple-600">
+                            {data.shares.toLocaleString()}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-600">Comments</p>
+                          <p className="text-lg font-semibold text-orange-600">
+                            {data.comments.toLocaleString()}
+                          </p>
+                        </div>
                       </div>
                     </div>
-                    <div className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg">
-                      <Eye className="w-5 h-5 text-blue-600 mt-0.5" />
-                      <div>
-                        <h4 className="font-medium text-blue-800">High Reach</h4>
-                        <p className="text-sm text-blue-700">Your content is reaching a broad audience</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-3 p-3 bg-yellow-50 rounded-lg">
-                      <Lightbulb className="w-5 h-5 text-yellow-600 mt-0.5" />
-                      <div>
-                        <h4 className="font-medium text-yellow-800">Optimization Tip</h4>
-                        <p className="text-sm text-yellow-700">Try posting more video content to boost engagement</p>
-                      </div>
-                    </div>
-                  </div>
-                </Card>
+                  </Card>
+                ))}
               </div>
             </TabsContent>
 
             <TabsContent value="content" className="space-y-6">
-              {/* Content Analytics */}
+              {/* Top Performing Content */}
               <Card className="p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Content Performance</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Top Performing Content</h3>
                 <div className="space-y-4">
-                  {analyticsData.flatMap(data => data.topContent).map((content) => (
-                    <div key={content.id} className="p-4 border border-gray-200 rounded-lg">
-                      <div className="flex items-start justify-between mb-3">
+                  {analyticsData[0]?.topContent.map((content) => (
+                    <div key={content.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                      <div className="flex items-center gap-4">
+                        <div className="p-2 bg-blue-100 rounded-lg">
+                          {content.contentType === "post" && <FileText className="w-4 h-4 text-blue-600" />}
+                          {content.contentType === "story" && <Camera className="w-4 h-4 text-blue-600" />}
+                          {content.contentType === "video" && <Video className="w-4 h-4 text-blue-600" />}
+                        </div>
                         <div>
                           <h4 className="font-medium text-gray-900">{content.title}</h4>
                           <p className="text-sm text-gray-600">{content.platform} • {content.contentType}</p>
                         </div>
-                        <Badge className={getViralScoreColor(content.viralScore)}>
-                          {content.viralScore}% viral
-                        </Badge>
                       </div>
-
-                      <div className="grid md:grid-cols-5 gap-4 text-sm">
+                      <div className="flex items-center gap-6">
                         <div className="text-center">
-                          <p className="text-gray-600">Views</p>
-                          <p className="font-medium">{content.views.toLocaleString()}</p>
+                          <p className="text-xs text-gray-600">Views</p>
+                          <p className="text-sm font-medium">{content.views.toLocaleString()}</p>
                         </div>
                         <div className="text-center">
-                          <p className="text-gray-600">Likes</p>
-                          <p className="font-medium">{content.likes.toLocaleString()}</p>
-                        </div>
-                        <div className="text-center">
-                          <p className="text-gray-600">Shares</p>
-                          <p className="font-medium">{content.shares.toLocaleString()}</p>
-                        </div>
-                        <div className="text-center">
-                          <p className="text-gray-600">Comments</p>
-                          <p className="font-medium">{content.comments.toLocaleString()}</p>
-                        </div>
-                        <div className="text-center">
-                          <p className="text-gray-600">Engagement</p>
-                          <p className={`font-medium ${getEngagementColor(content.engagement)}`}>
+                          <p className="text-xs text-gray-600">Engagement</p>
+                          <p className={`text-sm font-medium ${getEngagementColor(content.engagement)}`}>
                             {content.engagement}%
-              </p>
-            </div>
-          </div>
-        </div>
+                          </p>
+                        </div>
+                        <div className="text-center">
+                          <p className="text-xs text-gray-600">Viral Score</p>
+                          <p className={`text-sm font-medium ${getViralScoreColor(content.viralScore)}`}>
+                            {content.viralScore}%
+                          </p>
+                        </div>
+                      </div>
+                    </div>
                   ))}
                 </div>
               </Card>
@@ -688,17 +583,17 @@ export default function AnalyticsPage() {
                 <Card className="p-6">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">Age Distribution</h3>
                   <div className="space-y-3">
-                    {analyticsData[0]?.audienceDemographics.ageGroups.map((group) => (
-                      <div key={group.range} className="flex items-center justify-between">
-                        <span className="text-sm text-gray-600">{group.range}</span>
+                    {analyticsData[0]?.audienceDemographics.ageGroups.map((age) => (
+                      <div key={age.range} className="flex items-center justify-between">
+                        <span className="text-sm text-gray-600">{age.range}</span>
                         <div className="flex items-center gap-2">
                           <div className="w-24 bg-gray-200 rounded-full h-2">
                             <div
                               className="bg-blue-600 h-2 rounded-full"
-                              style={{ width: `${group.percentage}%` }}
+                              style={{ width: `${age.percentage}%` }}
                             />
                           </div>
-                          <span className="text-sm font-medium">{group.percentage}%</span>
+                          <span className="text-sm font-medium">{age.percentage}%</span>
                         </div>
                       </div>
                     ))}
@@ -802,5 +697,18 @@ export default function AnalyticsPage() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function AnalyticsPageWrapper() {
+  return (
+    <FeatureAccessControl
+      featureName="Analytics Dashboard"
+      featureDescription="Track your growth with advanced analytics, audience insights, and performance metrics across all your social media platforms."
+      requiredPlan="creator"
+      icon={<BarChart3 className="w-10 h-10 text-white" />}
+    >
+      <AnalyticsPage />
+    </FeatureAccessControl>
   );
 }

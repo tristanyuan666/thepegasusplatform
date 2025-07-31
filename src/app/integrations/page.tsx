@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { createClient } from "@supabase/supabase-js";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
-import FeatureAccessControl from "@/components/feature-access-control";
 import {
   MessageCircle,
   Instagram,
@@ -39,6 +38,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import FeatureAccessControl from "@/components/feature-access-control";
 
 interface AnalyticsData {
   total_posts: number;
@@ -55,7 +55,7 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-function IntegrationsPageContent() {
+function IntegrationsPage() {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [connectedAccounts, setConnectedAccounts] = useState<any[]>([]);
@@ -634,15 +634,15 @@ function IntegrationsPageContent() {
   );
 }
 
-export default function IntegrationsPage() {
+export default function IntegrationsPageWrapper() {
   return (
     <FeatureAccessControl
       featureName="Platform Integrations"
-      featureDescription="Connect your social media accounts to sync data, schedule posts, and track performance across all platforms in one unified dashboard."
+      featureDescription="Connect and manage all your social media platforms in one place with unified analytics and content management."
       requiredPlan="creator"
       icon={<Globe className="w-10 h-10 text-white" />}
     >
-      <IntegrationsPageContent />
+      <IntegrationsPage />
     </FeatureAccessControl>
   );
 }

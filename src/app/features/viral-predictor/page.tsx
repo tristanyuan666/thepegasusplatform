@@ -13,6 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import FeatureAccessControl from "@/components/feature-access-control";
 import {
   Zap,
   Brain,
@@ -91,7 +92,7 @@ interface ViralFactor {
   suggestion: string;
 }
 
-export default function ViralPredictorPage() {
+function ViralPredictorPage() {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [contentInput, setContentInput] = useState("");
@@ -718,5 +719,18 @@ export default function ViralPredictorPage() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function ViralPredictorPageWrapper() {
+  return (
+    <FeatureAccessControl
+      featureName="Viral Score Predictor"
+      featureDescription="Predict the viral potential of your content with AI-powered analysis and get actionable insights to boost engagement."
+      requiredPlan="influencer"
+      icon={<Zap className="w-10 h-10 text-white" />}
+    >
+      <ViralPredictorPage />
+    </FeatureAccessControl>
   );
 }

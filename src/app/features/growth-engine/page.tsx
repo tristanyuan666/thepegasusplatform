@@ -13,6 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import FeatureAccessControl from "@/components/feature-access-control";
 import {
   TrendingUp,
   Zap,
@@ -119,7 +120,7 @@ interface GrowthMetrics {
   viralScore: number;
 }
 
-export default function GrowthEnginePage() {
+function GrowthEnginePage() {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [growthStrategies, setGrowthStrategies] = useState<GrowthStrategy[]>([]);
@@ -746,5 +747,18 @@ export default function GrowthEnginePage() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function GrowthEnginePageWrapper() {
+  return (
+    <FeatureAccessControl
+      featureName="Growth Engine"
+      featureDescription="Optimize your content for maximum reach and engagement with AI-powered growth strategies and A/B testing."
+      requiredPlan="influencer"
+      icon={<TrendingUp className="w-10 h-10 text-white" />}
+    >
+      <GrowthEnginePage />
+    </FeatureAccessControl>
   );
 }
