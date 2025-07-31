@@ -200,10 +200,10 @@ export default function PremiumFeatureIntro({
                 </div>
                 
                 <div className="space-y-6">
-                  <h1 className="text-[3.18rem] lg:text-[4.24rem] font-bold text-gray-900 leading-tight">
+                  <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 leading-tight">
                     {featureName}
                   </h1>
-                  <p className="text-[1.06rem] text-gray-600 leading-relaxed max-w-2xl">
+                  <p className="text-base text-gray-600 leading-relaxed max-w-2xl">
                     {featureDescription}
                   </p>
                   
