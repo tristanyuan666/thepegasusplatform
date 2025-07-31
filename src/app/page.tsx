@@ -1,4 +1,5 @@
 "use client";
+// Trigger Vercel build
 
 import Hero from "@/components/hero";
 import Navbar from "@/components/navbar";
