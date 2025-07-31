@@ -98,7 +98,7 @@ export default function PremiumFeatureIntro({
   const [subscriptionTier, setSubscriptionTier] = useState<string>("free");
   const supabase = createClient();
 
-  const platformTheme = platform ? platformThemes[platform] : { color: "text-blue-600", gradient: "from-blue-500 to-purple-600" };
+  const platformTheme = platform ? platformThemes[platform] : { color: "text-blue-600", gradient: "from-blue-500 to-blue-600" };
 
   useEffect(() => {
     checkUserStatus();
@@ -200,10 +200,10 @@ export default function PremiumFeatureIntro({
                 </div>
                 
                 <div className="space-y-6">
-                  <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 leading-tight">
+                  <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 leading-tight">
                     {featureName}
                   </h1>
-                  <p className="text-lg text-gray-600 leading-relaxed max-w-2xl">
+                  <p className="text-base text-gray-600 leading-relaxed max-w-2xl">
                     {featureDescription}
                   </p>
                   
@@ -242,8 +242,8 @@ export default function PremiumFeatureIntro({
                   
                   {!user && (
                     <Button variant="outline" asChild size="lg" className="py-4 px-8 text-lg border-2">
-                      <Link href="/sign-up">
-                        Create Account
+                      <Link href="/faq">
+                        Learn More
                       </Link>
                     </Button>
                   )}
@@ -288,7 +288,7 @@ export default function PremiumFeatureIntro({
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, index) => (
               <Card key={index} className="p-8 text-center hover:shadow-lg transition-shadow duration-200 border-0 shadow-sm">
-                <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg border border-gray-100">
+                <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg border border-gray-100 shadow-[0_4px_8px_rgba(0,0,0,0.1)]">
                   <div className="text-blue-600">
                     {feature.icon}
                   </div>
