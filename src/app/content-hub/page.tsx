@@ -15,7 +15,10 @@ export default async function ContentHubPage() {
       email: "user@example.com",
       user_metadata: {
         full_name: "User"
-      }
+      },
+      app_metadata: {},
+      aud: "authenticated",
+      created_at: new Date().toISOString()
     };
 
     return (
