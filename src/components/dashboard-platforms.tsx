@@ -87,6 +87,9 @@ interface ManualCredentials {
   api_key?: string;
   api_secret?: string;
   access_token?: string;
+  channel_id?: string;
+  page_id?: string;
+  company_id?: string;
 }
 
 const PLATFORMS = [
@@ -97,7 +100,13 @@ const PLATFORMS = [
     color: "from-pink-500 to-purple-600",
     description: "Share photos, stories, and reels",
     features: ["Post scheduling", "Story creation", "Reel optimization"],
-    manualFields: ["username", "password"]
+    manualFields: ["username", "password", "access_token", "api_key"],
+    fieldLabels: {
+      username: "Instagram Username",
+      password: "Instagram Password", 
+      access_token: "Access Token (Optional)",
+      api_key: "API Key (Optional)"
+    }
   },
   {
     id: "youtube",
@@ -106,7 +115,13 @@ const PLATFORMS = [
     color: "from-red-500 to-red-700",
     description: "Upload videos and build a channel",
     features: ["Video upload", "Channel analytics", "Live streaming"],
-    manualFields: ["username", "password", "api_key"]
+    manualFields: ["username", "password", "api_key", "channel_id"],
+    fieldLabels: {
+      username: "YouTube Username",
+      password: "YouTube Password",
+      api_key: "YouTube API Key",
+      channel_id: "Channel ID (Optional)"
+    }
   },
   {
     id: "tiktok",
@@ -115,7 +130,13 @@ const PLATFORMS = [
     color: "from-black to-gray-800",
     description: "Create short-form videos",
     features: ["Video creation", "Trend analysis", "Hashtag optimization"],
-    manualFields: ["username", "password", "api_key"]
+    manualFields: ["username", "password", "api_key", "access_token"],
+    fieldLabels: {
+      username: "TikTok Username",
+      password: "TikTok Password",
+      api_key: "TikTok API Key",
+      access_token: "Access Token (Optional)"
+    }
   },
   {
     id: "x",
@@ -124,7 +145,14 @@ const PLATFORMS = [
     color: "from-black to-gray-700",
     description: "Share thoughts and engage with your audience",
     features: ["Tweet scheduling", "Thread creation", "Engagement tracking"],
-    manualFields: ["username", "password", "api_key", "api_secret"]
+    manualFields: ["username", "password", "api_key", "api_secret", "access_token"],
+    fieldLabels: {
+      username: "X Username",
+      password: "X Password",
+      api_key: "X API Key",
+      api_secret: "X API Secret",
+      access_token: "Access Token (Optional)"
+    }
   },
   {
     id: "facebook",
@@ -133,7 +161,13 @@ const PLATFORMS = [
     color: "from-blue-500 to-blue-700",
     description: "Connect with friends and family",
     features: ["Post creation", "Page management", "Group engagement"],
-    manualFields: ["username", "password"]
+    manualFields: ["username", "password", "page_id", "access_token"],
+    fieldLabels: {
+      username: "Facebook Username",
+      password: "Facebook Password",
+      page_id: "Page ID (Optional)",
+      access_token: "Access Token (Optional)"
+    }
   },
   {
     id: "linkedin",
@@ -142,7 +176,13 @@ const PLATFORMS = [
     color: "from-blue-600 to-blue-800",
     description: "Build your professional network",
     features: ["Article publishing", "Network building", "Professional content"],
-    manualFields: ["username", "password", "api_key"]
+    manualFields: ["username", "password", "api_key", "company_id"],
+    fieldLabels: {
+      username: "LinkedIn Username",
+      password: "LinkedIn Password",
+      api_key: "LinkedIn API Key",
+      company_id: "Company ID (Optional)"
+    }
   }
 ];
 
@@ -249,6 +289,9 @@ export default function DashboardPlatforms({
             api_key: manualCredentials.api_key,
             api_secret: manualCredentials.api_secret,
             access_token: manualCredentials.access_token,
+            channel_id: manualCredentials.channel_id,
+            page_id: manualCredentials.page_id,
+            company_id: manualCredentials.company_id,
             connection_verified: true,
             last_verified: new Date().toISOString()
           },
@@ -277,7 +320,10 @@ export default function DashboardPlatforms({
         password: "",
         api_key: "",
         api_secret: "",
-        access_token: ""
+        access_token: "",
+        channel_id: "",
+        page_id: "",
+        company_id: ""
       });
       
     } catch (error) {
@@ -660,65 +706,21 @@ export default function DashboardPlatforms({
                             </TabsList>
                             <TabsContent value="manual" className="space-y-4">
                               <div className="space-y-4">
-                                <div>
-                                  <Label htmlFor="username" className="text-sm font-medium text-gray-700">Username</Label>
-                                  <Input
-                                    id="username"
-                                    type="text"
-                                    value={manualCredentials.username}
-                                    onChange={(e) => setManualCredentials(prev => ({ ...prev, username: e.target.value }))}
-                                    placeholder="Enter your username"
-                                    className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-                                  />
-                                </div>
-                                <div>
-                                  <Label htmlFor="password" className="text-sm font-medium text-gray-700">Password</Label>
-                                  <div className="relative">
+                                {platform.manualFields.map((field, index) => (
+                                  <div key={index}>
+                                    <Label htmlFor={field} className="text-sm font-medium text-gray-700">
+                                      {platform.fieldLabels[field as keyof typeof platform.fieldLabels]}
+                                    </Label>
                                     <Input
-                                      id="password"
-                                      type={showPassword ? "text" : "password"}
-                                      value={manualCredentials.password}
-                                      onChange={(e) => setManualCredentials(prev => ({ ...prev, password: e.target.value }))}
-                                      placeholder="Enter your password"
-                                      className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-                                    />
-                                    <Button
-                                      type="button"
-                                      variant="ghost"
-                                      size="sm"
-                                      className="absolute right-0 top-0 h-full px-3 hover:bg-gray-100"
-                                      onClick={() => setShowPassword(!showPassword)}
-                                    >
-                                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                                    </Button>
-                                  </div>
-                                </div>
-                                {platform.manualFields.includes("api_key") && (
-                                  <div>
-                                    <Label htmlFor="api_key" className="text-sm font-medium text-gray-700">API Key (Optional)</Label>
-                                    <Input
-                                      id="api_key"
+                                      id={field}
                                       type="text"
-                                      value={manualCredentials.api_key}
-                                      onChange={(e) => setManualCredentials(prev => ({ ...prev, api_key: e.target.value }))}
-                                      placeholder="Enter API key if available"
+                                      value={manualCredentials[field as keyof ManualCredentials]}
+                                      onChange={(e) => setManualCredentials(prev => ({ ...prev, [field]: e.target.value }))}
+                                      placeholder={`Enter your ${platform.fieldLabels[field as keyof typeof platform.fieldLabels]?.toLowerCase()}`}
                                       className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
                                     />
                                   </div>
-                                )}
-                                {platform.manualFields.includes("api_secret") && (
-                                  <div>
-                                    <Label htmlFor="api_secret" className="text-sm font-medium text-gray-700">API Secret (Optional)</Label>
-                                    <Input
-                                      id="api_secret"
-                                      type="password"
-                                      value={manualCredentials.api_secret}
-                                      onChange={(e) => setManualCredentials(prev => ({ ...prev, api_secret: e.target.value }))}
-                                      placeholder="Enter API secret if available"
-                                      className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-                                    />
-                                  </div>
-                                )}
+                                ))}
                               </div>
                               <div className="flex gap-2">
                                 <Button
