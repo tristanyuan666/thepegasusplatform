@@ -25,12 +25,12 @@ import {
   Share2,
   Instagram,
   Youtube,
-  MessageSquare,
   Facebook,
   Linkedin,
   ArrowRight,
   Lock,
 } from "lucide-react";
+import XIcon from "./x-icon";
 import { Badge } from "./ui/badge";
 import UserProfile from "./user-profile";
 import PegasusLogo from "./pegasus-logo";
@@ -101,13 +101,13 @@ export default function Navbar({ user = null }: NavbarProps) {
       href: "/features/analytics",
       feature: undefined,
     },
-    {
-      title: "Content Scheduler",
-      description: "Auto-schedule across platforms",
-      icon: <Calendar className="w-5 h-5 text-blue-600" />,
-      href: "/features/scheduler",
-      feature: undefined,
-    },
+            {
+          title: "Content Scheduler",
+          description: "Auto post across platforms",
+          icon: <Calendar className="w-5 h-5 text-blue-600" />,
+          href: "/features/scheduler",
+          feature: undefined,
+        },
     {
       title: "Viral Score Predictor",
       description: "Predict content performance",
@@ -165,7 +165,7 @@ export default function Navbar({ user = null }: NavbarProps) {
     {
       title: "X",
       description: "Post to X",
-      icon: <MessageSquare className="w-5 h-5 text-blue-600" />,
+      icon: <XIcon className="w-5 h-5 text-blue-600" />,
       href: "/integrations/x",
       feature: undefined,
     },
@@ -263,8 +263,8 @@ export default function Navbar({ user = null }: NavbarProps) {
     },
     {
       title: "X",
-      description: "Post to X",
-      icon: <MessageSquare className="w-5 h-5 text-blue-600" />,
+      description: "Manage X account & auto-post content",
+      icon: <XIcon className="w-5 h-5 text-blue-600" />,
       href: "/dashboard?tab=platforms",
       feature: "platforms",
     },

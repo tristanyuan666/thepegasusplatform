@@ -743,16 +743,16 @@ export default function Home() {
             {/* Trust Indicators */}
             <div className="flex flex-wrap items-center justify-center gap-8 mt-16 text-sm text-gray-600">
               <div className="flex items-center gap-2 hover:text-blue-600 transition-colors">
-                <Zap className="w-4 h-4 text-blue-500" />
-                <span>Setup in under 5 minutes</span>
+                <TrendingUp className="w-4 h-4 text-blue-500" />
+                <span>340% Average Growth Rate</span>
               </div>
               <div className="flex items-center gap-2 hover:text-blue-600 transition-colors">
-                <Shield className="w-4 h-4 text-blue-500" />
-                <span>Enterprise-grade security</span>
+                <Users className="w-4 h-4 text-blue-500" />
+                <span>50,000+ Active Creators</span>
               </div>
               <div className="flex items-center gap-2 hover:text-blue-600 transition-colors">
-                <Award className="w-4 h-4 text-blue-500" />
-                <span>30-day money-back guarantee</span>
+                <Sparkles className="w-4 h-4 text-blue-500" />
+                <span>AI-Powered Content Creation</span>
               </div>
             </div>
           </div>

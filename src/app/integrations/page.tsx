@@ -8,7 +8,6 @@ import {
   MessageCircle,
   Instagram,
   Youtube,
-  MessageSquare,
   Linkedin,
   Facebook,
   Sparkles,
@@ -32,6 +31,7 @@ import {
   Eye,
   EyeOff,
 } from "lucide-react";
+import XIcon from "@/components/x-icon";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -224,7 +224,7 @@ function IntegrationsPage() {
     {
       name: "X",
       description: "Post and engage on X platform",
-      icon: <MessageSquare className="w-8 h-8" />,
+      icon: <XIcon className="w-8 h-8" />,
       color: "from-blue-500 to-blue-600",
       features: ["Post scheduling", "Thread creation", "Trend monitoring", "Engagement tracking"],
     },

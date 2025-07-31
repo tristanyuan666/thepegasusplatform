@@ -30,7 +30,6 @@ import {
   Instagram,
   Youtube,
   Music,
-  MessageSquare,
   Loader2,
   Filter,
   SortAsc,
@@ -52,6 +51,7 @@ import {
   MessageCircle,
   ExternalLink,
 } from "lucide-react";
+import XIcon from "./x-icon";
 import { createClient } from "../../supabase/client";
 
 interface UserProfile {
@@ -312,7 +312,7 @@ export default function DashboardRevenue({
       case "instagram": return <Instagram className="w-4 h-4" />;
       case "youtube": return <Youtube className="w-4 h-4" />;
       case "tiktok": return <Music className="w-4 h-4" />;
-      case "x": return <MessageSquare className="w-4 h-4" />;
+      case "x": return <XIcon className="w-4 h-4" />;
       default: return <Share2 className="w-4 h-4" />;
     }
   };

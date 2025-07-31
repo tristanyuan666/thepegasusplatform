@@ -40,11 +40,11 @@ import {
   Globe,
   Link as LinkIcon,
   Instagram,
-  MessageSquare,
   Youtube,
   Linkedin,
   Facebook,
 } from "lucide-react";
+import XIcon from "./x-icon";
 import { updateUserProfile } from "@/app/actions";
 import { FormMessage, Message } from "./form-message";
 import { supabase } from "../../supabase/supabase";
@@ -220,7 +220,7 @@ export default function UserProfileManagement({
       case "instagram":
         return <Instagram className="w-4 h-4" />;
       case "x":
-        return <MessageSquare className="w-4 h-4" />;
+        return <XIcon className="w-4 h-4" />;
       case "youtube":
         return <Youtube className="w-4 h-4" />;
       case "linkedin":

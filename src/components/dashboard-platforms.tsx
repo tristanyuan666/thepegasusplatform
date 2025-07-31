@@ -12,7 +12,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Instagram,
   Youtube,
-  MessageSquare,
   Facebook,
   Linkedin,
   Music,
@@ -31,6 +30,7 @@ import {
   Settings,
   Info
 } from "lucide-react";
+import XIcon from "./x-icon";
 import { createClient } from "../../supabase/client";
 
 interface UserProfile {
@@ -125,10 +125,10 @@ const PLATFORMS = [
   {
     id: "x",
     name: "X",
-    icon: X,
-    color: "from-black to-gray-700",
-            description: "Monitor your X account metrics",
-    features: ["Follower tracking", "Engagement analytics", "Tweet performance"],
+    icon: XIcon,
+    color: "from-blue-500 to-blue-700",
+    description: "Monitor your X account metrics",
+    features: ["Follower tracking", "Engagement analytics", "Post performance"],
     manualFields: ["username"],
     fieldLabels: {
       username: "X Username"

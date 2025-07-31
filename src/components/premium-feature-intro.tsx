@@ -34,10 +34,10 @@ import {
   Settings,
   Instagram,
   Facebook,
-  MessageSquare,
   Linkedin,
   Youtube
 } from "lucide-react";
+import XIcon from "./x-icon";
 import Link from "next/link";
 import Navbar from "./navbar";
 import Footer from "./footer";
@@ -66,7 +66,7 @@ interface PremiumFeatureIntroProps {
 const platformIcons: { [key: string]: React.ReactNode } = {
   instagram: <Instagram className="w-6 h-6" />,
   facebook: <Facebook className="w-6 h-6" />,
-  x: <MessageSquare className="w-6 h-6" />,
+  x: <XIcon className="w-6 h-6" />,
   linkedin: <Linkedin className="w-6 h-6" />,
   youtube: <Youtube className="w-6 h-6" />,
   tiktok: <Video className="w-6 h-6" />,
@@ -75,10 +75,10 @@ const platformIcons: { [key: string]: React.ReactNode } = {
 const platformThemes: { [key: string]: { color: string; gradient: string } } = {
   instagram: { color: "text-pink-600", gradient: "from-pink-500 to-purple-600" },
   facebook: { color: "text-blue-600", gradient: "from-blue-500 to-blue-700" },
-  x: { color: "text-black", gradient: "from-gray-800 to-black" },
+  x: { color: "text-blue-600", gradient: "from-blue-500 to-blue-700" },
   linkedin: { color: "text-blue-700", gradient: "from-blue-600 to-blue-800" },
   youtube: { color: "text-red-600", gradient: "from-red-500 to-red-700" },
-  tiktok: { color: "text-black", gradient: "from-gray-900 to-black" },
+  tiktok: { color: "text-pink-600", gradient: "from-pink-500 to-purple-600" },
 };
 
 export default function PremiumFeatureIntro({
@@ -214,11 +214,11 @@ export default function PremiumFeatureIntro({
                     </div>
                     <div className="flex items-center gap-2">
                       <Users className="w-5 h-5 text-blue-600" />
-                      <span className="text-gray-700 font-medium">Trusted by 10K+ creators</span>
+                      <span className="text-gray-700 font-medium">Trusted by 50K+ creators</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <TrendingUp className="w-5 h-5 text-green-600" />
-                      <span className="text-gray-700 font-medium">Proven results</span>
+                      <span className="text-gray-700 font-medium">340% average growth</span>
                     </div>
                   </div>
                 </div>
@@ -278,10 +278,10 @@ export default function PremiumFeatureIntro({
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
-              Powerful capabilities designed for professionals
+              Professional-grade tools for serious creators
             </h2>
             <p className="text-xl text-gray-600">
-              Advanced tools and features that give you the competitive edge
+              Advanced AI-powered features designed to maximize your social media success
             </p>
           </div>
 
@@ -308,10 +308,10 @@ export default function PremiumFeatureIntro({
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
-              Why industry leaders choose our platform
+              Join the elite creators who've already transformed their results
             </h2>
             <p className="text-xl text-gray-600">
-              Join thousands of successful creators and businesses who've transformed their digital presence
+              See why 50,000+ creators choose our platform to build their influence and grow their audience
             </p>
           </div>
 
@@ -389,16 +389,16 @@ export default function PremiumFeatureIntro({
             {/* Trust Indicators */}
             <div className="flex flex-wrap items-center justify-center gap-8 mt-16 text-sm text-gray-600">
               <div className="flex items-center gap-2 hover:text-blue-600 transition-colors">
-                <Zap className="w-4 h-4 text-blue-500" />
-                <span>Setup in under 5 minutes</span>
+                <TrendingUp className="w-4 h-4 text-blue-500" />
+                <span>340% Average Growth Rate</span>
               </div>
               <div className="flex items-center gap-2 hover:text-blue-600 transition-colors">
-                <Lock className="w-4 h-4 text-blue-500" />
-                <span>Enterprise-grade security</span>
+                <Users className="w-4 h-4 text-blue-500" />
+                <span>50,000+ Active Creators</span>
               </div>
               <div className="flex items-center gap-2 hover:text-blue-600 transition-colors">
-                <Star className="w-4 h-4 text-blue-500" />
-                <span>30-day money-back guarantee</span>
+                <Sparkles className="w-4 h-4 text-blue-500" />
+                <span>AI-Powered Content Creation</span>
               </div>
             </div>
           </div>
