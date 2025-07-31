@@ -33,15 +33,26 @@ function ContentHubErrorBoundary() {
 export default async function ContentHubPage() {
   try {
     const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    
+    // Get user with error handling
+    let user = null;
+    try {
+      const { data: { user: userData }, error: userError } = await supabase.auth.getUser();
+      if (userError) {
+        console.error("Auth error:", userError);
+        return redirect("/sign-in");
+      }
+      user = userData;
+    } catch (error) {
+      console.error("Error getting user:", error);
+      return redirect("/sign-in");
+    }
 
     if (!user) {
       return redirect("/sign-in");
     }
 
-    // Fetch user profile with better error handling
+    // Fetch user profile with comprehensive error handling
     let userProfile = null;
     try {
       const { data: profileData, error: profileError } = await supabase

@@ -826,57 +826,85 @@ export default function DashboardHome({
         <TabsContent value="platforms" className="space-y-6">
           {/* Connected Platforms */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {platformConnections.map((connection) => (
-              <Card key={connection.id} className="hover:shadow-md transition-shadow">
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-3 mb-4">
-                    {connection.platform === "instagram" && <Camera className="w-6 h-6 text-pink-600" />}
-                    {connection.platform === "tiktok" && <Video className="w-6 h-6 text-black" />}
-                    {connection.platform === "youtube" && <Play className="w-6 h-6 text-red-600" />}
-                    {connection.platform === "x" && <MessageCircle className="w-6 h-6 text-blue-600" />}
-                    <div>
-                      <h3 className="font-semibold capitalize">{connection.platform}</h3>
-                      <p className="text-sm text-gray-600">@{connection.platform_username}</p>
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Status</span>
-                      <Badge variant="default" className="bg-green-100 text-green-800">
-                        Connected
+            {platformConnections.filter(p => p.is_active).map((connection) => {
+              const platformName = connection.platform.charAt(0).toUpperCase() + connection.platform.slice(1);
+              const platformStats = analyticsData?.platform_breakdown?.[connection.platform as keyof typeof analyticsData.platform_breakdown];
+              
+              return (
+                <Card key={connection.id} className="border-green-200 bg-gradient-to-br from-green-50 to-emerald-50 shadow-lg hover:shadow-xl transition-all duration-300">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg flex items-center justify-center shadow-md">
+                          <span className="text-white font-bold text-sm">
+                            {platformName.charAt(0)}
+                          </span>
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-gray-900 text-lg">{platformName}</h3>
+                          <p className="text-sm text-gray-600">@{connection.platform_username}</p>
+                        </div>
+                      </div>
+                      <Badge className="bg-green-500 text-white border-0 animate-pulse">
+                        <CheckCircle className="w-3 h-3 mr-1" />
+                        Active
                       </Badge>
                     </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Connected</span>
-                      <span className="text-gray-900">
-                        {new Date(connection.connected_at).toLocaleDateString()}
-                      </span>
+                    
+                    <div className="grid grid-cols-3 gap-3 text-center mb-4">
+                      <div className="bg-white/50 p-3 rounded-lg border border-green-100">
+                        <div className="text-lg font-bold text-gray-900">
+                          {platformStats?.followers?.toLocaleString() || "0"}
+                        </div>
+                        <div className="text-xs text-gray-600">Followers</div>
+                      </div>
+                      <div className="bg-white/50 p-3 rounded-lg border border-green-100">
+                        <div className="text-lg font-bold text-gray-900">
+                          {platformStats?.posts || "0"}
+                        </div>
+                        <div className="text-xs text-gray-600">Posts</div>
+                      </div>
+                      <div className="bg-white/50 p-3 rounded-lg border border-green-100">
+                        <div className="text-lg font-bold text-gray-900">
+                          {platformStats?.engagement?.toFixed(1) || "0"}%
+                        </div>
+                        <div className="text-xs text-gray-600">Engagement</div>
+                      </div>
                     </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Last Sync</span>
-                      <span className="text-gray-900">
-                        {new Date(connection.last_sync).toLocaleDateString()}
-                      </span>
+                    
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Connected</span>
+                        <span className="text-gray-900 font-medium">
+                          {new Date(connection.connected_at).toLocaleDateString()}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Last Sync</span>
+                        <span className="text-gray-900 font-medium">
+                          {new Date(connection.last_sync).toLocaleDateString()}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                  </CardContent>
+                </Card>
+              );
+            })}
 
-            {platformConnections.length === 0 && (
-              <Card className="col-span-full">
+            {platformConnections.filter(p => p.is_active).length === 0 && (
+              <Card className="col-span-full border-gray-200 bg-gradient-to-br from-gray-50 to-blue-50">
                 <CardContent className="p-8 text-center">
-                  <Globe className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  <Globe className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
                     No Platforms Connected
                   </h3>
-                  <p className="text-gray-600 mb-4">
-                    Connect your social media accounts to start tracking performance and creating content.
+                  <p className="text-gray-600 mb-6 max-w-md mx-auto">
+                    Connect your social media accounts to start tracking performance and creating content with premium analytics.
                   </p>
-                  <Button asChild>
-                    <Link href="/integrations">
+                  <Button asChild className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700">
+                    <Link href="/dashboard?tab=platforms">
                       <Plus className="w-4 h-4 mr-2" />
-                      Connect Platforms
+                      Manage Platforms
                     </Link>
                   </Button>
                 </CardContent>

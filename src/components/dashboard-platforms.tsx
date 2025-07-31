@@ -641,7 +641,7 @@ export default function DashboardPlatforms({
                           ) : (
                             <>
                               <Key className="w-4 h-4 mr-2" />
-                              Connect Premium
+                              Connection
                             </>
                           )}
                         </Button>
@@ -729,7 +729,7 @@ export default function DashboardPlatforms({
                                   {isConnectingPlatform ? (
                                     <Loader2 className="w-4 h-4 animate-spin" />
                                   ) : (
-                                    "Connect Premium"
+                                    "Connection"
                                   )}
                                 </Button>
                                 <Button
