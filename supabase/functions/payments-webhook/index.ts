@@ -1027,6 +1027,29 @@ async function handleSubscriptionCancelled(supabaseClient: any, eventData: any) 
       },
     })
     .eq("stripe_id", eventData.id);
+
+  // Update user's plan status to reflect cancellation
+  const { data: subscription } = await supabaseClient
+    .from("subscriptions")
+    .select("user_id, plan_name")
+    .eq("stripe_id", eventData.id)
+    .single();
+
+  if (subscription?.user_id) {
+    await supabaseClient
+      .from("users")
+      .update({
+        plan: "free",
+        plan_status: "cancelled",
+        plan_billing: null,
+        plan_period_end: eventData.current_period_end,
+        is_active: false,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("user_id", subscription.user_id);
+    
+    console.log("User plan cancelled for:", subscription.user_id, subscription.plan_name);
+  }
 }
 
 async function handleInvoicePaymentSucceeded(supabaseClient: any, eventData: any) {

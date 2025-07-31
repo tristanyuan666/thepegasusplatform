@@ -55,7 +55,7 @@ const defaultPlans: PricingPlan[] = [
   {
     id: "creator",
     name: "Creator",
-    price: { monthly: 39.99, yearly: 383.99 },
+    price: { monthly: 3999, yearly: 38399 }, // $39.99/month, $383.99/year
     description: "Perfect for aspiring creators",
     gradient: "from-blue-500 to-blue-600",
     icon: <Sparkles className="w-6 h-6" />,
@@ -77,7 +77,7 @@ const defaultPlans: PricingPlan[] = [
   {
     id: "influencer",
     name: "Influencer",
-    price: { monthly: 59.99, yearly: 575.99 },
+    price: { monthly: 5999, yearly: 57599 }, // $59.99/month, $575.99/year
     popular: true,
     description: "Most popular for serious creators",
     gradient: "from-blue-600 to-blue-700",
@@ -100,7 +100,7 @@ const defaultPlans: PricingPlan[] = [
   {
     id: "superstar",
     name: "Superstar",
-    price: { monthly: 99.99, yearly: 959.99 },
+    price: { monthly: 9999, yearly: 95999 }, // $99.99/month, $959.99/year
     description: "For influencer superstars",
     gradient: "from-blue-700 to-blue-800",
     icon: <Crown className="w-6 h-6" />,
@@ -324,7 +324,7 @@ export default function PricingCard({
     // eslint-disable-next-line
   }, [user]);
 
-  // Determine button state
+  // Determine button state - only allow upgrades, no downgrades
   const isCurrentPlan =
     userPlan && 
     (userPlan.toLowerCase() === safePlan.id.toLowerCase() ||
@@ -336,10 +336,8 @@ export default function PricingCard({
     ["creator", "influencer", "superstar"].indexOf(safePlan.id) >
       ["creator", "influencer", "superstar"].indexOf(userPlan);
   
-  const isDowngrade =
-    !!userPlan &&
-    ["creator", "influencer", "superstar"].indexOf(safePlan.id) <
-      ["creator", "influencer", "superstar"].indexOf(userPlan);
+  // Hide downgrade options - users can only upgrade or stay on current plan
+  const shouldShowPlan = !userPlan || isUpgrade || isCurrentPlan;
 
   return (
     <div
@@ -497,41 +495,45 @@ export default function PricingCard({
 
           {/* CTA Button */}
           <div className="space-y-2">
-            <Button
-              onClick={handleCheckout}
-              disabled={isLoading || !!isCurrentPlan}
-              className={`w-full py-3 text-sm font-bold transition-all duration-300 magnetic interactive-element hover-target pricing-button checkout-button stripe-button button ${
-                safePlan.popular
-                  ? `bg-gradient-to-r ${safePlan.gradient} hover:shadow-premium-lg text-white`
-                  : "bg-gray-800 hover:bg-gray-700 text-white"
-              } ${
-                isLoading || !!isCurrentPlan
-                  ? "opacity-50 cursor-not-allowed"
-                  : "hover:scale-105"
-              }`}
-              data-interactive="true"
-              data-pricing-button="true"
-              data-checkout-button="true"
-              data-stripe-checkout="true"
-              data-button="true"
-              aria-label={`Subscribe to ${safePlan.name} plan`}
-            >
-              {isLoading ? (
-                <ButtonLoadingSpinner text="Processing..." />
-              ) : paymentError ? (
-                <span className="text-sm">Retry Payment</span>
-              ) : isCurrentPlan ? (
-                <span className="text-sm">Current Plan</span>
-              ) : isUpgrade ? (
-                <span className="text-sm">Upgrade</span>
-              ) : isDowngrade ? (
-                <span className="text-sm">Downgrade</span>
-              ) : safePlan.popular ? (
-                <span className="text-sm">Start Building Fame</span>
-              ) : (
-                <span className="text-sm">Get Started</span>
-              )}
-            </Button>
+            {shouldShowPlan ? (
+              <Button
+                onClick={handleCheckout}
+                disabled={isLoading || !!isCurrentPlan}
+                className={`w-full py-3 text-sm font-bold transition-all duration-300 magnetic interactive-element hover-target pricing-button checkout-button stripe-button button ${
+                  safePlan.popular
+                    ? `bg-gradient-to-r ${safePlan.gradient} hover:shadow-premium-lg text-white`
+                    : "bg-gray-800 hover:bg-gray-700 text-white"
+                } ${
+                  isLoading || !!isCurrentPlan
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:scale-105"
+                }`}
+                data-interactive="true"
+                data-pricing-button="true"
+                data-checkout-button="true"
+                data-stripe-checkout="true"
+                data-button="true"
+                aria-label={`Subscribe to ${safePlan.name} plan`}
+              >
+                {isLoading ? (
+                  <ButtonLoadingSpinner text="Processing..." />
+                ) : paymentError ? (
+                  <span className="text-sm">Retry Payment</span>
+                ) : isCurrentPlan ? (
+                  <span className="text-sm">Current Plan</span>
+                ) : isUpgrade ? (
+                  <span className="text-sm">Upgrade</span>
+                ) : safePlan.popular ? (
+                  <span className="text-sm">Start Building Fame</span>
+                ) : (
+                  <span className="text-sm">Get Started</span>
+                )}
+              </Button>
+            ) : (
+              <div className="w-full py-3 text-sm text-center text-gray-500 bg-gray-100 rounded-lg">
+                <span>Downgrade not available</span>
+              </div>
+            )}
           </div>
         </div>
       </div>
