@@ -381,9 +381,9 @@ export default function SuccessPage() {
                   </Link>
                 </Button>
                 <Button asChild variant="outline">
-                  <Link href="/integrations">
+                  <Link href="/dashboard?tab=platforms">
                     <Globe className="w-4 h-4 mr-2" />
-                    Connect Platforms
+                    Manage Platforms
                   </Link>
                 </Button>
                 <Button asChild variant="outline">

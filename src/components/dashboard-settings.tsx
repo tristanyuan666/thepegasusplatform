@@ -294,6 +294,8 @@ export default function DashboardSettings({
         throw new Error("Full name is required");
       }
 
+      console.log("Attempting to save settings for user:", userProfile.user_id);
+
       // Update user profile first
       const { error: profileError } = await supabase
         .from("users")
@@ -312,8 +314,10 @@ export default function DashboardSettings({
 
       if (profileError) {
         console.error("Profile update error:", profileError);
-        throw new Error("Failed to update profile. Please try again.");
+        throw new Error(`Failed to update profile: ${profileError.message}`);
       }
+
+      console.log("Profile updated successfully, now updating settings");
 
       // Update settings with better error handling
       try {
@@ -329,6 +333,7 @@ export default function DashboardSettings({
 
         if (insertError && insertError.code === '23505') {
           // Unique constraint violation, try update instead
+          console.log("Settings record exists, updating instead");
           const { error: updateError } = await supabase
             .from("user_settings")
             .update({
@@ -341,10 +346,14 @@ export default function DashboardSettings({
           if (updateError) {
             console.warn("Settings update error:", updateError);
             // Continue without settings table - profile was saved successfully
+          } else {
+            console.log("Settings updated successfully");
           }
         } else if (insertError) {
           console.warn("Settings insert error:", insertError);
           // Continue without settings table - profile was saved successfully
+        } else {
+          console.log("Settings inserted successfully");
         }
       } catch (settingsError) {
         console.warn("Settings table not available:", settingsError);
