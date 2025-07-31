@@ -399,9 +399,9 @@ export default function PricingCard({
             {isYearly ? (
               <>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="text-[2.11rem] font-bold text-gray-900">
-                    ${((safePlan.price.yearly / 12 / 100) - 0.01).toFixed(2)}
-                  </span>
+                                <span className="text-[2.05rem] font-bold text-gray-900">
+                ${((safePlan.price.yearly / 12 / 100) - 0.01).toFixed(2)}
+              </span>
                   <span className="text-lg text-gray-400 line-through">
                     ${(safePlan.price.monthly / 100).toFixed(2)}
                   </span>
@@ -417,7 +417,7 @@ export default function PricingCard({
               </>
             ) : (
               <div className="flex items-center gap-2">
-                <span className="text-[2.11rem] font-bold text-gray-900">
+                <span className="text-[2.05rem] font-bold text-gray-900">
                   ${(safePlan.price.monthly / 100).toFixed(2)}
                 </span>
                 <span className="text-xs text-gray-500">
