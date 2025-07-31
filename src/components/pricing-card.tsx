@@ -214,9 +214,16 @@ export default function PricingCard({
 
     try {
       // Call Supabase Edge Function with enhanced error handling
+      const planId = safePlan.id as keyof typeof STRIPE_PRICE_IDS;
+      const billingType = isYearly ? "yearly" : "monthly" as const;
+      
+      if (!STRIPE_PRICE_IDS[planId]) {
+        throw new Error(`Invalid plan ID: ${planId}`);
+      }
+      
       const checkoutPayload = {
-        price_id: STRIPE_PRICE_IDS[safePlan.id][isYearly ? "yearly" : "monthly"],
-        billing_cycle: isYearly ? "yearly" : "monthly",
+        price_id: STRIPE_PRICE_IDS[planId][billingType],
+        billing_cycle: billingType,
         user_id: user.id,
         customer_email: user.email,
         plan_name: safePlan.name,
