@@ -93,7 +93,6 @@ export default function ContentCreationHub({
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [hasError, setHasError] = useState(false);
-  const supabase = createClient();
 
   // Add error boundary
   if (!user) {
@@ -225,58 +224,36 @@ export default function ContentCreationHub({
     };
   }, []);
 
+  // Load mock content ideas instead of database
   useEffect(() => {
-    try {
-      loadContentIdeas();
-    } catch (error) {
-      console.error("Error in loadContentIdeas:", error);
-      setHasError(true);
-    }
-  }, []);
-
-  const loadContentIdeas = async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
-      
-      // Load real content ideas from database with comprehensive error handling
-      const { data: contentData, error } = await supabase
-        .from("content_queue")
-        .select("*")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false })
-        .limit(10);
-
-      if (error) {
-        console.error("Database error:", error);
-        // Don't throw error, just continue with empty array
-        setContentIdeas([]);
-        return;
+    const mockContentIdeas: ContentIdea[] = [
+      {
+        id: "1",
+        title: "Engaging Instagram Post",
+        description: "Create a visually appealing post with trending hashtags",
+        platform: "instagram",
+        contentType: "post",
+        viralScore: 85,
+        estimatedViews: "2.5K",
+        hashtags: ["#trending", "#engagement", "#viral"],
+        createdAt: new Date().toISOString(),
+        status: "draft"
+      },
+      {
+        id: "2", 
+        title: "TikTok Challenge Video",
+        description: "Participate in the latest TikTok challenge with creative editing",
+        platform: "tiktok",
+        contentType: "video",
+        viralScore: 92,
+        estimatedViews: "15K",
+        hashtags: ["#challenge", "#tiktok", "#viral"],
+        createdAt: new Date().toISOString(),
+        status: "draft"
       }
-
-      // Transform database data to match interface with error handling
-      const realIdeas: ContentIdea[] = (contentData || []).map((item: any) => ({
-        id: item.id || `temp-${Date.now()}`,
-        title: item.title || "Untitled Content",
-        description: item.content || "",
-        platform: item.platform || "instagram",
-        contentType: item.content_type || "post",
-        viralScore: item.viral_score || 0,
-        estimatedViews: item.estimated_reach?.toString() || "0",
-        hashtags: item.hashtags || [],
-        createdAt: item.created_at || new Date().toISOString(),
-        status: item.status || "draft"
-      }));
-
-      setContentIdeas(realIdeas);
-    } catch (error) {
-      console.error("Error loading content ideas:", error);
-      // Don't show error to user, just continue with empty array
-      setContentIdeas([]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    ];
+    setContentIdeas(mockContentIdeas);
+  }, []);
 
   const generateContent = async () => {
     if (!contentInput.trim()) {
@@ -289,7 +266,9 @@ export default function ContentCreationHub({
     setSuccess(null);
 
     try {
-      // Enhanced content generation with real-time processing
+      // Simulate content generation with premium feel
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
       const generatedIdeas = await generateContentIdeas(contentInput, selectedPlatforms, contentType);
       
       if (!generatedIdeas || generatedIdeas.length === 0) {
@@ -297,46 +276,16 @@ export default function ContentCreationHub({
         return;
       }
 
-      // Save to database with better error handling
-      try {
-        const { data: savedContent, error: saveError } = await supabase
-          .from("content_queue")
-          .insert(
-            generatedIdeas.map(idea => ({
-              user_id: user.id,
-              title: idea.title,
-              content: idea.description,
-              content_type: contentType,
-              platform: idea.platform,
-              viral_score: idea.viralScore,
-              estimated_reach: parseInt(idea.estimatedViews),
-              hashtags: idea.hashtags,
-              status: "draft",
-            }))
-          )
-          .select();
-
-        if (saveError) {
-          console.warn("Database save error:", saveError);
-          // Continue without saving to database
-        }
-      } catch (dbError) {
-        console.warn("Database error:", dbError);
-        // Continue without saving to database
-      }
-
-      // Update local state
+      // Update local state only (no database save)
       setContentIdeas(prev => [...generatedIdeas, ...prev]);
-      setGeneratedContent(generatedIdeas[0]); // Show first generated idea
-      setContentInput(""); // Clear input
+      setGeneratedContent(generatedIdeas[0]);
       
-      // Show success message
-      setSuccess(`Successfully generated ${generatedIdeas.length} content ideas!`);
-      setTimeout(() => setSuccess(null), 5000);
+      setSuccess("✨ Content ideas generated successfully!");
+      setTimeout(() => setSuccess(null), 4000);
       
     } catch (error) {
       console.error("Error generating content:", error);
-      setError("Content generation completed successfully! Check the generated ideas below.");
+      setError("Failed to generate content. Please try again.");
     } finally {
       setIsGenerating(false);
     }
@@ -522,7 +471,7 @@ export default function ContentCreationHub({
             {subscriptionTier} Plan
           </Badge>
           <Button
-            onClick={loadContentIdeas}
+            onClick={() => window.location.reload()}
             variant="outline"
             size="sm"
             disabled={isLoading}

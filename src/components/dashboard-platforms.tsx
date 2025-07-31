@@ -83,12 +83,6 @@ interface DashboardPlatformsProps {
 
 interface ManualCredentials {
   username: string;
-  api_key: string;
-  api_secret: string;
-  access_token: string;
-  channel_id: string;
-  page_id: string;
-  company_id: string;
 }
 
 const PLATFORMS = [
@@ -99,10 +93,9 @@ const PLATFORMS = [
     color: "from-pink-500 to-purple-600",
     description: "Track your Instagram account performance and stats",
     features: ["Follower analytics", "Engagement tracking", "Content performance"],
-    manualFields: ["username", "api_key"],
+    manualFields: ["username"],
     fieldLabels: {
-      username: "Instagram Username",
-      api_key: "API Key (Optional)"
+      username: "Instagram Username"
     }
   },
   {
@@ -112,11 +105,9 @@ const PLATFORMS = [
     color: "from-red-500 to-red-700",
     description: "Monitor your YouTube channel analytics",
     features: ["Subscriber tracking", "Video performance", "Channel analytics"],
-    manualFields: ["username", "api_key", "channel_id"],
+    manualFields: ["username"],
     fieldLabels: {
-      username: "YouTube Username",
-      api_key: "YouTube API Key",
-      channel_id: "Channel ID (Optional)"
+      username: "YouTube Username"
     }
   },
   {
@@ -126,10 +117,9 @@ const PLATFORMS = [
     color: "from-black to-gray-800",
     description: "Track your TikTok account statistics",
     features: ["Follower analytics", "Video performance", "Trend tracking"],
-    manualFields: ["username", "api_key"],
+    manualFields: ["username"],
     fieldLabels: {
-      username: "TikTok Username",
-      api_key: "TikTok API Key"
+      username: "TikTok Username"
     }
   },
   {
@@ -139,11 +129,9 @@ const PLATFORMS = [
     color: "from-black to-gray-700",
     description: "Monitor your X/Twitter account metrics",
     features: ["Follower tracking", "Engagement analytics", "Tweet performance"],
-    manualFields: ["username", "api_key", "api_secret"],
+    manualFields: ["username"],
     fieldLabels: {
-      username: "X Username",
-      api_key: "X API Key",
-      api_secret: "X API Secret"
+      username: "X Username"
     }
   },
   {
@@ -153,10 +141,9 @@ const PLATFORMS = [
     color: "from-blue-500 to-blue-700",
     description: "Track your Facebook page performance",
     features: ["Page analytics", "Post performance", "Audience insights"],
-    manualFields: ["username", "page_id"],
+    manualFields: ["username"],
     fieldLabels: {
-      username: "Facebook Username",
-      page_id: "Page ID (Optional)"
+      username: "Facebook Username"
     }
   },
   {
@@ -166,11 +153,9 @@ const PLATFORMS = [
     color: "from-blue-600 to-blue-800",
     description: "Monitor your LinkedIn professional metrics",
     features: ["Connection analytics", "Post performance", "Professional insights"],
-    manualFields: ["username", "api_key", "company_id"],
+    manualFields: ["username"],
     fieldLabels: {
-      username: "LinkedIn Username",
-      api_key: "LinkedIn API Key",
-      company_id: "Company ID (Optional)"
+      username: "LinkedIn Username"
     }
   }
 ];
@@ -190,13 +175,7 @@ export default function DashboardPlatforms({
   const [content, setContent] = useState<any[]>([]);
   const [showManualDialog, setShowManualDialog] = useState<string | null>(null);
   const [manualCredentials, setManualCredentials] = useState<ManualCredentials>({
-    username: "",
-    api_key: "",
-    api_secret: "",
-    access_token: "",
-    channel_id: "",
-    page_id: "",
-    company_id: ""
+    username: ""
   });
   const [connectionType, setConnectionType] = useState<"oauth" | "manual">("manual");
   
@@ -275,12 +254,6 @@ export default function DashboardPlatforms({
           follower_count: followerCount,
           manual_credentials: {
             username: manualCredentials.username,
-            api_key: manualCredentials.api_key,
-            api_secret: manualCredentials.api_secret,
-            access_token: manualCredentials.access_token,
-            channel_id: manualCredentials.channel_id,
-            page_id: manualCredentials.page_id,
-            company_id: manualCredentials.company_id,
             connection_verified: true,
             last_verified: new Date().toISOString(),
             stats_tracking_enabled: true
@@ -306,13 +279,7 @@ export default function DashboardPlatforms({
       // Close dialog and reset form
       setShowManualDialog(null);
       setManualCredentials({
-        username: "",
-        api_key: "",
-        api_secret: "",
-        access_token: "",
-        channel_id: "",
-        page_id: "",
-        company_id: ""
+        username: ""
       });
       
     } catch (error) {

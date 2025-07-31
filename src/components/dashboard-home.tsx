@@ -901,12 +901,6 @@ export default function DashboardHome({
                   <p className="text-gray-600 mb-6 max-w-md mx-auto">
                     Connect your social media accounts to start tracking performance and creating content with premium analytics.
                   </p>
-                  <Button asChild className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700">
-                    <Link href="/dashboard?tab=platforms">
-                      <Plus className="w-4 h-4 mr-2" />
-                      Manage Platforms
-                    </Link>
-                  </Button>
                 </CardContent>
               </Card>
             )}
