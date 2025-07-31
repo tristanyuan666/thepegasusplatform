@@ -396,26 +396,35 @@ export default function PricingCard({
 
           {/* Price Section */}
           <div className="flex flex-col items-center mb-6">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-[2.18rem] font-bold text-gray-900">
-                ${isYearly ? ((safePlan.price.yearly / 12 / 100) - 0.01).toFixed(2) : (safePlan.price.monthly / 100).toFixed(2)}
-              </span>
-              {isYearly && (
-                <span className="text-lg text-gray-400 line-through">
+            {isYearly ? (
+              <>
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-[2.11rem] font-bold text-gray-900">
+                    ${((safePlan.price.yearly / 12 / 100) - 0.01).toFixed(2)}
+                  </span>
+                  <span className="text-lg text-gray-400 line-through">
+                    ${(safePlan.price.monthly / 100).toFixed(2)}
+                  </span>
+                  <span className="ml-2 px-2 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full animate-pulse">
+                    Save 20%
+                  </span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="text-xs text-gray-500">
+                    `/month, billed $${(safePlan.price.yearly / 100).toFixed(2)}/year`
+                  </span>
+                </div>
+              </>
+            ) : (
+              <div className="flex items-center gap-2">
+                <span className="text-[2.11rem] font-bold text-gray-900">
                   ${(safePlan.price.monthly / 100).toFixed(2)}
                 </span>
-              )}
-              {isYearly && (
-                <span className="ml-2 px-2 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full animate-pulse">
-                  Save 20%
+                <span className="text-xs text-gray-500">
+                  /month
                 </span>
-              )}
-            </div>
-            <div className="flex items-center gap-1">
-              <span className="text-xs text-gray-500">
-                {isYearly ? `/month, billed $${(safePlan.price.yearly / 100).toFixed(2)}/year` : "/month"}
-              </span>
-            </div>
+              </div>
+            )}
           </div>
 
           {/* Features */}
