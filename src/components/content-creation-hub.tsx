@@ -277,12 +277,12 @@ export default function ContentCreationHub({
                   <Sparkles className="w-5 h-5 text-white" />
                 </div>
                 <h1 className="text-xl font-bold text-gray-900">Content Creation Hub</h1>
-              </div>
+        </div>
               {hasActiveSubscription && (
                 <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white border-0">
                   <Crown className="w-3 h-3 mr-1" />
                   Premium
-                </Badge>
+          </Badge>
               )}
             </div>
             
@@ -294,7 +294,7 @@ export default function ContentCreationHub({
               <Button variant="outline" size="sm">
                 <Calendar className="w-4 h-4 mr-2" />
                 Schedule
-              </Button>
+          </Button>
             </div>
           </div>
         </div>
@@ -319,10 +319,10 @@ export default function ContentCreationHub({
               <BarChart3 className="w-4 h-4" />
               <span>Performance</span>
             </TabsTrigger>
-          </TabsList>
+        </TabsList>
 
           {/* Create Content Tab */}
-          <TabsContent value="create" className="space-y-6">
+        <TabsContent value="create" className="space-y-6">
             <Card className="p-8 bg-white border-0 shadow-xl">
               <div className="space-y-8">
                 {/* Platform Selection */}
@@ -385,21 +385,21 @@ export default function ContentCreationHub({
                         </button>
                       );
                     })}
-                  </div>
                 </div>
+              </div>
 
-                {/* Content Input */}
+              {/* Content Input */}
                 <div className="space-y-4">
                   <Label className="text-lg font-semibold text-gray-900">Your Content Idea</Label>
-                  <Textarea
-                    value={contentInput}
-                    onChange={(e) => setContentInput(e.target.value)}
+                <Textarea
+                  value={contentInput}
+                  onChange={(e) => setContentInput(e.target.value)}
                     placeholder="Describe your content idea, target audience, or what you want to achieve..."
                     className="min-h-[120px] text-lg border-2 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
-                  />
-                </div>
+                />
+              </div>
 
-                {/* Generate Button */}
+              {/* Generate Button */}
                 <Button
                   onClick={handleGenerateContent}
                   disabled={isGenerating || !contentInput.trim()}
@@ -417,21 +417,21 @@ export default function ContentCreationHub({
                     </>
                   )}
                 </Button>
-              </div>
-            </Card>
+            </div>
+          </Card>
 
             {/* Generated Content Display */}
-            {generatedContent && (
+          {generatedContent && (
               <Card className="p-8 bg-gradient-to-br from-purple-50 to-pink-50 border-0 shadow-xl">
                 <div className="space-y-6">
-                  <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between">
                     <h3 className="text-2xl font-bold text-gray-900">✨ Generated Content</h3>
                     <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white">
                       <Star className="w-3 h-3 mr-1" />
                       Premium AI Generated
                     </Badge>
-                  </div>
-                  
+                </div>
+
                   <div className="bg-white p-6 rounded-xl border border-gray-200">
                     <h4 className="text-lg font-semibold text-gray-900 mb-4">{generatedContent.title}</h4>
                     <p className="text-gray-700 whitespace-pre-wrap mb-4">{generatedContent.description}</p>
@@ -445,14 +445,14 @@ export default function ContentCreationHub({
                         <Badge variant="outline" className="bg-green-50 text-green-700">
                           <Eye className="w-3 h-3 mr-1" />
                           {generatedContent.estimatedViews} Views
-                        </Badge>
-                      </div>
-                      
+                      </Badge>
+                </div>
+
                       <div className="flex items-center space-x-2">
                         <Button size="sm" variant="outline">
                           <Copy className="w-4 h-4 mr-1" />
-                          Copy
-                        </Button>
+                    Copy
+                  </Button>
                         <Button size="sm" variant="outline">
                           <Edit3 className="w-4 h-4 mr-1" />
                           Edit
@@ -460,21 +460,21 @@ export default function ContentCreationHub({
                         <Button size="sm" className="bg-gradient-to-r from-purple-600 to-pink-600">
                           <Save className="w-4 h-4 mr-1" />
                           Save
-                        </Button>
+                  </Button>
                       </div>
                     </div>
-                  </div>
                 </div>
-              </Card>
-            )}
-          </TabsContent>
+              </div>
+            </Card>
+          )}
+        </TabsContent>
 
           {/* Templates Tab */}
-          <TabsContent value="templates" className="space-y-6">
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <TabsContent value="templates" className="space-y-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {premiumTemplates.map((template) => (
                 <Card key={template.id} className="p-6 bg-white border-0 shadow-lg hover:shadow-xl transition-all duration-200">
-                  <div className="space-y-4">
+                <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <h3 className="text-lg font-semibold text-gray-900">{template.name}</h3>
                       {template.premium && (
@@ -491,9 +491,9 @@ export default function ContentCreationHub({
                       <Badge variant="outline" className="bg-purple-50 text-purple-700">
                         <TrendingUp className="w-3 h-3 mr-1" />
                         {template.viralScore}% Viral Score
-                      </Badge>
-                    </div>
-                    
+                    </Badge>
+                  </div>
+
                     <Button
                       onClick={() => handleUseTemplate(template)}
                       className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
@@ -501,18 +501,18 @@ export default function ContentCreationHub({
                       <Wand2 className="w-4 h-4 mr-2" />
                       Use Template
                     </Button>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </TabsContent>
 
           {/* My Ideas Tab */}
-          <TabsContent value="ideas" className="space-y-6">
+        <TabsContent value="ideas" className="space-y-6">
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {contentIdeas.map((idea) => (
                 <Card key={idea.id} className="p-6 bg-white border-0 shadow-lg hover:shadow-xl transition-all duration-200">
-                  <div className="space-y-4">
+          <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <h3 className="text-lg font-semibold text-gray-900">{idea.title}</h3>
                       {idea.premium && (
@@ -535,25 +535,25 @@ export default function ContentCreationHub({
                           <Eye className="w-3 h-3 mr-1" />
                           {idea.estimatedViews}
                         </Badge>
-                      </div>
+                  </div>
                       
                       <div className="flex items-center space-x-2">
                         <Button size="sm" variant="outline">
-                          <Edit3 className="w-4 h-4" />
-                        </Button>
+                      <Edit3 className="w-4 h-4" />
+                    </Button>
                         <Button size="sm" variant="outline">
-                          <Share2 className="w-4 h-4" />
-                        </Button>
+                      <Share2 className="w-4 h-4" />
+                    </Button>
                       </div>
                     </div>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </TabsContent>
 
           {/* Analytics Tab */}
-          <TabsContent value="analytics" className="space-y-6">
+        <TabsContent value="analytics" className="space-y-6">
             <Card className="p-8 bg-white border-0 shadow-xl">
               <div className="space-y-6">
                 <h3 className="text-2xl font-bold text-gray-900">Content Performance Analytics</h3>
@@ -567,17 +567,17 @@ export default function ContentCreationHub({
                       </div>
                       <Eye className="w-8 h-8 text-purple-600" />
                     </div>
-                  </div>
+                </div>
                   
                   <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-xl border border-green-200">
                     <div className="flex items-center justify-between">
-                      <div>
+                <div>
                         <p className="text-sm text-gray-600">Engagement Rate</p>
                         <p className="text-2xl font-bold text-gray-900">8.5%</p>
                       </div>
                       <Heart className="w-8 h-8 text-green-600" />
-                    </div>
-                  </div>
+                </div>
+              </div>
                   
                   <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-xl border border-blue-200">
                     <div className="flex items-center justify-between">
@@ -587,11 +587,11 @@ export default function ContentCreationHub({
                       </div>
                       <TrendingUp className="w-8 h-8 text-blue-600" />
                     </div>
-                  </div>
+                </div>
                   
                   <div className="bg-gradient-to-br from-yellow-50 to-orange-50 p-6 rounded-xl border border-yellow-200">
                     <div className="flex items-center justify-between">
-                      <div>
+                <div>
                         <p className="text-sm text-gray-600">Content Created</p>
                         <p className="text-2xl font-bold text-gray-900">156</p>
                       </div>
@@ -603,7 +603,7 @@ export default function ContentCreationHub({
             </Card>
           </TabsContent>
         </Tabs>
-      </div>
+                </div>
 
       {/* Premium Upgrade Modal */}
       {showPremiumUpgrade && (
@@ -612,7 +612,7 @@ export default function ContentCreationHub({
             <div className="text-center space-y-4">
               <div className="w-16 h-16 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center mx-auto">
                 <Crown className="w-8 h-8 text-white" />
-              </div>
+                </div>
               <h3 className="text-xl font-bold text-gray-900">Upgrade to Premium</h3>
               <p className="text-gray-600">Access premium templates and advanced AI features to create viral content.</p>
               <div className="flex space-x-4">
@@ -625,8 +625,8 @@ export default function ContentCreationHub({
               </div>
             </div>
           </div>
-        </div>
-      )}
+                  </div>
+              )}
     </div>
   );
 }

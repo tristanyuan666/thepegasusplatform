@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { createClient } from "@supabase/supabase-js";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
+import FeatureAccessControl from "@/components/feature-access-control";
 import {
   MessageCircle,
   Instagram,
@@ -54,7 +55,7 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-export default function IntegrationsPage() {
+function IntegrationsPageContent() {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [connectedAccounts, setConnectedAccounts] = useState<any[]>([]);
@@ -630,5 +631,18 @@ export default function IntegrationsPage() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function IntegrationsPage() {
+  return (
+    <FeatureAccessControl
+      featureName="Platform Integrations"
+      featureDescription="Connect your social media accounts to sync data, schedule posts, and track performance across all platforms in one unified dashboard."
+      requiredPlan="creator"
+      icon={<Globe className="w-10 h-10 text-white" />}
+    >
+      <IntegrationsPageContent />
+    </FeatureAccessControl>
   );
 }
