@@ -1,102 +1,121 @@
-import Navbar from "@/components/navbar";
-import Footer from "@/components/footer";
-import { Twitter, ArrowRight, MessageCircle, Users, BarChart3 } from "lucide-react";
-import Link from "next/link";
+"use client";
+
+import { Twitter, Sparkles, Zap, Target, TrendingUp, Users, BarChart3, Camera, Video, Play, FileText, CheckCircle, Star, Share2, MessageCircle, Heart, Eye } from "lucide-react";
+import PremiumFeatureIntro from "@/components/premium-feature-intro";
 
 export default function TwitterIntegrationPage() {
   return (
-    <div className="min-h-screen bg-white">
-      <Navbar />
-
-      {/* Hero Section */}
-      <section className="py-24 bg-gradient-to-br from-blue-50 to-white relative overflow-hidden">
-        <div className="container mx-auto px-6 relative z-10">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center px-6 py-3 bg-white/60 backdrop-blur-sm rounded-full mb-8 shadow-lg border border-white/30">
-              <Twitter className="w-5 h-5 text-blue-600 mr-3" />
-              <span className="text-gray-800 text-sm font-semibold">
-                Twitter/X Integration
-              </span>
-            </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              Connect Your{" "}
-              <span className="bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-                Twitter/X Account
-              </span>
-            </h1>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed mb-12">
-              Seamlessly manage your Twitter/X posts, threads, and engagement with
-              AI-powered content creation and analytics.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                href="/pricing"
-                className="bg-gradient-to-r from-blue-600 to-blue-800 text-white px-8 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300 hover-target interactive-element"
-                data-interactive="true"
-              >
-                Get Started
-                <ArrowRight className="w-4 h-4 ml-2 inline" />
-              </Link>
-              <Link
-                href="/integrations"
-                className="border border-gray-300 text-gray-700 px-8 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-all duration-300 hover-target interactive-element"
-                data-interactive="true"
-              >
-                View All Integrations
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Features Grid */}
-      <section className="py-24 bg-white">
-        <div className="container mx-auto px-6">
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
-              <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mb-6">
-                <MessageCircle className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">
-                Tweet Management
-              </h3>
-              <p className="text-gray-600 leading-relaxed">
-                Create and schedule tweets, threads, and replies with
-                AI-generated content and optimal timing.
-              </p>
-            </div>
-
-            <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
-              <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg flex items-center justify-center mb-6">
-                <Users className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">
-                Engagement Tracking
-              </h3>
-              <p className="text-gray-600 leading-relaxed">
-                Monitor likes, retweets, and replies with detailed
-                analytics and audience insights.
-              </p>
-            </div>
-
-            <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
-              <div className="w-12 h-12 bg-gradient-to-r from-blue-700 to-blue-800 rounded-lg flex items-center justify-center mb-6">
-                <BarChart3 className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">
-                Viral Analytics
-              </h3>
-              <p className="text-gray-600 leading-relaxed">
-                Track tweet performance, reach, and viral potential with
-                comprehensive analytics and insights.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <Footer />
-    </div>
+    <PremiumFeatureIntro
+      featureName="Twitter Integration"
+      featureDescription="Connect your Twitter account and unlock powerful tools for tweet scheduling, analytics, and audience engagement. Manage your Twitter presence professionally with our comprehensive suite of features."
+      requiredPlan="creator"
+      icon={<Twitter className="w-6 h-6 text-white" />}
+      platform="twitter"
+      features={[
+        {
+          title: "Smart Tweet Scheduling",
+          description: "Schedule tweets at optimal times when your audience is most active",
+          icon: <Camera className="w-8 h-8 text-blue-600" />
+        },
+        {
+          title: "Thread Management",
+          description: "Create and schedule engaging tweet threads that drive conversation",
+          icon: <FileText className="w-8 h-8 text-purple-600" />
+        },
+        {
+          title: "Engagement Analytics",
+          description: "Track retweets, likes, replies, and impressions with detailed insights",
+          icon: <BarChart3 className="w-8 h-8 text-green-600" />
+        },
+        {
+          title: "Hashtag Optimization",
+          description: "AI-powered hashtag suggestions to increase your tweet reach",
+          icon: <Target className="w-8 h-8 text-orange-600" />
+        },
+        {
+          title: "Audience Insights",
+          description: "Understand your Twitter audience demographics and behavior patterns",
+          icon: <Users className="w-8 h-8 text-indigo-600" />
+        },
+        {
+          title: "Conversation Monitoring",
+          description: "Monitor mentions, replies, and conversations about your brand",
+          icon: <MessageCircle className="w-8 h-8 text-pink-600" />
+        }
+      ]}
+      benefits={[
+        {
+          title: "Increased Reach",
+          description: "Optimize your tweet timing to reach more of your audience",
+          stat: "4x"
+        },
+        {
+          title: "Higher Engagement",
+          description: "Improve engagement rates with data-driven tweet strategies",
+          stat: "58%"
+        },
+        {
+          title: "Viral Potential",
+          description: "Create tweets that have higher potential to go viral",
+          stat: "7x"
+        }
+      ]}
+      testimonials={[
+        {
+          name: "Michael Brown",
+          role: "Tech Influencer",
+          content: "The Twitter integration helped me grow from 10K to 100K followers in just 3 months. The scheduling and analytics are incredible!"
+        },
+        {
+          name: "Sarah Johnson",
+          role: "Marketing Consultant",
+          content: "I can now schedule weeks of tweets in advance. My engagement rate increased by 60% since using this tool."
+        },
+        {
+          name: "David Lee",
+          role: "Content Creator",
+          content: "The hashtag optimization feature is a game-changer. My tweets now reach 4x more people than before!"
+        }
+      ]}
+      pricing={[
+        {
+          plan: "Creator",
+          price: "$29",
+          features: [
+            "Twitter Integration",
+            "Basic Analytics",
+            "Tweet Scheduling",
+            "Hashtag Suggestions",
+            "1 Twitter Account",
+            "Email Support"
+          ]
+        },
+        {
+          plan: "Influencer",
+          price: "$79",
+          features: [
+            "Everything in Creator",
+            "Advanced Analytics",
+            "Thread Management",
+            "Audience Insights",
+            "Conversation Monitoring",
+            "Priority Support"
+          ],
+          popular: true
+        },
+        {
+          plan: "Superstar",
+          price: "$199",
+          features: [
+            "Everything in Influencer",
+            "Custom Automation Rules",
+            "White-label Solutions",
+            "API Access",
+            "Dedicated Success Manager",
+            "Custom Integrations"
+          ]
+        }
+      ]}
+    />
   );
 } 

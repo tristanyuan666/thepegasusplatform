@@ -1,102 +1,121 @@
-import Navbar from "@/components/navbar";
-import Footer from "@/components/footer";
-import { Linkedin, ArrowRight, Briefcase, Users, BarChart3 } from "lucide-react";
-import Link from "next/link";
+"use client";
+
+import { Linkedin, Sparkles, Zap, Target, TrendingUp, Users, BarChart3, Camera, Video, Play, FileText, CheckCircle, Star, Share2, MessageCircle, Heart, Eye } from "lucide-react";
+import PremiumFeatureIntro from "@/components/premium-feature-intro";
 
 export default function LinkedInIntegrationPage() {
   return (
-    <div className="min-h-screen bg-white">
-      <Navbar />
-
-      {/* Hero Section */}
-      <section className="py-24 bg-gradient-to-br from-blue-50 to-white relative overflow-hidden">
-        <div className="container mx-auto px-6 relative z-10">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center px-6 py-3 bg-white/60 backdrop-blur-sm rounded-full mb-8 shadow-lg border border-white/30">
-              <Linkedin className="w-5 h-5 text-blue-700 mr-3" />
-              <span className="text-gray-800 text-sm font-semibold">
-                LinkedIn Integration
-              </span>
-            </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              Connect Your{" "}
-              <span className="bg-gradient-to-r from-blue-700 to-blue-900 bg-clip-text text-transparent">
-                LinkedIn Profile
-              </span>
-            </h1>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed mb-12">
-              Seamlessly manage your LinkedIn posts, articles, and professional network with
-              AI-powered content creation and analytics.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                href="/pricing"
-                className="bg-gradient-to-r from-blue-700 to-blue-900 text-white px-8 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300 hover-target interactive-element"
-                data-interactive="true"
-              >
-                Get Started
-                <ArrowRight className="w-4 h-4 ml-2 inline" />
-              </Link>
-              <Link
-                href="/integrations"
-                className="border border-gray-300 text-gray-700 px-8 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-all duration-300 hover-target interactive-element"
-                data-interactive="true"
-              >
-                View All Integrations
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Features Grid */}
-      <section className="py-24 bg-white">
-        <div className="container mx-auto px-6">
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
-              <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg flex items-center justify-center mb-6">
-                <Briefcase className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">
-                Professional Content
-              </h3>
-              <p className="text-gray-600 leading-relaxed">
-                Create and schedule LinkedIn posts and articles with
-                AI-generated professional content and optimal timing.
-              </p>
-            </div>
-
-            <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
-              <div className="w-12 h-12 bg-gradient-to-r from-blue-700 to-blue-800 rounded-lg flex items-center justify-center mb-6">
-                <Users className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">
-                Network Growth
-              </h3>
-              <p className="text-gray-600 leading-relaxed">
-                Monitor connections, engagement, and reach with detailed
-                analytics and professional insights.
-              </p>
-            </div>
-
-            <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
-              <div className="w-12 h-12 bg-gradient-to-r from-blue-800 to-blue-900 rounded-lg flex items-center justify-center mb-6">
-                <BarChart3 className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">
-                Professional Analytics
-              </h3>
-              <p className="text-gray-600 leading-relaxed">
-                Track post performance, profile views, and professional growth with
-                comprehensive analytics and insights.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <Footer />
-    </div>
+    <PremiumFeatureIntro
+      featureName="LinkedIn Integration"
+      featureDescription="Connect your LinkedIn account and unlock powerful tools for professional content scheduling, networking, and B2B audience growth. Manage your LinkedIn presence like a pro with our comprehensive suite of features."
+      requiredPlan="creator"
+      icon={<Linkedin className="w-6 h-6 text-white" />}
+      platform="linkedin"
+      features={[
+        {
+          title: "Professional Content Scheduling",
+          description: "Schedule LinkedIn posts at optimal times for maximum professional engagement",
+          icon: <Camera className="w-8 h-8 text-blue-600" />
+        },
+        {
+          title: "Article Management",
+          description: "Create and schedule LinkedIn articles with professional formatting",
+          icon: <FileText className="w-8 h-8 text-purple-600" />
+        },
+        {
+          title: "Network Analytics",
+          description: "Track connection growth, profile views, and professional engagement",
+          icon: <BarChart3 className="w-8 h-8 text-green-600" />
+        },
+        {
+          title: "B2B Audience Insights",
+          description: "Understand your professional audience demographics and industry focus",
+          icon: <Target className="w-8 h-8 text-orange-600" />
+        },
+        {
+          title: "Thought Leadership Tools",
+          description: "Build your professional brand with content that establishes expertise",
+          icon: <Users className="w-8 h-8 text-indigo-600" />
+        },
+        {
+          title: "Professional Networking",
+          description: "Track and manage your professional connections and engagement",
+          icon: <MessageCircle className="w-8 h-8 text-pink-600" />
+        }
+      ]}
+      benefits={[
+        {
+          title: "Professional Growth",
+          description: "Build your professional brand and establish thought leadership",
+          stat: "5x"
+        },
+        {
+          title: "B2B Engagement",
+          description: "Increase engagement with professional content strategies",
+          stat: "73%"
+        },
+        {
+          title: "Network Expansion",
+          description: "Grow your professional network with strategic content",
+          stat: "4x"
+        }
+      ]}
+      testimonials={[
+        {
+          name: "Dr. Emily Chen",
+          role: "Business Consultant",
+          content: "The LinkedIn integration helped me establish myself as a thought leader in my industry. My network grew by 300%!"
+        },
+        {
+          name: "James Rodriguez",
+          role: "Sales Director",
+          content: "I can now schedule professional content that drives real business opportunities. My lead generation increased by 200%."
+        },
+        {
+          name: "Lisa Thompson",
+          role: "Marketing Executive",
+          content: "The B2B audience insights are invaluable. I can now target content to the right professional audience."
+        }
+      ]}
+      pricing={[
+        {
+          plan: "Creator",
+          price: "$29",
+          features: [
+            "LinkedIn Integration",
+            "Basic Analytics",
+            "Content Scheduling",
+            "Article Management",
+            "1 LinkedIn Account",
+            "Email Support"
+          ]
+        },
+        {
+          plan: "Influencer",
+          price: "$79",
+          features: [
+            "Everything in Creator",
+            "Advanced Analytics",
+            "B2B Audience Insights",
+            "Thought Leadership Tools",
+            "Professional Networking",
+            "Priority Support"
+          ],
+          popular: true
+        },
+        {
+          plan: "Superstar",
+          price: "$199",
+          features: [
+            "Everything in Influencer",
+            "Custom Professional Tools",
+            "White-label Solutions",
+            "API Access",
+            "Dedicated Success Manager",
+            "Custom Integrations"
+          ]
+        }
+      ]}
+    />
   );
 } 

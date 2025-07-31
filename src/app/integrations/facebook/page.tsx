@@ -1,102 +1,121 @@
-import Navbar from "@/components/navbar";
-import Footer from "@/components/footer";
-import { Facebook, ArrowRight, Share2, Users, BarChart3 } from "lucide-react";
-import Link from "next/link";
+"use client";
+
+import { Facebook, Sparkles, Zap, Target, TrendingUp, Users, BarChart3, Camera, Video, Play, FileText, CheckCircle, Star, Share2, MessageCircle, Heart, Eye } from "lucide-react";
+import PremiumFeatureIntro from "@/components/premium-feature-intro";
 
 export default function FacebookIntegrationPage() {
   return (
-    <div className="min-h-screen bg-white">
-      <Navbar />
-
-      {/* Hero Section */}
-      <section className="py-24 bg-gradient-to-br from-blue-50 to-white relative overflow-hidden">
-        <div className="container mx-auto px-6 relative z-10">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center px-6 py-3 bg-white/60 backdrop-blur-sm rounded-full mb-8 shadow-lg border border-white/30">
-              <Facebook className="w-5 h-5 text-blue-800 mr-3" />
-              <span className="text-gray-800 text-sm font-semibold">
-                Facebook Integration
-              </span>
-            </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              Connect Your{" "}
-              <span className="bg-gradient-to-r from-blue-800 to-blue-900 bg-clip-text text-transparent">
-                Facebook Pages
-              </span>
-            </h1>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed mb-12">
-              Seamlessly manage your Facebook pages, posts, and stories with
-              AI-powered content creation and analytics.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                href="/pricing"
-                className="bg-gradient-to-r from-blue-800 to-blue-900 text-white px-8 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300 hover-target interactive-element"
-                data-interactive="true"
-              >
-                Get Started
-                <ArrowRight className="w-4 h-4 ml-2 inline" />
-              </Link>
-              <Link
-                href="/integrations"
-                className="border border-gray-300 text-gray-700 px-8 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-all duration-300 hover-target interactive-element"
-                data-interactive="true"
-              >
-                View All Integrations
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Features Grid */}
-      <section className="py-24 bg-white">
-        <div className="container mx-auto px-6">
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
-              <div className="w-12 h-12 bg-gradient-to-r from-blue-700 to-blue-800 rounded-lg flex items-center justify-center mb-6">
-                <Share2 className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">
-                Page Management
-              </h3>
-              <p className="text-gray-600 leading-relaxed">
-                Create and schedule Facebook posts, stories, and live videos with
-                AI-generated content and optimal timing.
-              </p>
-            </div>
-
-            <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
-              <div className="w-12 h-12 bg-gradient-to-r from-blue-800 to-blue-900 rounded-lg flex items-center justify-center mb-6">
-                <Users className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">
-                Community Engagement
-              </h3>
-              <p className="text-gray-600 leading-relaxed">
-                Monitor likes, comments, and shares with detailed
-                analytics and community insights.
-              </p>
-            </div>
-
-            <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
-              <div className="w-12 h-12 bg-gradient-to-r from-blue-900 to-blue-950 rounded-lg flex items-center justify-center mb-6">
-                <BarChart3 className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">
-                Page Analytics
-              </h3>
-              <p className="text-gray-600 leading-relaxed">
-                Track page performance, reach, and engagement with
-                comprehensive analytics and insights.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <Footer />
-    </div>
+    <PremiumFeatureIntro
+      featureName="Facebook Integration"
+      featureDescription="Connect your Facebook account and unlock powerful tools for page management, content scheduling, and audience engagement. Manage your Facebook presence professionally with our comprehensive suite of features."
+      requiredPlan="creator"
+      icon={<Facebook className="w-6 h-6 text-white" />}
+      platform="facebook"
+      features={[
+        {
+          title: "Page Management",
+          description: "Manage multiple Facebook pages from one centralized dashboard with ease",
+          icon: <Users className="w-8 h-8 text-blue-600" />
+        },
+        {
+          title: "Content Scheduling",
+          description: "Schedule posts at optimal times when your audience is most active",
+          icon: <Camera className="w-8 h-8 text-purple-600" />
+        },
+        {
+          title: "Engagement Analytics",
+          description: "Track likes, shares, comments, and reach with detailed performance insights",
+          icon: <BarChart3 className="w-8 h-8 text-green-600" />
+        },
+        {
+          title: "Audience Insights",
+          description: "Understand your Facebook audience demographics and behavior patterns",
+          icon: <Target className="w-8 h-8 text-orange-600" />
+        },
+        {
+          title: "Ad Performance Tracking",
+          description: "Monitor your Facebook ad performance and optimize your campaigns",
+          icon: <TrendingUp className="w-8 h-8 text-indigo-600" />
+        },
+        {
+          title: "Community Management",
+          description: "Manage comments, messages, and community engagement efficiently",
+          icon: <MessageCircle className="w-8 h-8 text-pink-600" />
+        }
+      ]}
+      benefits={[
+        {
+          title: "Increased Reach",
+          description: "Optimize your content timing to reach more of your audience",
+          stat: "3x"
+        },
+        {
+          title: "Better Engagement",
+          description: "Improve engagement rates with data-driven content strategies",
+          stat: "52%"
+        },
+        {
+          title: "Time Savings",
+          description: "Automate routine tasks and focus on creating great content",
+          stat: "6hrs/week"
+        }
+      ]}
+      testimonials={[
+        {
+          name: "Jennifer Smith",
+          role: "Business Owner",
+          content: "The Facebook integration helped us grow our page from 5K to 50K followers in just 6 months. The scheduling and analytics are incredible!"
+        },
+        {
+          name: "Robert Chen",
+          role: "Marketing Manager",
+          content: "Managing multiple client Facebook pages is now effortless. The engagement analytics help us optimize every post."
+        },
+        {
+          name: "Amanda Wilson",
+          role: "Content Creator",
+          content: "The audience insights feature helped me understand my followers better. My engagement rate increased by 40%!"
+        }
+      ]}
+      pricing={[
+        {
+          plan: "Creator",
+          price: "$29",
+          features: [
+            "Facebook Integration",
+            "Basic Analytics",
+            "Content Scheduling",
+            "Page Management",
+            "1 Facebook Page",
+            "Email Support"
+          ]
+        },
+        {
+          plan: "Influencer",
+          price: "$79",
+          features: [
+            "Everything in Creator",
+            "Advanced Analytics",
+            "Multiple Page Management",
+            "Ad Performance Tracking",
+            "Community Management",
+            "Priority Support"
+          ],
+          popular: true
+        },
+        {
+          plan: "Superstar",
+          price: "$199",
+          features: [
+            "Everything in Influencer",
+            "Custom Automation Rules",
+            "White-label Solutions",
+            "API Access",
+            "Dedicated Success Manager",
+            "Custom Integrations"
+          ]
+        }
+      ]}
+    />
   );
 } 

@@ -1,279 +1,121 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { createClient } from "@supabase/supabase-js";
-import Navbar from "@/components/navbar";
-import Footer from "@/components/footer";
-import { Instagram, ArrowRight, Camera, Users, BarChart3, Plus, Settings, AlertCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+import { Instagram, Sparkles, Zap, Target, TrendingUp, Users, BarChart3, Camera, Video, Play, FileText, CheckCircle, Star, Share2, MessageCircle, Heart, Eye } from "lucide-react";
+import PremiumFeatureIntro from "@/components/premium-feature-intro";
 
 export default function InstagramIntegrationPage() {
-  const [user, setUser] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [isConnected, setIsConnected] = useState(false);
-  const [accountData, setAccountData] = useState<any>(null);
-
-  useEffect(() => {
-    checkUser();
-    loadInstagramData();
-  }, []);
-
-  const checkUser = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
-    } catch (error) {
-      console.error("Error checking user:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const loadInstagramData = async () => {
-    if (!user) return;
-    
-    try {
-      const mockAccountData = {
-        username: "@creative_creator",
-        followers: 15420,
-        following: 892,
-        posts: 234,
-        profile_picture: "https://via.placeholder.com/150",
-        bio: "Digital creator sharing lifestyle & creativity ✨",
-        verified: true
-      };
-      
-      setAccountData(mockAccountData);
-      setIsConnected(true);
-    } catch (error) {
-      console.error("Error loading Instagram data:", error);
-    }
-  };
-
-  const connectInstagram = async () => {
-    try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      setIsConnected(true);
-      loadInstagramData();
-    } catch (error) {
-      console.error("Error connecting Instagram:", error);
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading Instagram integration...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!user) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-center">
-          <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">Authentication Required</h2>
-          <p className="text-gray-600 mb-4">Please sign in to access Instagram integration.</p>
-          <Button onClick={() => window.location.href = "/auth/signin"}>
-            Sign In
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-white">
-      <Navbar />
-
-      <section className="py-12 bg-gradient-to-br from-purple-50 to-pink-50">
-        <div className="container mx-auto px-6">
-          <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center gap-4">
-              <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center">
-                <Instagram className="w-8 h-8 text-white" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                  Instagram Integration
-                </h1>
-                <p className="text-gray-600">
-                  Manage your Instagram content and analytics
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-4">
-              {isConnected ? (
-                <>
-                  <Badge variant="secondary" className="bg-green-100 text-green-800">
-                    Connected
-                  </Badge>
-                  <Button variant="outline">
-                    <Settings className="w-4 h-4 mr-2" />
-                    Settings
-                  </Button>
-                </>
-              ) : (
-                <Button onClick={connectInstagram}>
-                  <Plus className="w-4 h-4 mr-2" />
-                  Connect Instagram
-                </Button>
-              )}
-            </div>
-          </div>
-
-          {isConnected && accountData && (
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-gray-600">Followers</p>
-                      <p className="text-2xl font-bold text-gray-900">{accountData.followers.toLocaleString()}</p>
-                    </div>
-                    <Users className="w-8 h-8 text-purple-600" />
-                  </div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-gray-600">Posts</p>
-                      <p className="text-2xl font-bold text-gray-900">{accountData.posts}</p>
-                    </div>
-                    <Camera className="w-8 h-8 text-pink-600" />
-                  </div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-gray-600">Following</p>
-                      <p className="text-2xl font-bold text-gray-900">{accountData.following}</p>
-                    </div>
-                    <Users className="w-8 h-8 text-blue-600" />
-                  </div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-gray-600">Engagement</p>
-                      <p className="text-2xl font-bold text-gray-900">9.2%</p>
-                    </div>
-                    <BarChart3 className="w-8 h-8 text-green-600" />
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          )}
-        </div>
-      </section>
-
-      {isConnected ? (
-        <section className="py-8">
-          <div className="container mx-auto px-6">
-            <div className="grid md:grid-cols-2 gap-8">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Instagram className="w-5 h-5 text-purple-600" />
-                    Account Information
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {accountData && (
-                    <div className="space-y-4">
-                      <div className="flex items-center gap-4">
-                        <img 
-                          src={accountData.profile_picture} 
-                          alt="Profile" 
-                          className="w-16 h-16 rounded-full"
-                        />
-                        <div>
-                          <h3 className="font-semibold text-lg">{accountData.username}</h3>
-                          <p className="text-gray-600">{accountData.bio}</p>
-                          {accountData.verified && (
-                            <Badge variant="secondary" className="bg-blue-100 text-blue-800 mt-2">
-                              Verified
-                            </Badge>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Plus className="w-5 h-5 text-green-600" />
-                    Quick Actions
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <Button className="w-full bg-gradient-to-r from-purple-500 to-pink-500">
-                      <Plus className="w-4 h-4 mr-2" />
-                      Create New Post
-                    </Button>
-                    <Button variant="outline" className="w-full">
-                      <Camera className="w-4 h-4 mr-2" />
-                      Schedule Content
-                    </Button>
-                    <Button variant="outline" className="w-full">
-                      <BarChart3 className="w-4 h-4 mr-2" />
-                      View Analytics
-                    </Button>
-                    <Button variant="outline" className="w-full">
-                      <Settings className="w-4 h-4 mr-2" />
-                      Account Settings
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </section>
-      ) : (
-        <section className="py-24">
-          <div className="container mx-auto px-6 text-center">
-            <div className="max-w-md mx-auto">
-              <Instagram className="w-16 h-16 text-purple-600 mx-auto mb-6" />
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                Connect Your Instagram Account
-              </h2>
-              <p className="text-gray-600 mb-8">
-                Connect your Instagram account to start managing your content, scheduling posts, and tracking analytics.
-              </p>
-              <Button 
-                className="bg-gradient-to-r from-purple-500 to-pink-500"
-                onClick={connectInstagram}
-              >
-                <Instagram className="w-4 h-4 mr-2" />
-                Connect Instagram
-              </Button>
-            </div>
-          </div>
-        </section>
-      )}
-
-      <Footer />
-    </div>
+    <PremiumFeatureIntro
+      featureName="Instagram Integration"
+      featureDescription="Connect your Instagram account and unlock powerful tools for content scheduling, analytics, and audience growth. Manage your Instagram presence like a pro with our comprehensive suite of features."
+      requiredPlan="creator"
+      icon={<Instagram className="w-6 h-6 text-white" />}
+      platform="instagram"
+      features={[
+        {
+          title: "Smart Content Scheduling",
+          description: "Schedule posts at optimal times when your audience is most active for maximum engagement",
+          icon: <Camera className="w-8 h-8 text-pink-600" />
+        },
+        {
+          title: "Advanced Analytics",
+          description: "Track performance metrics, audience growth, and engagement rates with detailed insights",
+          icon: <BarChart3 className="w-8 h-8 text-blue-600" />
+        },
+        {
+          title: "Hashtag Optimization",
+          description: "AI-powered hashtag suggestions that increase your post reach and discoverability",
+          icon: <Target className="w-8 h-8 text-purple-600" />
+        },
+        {
+          title: "Engagement Automation",
+          description: "Automatically respond to comments and messages to build stronger relationships",
+          icon: <MessageCircle className="w-8 h-8 text-green-600" />
+        },
+        {
+          title: "Content Performance Tracking",
+          description: "Monitor which posts perform best and optimize your content strategy accordingly",
+          icon: <TrendingUp className="w-8 h-8 text-orange-600" />
+        },
+        {
+          title: "Multi-Account Management",
+          description: "Manage multiple Instagram accounts from one dashboard with ease",
+          icon: <Users className="w-8 h-8 text-indigo-600" />
+        }
+      ]}
+      benefits={[
+        {
+          title: "3x Faster Growth",
+          description: "Optimized posting schedules and content strategies accelerate your follower growth",
+          stat: "3x"
+        },
+        {
+          title: "Higher Engagement",
+          description: "Smart automation and optimization tools boost your engagement rates significantly",
+          stat: "67%"
+        },
+        {
+          title: "Time Savings",
+          description: "Automate routine tasks and focus on creating amazing content",
+          stat: "5hrs/week"
+        }
+      ]}
+      testimonials={[
+        {
+          name: "Alex Rivera",
+          role: "Fashion Influencer",
+          content: "The Instagram integration helped me grow from 50K to 200K followers in just 4 months. The scheduling and analytics features are incredible!"
+        },
+        {
+          name: "Jessica Kim",
+          role: "Food Blogger",
+          content: "I save 3 hours every day with automated posting and engagement. My engagement rate went up 40% since using this tool."
+        },
+        {
+          name: "David Chen",
+          role: "Travel Creator",
+          content: "The hashtag optimization feature is a game-changer. My posts now reach 3x more people than before!"
+        }
+      ]}
+      pricing={[
+        {
+          plan: "Creator",
+          price: "$29",
+          features: [
+            "Instagram Integration",
+            "Basic Analytics",
+            "Content Scheduling",
+            "Hashtag Suggestions",
+            "1 Instagram Account",
+            "Email Support"
+          ]
+        },
+        {
+          plan: "Influencer",
+          price: "$79",
+          features: [
+            "Everything in Creator",
+            "Advanced Analytics",
+            "Engagement Automation",
+            "Multi-Account Management",
+            "Performance Tracking",
+            "Priority Support"
+          ],
+          popular: true
+        },
+        {
+          plan: "Superstar",
+          price: "$199",
+          features: [
+            "Everything in Influencer",
+            "Custom Automation Rules",
+            "White-label Solutions",
+            "API Access",
+            "Dedicated Success Manager",
+            "Custom Integrations"
+          ]
+        }
+      ]}
+    />
   );
 }
