@@ -1,6 +1,6 @@
 "use client";
 
-import { Tiktok, Sparkles, Zap, Target, TrendingUp, Users, BarChart3, Camera, Video, Play, FileText, CheckCircle, Star, Share2, MessageCircle, Heart, Eye } from "lucide-react";
+import { Video, Sparkles, Zap, Target, TrendingUp, Users, BarChart3, Camera, Play, FileText, CheckCircle, Star, Share2, MessageCircle, Heart, Eye } from "lucide-react";
 import PremiumFeatureIntro from "@/components/premium-feature-intro";
 
 export default function TikTokIntegrationPage() {
@@ -9,7 +9,7 @@ export default function TikTokIntegrationPage() {
       featureName="TikTok Integration"
       featureDescription="Connect your TikTok account and unlock powerful tools for video creation, trending analysis, and audience growth. Manage your TikTok presence professionally with our comprehensive suite of features."
       requiredPlan="influencer"
-      icon={<Tiktok className="w-6 h-6 text-white" />}
+      icon={<Video className="w-6 h-6 text-white" />}
       platform="tiktok"
       features={[
         {

@@ -36,8 +36,7 @@ import {
   Facebook,
   Twitter,
   Linkedin,
-  Youtube,
-  Tiktok
+  Youtube
 } from "lucide-react";
 import Link from "next/link";
 
@@ -78,7 +77,7 @@ const platformIcons: { [key: string]: React.ReactNode } = {
   x: <Twitter className="w-6 h-6" />,
   linkedin: <Linkedin className="w-6 h-6" />,
   youtube: <Youtube className="w-6 h-6" />,
-  tiktok: <Tiktok className="w-6 h-6" />,
+  tiktok: <Video className="w-6 h-6" />,
 };
 
 export default function PremiumFeatureIntro({
