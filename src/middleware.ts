@@ -61,6 +61,11 @@ export async function middleware(req: NextRequest) {
       "/integrations",
     ];
 
+    // Skip middleware for content-hub to prevent authentication issues
+    if (req.nextUrl.pathname === "/content-hub") {
+      return NextResponse.next();
+    }
+
     const isProtectedRoute = protectedRoutes.some((route) =>
       req.nextUrl.pathname.startsWith(route),
     );
