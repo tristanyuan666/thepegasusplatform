@@ -92,6 +92,7 @@ export default function ContentCreationHub({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [hasError, setHasError] = useState(false);
   const supabase = createClient();
 
   // Add error boundary
@@ -109,6 +110,31 @@ export default function ContentCreationHub({
           <Button asChild>
             <Link href="/sign-in">Sign In</Link>
           </Button>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (hasError) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-8">
+        <div className="max-w-md w-full text-center">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <AlertCircle className="w-8 h-8 text-red-600" />
+          </div>
+          <h2 className="text-xl font-bold text-gray-900 mb-2">Content Hub Temporarily Unavailable</h2>
+          <p className="text-gray-600 mb-4">
+            We're experiencing some technical difficulties. Please try again in a few moments.
+          </p>
+          <div className="space-y-2">
+            <Button onClick={() => window.location.reload()} className="w-full">
+              Try Again
+            </Button>
+            <Button variant="outline" asChild className="w-full">
+              <Link href="/dashboard">Back to Dashboard</Link>
+            </Button>
+          </div>
         </div>
       </div>
     );
@@ -182,7 +208,30 @@ export default function ContentCreationHub({
   ];
 
   useEffect(() => {
-    loadContentIdeas();
+    // Add error boundary for the entire component
+    const handleError = (error: ErrorEvent) => {
+      console.error("Content hub error:", error);
+      setHasError(true);
+    };
+
+    window.addEventListener('error', handleError);
+    window.addEventListener('unhandledrejection', (event) => {
+      console.error("Unhandled promise rejection:", event.reason);
+      setHasError(true);
+    });
+
+    return () => {
+      window.removeEventListener('error', handleError);
+    };
+  }, []);
+
+  useEffect(() => {
+    try {
+      loadContentIdeas();
+    } catch (error) {
+      console.error("Error in loadContentIdeas:", error);
+      setHasError(true);
+    }
   }, []);
 
   const loadContentIdeas = async () => {
@@ -190,7 +239,7 @@ export default function ContentCreationHub({
       setIsLoading(true);
       setError(null);
       
-      // Load real content ideas from database
+      // Load real content ideas from database with comprehensive error handling
       const { data: contentData, error } = await supabase
         .from("content_queue")
         .select("*")
@@ -205,18 +254,18 @@ export default function ContentCreationHub({
         return;
       }
 
-      // Transform database data to match interface
+      // Transform database data to match interface with error handling
       const realIdeas: ContentIdea[] = (contentData || []).map((item: any) => ({
-        id: item.id,
-        title: item.title,
-        description: item.content,
-        platform: item.platform,
-        contentType: item.content_type,
-        viralScore: item.viral_score,
+        id: item.id || `temp-${Date.now()}`,
+        title: item.title || "Untitled Content",
+        description: item.content || "",
+        platform: item.platform || "instagram",
+        contentType: item.content_type || "post",
+        viralScore: item.viral_score || 0,
         estimatedViews: item.estimated_reach?.toString() || "0",
         hashtags: item.hashtags || [],
-        createdAt: item.created_at,
-        status: item.status
+        createdAt: item.created_at || new Date().toISOString(),
+        status: item.status || "draft"
       }));
 
       setContentIdeas(realIdeas);
