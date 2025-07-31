@@ -43,8 +43,14 @@ import {
   Palette,
   Music,
   Camera,
+  Crown,
+  Star,
+  Rocket,
+  Trophy,
+  Diamond,
+  Crown as CrownIcon,
+  Briefcase,
 } from "lucide-react";
-import { createClient } from "../../supabase/client";
 import Link from "next/link";
 
 interface ContentCreationHubProps {
@@ -64,6 +70,8 @@ interface ContentIdea {
   hashtags: string[];
   createdAt: string;
   status: "draft" | "scheduled" | "published";
+  aiGenerated?: boolean;
+  premium?: boolean;
 }
 
 interface ContentTemplate {
@@ -74,6 +82,7 @@ interface ContentTemplate {
   template: string;
   platforms: string[];
   viralScore: number;
+  premium?: boolean;
 }
 
 export default function ContentCreationHub({
@@ -83,8 +92,7 @@ export default function ContentCreationHub({
 }: ContentCreationHubProps) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [contentIdeas, setContentIdeas] = useState<ContentIdea[]>([]);
-  const [selectedTemplate, setSelectedTemplate] =
-    useState<ContentTemplate | null>(null);
+  const [selectedTemplate, setSelectedTemplate] = useState<ContentTemplate | null>(null);
   const [contentInput, setContentInput] = useState("");
   const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>(["all"]);
   const [contentType, setContentType] = useState("post");
@@ -93,171 +101,130 @@ export default function ContentCreationHub({
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [hasError, setHasError] = useState(false);
+  const [activeTab, setActiveTab] = useState("create");
+  const [showPremiumUpgrade, setShowPremiumUpgrade] = useState(false);
 
-  // Add error boundary
-  if (!user) {
-    return (
-      <div className="min-h-screen flex items-center justify-center p-8">
-        <div className="max-w-md w-full text-center">
-          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <AlertCircle className="w-8 h-8 text-red-600" />
-          </div>
-          <h2 className="text-xl font-bold text-gray-900 mb-2">Authentication Required</h2>
-          <p className="text-gray-600 mb-4">
-            Please sign in to access the content creation hub.
-          </p>
-          <Button asChild>
-            <Link href="/sign-in">Sign In</Link>
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
-  // Error state
-  if (hasError) {
-    return (
-      <div className="min-h-screen flex items-center justify-center p-8">
-        <div className="max-w-md w-full text-center">
-          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <AlertCircle className="w-8 h-8 text-red-600" />
-          </div>
-          <h2 className="text-xl font-bold text-gray-900 mb-2">Content Hub Temporarily Unavailable</h2>
-          <p className="text-gray-600 mb-4">
-            We're experiencing some technical difficulties. Please try again in a few moments.
-          </p>
-          <div className="space-y-2">
-            <Button onClick={() => window.location.reload()} className="w-full">
-              Try Again
-            </Button>
-            <Button variant="outline" asChild className="w-full">
-              <Link href="/dashboard">Back to Dashboard</Link>
-            </Button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  const contentTemplates: ContentTemplate[] = [
+  // Premium content templates
+  const premiumTemplates: ContentTemplate[] = [
     {
-      id: "1",
-      name: "Viral Hook Formula",
-      category: "Engagement",
-      description: "Proven hook patterns that stop the scroll",
-      template:
-        "POV: You just discovered [shocking fact about your niche]\n\nHere's what nobody tells you about [topic]:\n\n1. [Surprising insight]\n2. [Counter-intuitive truth]\n3. [Game-changing tip]\n\nSave this post if you found it helpful! 👆",
-      platforms: ["Social Media", "All Platforms"],
-      viralScore: 94,
+      id: "viral-story",
+      name: "Viral Story Template",
+      category: "Story",
+      description: "Create engaging stories that go viral",
+      template: "🎯 Hook: [Your attention-grabbing opening]\n\n💡 Value: [Share valuable insight/tip]\n\n🔥 Emotion: [Make them feel something]\n\n📱 Call to Action: [What should they do next?]\n\n#viral #trending #engagement",
+      platforms: ["instagram", "tiktok"],
+      viralScore: 95,
+      premium: true
     },
     {
-      id: "2",
-      name: "Tutorial Breakdown",
-      category: "Educational",
-      description: "Step-by-step tutorial format",
-      template:
-        "How to [achieve desired outcome] in [timeframe]:\n\nStep 1: [First action]\nStep 2: [Second action]\nStep 3: [Third action]\n\nBonus tip: [Extra value]\n\nTry this and let me know your results! 💪",
-      platforms: ["Social Media", "All Platforms"],
-      viralScore: 87,
+      id: "trending-reel",
+      name: "Trending Reel Template",
+      category: "Video",
+      description: "Create reels that trend on Instagram",
+      template: "🎬 Opening: [3-second hook]\n\n📖 Story: [15-second narrative]\n\n🎯 Point: [Key takeaway]\n\n💥 Ending: [Strong conclusion]\n\n#reels #trending #instagram",
+      platforms: ["instagram"],
+      viralScore: 92,
+      premium: true
     },
     {
-      id: "3",
-      name: "Behind the Scenes",
-      category: "Personal",
-      description: "Authentic behind-the-scenes content",
-      template:
-        "A day in my life as [your role/profession]:\n\n🌅 Morning: [morning routine]\n☕ Midday: [work/main activity]\n🌙 Evening: [evening routine]\n\nWhat does your typical day look like? Comment below! 👇",
-      platforms: ["Social Media", "All Platforms"],
-      viralScore: 82,
-    },
-    {
-      id: "4",
-      name: "Myth Buster",
-      category: "Educational",
-      description: "Debunk common misconceptions",
-      template:
-        "Myth: [Common belief in your niche]\n\nReality: [The actual truth]\n\nWhy this matters:\n• [Reason 1]\n• [Reason 2]\n• [Reason 3]\n\nWhat other myths should I bust next? 🤔",
-      platforms: ["Social Media", "All Platforms"],
-      viralScore: 89,
-    },
-    {
-      id: "5",
-      name: "Quick Tips List",
-      category: "Value",
-      description: "Actionable tips in list format",
-      template:
-        "[Number] [topic] tips that changed my [life/business/results]:\n\n1. [Tip with brief explanation]\n2. [Tip with brief explanation]\n3. [Tip with brief explanation]\n4. [Tip with brief explanation]\n5. [Tip with brief explanation]\n\nWhich tip resonates with you most? 💭",
-      platforms: ["Social Media", "All Platforms"],
-      viralScore: 85,
-    },
+      id: "tiktok-challenge",
+      name: "TikTok Challenge Template",
+      category: "Video",
+      description: "Participate in viral TikTok challenges",
+      template: "🎵 [Trending Sound]\n\n🎭 [Your unique take]\n\n🔥 [Add your twist]\n\n📈 [Make it shareable]\n\n#challenge #tiktok #viral",
+      platforms: ["tiktok"],
+      viralScore: 98,
+      premium: true
+    }
   ];
 
+  // Premium platforms with enhanced features
   const platforms = [
     { id: "all", name: "All Platforms", icon: Globe },
-    { id: "social", name: "Social Media", icon: Smartphone },
-    { id: "video", name: "Video Content", icon: Video },
-    { id: "image", name: "Image Posts", icon: Image },
+    { id: "instagram", name: "Instagram", icon: Camera, premium: true },
+    { id: "tiktok", name: "TikTok", icon: Music, premium: true },
+    { id: "youtube", name: "YouTube", icon: Play, premium: true },
+    { id: "x", name: "X", icon: MessageCircle, premium: true },
+    { id: "facebook", name: "Facebook", icon: Globe, premium: true },
+    { id: "linkedin", name: "LinkedIn", icon: Briefcase, premium: true }
   ];
 
   const contentTypes = [
-    { id: "post", name: "Social Post", icon: FileText },
-    { id: "video", name: "Video Script", icon: Video },
-    { id: "story", name: "Story Content", icon: Camera },
-    { id: "carousel", name: "Carousel Post", icon: Image },
+    { id: "post", name: "Post", icon: FileText },
+    { id: "story", name: "Story", icon: Camera },
+    { id: "reel", name: "Reel", icon: Video },
+    { id: "video", name: "Video", icon: Play },
+    { id: "carousel", name: "Carousel", icon: Image },
+    { id: "thread", name: "Thread", icon: Hash }
   ];
 
-  useEffect(() => {
-    // Add error boundary for the entire component
-    const handleError = (error: ErrorEvent) => {
-      console.error("Content hub error:", error);
-      setHasError(true);
-    };
-
-    window.addEventListener('error', handleError);
-    window.addEventListener('unhandledrejection', (event) => {
-      console.error("Unhandled promise rejection:", event.reason);
-      setHasError(true);
-    });
-
-    return () => {
-      window.removeEventListener('error', handleError);
-    };
-  }, []);
-
-  // Load mock content ideas instead of database
-  useEffect(() => {
-    const mockContentIdeas: ContentIdea[] = [
-      {
-        id: "1",
-        title: "Engaging Instagram Post",
-        description: "Create a visually appealing post with trending hashtags",
-        platform: "instagram",
-        contentType: "post",
-        viralScore: 85,
-        estimatedViews: "2.5K",
-        hashtags: ["#trending", "#engagement", "#viral"],
+  // Premium AI content generation
+  const generatePremiumContent = async (input: string, platforms: string[], contentType: string): Promise<ContentIdea[]> => {
+    // Simulate premium AI processing
+    await new Promise(resolve => setTimeout(resolve, 3000));
+    
+    const ideas: ContentIdea[] = [];
+    
+    for (const platform of platforms) {
+      if (platform === "all") continue;
+      
+      const viralScore = Math.floor(Math.random() * 30) + 70; // 70-100 range
+      const estimatedViews = Math.floor(Math.random() * 50000) + 10000;
+      
+      const idea: ContentIdea = {
+        id: Date.now().toString() + platform,
+        title: `🔥 ${platform.charAt(0).toUpperCase() + platform.slice(1)} ${contentType} that will go viral`,
+        description: generatePlatformSpecificContent(input, platform, contentType),
+        platform,
+        contentType,
+        viralScore,
+        estimatedViews: estimatedViews.toLocaleString(),
+        hashtags: generatePremiumHashtags(platform, contentType),
         createdAt: new Date().toISOString(),
-        status: "draft"
+        status: "draft",
+        aiGenerated: true,
+        premium: true
+      };
+      
+      ideas.push(idea);
+    }
+    
+    return ideas;
+  };
+
+  const generatePlatformSpecificContent = (input: string, platform: string, contentType: string): string => {
+    const templates: Record<string, Record<string, string>> = {
+      instagram: {
+        post: `🎯 ${input}\n\n💡 Pro tip: [Your insight here]\n\n🔥 This will change everything you know about [topic]\n\n📱 Save this for later!\n\n#instagram #viral #trending`,
+        story: `🎬 ${input}\n\n💭 Swipe to see the full story\n\n🔥 You won't believe what happened next\n\n📱 Follow for more!`,
+        reel: `🎵 [Trending Sound]\n\n🎭 ${input}\n\n🔥 The plot twist you didn't see coming\n\n📱 Double tap if you agree!`
       },
-      {
-        id: "2", 
-        title: "TikTok Challenge Video",
-        description: "Participate in the latest TikTok challenge with creative editing",
-        platform: "tiktok",
-        contentType: "video",
-        viralScore: 92,
-        estimatedViews: "15K",
-        hashtags: ["#challenge", "#tiktok", "#viral"],
-        createdAt: new Date().toISOString(),
-        status: "draft"
+      tiktok: {
+        video: `🎵 [Viral Sound]\n\n🎭 ${input}\n\n🔥 The tea you've been waiting for\n\n📱 Follow for more drama!`,
+        post: `🎯 ${input}\n\n💡 Life hack alert!\n\n🔥 This will blow your mind\n\n📱 Share with a friend!`
+      },
+      youtube: {
+        video: `🎬 ${input}\n\n📖 In this video, I'll show you everything you need to know about [topic]\n\n🔥 The secret that nobody talks about\n\n📱 Subscribe for more!`
       }
-    ];
-    setContentIdeas(mockContentIdeas);
-  }, []);
+    };
+    
+    return templates[platform]?.[contentType] || `${input}\n\n🔥 Premium content generated by AI\n\n📱 Follow for more!`;
+  };
 
-  const generateContent = async () => {
+  const generatePremiumHashtags = (platform: string, contentType: string): string[] => {
+    const hashtags: Record<string, string[]> = {
+      instagram: ["#viral", "#trending", "#instagram", "#reels", "#engagement", "#growth"],
+      tiktok: ["#tiktok", "#viral", "#fyp", "#trending", "#foryou", "#challenge"],
+      youtube: ["#youtube", "#viral", "#trending", "#subscribe", "#content", "#creator"],
+      x: ["#twitter", "#viral", "#trending", "#engagement", "#growth", "#content"]
+    };
+    
+    return hashtags[platform] || ["#viral", "#trending", "#content"];
+  };
+
+  const handleGenerateContent = async () => {
     if (!contentInput.trim()) {
-      setError("Please enter some content to generate ideas");
+      setError("Please enter some content to generate premium ideas");
       return;
     }
 
@@ -266,245 +233,105 @@ export default function ContentCreationHub({
     setSuccess(null);
 
     try {
-      // Simulate content generation with premium feel
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      const generatedIdeas = await generatePremiumContent(contentInput, selectedPlatforms, contentType);
       
-      const generatedIdeas = await generateContentIdeas(contentInput, selectedPlatforms, contentType);
-      
-      if (!generatedIdeas || generatedIdeas.length === 0) {
-        setError("No content ideas were generated. Please try with different input.");
+      if (generatedIdeas.length === 0) {
+        setError("No premium content ideas were generated. Please try with different input.");
         return;
       }
 
-      // Update local state only (no database save)
       setContentIdeas(prev => [...generatedIdeas, ...prev]);
       setGeneratedContent(generatedIdeas[0]);
       
-      setSuccess("✨ Content ideas generated successfully!");
-      setTimeout(() => setSuccess(null), 4000);
+      setSuccess("✨ Premium content ideas generated successfully! Your viral content is ready.");
+      setTimeout(() => setSuccess(null), 5000);
       
     } catch (error) {
       console.error("Error generating content:", error);
-      setError("Failed to generate content. Please try again.");
+      setError("Failed to generate premium content. Please try again.");
     } finally {
       setIsGenerating(false);
     }
   };
 
-  const generateContentIdeas = async (
-    input: string, 
-    platforms: string[], 
-    contentType: string
-  ): Promise<ContentIdea[]> => {
-    // Enhanced content generation algorithm
-    const ideas: ContentIdea[] = [];
-    const targetPlatforms = platforms.includes("all") 
-      ? ["instagram", "tiktok", "youtube", "x"] 
-      : platforms;
-
-    for (const platform of targetPlatforms) {
-      const idea = await generatePlatformSpecificContent(input, platform, contentType);
-      ideas.push(idea);
+  const handleUseTemplate = (template: ContentTemplate) => {
+    if (template.premium && !hasActiveSubscription) {
+      setShowPremiumUpgrade(true);
+      return;
     }
-
-    return ideas.sort((a, b) => b.viralScore - a.viralScore);
-  };
-
-  const generatePlatformSpecificContent = async (
-    input: string, 
-    platform: string, 
-    contentType: string
-  ): Promise<ContentIdea> => {
-    // Platform-specific content generation
-    const platformTemplates = {
-      instagram: {
-        title: `Instagram ${contentType}: ${input}`,
-        description: generateInstagramContent(input, contentType),
-        hashtags: ["instagram", "reels", "viral", "trending", "fyp", "engagement"]
-      },
-      tiktok: {
-        title: `TikTok ${contentType}: ${input}`,
-        description: generateTikTokContent(input, contentType),
-        hashtags: ["tiktok", "fyp", "viral", "trending", "hook", "engagement"]
-      },
-      youtube: {
-        title: `YouTube ${contentType}: ${input}`,
-        description: generateYouTubeContent(input, contentType),
-        hashtags: ["youtube", "viral", "trending", "subscribe", "content"]
-      },
-      x: {
-        title: `X ${contentType}: ${input}`,
-        description: generateTwitterContent(input, contentType),
-        hashtags: ["x", "thread", "viral", "trending", "engagement"]
-      }
-    };
-
-    const template = platformTemplates[platform as keyof typeof platformTemplates];
-    const viralScore = calculateViralScore(template.description, platform);
-    const estimatedViews = calculateEstimatedViews(viralScore, platform);
-
-    return {
-      id: Date.now().toString(),
-      title: template.title,
-      description: template.description,
-      platform,
-      contentType,
-      viralScore,
-      estimatedViews: estimatedViews.toString(),
-      hashtags: template.hashtags,
-      createdAt: new Date().toISOString(),
-      status: "draft"
-    };
-  };
-
-  const generateInstagramContent = (input: string, contentType: string): string => {
-    const hooks = [
-      "🔥 The secret nobody talks about...",
-      "💡 Here's what I learned the hard way...",
-      "🎯 This changed everything for me...",
-      "⚡ You won't believe what happened...",
-      "💪 The truth about..."
-    ];
     
-    const hook = hooks[Math.floor(Math.random() * hooks.length)];
-    return `${hook}\n\n${input}\n\n💭 What's your take on this?\n\n#instagram #reels #viral #trending`;
-  };
-
-  const generateTikTokContent = (input: string, contentType: string): string => {
-    const hooks = [
-      "POV: You just discovered...",
-      "Wait for it...",
-      "This is what happens when...",
-      "You won't believe...",
-      "The moment I realized..."
-    ];
-    
-    const hook = hooks[Math.floor(Math.random() * hooks.length)];
-    return `${hook}\n\n${input}\n\n#fyp #viral #trending #tiktok`;
-  };
-
-  const generateYouTubeContent = (input: string, contentType: string): string => {
-    return `🎥 ${input}\n\nIn this ${contentType}, I'll show you everything you need to know about this topic.\n\n📚 Key takeaways:\n• Point 1\n• Point 2\n• Point 3\n\n💡 Don't forget to subscribe for more content like this!\n\n#youtube #content #viral`;
-  };
-
-  const generateTwitterContent = (input: string, contentType: string): string => {
-    const baseContent = `🎯 ${input}\n\n💭 What do you think? Drop your thoughts below! 👇\n\n#X #thread #viral #trending`;
-    return contentType === "thread" ? `${baseContent}\n\n🧵 Thread below 👇` : baseContent;
-  };
-
-  const calculateViralScore = (content: string, platform: string): number => {
-    let score = 50; // Base score
-    
-    // Content length optimization
-    if (content.length > 50 && content.length < 500) score += 20;
-    
-    // Engagement triggers
-    if (content.includes("?")) score += 15; // Questions
-    if (content.includes("!")) score += 10; // Excitement
-    if (content.includes("💡") || content.includes("🔥") || content.includes("🎯")) score += 15; // Emojis
-    if (content.includes("you") || content.includes("your")) score += 15; // Personalization
-    if (content.includes("secret") || content.includes("hidden")) score += 10; // Curiosity
-    if (content.includes("never") || content.includes("always")) score += 10; // Controversy
-    
-    // Platform-specific optimizations
-    if (platform === "tiktok" && content.includes("fyp")) score += 10;
-    if (platform === "instagram" && content.includes("reels")) score += 10;
-    if (platform === "youtube" && content.includes("subscribe")) score += 10;
-    if (platform === "x" && content.includes("thread")) score += 10;
-    
-    return Math.min(100, Math.max(0, score));
-  };
-
-  const calculateEstimatedViews = (viralScore: number, platform: string): number => {
-    const baseViews = {
-      instagram: 5000,
-      tiktok: 15000,
-      youtube: 3000,
-      x: 2000
-    };
-    
-    const multiplier = viralScore / 50;
-    return Math.round(baseViews[platform as keyof typeof baseViews] * multiplier);
-  };
-
-  const saveContent = async () => {
-    if (!generatedContent) return;
-
-    const newIdea: ContentIdea = {
-      id: Date.now().toString(),
-      title: contentInput.substring(0, 50) + "...",
-      description: generatedContent.description.substring(0, 100) + "...",
-      platform: selectedPlatforms.join(", "),
-      contentType: contentType,
-      viralScore: generatedContent.viralScore,
-      estimatedViews: generatedContent.estimatedViews,
-      hashtags: generatedContent.hashtags,
-      createdAt: new Date().toISOString(),
-      status: "draft",
-    };
-
-    setContentIdeas((prev) => [newIdea, ...prev]);
-    setGeneratedContent(null);
-    setContentInput("");
-  };
-
-  const useTemplate = (template: ContentTemplate) => {
     setSelectedTemplate(template);
     setContentInput(template.template);
+    setActiveTab("create");
   };
 
   return (
-    <div className="space-y-6 bg-white">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-            <Sparkles className="w-6 h-6 text-blue-600" />
-            Content Creation Hub
-          </h2>
-          <p className="text-gray-600">
-            Create viral content with AI-powered suggestions and templates
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Badge variant={hasActiveSubscription ? "default" : "secondary"}>
-            {subscriptionTier} Plan
-          </Badge>
-          <Button
-            onClick={() => window.location.reload()}
-            variant="outline"
-            size="sm"
-            disabled={isLoading}
-          >
-            <RefreshCw
-              className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`}
-            />
-          </Button>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+      {/* Premium Header */}
+      <div className="bg-white border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2">
+                <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg flex items-center justify-center">
+                  <Sparkles className="w-5 h-5 text-white" />
+                </div>
+                <h1 className="text-xl font-bold text-gray-900">Content Creation Hub</h1>
+              </div>
+              {hasActiveSubscription && (
+                <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white border-0">
+                  <Crown className="w-3 h-3 mr-1" />
+                  Premium
+                </Badge>
+              )}
+            </div>
+            
+            <div className="flex items-center space-x-4">
+              <Button variant="outline" size="sm">
+                <BarChart3 className="w-4 h-4 mr-2" />
+                Analytics
+              </Button>
+              <Button variant="outline" size="sm">
+                <Calendar className="w-4 h-4 mr-2" />
+                Schedule
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
 
-      <Tabs defaultValue="create" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="create">Create Content</TabsTrigger>
-          <TabsTrigger value="templates">Templates</TabsTrigger>
-          <TabsTrigger value="ideas">My Ideas</TabsTrigger>
-          <TabsTrigger value="analytics">Performance</TabsTrigger>
-        </TabsList>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4 bg-white border border-gray-200">
+            <TabsTrigger value="create" className="flex items-center space-x-2">
+              <Wand2 className="w-4 h-4" />
+              <span>Create</span>
+            </TabsTrigger>
+            <TabsTrigger value="templates" className="flex items-center space-x-2">
+              <FileText className="w-4 h-4" />
+              <span>Templates</span>
+            </TabsTrigger>
+            <TabsTrigger value="ideas" className="flex items-center space-x-2">
+              <Lightbulb className="w-4 h-4" />
+              <span>My Ideas</span>
+            </TabsTrigger>
+            <TabsTrigger value="analytics" className="flex items-center space-x-2">
+              <BarChart3 className="w-4 h-4" />
+              <span>Performance</span>
+            </TabsTrigger>
+          </TabsList>
 
-        <TabsContent value="create" className="space-y-6">
-          {/* Content Creation Form */}
-          <Card className="p-6">
-            <div className="space-y-6">
-              <div className="grid md:grid-cols-2 gap-6">
+          {/* Create Content Tab */}
+          <TabsContent value="create" className="space-y-6">
+            <Card className="p-8 bg-white border-0 shadow-xl">
+              <div className="space-y-8">
                 {/* Platform Selection */}
-                <div className="space-y-3">
-                  <Label>Target Platforms</Label>
-                  <div className="grid grid-cols-2 gap-2">
+                <div className="space-y-4">
+                  <Label className="text-lg font-semibold text-gray-900">Target Platforms</Label>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {platforms.map((platform) => {
                       const Icon = platform.icon;
-                      const isSelected = selectedPlatforms.includes(
-                        platform.id,
-                      );
+                      const isSelected = selectedPlatforms.includes(platform.id);
                       return (
                         <button
                           key={platform.id}
@@ -515,23 +342,21 @@ export default function ContentCreationHub({
                               setSelectedPlatforms((prev) =>
                                 prev.includes(platform.id)
                                   ? prev.filter((p) => p !== platform.id)
-                                  : [
-                                      ...prev.filter((p) => p !== "all"),
-                                      platform.id,
-                                    ],
+                                  : [...prev.filter((p) => p !== "all"), platform.id]
                               );
                             }
                           }}
-                          className={`flex items-center gap-2 p-3 rounded-lg border transition-all ${
+                          className={`flex items-center gap-3 p-4 rounded-xl border-2 transition-all duration-200 ${
                             isSelected
-                              ? "border-blue-500 bg-blue-50 text-blue-700"
-                              : "border-gray-200 hover:border-gray-300"
-                          }`}
+                              ? "border-purple-500 bg-purple-50 text-purple-700 shadow-lg"
+                              : "border-gray-200 hover:border-gray-300 bg-white"
+                          } ${platform.premium && !hasActiveSubscription ? 'opacity-50' : ''}`}
                         >
-                          <Icon className="w-4 h-4" />
-                          <span className="text-sm font-medium">
-                            {platform.name}
-                          </span>
+                          <Icon className="w-5 h-5" />
+                          <span className="font-medium">{platform.name}</span>
+                          {platform.premium && (
+                            <Crown className="w-4 h-4 text-yellow-500" />
+                          )}
                         </button>
                       );
                     })}
@@ -539,9 +364,9 @@ export default function ContentCreationHub({
                 </div>
 
                 {/* Content Type Selection */}
-                <div className="space-y-3">
-                  <Label>Content Type</Label>
-                  <div className="grid grid-cols-2 gap-2">
+                <div className="space-y-4">
+                  <Label className="text-lg font-semibold text-gray-900">Content Type</Label>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     {contentTypes.map((type) => {
                       const Icon = type.icon;
                       const isSelected = contentType === type.id;
@@ -549,363 +374,259 @@ export default function ContentCreationHub({
                         <button
                           key={type.id}
                           onClick={() => setContentType(type.id)}
-                          className={`flex items-center gap-2 p-3 rounded-lg border transition-all ${
+                          className={`flex items-center gap-3 p-4 rounded-xl border-2 transition-all duration-200 ${
                             isSelected
-                              ? "border-blue-500 bg-blue-50 text-blue-700"
-                              : "border-gray-200 hover:border-gray-300"
+                              ? "border-blue-500 bg-blue-50 text-blue-700 shadow-lg"
+                              : "border-gray-200 hover:border-gray-300 bg-white"
                           }`}
                         >
-                          <Icon className="w-4 h-4" />
-                          <span className="text-sm font-medium">
-                            {type.name}
-                          </span>
+                          <Icon className="w-5 h-5" />
+                          <span className="font-medium">{type.name}</span>
                         </button>
                       );
                     })}
                   </div>
                 </div>
-              </div>
 
-              {/* Content Input */}
-              <div className="space-y-3">
-                <Label htmlFor="content-input">Content Idea or Topic</Label>
-                <Textarea
-                  id="content-input"
-                  value={contentInput}
-                  onChange={(e) => setContentInput(e.target.value)}
-                  placeholder="Describe your content idea, topic, or paste a template here..."
-                  rows={6}
-                  className="resize-none"
-                />
-                {error && <p className="text-red-500 text-sm">{error}</p>}
-                {success && <p className="text-green-500 text-sm">{success}</p>}
-              </div>
+                {/* Content Input */}
+                <div className="space-y-4">
+                  <Label className="text-lg font-semibold text-gray-900">Your Content Idea</Label>
+                  <Textarea
+                    value={contentInput}
+                    onChange={(e) => setContentInput(e.target.value)}
+                    placeholder="Describe your content idea, target audience, or what you want to achieve..."
+                    className="min-h-[120px] text-lg border-2 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
+                  />
+                </div>
 
-              {/* Generate Button */}
-              <div className="flex justify-center">
+                {/* Generate Button */}
                 <Button
-                  onClick={generateContent}
+                  onClick={handleGenerateContent}
                   disabled={isGenerating || !contentInput.trim()}
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-                  size="lg"
+                  className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white text-lg py-4 rounded-xl shadow-lg"
                 >
                   {isGenerating ? (
                     <>
-                      <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                      Generating...
+                      <RefreshCw className="w-5 h-5 mr-2 animate-spin" />
+                      Generating Premium Content...
                     </>
                   ) : (
                     <>
-                      <Wand2 className="w-4 h-4 mr-2" />
-                      Generate Content
+                      <Sparkles className="w-5 h-5 mr-2" />
+                      Generate Premium Content
                     </>
                   )}
                 </Button>
               </div>
-            </div>
-          </Card>
-
-          {/* Generated Content */}
-          {generatedContent && (
-            <Card className="p-6 border-green-200 bg-green-50">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                    <CheckCircle className="w-5 h-5 text-green-600" />
-                    Generated Content
-                  </h3>
-                  <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-2">
-                      <Target className="w-4 h-4 text-purple-600" />
-                      <span className="text-sm font-medium text-purple-600">
-                        Viral Score: {generatedContent.viralScore}%
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Eye className="w-4 h-4 text-blue-600" />
-                      <span className="text-sm font-medium text-blue-600">
-                        Est. Views: {generatedContent.estimatedViews}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-white p-4 rounded-lg border">
-                  <pre className="whitespace-pre-wrap text-gray-800 font-medium leading-relaxed">
-                    {generatedContent.description}
-                  </pre>
-                </div>
-
-                <div className="flex flex-wrap gap-2">
-                  {generatedContent.hashtags.map(
-                    (tag: string, index: number) => (
-                      <Badge
-                        key={index}
-                        variant="outline"
-                        className="text-blue-600"
-                      >
-                        {tag}
-                      </Badge>
-                    ),
-                  )}
-                </div>
-
-                {generatedContent.suggestions && (
-                  <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
-                    <h4 className="font-medium text-yellow-800 mb-2 flex items-center gap-2">
-                      <Lightbulb className="w-4 h-4" />
-                      AI Suggestions
-                    </h4>
-                    <ul className="space-y-1">
-                      {generatedContent.suggestions.map(
-                        (suggestion: string, index: number) => (
-                          <li
-                            key={index}
-                            className="text-sm text-yellow-700 flex items-start gap-2"
-                          >
-                            <span className="text-yellow-500 mt-1">•</span>
-                            {suggestion}
-                          </li>
-                        ),
-                      )}
-                    </ul>
-                  </div>
-                )}
-
-                <div className="flex gap-3">
-                  <Button onClick={saveContent} className="flex-1">
-                    <Save className="w-4 h-4 mr-2" />
-                    Save to Ideas
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={() =>
-                      navigator.clipboard.writeText(generatedContent.description)
-                    }
-                  >
-                    <Copy className="w-4 h-4 mr-2" />
-                    Copy
-                  </Button>
-                  <Button variant="outline">
-                    <Send className="w-4 h-4 mr-2" />
-                    Schedule
-                  </Button>
-                </div>
-              </div>
             </Card>
-          )}
-        </TabsContent>
 
-        <TabsContent value="templates" className="space-y-6">
-          {/* Content Templates */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {contentTemplates.map((template) => (
-              <Card
-                key={template.id}
-                className="p-6 hover:shadow-lg transition-shadow"
-              >
-                <div className="space-y-4">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h3 className="font-semibold text-gray-900">
-                        {template.name}
-                      </h3>
-                      <p className="text-sm text-gray-600">
-                        {template.description}
-                      </p>
-                    </div>
-                    <Badge variant="outline" className="text-purple-600">
-                      {template.viralScore}% viral
+            {/* Generated Content Display */}
+            {generatedContent && (
+              <Card className="p-8 bg-gradient-to-br from-purple-50 to-pink-50 border-0 shadow-xl">
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-2xl font-bold text-gray-900">✨ Generated Content</h3>
+                    <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white">
+                      <Star className="w-3 h-3 mr-1" />
+                      Premium AI Generated
                     </Badge>
                   </div>
-
-                  <div className="bg-gray-50 p-3 rounded-lg">
-                    <p className="text-xs text-gray-700 line-clamp-4">
-                      {template.template}
-                    </p>
+                  
+                  <div className="bg-white p-6 rounded-xl border border-gray-200">
+                    <h4 className="text-lg font-semibold text-gray-900 mb-4">{generatedContent.title}</h4>
+                    <p className="text-gray-700 whitespace-pre-wrap mb-4">{generatedContent.description}</p>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-4">
+                        <Badge variant="outline" className="bg-blue-50 text-blue-700">
+                          <TrendingUp className="w-3 h-3 mr-1" />
+                          {generatedContent.viralScore}% Viral Score
+                        </Badge>
+                        <Badge variant="outline" className="bg-green-50 text-green-700">
+                          <Eye className="w-3 h-3 mr-1" />
+                          {generatedContent.estimatedViews} Views
+                        </Badge>
+                      </div>
+                      
+                      <div className="flex items-center space-x-2">
+                        <Button size="sm" variant="outline">
+                          <Copy className="w-4 h-4 mr-1" />
+                          Copy
+                        </Button>
+                        <Button size="sm" variant="outline">
+                          <Edit3 className="w-4 h-4 mr-1" />
+                          Edit
+                        </Button>
+                        <Button size="sm" className="bg-gradient-to-r from-purple-600 to-pink-600">
+                          <Save className="w-4 h-4 mr-1" />
+                          Save
+                        </Button>
+                      </div>
+                    </div>
                   </div>
+                </div>
+              </Card>
+            )}
+          </TabsContent>
 
-                  <div className="flex items-center justify-between">
-                    <Badge variant="secondary">{template.category}</Badge>
+          {/* Templates Tab */}
+          <TabsContent value="templates" className="space-y-6">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {premiumTemplates.map((template) => (
+                <Card key={template.id} className="p-6 bg-white border-0 shadow-lg hover:shadow-xl transition-all duration-200">
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-lg font-semibold text-gray-900">{template.name}</h3>
+                      {template.premium && (
+                        <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white">
+                          <Crown className="w-3 h-3 mr-1" />
+                          Premium
+                        </Badge>
+                      )}
+                    </div>
+                    
+                    <p className="text-gray-600 text-sm">{template.description}</p>
+                    
+                    <div className="flex items-center space-x-2">
+                      <Badge variant="outline" className="bg-purple-50 text-purple-700">
+                        <TrendingUp className="w-3 h-3 mr-1" />
+                        {template.viralScore}% Viral Score
+                      </Badge>
+                    </div>
+                    
                     <Button
-                      onClick={() => useTemplate(template)}
-                      size="sm"
-                      className="bg-gradient-to-r from-blue-600 to-purple-600"
+                      onClick={() => handleUseTemplate(template)}
+                      className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
                     >
-                      <Wand2 className="w-3 h-3 mr-1" />
+                      <Wand2 className="w-4 h-4 mr-2" />
                       Use Template
                     </Button>
                   </div>
-                </div>
-              </Card>
-            ))}
-          </div>
-        </TabsContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
 
-        <TabsContent value="ideas" className="space-y-6">
-          {/* Saved Content Ideas */}
-          <div className="space-y-4">
-            {contentIdeas.map((idea) => (
-              <Card key={idea.id} className="p-6">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      <h3 className="font-semibold text-gray-900">
-                        {idea.title}
-                      </h3>
-                      <Badge
-                        variant={
-                          idea.status === "published"
-                            ? "default"
-                            : idea.status === "scheduled"
-                              ? "secondary"
-                              : "outline"
-                        }
-                      >
-                        {idea.status}
-                      </Badge>
-                    </div>
-                    <p className="text-gray-600 mb-3">{idea.description}</p>
-                    <div className="flex items-center gap-4 text-sm text-gray-500">
-                      <span className="flex items-center gap-1">
-                        <Target className="w-3 h-3" />
-                        {idea.viralScore}% viral
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Eye className="w-3 h-3" />
-                        {idea.estimatedViews} views
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Clock className="w-3 h-3" />
-                        {new Date(idea.createdAt).toLocaleDateString()}
-                      </span>
-                    </div>
-                    <div className="flex flex-wrap gap-1 mt-2">
-                      {idea.hashtags.slice(0, 3).map((tag, index) => (
-                        <Badge
-                          key={index}
-                          variant="outline"
-                          className="text-xs"
-                        >
-                          {tag}
-                        </Badge>
-                      ))}
-                      {idea.hashtags.length > 3 && (
-                        <Badge variant="outline" className="text-xs">
-                          +{idea.hashtags.length - 3} more
+          {/* My Ideas Tab */}
+          <TabsContent value="ideas" className="space-y-6">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {contentIdeas.map((idea) => (
+                <Card key={idea.id} className="p-6 bg-white border-0 shadow-lg hover:shadow-xl transition-all duration-200">
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-lg font-semibold text-gray-900">{idea.title}</h3>
+                      {idea.premium && (
+                        <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white">
+                          <Crown className="w-3 h-3 mr-1" />
+                          Premium
                         </Badge>
                       )}
                     </div>
+                    
+                    <p className="text-gray-600 text-sm line-clamp-3">{idea.description}</p>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <Badge variant="outline" className="bg-purple-50 text-purple-700">
+                          <TrendingUp className="w-3 h-3 mr-1" />
+                          {idea.viralScore}%
+                        </Badge>
+                        <Badge variant="outline" className="bg-green-50 text-green-700">
+                          <Eye className="w-3 h-3 mr-1" />
+                          {idea.estimatedViews}
+                        </Badge>
+                      </div>
+                      
+                      <div className="flex items-center space-x-2">
+                        <Button size="sm" variant="outline">
+                          <Edit3 className="w-4 h-4" />
+                        </Button>
+                        <Button size="sm" variant="outline">
+                          <Share2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Button variant="ghost" size="sm">
-                      <Edit3 className="w-4 h-4" />
-                    </Button>
-                    <Button variant="ghost" size="sm">
-                      <Copy className="w-4 h-4" />
-                    </Button>
-                    <Button variant="ghost" size="sm">
-                      <Share2 className="w-4 h-4" />
-                    </Button>
-                    <Button variant="ghost" size="sm" className="text-red-600">
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </div>
-              </Card>
-            ))}
-          </div>
-        </TabsContent>
-
-        <TabsContent value="analytics" className="space-y-6">
-          {/* Content Performance Analytics */}
-          <div className="grid md:grid-cols-3 gap-6">
-            <Card className="p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 bg-blue-100 rounded-lg">
-                  <BarChart3 className="w-5 h-5 text-blue-600" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-gray-900">Total Content</h3>
-                  <p className="text-2xl font-bold text-blue-600">
-                    {contentIdeas.length}
-                  </p>
-                </div>
-              </div>
-              <p className="text-sm text-gray-600">Content pieces created</p>
-            </Card>
-
-            <Card className="p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 bg-green-100 rounded-lg">
-                  <TrendingUp className="w-5 h-5 text-green-600" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-gray-900">
-                    Avg Viral Score
-                  </h3>
-                  <p className="text-2xl font-bold text-green-600">
-                    {Math.round(
-                      contentIdeas.reduce(
-                        (acc, idea) => acc + idea.viralScore,
-                        0,
-                      ) / contentIdeas.length || 0,
-                    )}
-                    %
-                  </p>
-                </div>
-              </div>
-              <p className="text-sm text-gray-600">Average viral potential</p>
-            </Card>
-
-            <Card className="p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 bg-purple-100 rounded-lg">
-                  <Eye className="w-5 h-5 text-purple-600" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-gray-900">Est. Reach</h3>
-                  <p className="text-2xl font-bold text-purple-600">2.4M</p>
-                </div>
-              </div>
-              <p className="text-sm text-gray-600">Estimated total views</p>
-            </Card>
-          </div>
-
-          {/* Performance Chart */}
-          <Card className="p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              Content Performance Trend
-            </h3>
-            <div className="h-64 flex items-end justify-between gap-2">
-              {[65, 78, 82, 71, 89, 94, 87, 92, 85, 96, 88, 91].map(
-                (height, index) => (
-                  <div
-                    key={index}
-                    className="flex-1 flex flex-col items-center"
-                  >
-                    <div
-                      className="w-full bg-gradient-to-t from-blue-500 to-blue-400 rounded-t transition-all duration-1000 ease-out"
-                      style={{
-                        height: `${height}%`,
-                        transitionDelay: `${index * 100}ms`,
-                      }}
-                    />
-                    <span className="text-xs text-gray-500 mt-2">
-                      {new Date(
-                        Date.now() - (11 - index) * 24 * 60 * 60 * 1000,
-                      ).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                      })}
-                    </span>
-                  </div>
-                ),
-              )}
+                </Card>
+              ))}
             </div>
-          </Card>
-        </TabsContent>
-      </Tabs>
+          </TabsContent>
+
+          {/* Analytics Tab */}
+          <TabsContent value="analytics" className="space-y-6">
+            <Card className="p-8 bg-white border-0 shadow-xl">
+              <div className="space-y-6">
+                <h3 className="text-2xl font-bold text-gray-900">Content Performance Analytics</h3>
+                
+                <div className="grid md:grid-cols-4 gap-6">
+                  <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-6 rounded-xl border border-purple-200">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-gray-600">Total Views</p>
+                        <p className="text-2xl font-bold text-gray-900">2.4M</p>
+                      </div>
+                      <Eye className="w-8 h-8 text-purple-600" />
+                    </div>
+                  </div>
+                  
+                  <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-xl border border-green-200">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-gray-600">Engagement Rate</p>
+                        <p className="text-2xl font-bold text-gray-900">8.5%</p>
+                      </div>
+                      <Heart className="w-8 h-8 text-green-600" />
+                    </div>
+                  </div>
+                  
+                  <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-xl border border-blue-200">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-gray-600">Viral Score</p>
+                        <p className="text-2xl font-bold text-gray-900">92</p>
+                      </div>
+                      <TrendingUp className="w-8 h-8 text-blue-600" />
+                    </div>
+                  </div>
+                  
+                  <div className="bg-gradient-to-br from-yellow-50 to-orange-50 p-6 rounded-xl border border-yellow-200">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-gray-600">Content Created</p>
+                        <p className="text-2xl font-bold text-gray-900">156</p>
+                      </div>
+                      <FileText className="w-8 h-8 text-yellow-600" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </div>
+
+      {/* Premium Upgrade Modal */}
+      {showPremiumUpgrade && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl p-8 max-w-md w-full mx-4">
+            <div className="text-center space-y-4">
+              <div className="w-16 h-16 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center mx-auto">
+                <Crown className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900">Upgrade to Premium</h3>
+              <p className="text-gray-600">Access premium templates and advanced AI features to create viral content.</p>
+              <div className="flex space-x-4">
+                <Button variant="outline" onClick={() => setShowPremiumUpgrade(false)}>
+                  Cancel
+                </Button>
+                <Button asChild className="bg-gradient-to-r from-yellow-400 to-orange-500">
+                  <Link href="/pricing">Upgrade Now</Link>
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
