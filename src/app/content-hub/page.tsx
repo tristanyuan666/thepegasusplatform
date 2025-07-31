@@ -34,27 +34,15 @@ export default async function ContentHubPage() {
 
     // Create a basic user profile without database queries
     const userProfile = {
-      id: user.id,
       user_id: user.id,
-      email: user.email,
-      full_name: user.user_metadata?.full_name || null,
-      plan: null,
-      plan_status: null,
-      plan_billing: null,
+      full_name: user.user_metadata?.full_name || "User",
+      email: user.email || "",
+      plan: "free",
+      plan_status: "inactive",
+      plan_billing: "monthly",
       is_active: true,
-      niche: null,
-      tone: null,
-      content_format: null,
-      fame_goals: null,
-      bio: null,
-      website: null,
-      location: null,
-      follower_count: null,
-      viral_score: 0,
-      monetization_forecast: 0,
-      onboarding_completed: false,
       created_at: new Date().toISOString(),
-      updated_at: null,
+      updated_at: new Date().toISOString(),
     };
 
     // Create a basic subscription object without database queries
