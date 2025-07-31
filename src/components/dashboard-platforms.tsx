@@ -126,7 +126,7 @@ const PLATFORMS = [
     id: "x",
     name: "X",
     icon: XIcon,
-    color: "from-blue-500 to-blue-700",
+    color: "from-gray-800 to-black",
     description: "Monitor your X account metrics",
     features: ["Follower tracking", "Engagement analytics", "Post performance"],
     manualFields: ["username"],

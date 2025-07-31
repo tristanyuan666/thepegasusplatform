@@ -165,7 +165,7 @@ export default function Navbar({ user = null }: NavbarProps) {
     {
       title: "X",
       description: "Post to X",
-      icon: <XIcon className="w-5 h-5 text-blue-600" />,
+      icon: <XIcon className="w-5 h-5 text-black" />,
       href: "/integrations/x",
       feature: undefined,
     },
@@ -264,7 +264,7 @@ export default function Navbar({ user = null }: NavbarProps) {
     {
       title: "X",
       description: "Manage X account & auto-post content",
-      icon: <XIcon className="w-5 h-5 text-blue-600" />,
+      icon: <XIcon className="w-5 h-5 text-black" />,
       href: "/dashboard?tab=platforms",
       feature: "platforms",
     },

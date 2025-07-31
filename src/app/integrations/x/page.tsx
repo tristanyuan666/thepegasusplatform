@@ -16,32 +16,32 @@ export default function XIntegrationPage() {
         {
           title: "AI-Powered Scheduling",
           description: "Automatically schedule posts at optimal times when your audience is most engaged",
-          icon: <Camera className="w-8 h-8 text-blue-600" />
+          icon: <Camera className="w-8 h-8 text-black" />
         },
         {
           title: "Professional Thread Creation",
           description: "Create compelling multi-post threads that drive meaningful conversations",
-          icon: <FileText className="w-8 h-8 text-blue-700" />
+          icon: <FileText className="w-8 h-8 text-black" />
         },
         {
           title: "Advanced Analytics",
           description: "Track engagement metrics with enterprise-grade insights and reporting",
-          icon: <BarChart3 className="w-8 h-8 text-blue-600" />
+          icon: <BarChart3 className="w-8 h-8 text-black" />
         },
         {
           title: "Smart Hashtag Optimization",
           description: "AI-powered hashtag suggestions to maximize your post reach and visibility",
-          icon: <Target className="w-8 h-8 text-blue-700" />
+          icon: <Target className="w-8 h-8 text-black" />
         },
         {
           title: "Audience Intelligence",
           description: "Deep insights into your X audience demographics, behavior, and preferences",
-          icon: <Users className="w-8 h-8 text-blue-600" />
+          icon: <Users className="w-8 h-8 text-black" />
         },
         {
           title: "Conversation Management",
           description: "Monitor and engage with mentions, replies, and brand conversations",
-          icon: <MessageCircle className="w-8 h-8 text-blue-700" />
+          icon: <MessageCircle className="w-8 h-8 text-black" />
         }
       ]}
       benefits={[

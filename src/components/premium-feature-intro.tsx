@@ -75,7 +75,7 @@ const platformIcons: { [key: string]: React.ReactNode } = {
 const platformThemes: { [key: string]: { color: string; gradient: string } } = {
   instagram: { color: "text-pink-600", gradient: "from-pink-500 to-purple-600" },
   facebook: { color: "text-blue-600", gradient: "from-blue-500 to-blue-700" },
-  x: { color: "text-blue-600", gradient: "from-blue-500 to-blue-700" },
+  x: { color: "text-black", gradient: "from-gray-800 to-black" },
   linkedin: { color: "text-blue-700", gradient: "from-blue-600 to-blue-800" },
   youtube: { color: "text-red-600", gradient: "from-red-500 to-red-700" },
   tiktok: { color: "text-pink-600", gradient: "from-pink-500 to-purple-600" },
@@ -191,7 +191,7 @@ export default function PremiumFeatureIntro({
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div className="space-y-8">
                 <div className="flex items-center gap-3">
-                  <div className={`inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r ${platformTheme.gradient} rounded-2xl shadow-lg`}>
+                  <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-2xl shadow-lg">
                     {icon || <Sparkles className="w-8 h-8 text-white" />}
                   </div>
                   <Badge variant="secondary" className="bg-blue-100 text-blue-800 font-medium">
@@ -200,10 +200,10 @@ export default function PremiumFeatureIntro({
                 </div>
                 
                 <div className="space-y-6">
-                  <h1 className="text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
+                  <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 leading-tight">
                     {featureName}
                   </h1>
-                  <p className="text-xl text-gray-600 leading-relaxed max-w-2xl">
+                  <p className="text-lg text-gray-600 leading-relaxed max-w-2xl">
                     {featureDescription}
                   </p>
                   
@@ -226,7 +226,7 @@ export default function PremiumFeatureIntro({
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Button 
                     asChild 
-                    className={`bg-gradient-to-r ${platformTheme.gradient} hover:opacity-90 text-white font-semibold py-4 px-8 text-lg shadow-lg hover:shadow-xl transition-all duration-200`}
+                    className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:opacity-90 text-white font-semibold py-4 px-8 text-lg shadow-lg hover:shadow-xl transition-all duration-200"
                     size="lg"
                   >
                     <Link href={getStartedHref!}>
@@ -258,7 +258,7 @@ export default function PremiumFeatureIntro({
                     className="w-full h-auto rounded-2xl shadow-2xl"
                   />
                 ) : (
-                  <div className={`w-full h-96 bg-gradient-to-br ${platformTheme.gradient} rounded-2xl shadow-2xl flex items-center justify-center`}>
+                  <div className="w-full h-96 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-2xl shadow-2xl flex items-center justify-center">
                     <div className="text-center text-white">
                       <div className="w-24 h-24 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
                         {icon || <Sparkles className="w-12 h-12" />}
@@ -277,10 +277,10 @@ export default function PremiumFeatureIntro({
       <section className="py-20 bg-white">
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
+            <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-6">
               Professional-grade tools for serious creators
             </h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-lg text-gray-600">
               Advanced AI-powered features designed to maximize your social media success
             </p>
           </div>
@@ -288,8 +288,10 @@ export default function PremiumFeatureIntro({
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, index) => (
               <Card key={index} className="p-8 text-center hover:shadow-lg transition-shadow duration-200 border-0 shadow-sm">
-                <div className={`w-16 h-16 bg-gradient-to-r ${platformTheme.gradient} rounded-2xl flex items-center justify-center mx-auto mb-6`}>
-                  {feature.icon}
+                <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg border border-gray-100">
+                  <div className="text-blue-600">
+                    {feature.icon}
+                  </div>
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-4">
                   {feature.title}
@@ -304,13 +306,13 @@ export default function PremiumFeatureIntro({
       </section>
 
       {/* Benefits Section */}
-      <section className="py-20 bg-gradient-to-br from-slate-50 to-blue-50">
+      <section className="py-20 bg-white">
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
+            <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-6">
               Join the elite creators who've already transformed their results
             </h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-lg text-gray-600">
               See why 50,000+ creators choose our platform to build their influence and grow their audience
             </p>
           </div>
@@ -336,7 +338,7 @@ export default function PremiumFeatureIntro({
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 bg-gradient-to-br from-blue-50 to-white">
+      <section className="py-24 bg-white">
         <div className="container mx-auto px-6">
           <div className="text-center max-w-4xl mx-auto">
             <div className="inline-flex items-center px-6 py-3 glass-premium mb-8 hover-lift">
@@ -345,23 +347,23 @@ export default function PremiumFeatureIntro({
                 Ready to Go Viral?
               </span>
             </div>
-            <h2 className="text-5xl font-bold text-black mb-8">
+            <h2 className="text-4xl font-bold text-black mb-8">
               Start Building Your{" "}
               <span className="bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
                 Content Empire
               </span>
             </h2>
-            <p className="text-2xl text-black mb-12 leading-relaxed">
+            <p className="text-xl text-black mb-12 leading-relaxed">
               Join 50,000+ creators who are already using AI to create viral
               content and build their influence. Start your journey today.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-              <Button 
-                asChild 
-                className="group relative px-12 py-6 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-bold text-xl rounded-2xl shadow-xl hover-lift overflow-hidden transition-all duration-300"
-                size="lg"
-              >
+                              <Button 
+                  asChild 
+                  className="group relative px-12 py-6 bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-bold text-xl rounded-2xl shadow-xl hover-lift overflow-hidden transition-all duration-300"
+                  size="lg"
+                >
                 <Link href={getStartedHref!}>
                   <span className="relative z-10 flex items-center gap-3">
                     <Crown className="w-6 h-6" />
@@ -379,8 +381,8 @@ export default function PremiumFeatureIntro({
               
               {!user && (
                 <Button variant="outline" asChild size="lg" className="py-6 px-8 text-lg border-2">
-                  <Link href="/sign-up">
-                    Create Account
+                  <Link href="/faq">
+                    Learn More
                   </Link>
                 </Button>
               )}

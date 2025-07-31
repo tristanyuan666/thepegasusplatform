@@ -557,7 +557,7 @@ export default function TestimonialCarousel() {
           data-interactive="true"
           data-card="true"
         >
-          <div className="text-3xl font-bold text-green-600 mb-2">340%</div>
+          <div className="text-3xl font-bold text-blue-600 mb-2">340%</div>
           <div className="text-gray-600 font-medium">Avg Growth Rate</div>
         </div>
         <div
@@ -565,7 +565,7 @@ export default function TestimonialCarousel() {
           data-interactive="true"
           data-card="true"
         >
-          <div className="text-3xl font-bold text-purple-600 mb-2">1B+</div>
+          <div className="text-3xl font-bold text-blue-600 mb-2">1B+</div>
           <div className="text-gray-600 font-medium">Viral Views</div>
         </div>
         <div
@@ -573,7 +573,7 @@ export default function TestimonialCarousel() {
           data-interactive="true"
           data-card="true"
         >
-          <div className="text-3xl font-bold text-orange-600 mb-2">$25M+</div>
+          <div className="text-3xl font-bold text-blue-600 mb-2">$25M+</div>
           <div className="text-gray-600 font-medium">Revenue Generated</div>
         </div>
       </div>
