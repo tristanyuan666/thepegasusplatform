@@ -83,13 +83,12 @@ interface DashboardPlatformsProps {
 
 interface ManualCredentials {
   username: string;
-  password: string;
-  api_key?: string;
-  api_secret?: string;
-  access_token?: string;
-  channel_id?: string;
-  page_id?: string;
-  company_id?: string;
+  api_key: string;
+  api_secret: string;
+  access_token: string;
+  channel_id: string;
+  page_id: string;
+  company_id: string;
 }
 
 const PLATFORMS = [
@@ -98,13 +97,11 @@ const PLATFORMS = [
     name: "Instagram",
     icon: Instagram,
     color: "from-pink-500 to-purple-600",
-    description: "Share photos, stories, and reels",
-    features: ["Post scheduling", "Story creation", "Reel optimization"],
-    manualFields: ["username", "password", "access_token", "api_key"],
+    description: "Track your Instagram account performance and stats",
+    features: ["Follower analytics", "Engagement tracking", "Content performance"],
+    manualFields: ["username", "api_key"],
     fieldLabels: {
       username: "Instagram Username",
-      password: "Instagram Password", 
-      access_token: "Access Token (Optional)",
       api_key: "API Key (Optional)"
     }
   },
@@ -113,12 +110,11 @@ const PLATFORMS = [
     name: "YouTube",
     icon: Youtube,
     color: "from-red-500 to-red-700",
-    description: "Upload videos and build a channel",
-    features: ["Video upload", "Channel analytics", "Live streaming"],
-    manualFields: ["username", "password", "api_key", "channel_id"],
+    description: "Monitor your YouTube channel analytics",
+    features: ["Subscriber tracking", "Video performance", "Channel analytics"],
+    manualFields: ["username", "api_key", "channel_id"],
     fieldLabels: {
       username: "YouTube Username",
-      password: "YouTube Password",
       api_key: "YouTube API Key",
       channel_id: "Channel ID (Optional)"
     }
@@ -128,14 +124,12 @@ const PLATFORMS = [
     name: "TikTok",
     icon: Music,
     color: "from-black to-gray-800",
-    description: "Create short-form videos",
-    features: ["Video creation", "Trend analysis", "Hashtag optimization"],
-    manualFields: ["username", "password", "api_key", "access_token"],
+    description: "Track your TikTok account statistics",
+    features: ["Follower analytics", "Video performance", "Trend tracking"],
+    manualFields: ["username", "api_key"],
     fieldLabels: {
       username: "TikTok Username",
-      password: "TikTok Password",
-      api_key: "TikTok API Key",
-      access_token: "Access Token (Optional)"
+      api_key: "TikTok API Key"
     }
   },
   {
@@ -143,15 +137,13 @@ const PLATFORMS = [
     name: "X",
     icon: X,
     color: "from-black to-gray-700",
-    description: "Share thoughts and engage with your audience",
-    features: ["Tweet scheduling", "Thread creation", "Engagement tracking"],
-    manualFields: ["username", "password", "api_key", "api_secret", "access_token"],
+    description: "Monitor your X/Twitter account metrics",
+    features: ["Follower tracking", "Engagement analytics", "Tweet performance"],
+    manualFields: ["username", "api_key", "api_secret"],
     fieldLabels: {
       username: "X Username",
-      password: "X Password",
       api_key: "X API Key",
-      api_secret: "X API Secret",
-      access_token: "Access Token (Optional)"
+      api_secret: "X API Secret"
     }
   },
   {
@@ -159,14 +151,12 @@ const PLATFORMS = [
     name: "Facebook",
     icon: Facebook,
     color: "from-blue-500 to-blue-700",
-    description: "Connect with friends and family",
-    features: ["Post creation", "Page management", "Group engagement"],
-    manualFields: ["username", "password", "page_id", "access_token"],
+    description: "Track your Facebook page performance",
+    features: ["Page analytics", "Post performance", "Audience insights"],
+    manualFields: ["username", "page_id"],
     fieldLabels: {
       username: "Facebook Username",
-      password: "Facebook Password",
-      page_id: "Page ID (Optional)",
-      access_token: "Access Token (Optional)"
+      page_id: "Page ID (Optional)"
     }
   },
   {
@@ -174,12 +164,11 @@ const PLATFORMS = [
     name: "LinkedIn",
     icon: Linkedin,
     color: "from-blue-600 to-blue-800",
-    description: "Build your professional network",
-    features: ["Article publishing", "Network building", "Professional content"],
-    manualFields: ["username", "password", "api_key", "company_id"],
+    description: "Monitor your LinkedIn professional metrics",
+    features: ["Connection analytics", "Post performance", "Professional insights"],
+    manualFields: ["username", "api_key", "company_id"],
     fieldLabels: {
       username: "LinkedIn Username",
-      password: "LinkedIn Password",
       api_key: "LinkedIn API Key",
       company_id: "Company ID (Optional)"
     }
@@ -202,12 +191,13 @@ export default function DashboardPlatforms({
   const [showManualDialog, setShowManualDialog] = useState<string | null>(null);
   const [manualCredentials, setManualCredentials] = useState<ManualCredentials>({
     username: "",
-    password: "",
     api_key: "",
     api_secret: "",
-    access_token: ""
+    access_token: "",
+    channel_id: "",
+    page_id: "",
+    company_id: ""
   });
-  const [showPassword, setShowPassword] = useState(false);
   const [connectionType, setConnectionType] = useState<"oauth" | "manual">("manual");
   
   const supabase = createClient();
@@ -248,17 +238,17 @@ export default function DashboardPlatforms({
     setError(null);
     
     try {
-      // Validate credentials with premium validation
-      if (!manualCredentials.username || !manualCredentials.password) {
-        throw new Error("Username and password are required");
+      // Validate required fields
+      if (!manualCredentials.username) {
+        throw new Error("Username is required");
       }
 
       // Premium connection validation with multiple checks
       const validationSteps = [
-        "Validating credentials...",
-        "Testing platform connectivity...",
-        "Verifying account permissions...",
-        "Establishing secure connection...",
+        "Validating account information...",
+        "Fetching platform statistics...",
+        "Analyzing account performance...",
+        "Setting up premium tracking...",
         "Syncing account data..."
       ];
 
@@ -278,14 +268,13 @@ export default function DashboardPlatforms({
           platform: platformId,
           platform_username: manualCredentials.username,
           platform_user_id: manualCredentials.username,
-          access_token: manualCredentials.access_token || "premium_manual_connection",
+          access_token: "premium_stats_tracking",
           refresh_token: "",
           is_active: true,
-          connection_type: "manual",
+          connection_type: "stats_tracking",
           follower_count: followerCount,
           manual_credentials: {
             username: manualCredentials.username,
-            password: manualCredentials.password,
             api_key: manualCredentials.api_key,
             api_secret: manualCredentials.api_secret,
             access_token: manualCredentials.access_token,
@@ -293,7 +282,8 @@ export default function DashboardPlatforms({
             page_id: manualCredentials.page_id,
             company_id: manualCredentials.company_id,
             connection_verified: true,
-            last_verified: new Date().toISOString()
+            last_verified: new Date().toISOString(),
+            stats_tracking_enabled: true
           },
           connected_at: new Date().toISOString(),
           last_sync: new Date().toISOString(),
@@ -310,14 +300,13 @@ export default function DashboardPlatforms({
       onConnectionsUpdate();
       
       // Show premium success feedback
-      setSuccess(`✨ Successfully connected to ${PLATFORMS.find(p => p.id === platformId)?.name} with premium features enabled!`);
+      setSuccess(`✨ Successfully connected to ${PLATFORMS.find(p => p.id === platformId)?.name} for premium stats tracking!`);
       setTimeout(() => setSuccess(null), 4000);
       
       // Close dialog and reset form
       setShowManualDialog(null);
       setManualCredentials({
         username: "",
-        password: "",
         api_key: "",
         api_secret: "",
         access_token: "",
