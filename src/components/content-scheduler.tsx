@@ -180,14 +180,14 @@ export default function ContentScheduler({
         reason: "Relaxed weekend viewing"
       },
       {
-        platform: "twitter",
+        platform: "x",
         day: "Monday",
         time: "9:00 AM",
         engagement_rate: 72,
         reason: "Start of workweek engagement"
       },
       {
-        platform: "twitter",
+        platform: "x",
         day: "Wednesday",
         time: "12:00 PM",
         engagement_rate: 76,
@@ -289,7 +289,7 @@ export default function ContentScheduler({
       if (day === 0 || day === 6) score += 10;
     }
     
-    if (platform === "twitter") {
+    if (platform === "x") {
       if ((hour >= 8 && hour <= 10) || (hour >= 11 && hour <= 13)) score += 15;
       if (day === 1 || day === 3) score += 10;
     }
@@ -325,7 +325,7 @@ export default function ContentScheduler({
       tiktok: ["fyp", "viral", "trending", "tiktok"],
       instagram: ["instagram", "reels", "viral", "trending"],
       youtube: ["youtube", "viral", "trending", "shorts"],
-      twitter: ["twitter", "viral", "trending", "thread"],
+              x: ["x", "viral", "trending", "thread"],
     };
     
     const nicheTags = baseHashtags[niche as keyof typeof baseHashtags] || ["viral", "trending"];
@@ -523,7 +523,7 @@ export default function ContentScheduler({
                       <SelectItem value="tiktok">TikTok</SelectItem>
                       <SelectItem value="instagram">Instagram</SelectItem>
                       <SelectItem value="youtube">YouTube</SelectItem>
-                      <SelectItem value="twitter">X</SelectItem>
+                      <SelectItem value="x">X</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>

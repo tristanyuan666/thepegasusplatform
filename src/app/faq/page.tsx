@@ -67,7 +67,7 @@ export default function FAQPage() {
         {
           question: "What social platforms do you support?",
           answer:
-            "We support all major social media platforms including TikTok, Instagram, YouTube, Twitter, LinkedIn, and Facebook. Our Influencer and Superstar plans include access to all platforms.",
+            "We support all major social media platforms including TikTok, Instagram, YouTube, X, LinkedIn, and Facebook. Our Influencer and Superstar plans include access to all platforms.",
         },
         {
           question: "Do I need any technical skills to use Pegasus?",

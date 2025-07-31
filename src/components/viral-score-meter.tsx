@@ -227,7 +227,7 @@ export default function ViralScoreMeter({
     if (platform === "tiktok" && contentLength > 50 && contentLength < 200) score += 15;
     if (platform === "instagram" && contentLength > 100 && contentLength < 500) score += 15;
     if (platform === "youtube" && contentLength > 200) score += 15;
-    if (platform === "twitter" && contentLength > 50 && contentLength < 280) score += 15;
+    if (platform === "x" && contentLength > 50 && contentLength < 280) score += 15;
     
     // Engagement triggers
     const engagementTriggers = ["comment", "share", "like", "follow", "subscribe", "tag", "dm", "story"];
@@ -444,7 +444,7 @@ export default function ViralScoreMeter({
                       <SelectItem value="tiktok">TikTok</SelectItem>
                       <SelectItem value="instagram">Instagram</SelectItem>
                       <SelectItem value="youtube">YouTube</SelectItem>
-                      <SelectItem value="twitter">X</SelectItem>
+                      <SelectItem value="x">X</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

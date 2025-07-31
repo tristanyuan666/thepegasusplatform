@@ -37,7 +37,7 @@ import {
   Smartphone,
   Video,
   Instagram,
-  Twitter,
+  MessageSquare,
   Youtube,
   Linkedin,
   Check,
@@ -445,7 +445,7 @@ export default function Home() {
                       { name: "Instagram", icon: <Instagram className="w-6 h-6" />, color: "text-pink-600", connected: true, followers: "847K" },
                       { name: "TikTok", icon: <Video className="w-6 h-6" />, color: "text-black", connected: true, followers: "2.1M" },
                       { name: "YouTube", icon: <Youtube className="w-6 h-6" />, color: "text-red-600", connected: true, followers: "456K" },
-                      { name: "X", icon: <Twitter className="w-6 h-6" />, color: "text-blue-500", connected: false, followers: "0" },
+                      { name: "X", icon: <MessageSquare className="w-6 h-6" />, color: "text-blue-500", connected: false, followers: "0" },
                       { name: "LinkedIn", icon: <Linkedin className="w-6 h-6" />, color: "text-blue-700", connected: false, followers: "0" },
                       { name: "Facebook", icon: <MessageCircle className="w-6 h-6" />, color: "text-blue-600", connected: false, followers: "0" },
                     ].map((platform, index) => (

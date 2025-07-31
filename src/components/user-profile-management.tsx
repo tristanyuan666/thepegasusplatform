@@ -40,7 +40,7 @@ import {
   Globe,
   Link as LinkIcon,
   Instagram,
-  Twitter,
+  MessageSquare,
   Youtube,
   Linkedin,
   Facebook,
@@ -71,7 +71,7 @@ export default function UserProfileManagement({
     avatar_url: userProfile?.avatar_url || user.user_metadata?.avatar_url || "",
     social_links: userProfile?.social_links || {
       instagram: "",
-      twitter: "",
+      x: "",
       youtube: "",
       linkedin: "",
       facebook: "",
@@ -219,8 +219,8 @@ export default function UserProfileManagement({
     switch (platform) {
       case "instagram":
         return <Instagram className="w-4 h-4" />;
-      case "twitter":
-        return <Twitter className="w-4 h-4" />;
+      case "x":
+        return <MessageSquare className="w-4 h-4" />;
       case "youtube":
         return <Youtube className="w-4 h-4" />;
       case "linkedin":

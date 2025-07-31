@@ -1,6 +1,6 @@
 "use client";
 
-import { Twitter, Sparkles, Zap, Target, TrendingUp, Users, BarChart3, Camera, Video, Play, FileText, CheckCircle, Star, Share2, MessageCircle, Heart, Eye } from "lucide-react";
+import { MessageSquare, Sparkles, Zap, Target, TrendingUp, Users, BarChart3, Camera, Video, Play, FileText, CheckCircle, Star, Share2, MessageCircle, Heart, Eye } from "lucide-react";
 import PremiumFeatureIntro from "@/components/premium-feature-intro";
 
 export default function XIntegrationPage() {
@@ -9,7 +9,7 @@ export default function XIntegrationPage() {
       featureName="X Integration"
       featureDescription="Connect your X account and unlock powerful tools for post scheduling, analytics, and audience engagement. Manage your X presence professionally with our comprehensive suite of features."
       requiredPlan="creator"
-      icon={<Twitter className="w-6 h-6 text-white" />}
+      icon={<MessageSquare className="w-6 h-6 text-white" />}
       platform="x"
       features={[
         {

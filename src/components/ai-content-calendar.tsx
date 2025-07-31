@@ -130,7 +130,7 @@ export default function AIContentCalendar({
         "tiktok",
         "instagram",
         "youtube",
-        "twitter",
+        "x",
         "linkedin",
       ];
       const contentTypes = ["video", "image", "text", "carousel"];
@@ -268,7 +268,7 @@ export default function AIContentCalendar({
             .split("T")[0],
           category: "business",
           impact: "medium",
-          platforms: ["instagram", "facebook", "twitter"],
+          platforms: ["instagram", "facebook", "x"],
           contentIdeas: [
             "Support local businesses in your area",
             "Share your entrepreneurship story",
@@ -348,7 +348,7 @@ export default function AIContentCalendar({
       tiktok: ["7:00 PM", "9:00 PM", "6:00 PM"],
       instagram: ["2:00 PM", "7:00 PM", "11:00 AM"],
       youtube: ["10:00 AM", "3:00 PM", "8:00 PM"],
-      twitter: ["9:00 AM", "1:00 PM", "5:00 PM"],
+              x: ["9:00 AM", "1:00 PM", "5:00 PM"],
       linkedin: ["9:00 AM", "12:00 PM", "5:00 PM"],
     };
 
@@ -372,7 +372,7 @@ export default function AIContentCalendar({
         "#engagement",
       ],
       youtube: ["#youtube", "#shorts", "#creator", "#viral", "#content"],
-              twitter: ["#x", "#thread", "#viral", "#content", "#creator"],
+              x: ["#x", "#thread", "#viral", "#content", "#creator"],
       linkedin: [
         "#linkedin",
         "#professional",
@@ -435,7 +435,7 @@ export default function AIContentCalendar({
         return "📸";
       case "youtube":
         return "📺";
-      case "twitter":
+      case "x":
         return "🐦";
       case "linkedin":
         return "💼";
@@ -522,7 +522,7 @@ export default function AIContentCalendar({
               <SelectItem value="tiktok">🎵 TikTok</SelectItem>
               <SelectItem value="instagram">📸 Instagram</SelectItem>
               <SelectItem value="youtube">📺 YouTube</SelectItem>
-              <SelectItem value="twitter">🐦 X</SelectItem>
+                              <SelectItem value="x">🐦 X</SelectItem>
               <SelectItem value="linkedin">💼 LinkedIn</SelectItem>
             </SelectContent>
           </Select>

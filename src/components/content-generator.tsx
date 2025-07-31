@@ -150,7 +150,7 @@ export default function ContentGenerator({
         id: "trending",
         name: "Trending Topic Template",
         description: "Content that leverages current trends and hashtags",
-        platform: "twitter",
+        platform: "x",
         content_type: "posts",
         template: "🔥 [TREND]: {trending_topic}\n\n💭 [OPINION]: {your_take}\n\n🤔 [DISCUSSION]: {question_for_audience}\n\n#trending #discussion #opinion",
         hashtags: ["trending", "discussion", "opinion", "current", "viral"],
@@ -374,7 +374,7 @@ export default function ContentGenerator({
       "tiktok": `${prompt} - You Won't Believe What Happens Next!`,
       "instagram": `${prompt} - The Truth Nobody Talks About`,
       "youtube": `${prompt} - Complete Guide for Beginners`,
-      "twitter": `${prompt} - Here's What I Learned`,
+              "x": `${prompt} - Here's What I Learned`,
     };
     return titles[platform as keyof typeof titles] || `${prompt} - Must See!`;
   };
@@ -392,7 +392,7 @@ export default function ContentGenerator({
       tiktok: ["fyp", "viral", "trending", "tiktok"],
       instagram: ["instagram", "reels", "viral", "trending"],
       youtube: ["youtube", "viral", "trending", "shorts"],
-              twitter: ["x", "viral", "trending", "thread"],
+              x: ["x", "viral", "trending", "thread"],
     };
     
     const nicheTags = baseHashtags[niche as keyof typeof baseHashtags] || ["viral", "trending"];
@@ -408,7 +408,7 @@ export default function ContentGenerator({
     if (platform === "tiktok" && content.length > 50 && content.length < 200) score += 20;
     if (platform === "instagram" && content.length > 100 && content.length < 500) score += 20;
     if (platform === "youtube" && content.length > 200) score += 20;
-    if (platform === "twitter" && content.length > 50 && content.length < 280) score += 20;
+    if (platform === "x" && content.length > 50 && content.length < 280) score += 20;
     
     // Enhanced engagement triggers
     if (content.includes("?")) score += 15; // Questions
@@ -436,7 +436,7 @@ export default function ContentGenerator({
     if (platform === "tiktok" && content.includes("fyp")) score += 10;
     if (platform === "instagram" && content.includes("reels")) score += 10;
     if (platform === "youtube" && content.includes("subscribe")) score += 10;
-    if (platform === "twitter" && content.includes("thread")) score += 10;
+    if (platform === "x" && content.includes("thread")) score += 10;
     
     return Math.min(100, Math.max(0, score));
   };
@@ -577,7 +577,7 @@ export default function ContentGenerator({
                       <SelectItem value="tiktok">TikTok</SelectItem>
                       <SelectItem value="instagram">Instagram</SelectItem>
                       <SelectItem value="youtube">YouTube</SelectItem>
-                      <SelectItem value="twitter">X</SelectItem>
+                      <SelectItem value="x">X</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -736,7 +736,7 @@ export default function ContentGenerator({
                       id: "trending",
                       name: "Trending Topic Template",
                       description: "Content that leverages current trends and hashtags",
-                      platform: "twitter",
+                      platform: "x",
                       content_type: "posts",
                       template: "🔥 [TREND]: {trending_topic}\n\n💭 [OPINION]: {your_take}\n\n🤔 [DISCUSSION]: {question_for_audience}\n\n#trending #discussion #opinion",
                       hashtags: ["trending", "discussion", "opinion", "current", "viral"],
@@ -794,7 +794,7 @@ export default function ContentGenerator({
                       <SelectItem value="tiktok">TikTok</SelectItem>
                       <SelectItem value="instagram">Instagram</SelectItem>
                       <SelectItem value="youtube">YouTube</SelectItem>
-                      <SelectItem value="twitter">X</SelectItem>
+                      <SelectItem value="x">X</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

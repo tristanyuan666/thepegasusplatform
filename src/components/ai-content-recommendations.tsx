@@ -408,7 +408,7 @@ export default function AIContentRecommendations({
         return "📺";
       case "linkedin":
         return "💼";
-      case "twitter":
+      case "x":
         return "🐦";
       default:
         return "📱";

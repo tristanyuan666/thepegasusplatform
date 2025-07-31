@@ -34,7 +34,7 @@ import {
   Settings,
   Instagram,
   Facebook,
-  Twitter,
+  MessageSquare,
   Linkedin,
   Youtube
 } from "lucide-react";
@@ -66,7 +66,7 @@ interface PremiumFeatureIntroProps {
 const platformIcons: { [key: string]: React.ReactNode } = {
   instagram: <Instagram className="w-6 h-6" />,
   facebook: <Facebook className="w-6 h-6" />,
-  x: <Twitter className="w-6 h-6" />,
+  x: <MessageSquare className="w-6 h-6" />,
   linkedin: <Linkedin className="w-6 h-6" />,
   youtube: <Youtube className="w-6 h-6" />,
   tiktok: <Video className="w-6 h-6" />,
@@ -336,39 +336,70 @@ export default function PremiumFeatureIntro({
       </section>
 
       {/* CTA Section */}
-      <section className={`py-20 bg-gradient-to-br ${platformTheme.gradient}`}>
+      <section className="py-24 bg-gradient-to-br from-blue-50 to-white">
         <div className="container mx-auto px-6">
-          <div className="max-w-4xl mx-auto text-center text-white">
-            <h2 className="text-3xl lg:text-4xl font-bold mb-6">
-              Ready to elevate your {platform ? platform : 'digital'} presence?
+          <div className="text-center max-w-4xl mx-auto">
+            <div className="inline-flex items-center px-6 py-3 glass-premium mb-8 hover-lift">
+              <Sparkles className="w-5 h-5 text-blue-600 mr-3" />
+              <span className="text-gray-800 text-sm font-semibold">
+                Ready to Go Viral?
+              </span>
+            </div>
+            <h2 className="text-5xl font-bold text-black mb-8">
+              Start Building Your{" "}
+              <span className="bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+                Content Empire
+              </span>
             </h2>
-            <p className="text-xl text-white/90 mb-8">
-              Join the elite creators and businesses who've already transformed their results
+            <p className="text-2xl text-black mb-12 leading-relaxed">
+              Join 50,000+ creators who are already using AI to create viral
+              content and build their influence. Start your journey today.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+
+            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
               <Button 
                 asChild 
-                className="bg-white text-gray-900 hover:bg-gray-100 font-semibold py-4 px-8 text-lg"
+                className="group relative px-12 py-6 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-bold text-xl rounded-2xl shadow-xl hover-lift overflow-hidden transition-all duration-300"
                 size="lg"
               >
                 <Link href={getStartedHref!}>
-                  {isUpgrade 
-                    ? "Upgrade Plan"
-                    : !user 
-                      ? "Get Started"
-                      : "Access Feature"
-                  }
-                  <ArrowRight className="w-5 h-5 ml-2" />
+                  <span className="relative z-10 flex items-center gap-3">
+                    <Crown className="w-6 h-6" />
+                    {isUpgrade 
+                      ? "Upgrade Plan"
+                      : !user 
+                        ? "Get Started Now"
+                        : "Access Feature"
+                    }
+                    <ArrowRight className="w-6 h-6" />
+                  </span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-700 to-blue-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </Link>
               </Button>
               
               {!user && (
-                <Button variant="outline" asChild size="lg" className="py-4 px-8 text-lg border-white text-white hover:bg-white hover:text-gray-900">
+                <Button variant="outline" asChild size="lg" className="py-6 px-8 text-lg border-2">
                   <Link href="/sign-up">
                     Create Account
                   </Link>
                 </Button>
               )}
+            </div>
+
+            {/* Trust Indicators */}
+            <div className="flex flex-wrap items-center justify-center gap-8 mt-16 text-sm text-gray-600">
+              <div className="flex items-center gap-2 hover:text-blue-600 transition-colors">
+                <Zap className="w-4 h-4 text-blue-500" />
+                <span>Setup in under 5 minutes</span>
+              </div>
+              <div className="flex items-center gap-2 hover:text-blue-600 transition-colors">
+                <Lock className="w-4 h-4 text-blue-500" />
+                <span>Enterprise-grade security</span>
+              </div>
+              <div className="flex items-center gap-2 hover:text-blue-600 transition-colors">
+                <Star className="w-4 h-4 text-blue-500" />
+                <span>30-day money-back guarantee</span>
+              </div>
             </div>
           </div>
         </div>

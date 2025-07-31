@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { Progress } from "./ui/progress";
 import { 
   Instagram, 
-  Twitter, 
+  MessageSquare, 
   Youtube, 
   Linkedin, 
   Facebook,
@@ -101,7 +101,7 @@ export default function SocialPlatformHub({
 
   const platforms = [
     { id: "instagram", name: "Instagram", icon: Instagram, color: "from-purple-500 to-pink-500" },
-    { id: "twitter", name: "X", icon: Twitter, color: "from-blue-500 to-blue-600" },
+    { id: "x", name: "X", icon: MessageSquare, color: "from-blue-500 to-blue-600" },
     { id: "youtube", name: "YouTube", icon: Youtube, color: "from-red-500 to-red-600" },
     { id: "linkedin", name: "LinkedIn", icon: Linkedin, color: "from-blue-600 to-blue-700" },
     { id: "facebook", name: "Facebook", icon: Facebook, color: "from-blue-700 to-blue-800" },
@@ -221,8 +221,8 @@ export default function SocialPlatformHub({
           redirect_uri: `${window.location.origin}/auth/callback`,
           scope: "https://www.googleapis.com/auth/youtube.readonly"
         },
-        twitter: {
-          client_id: process.env.NEXT_PUBLIC_TWITTER_CLIENT_ID,
+        x: {
+          client_id: process.env.NEXT_PUBLIC_X_CLIENT_ID,
           redirect_uri: `${window.location.origin}/auth/callback`,
           scope: "tweet.read users.read"
         }

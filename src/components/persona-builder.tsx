@@ -165,7 +165,7 @@ export default function PersonaBuilder({
           interests: ["entrepreneurship", "career growth", "business", "leadership"],
           pain_points: ["work-life balance", "career stagnation", "stress management"],
           goals: ["career advancement", "skill development", "work-life balance"],
-          platform_preferences: ["linkedin", "twitter", "youtube"],
+          platform_preferences: ["linkedin", "x", "youtube"],
           content_preferences: ["business tips", "leadership advice", "career insights"],
           engagement_style: "professional",
           buying_behavior: "quality-focused",
@@ -219,7 +219,7 @@ export default function PersonaBuilder({
           interests: ["learning", "education", "knowledge", "self-improvement"],
           pain_points: ["information overload", "time management", "retention"],
           goals: ["skill development", "knowledge acquisition", "personal growth"],
-          platform_preferences: ["youtube", "linkedin", "twitter"],
+          platform_preferences: ["youtube", "linkedin", "x"],
           content_preferences: ["educational content", "tutorials", "insights"],
           engagement_style: "educational",
           buying_behavior: "research-driven",
@@ -623,7 +623,7 @@ export default function PersonaBuilder({
               <div className="space-y-4">
                 <h4 className="font-semibold text-gray-900">Platform Preferences</h4>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {["instagram", "tiktok", "youtube", "twitter", "linkedin", "pinterest", "facebook", "snapchat"].map((platform) => (
+                  {["instagram", "tiktok", "youtube", "x", "linkedin", "pinterest", "facebook", "snapchat"].map((platform) => (
                     <div key={platform} className="flex items-center space-x-2">
                       <input
                         type="checkbox"

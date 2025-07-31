@@ -152,7 +152,7 @@ export default function AudienceInsights({
         "18-24": connections.find((c: any) => c.platform === "instagram") ? 35 : 0,
         "25-34": connections.find((c: any) => c.platform === "linkedin") ? 40 : 0,
         "35-44": connections.find((c: any) => c.platform === "youtube") ? 8 : 0,
-        "45-54": connections.find((c: any) => c.platform === "twitter") ? 2 : 0,
+        "45-54": connections.find((c: any) => c.platform === "x") ? 2 : 0,
         "55+": 0
       };
 
@@ -179,7 +179,7 @@ export default function AudienceInsights({
       const languages = {
         English: connections.length > 0 ? 78 : 0,
         Spanish: connections.find((c: any) => c.platform === "instagram") ? 12 : 0,
-        French: connections.find((c: any) => c.platform === "twitter") ? 5 : 0,
+        French: connections.find((c: any) => c.platform === "x") ? 5 : 0,
         German: connections.find((c: any) => c.platform === "linkedin") ? 3 : 0,
         Portuguese: connections.find((c: any) => c.platform === "youtube") ? 2 : 0
       };
@@ -288,7 +288,7 @@ export default function AudienceInsights({
       instagram: "7:00 PM",
       tiktok: "6:00 PM", 
       youtube: "2:00 PM",
-      twitter: "8:00 AM"
+              x: "8:00 AM"
     };
   };
 

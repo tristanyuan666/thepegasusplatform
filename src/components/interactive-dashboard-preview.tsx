@@ -395,7 +395,7 @@ function ContentQueue() {
     {
       id: 4,
       title: "Remote Work Tips Thread",
-      platform: "Twitter",
+              platform: "X",
       scheduledFor: "Dec 16, 11:00 AM",
       status: "scheduled",
       viralScore: 91,
@@ -505,7 +505,7 @@ function ContentQueue() {
                             ? "bg-pink-500"
                             : item.platform === "YouTube"
                               ? "bg-red-500"
-                              : item.platform === "Twitter"
+                              : item.platform === "X"
                                 ? "bg-blue-400"
                                 : "bg-blue-600"
                       }`}

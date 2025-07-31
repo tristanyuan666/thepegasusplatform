@@ -1040,7 +1040,7 @@ export default function SystemTest({ user }: SystemTestProps) {
             const socialConnectElements =
               document.querySelectorAll(".social-connect");
             const platformIcons = document.querySelectorAll(
-              '[class*="tiktok"], [class*="instagram"], [class*="youtube"], [class*="twitter"]',
+              '[class*="tiktok"], [class*="instagram"], [class*="youtube"], [class*="x"]',
             );
             const integrationPages = document.querySelectorAll(
               'a[href*="integrations"], a[href*="connect"]',
@@ -1261,9 +1261,9 @@ export default function SystemTest({ user }: SystemTestProps) {
               'meta[name="description"]',
             );
             const ogTags = document.querySelectorAll('meta[property^="og:"]');
-            const twitterTags = document.querySelectorAll(
-              'meta[name^="twitter:"]',
-            );
+                  const xTags = document.querySelectorAll(
+        'meta[name^="x:"]',
+      );
             const canonicalLink = document.querySelector(
               'link[rel="canonical"]',
             );
@@ -1274,7 +1274,7 @@ export default function SystemTest({ user }: SystemTestProps) {
                 title && description
                   ? "SEO metadata present"
                   : "SEO metadata missing",
-              details: `Title: ${title ? "Yes" : "No"}, Description: ${description ? "Yes" : "No"}, OG Tags: ${ogTags.length}, Twitter Tags: ${twitterTags.length}, Canonical: ${canonicalLink ? "Yes" : "No"}`,
+              details: `Title: ${title ? "Yes" : "No"}, Description: ${description ? "Yes" : "No"}, OG Tags: ${ogTags.length}, X Tags: ${xTags.length}, Canonical: ${canonicalLink ? "Yes" : "No"}`,
             };
           } catch (error) {
             return {

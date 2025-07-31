@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Instagram,
   Youtube,
-  Twitter,
+  MessageSquare,
   Facebook,
   Linkedin,
   Music,

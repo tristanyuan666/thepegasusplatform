@@ -25,7 +25,7 @@ import {
   Share2,
   Instagram,
   Youtube,
-  Twitter,
+  MessageSquare,
   Facebook,
   Linkedin,
   ArrowRight,
@@ -165,8 +165,8 @@ export default function Navbar({ user = null }: NavbarProps) {
     {
       title: "X",
       description: "Post to X",
-      icon: <Twitter className="w-5 h-5 text-blue-600" />,
-      href: "/integrations/twitter",
+      icon: <MessageSquare className="w-5 h-5 text-blue-600" />,
+      href: "/integrations/x",
       feature: undefined,
     },
     {
@@ -264,7 +264,7 @@ export default function Navbar({ user = null }: NavbarProps) {
     {
       title: "X",
       description: "Post to X",
-      icon: <Twitter className="w-5 h-5 text-blue-600" />,
+      icon: <MessageSquare className="w-5 h-5 text-blue-600" />,
       href: "/dashboard?tab=platforms",
       feature: "platforms",
     },

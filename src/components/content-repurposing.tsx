@@ -84,7 +84,7 @@ const platforms = [
   { id: "tiktok", name: "TikTok", icon: "🎵", color: "bg-pink-500" },
   { id: "instagram", name: "Instagram", icon: "📸", color: "bg-purple-500" },
   { id: "youtube", name: "YouTube", icon: "📺", color: "bg-red-500" },
-      { id: "twitter", name: "X", icon: "🐦", color: "bg-blue-500" },
+      { id: "x", name: "X", icon: "🐦", color: "bg-blue-500" },
   { id: "linkedin", name: "LinkedIn", icon: "💼", color: "bg-blue-600" },
 ];
 
@@ -181,7 +181,7 @@ export default function ContentRepurposing({
           original_id: "orig_1",
           title: "Quick Morning Hacks - X Thread",
           content: "🧵 Thread: 5 morning hacks that changed my life...",
-          platform: "twitter",
+          platform: "x",
           content_type: "text",
           adaptations: ["length_adjust", "hashtag_optimize"],
           viral_score: 82,
@@ -197,7 +197,7 @@ export default function ContentRepurposing({
           id: "1",
           name: "TikTok to All Platforms",
           source_platform: "tiktok",
-          target_platforms: ["instagram", "youtube", "twitter"],
+          target_platforms: ["instagram", "youtube", "x"],
           content_types: ["video"],
           min_performance_score: 70,
           auto_adapt: true,
@@ -274,7 +274,7 @@ export default function ContentRepurposing({
   ): string => {
     const adaptations = {
       linkedin: `Professional insight: ${content.slice(0, 200)}... \n\nWhat are your thoughts on this approach? Share your experience in the comments. #ProfessionalDevelopment #Productivity`,
-              twitter: `🧵 ${content.slice(0, 100)}...\n\nThread below 👇\n\n#XTips #Viral`,
+              x: `🧵 ${content.slice(0, 100)}...\n\nThread below 👇\n\n#XTips #Viral`,
       instagram: `✨ ${content}\n\n📸 Swipe for more tips!\n\n#InstagramTips #ContentCreator #Viral`,
       youtube: `🎥 ${content}\n\nFull tutorial in the description!\n\n#YouTubeShorts #Tutorial #Viral`,
       tiktok: `🔥 ${content.slice(0, 150)}...\n\n#TikTokTips #Viral #FYP`,
@@ -290,7 +290,7 @@ export default function ContentRepurposing({
       tiktok: "video",
       instagram: originalType === "video" ? "video" : "carousel",
       youtube: "video",
-      twitter: "text",
+              x: "text",
       linkedin: "text",
     };
     return (
