@@ -55,7 +55,7 @@ const defaultPlans: PricingPlan[] = [
   {
     id: "creator",
     name: "Creator",
-    price: { monthly: 3999, yearly: 38399 }, // $39.99/month, $383.99/year
+    price: { monthly: 3199, yearly: 38399 }, // $31.99/month, $383.99/year
     description: "Perfect for aspiring creators",
     gradient: "from-blue-500 to-blue-600",
     icon: <Sparkles className="w-6 h-6" />,
@@ -77,7 +77,7 @@ const defaultPlans: PricingPlan[] = [
   {
     id: "influencer",
     name: "Influencer",
-    price: { monthly: 5999, yearly: 57599 }, // $59.99/month, $575.99/year
+    price: { monthly: 4799, yearly: 57599 }, // $47.99/month, $575.99/year
     popular: true,
     description: "Most popular for serious creators",
     gradient: "from-blue-600 to-blue-700",
@@ -100,7 +100,7 @@ const defaultPlans: PricingPlan[] = [
   {
     id: "superstar",
     name: "Superstar",
-    price: { monthly: 9999, yearly: 95999 }, // $99.99/month, $959.99/year
+    price: { monthly: 7999, yearly: 95999 }, // $79.99/month, $959.99/year
     description: "For influencer superstars",
     gradient: "from-blue-700 to-blue-800",
     icon: <Crown className="w-6 h-6" />,
@@ -205,7 +205,8 @@ export default function PricingCard({
 
   const handleCheckout = async () => {
     if (!user) {
-      setPaymentError("Please sign in to continue");
+      // Redirect to sign-in instead of showing error
+      window.location.href = "/sign-in";
       return;
     }
 
@@ -396,12 +397,12 @@ export default function PricingCard({
           {/* Price Section */}
           <div className="flex flex-col items-center mb-6">
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-3xl font-bold text-gray-900">
-                ${isYearly ? (safePlan.price.yearly / 100).toFixed(2) : (safePlan.price.monthly / 100).toFixed(2)}
+              <span className="text-[2.85rem] font-bold text-gray-900">
+                ${isYearly ? (safePlan.price.yearly / 12 / 100).toFixed(2) : (safePlan.price.monthly / 100).toFixed(2)}
               </span>
               {isYearly && (
                 <span className="text-lg text-gray-400 line-through">
-                  ${((safePlan.price.monthly / 100) * 12).toFixed(2)}
+                  ${(safePlan.price.monthly / 100).toFixed(2)}
                 </span>
               )}
               {isYearly && (

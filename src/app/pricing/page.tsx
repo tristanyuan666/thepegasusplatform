@@ -81,10 +81,16 @@ function FeatureComparison() {
       category: "Content Creation",
       items: [
         {
-          name: "AI Content Generator",
+          name: "AI Persona Builder",
           creator: true,
           influencer: true,
           superstar: true,
+        },
+        {
+          name: "AI Posts per Month",
+          creator: "50",
+          influencer: "Unlimited",
+          superstar: "Unlimited",
         },
         {
           name: "Social Platforms",
@@ -93,15 +99,15 @@ function FeatureComparison() {
           superstar: "All",
         },
         {
-          name: "Advanced AI Templates",
+          name: "Advanced AI Content",
           creator: false,
           influencer: true,
           superstar: true,
         },
         {
-          name: "Voice Cloning",
+          name: "Auto-Scheduling",
           creator: false,
-          influencer: false,
+          influencer: true,
           superstar: true,
         },
       ],
@@ -116,25 +122,60 @@ function FeatureComparison() {
           superstar: true,
         },
         {
+          name: "Advanced Analytics",
+          creator: false,
+          influencer: true,
+          superstar: true,
+        },
+        {
           name: "Viral Score Predictor",
           creator: false,
           influencer: true,
           superstar: true,
         },
         {
-          name: "Growth Optimization",
+          name: "Growth Roadmaps",
           creator: false,
           influencer: true,
           superstar: true,
         },
         {
-          name: "A/B Testing",
+          name: "Custom Reports",
+          creator: false,
+          influencer: false,
+          superstar: true,
+        },
+      ],
+    },
+    {
+      category: "Monetization & Business",
+      items: [
+        {
+          name: "Affiliate Link Automation",
           creator: false,
           influencer: false,
           superstar: true,
         },
         {
-          name: "Custom Reports",
+          name: "AI Sales Assistant",
+          creator: false,
+          influencer: false,
+          superstar: true,
+        },
+        {
+          name: "Revenue Forecasting",
+          creator: false,
+          influencer: false,
+          superstar: true,
+        },
+        {
+          name: "Brand Partnership Tools",
+          creator: false,
+          influencer: false,
+          superstar: true,
+        },
+        {
+          name: "Advanced Monetization",
           creator: false,
           influencer: false,
           superstar: true,
@@ -157,7 +198,7 @@ function FeatureComparison() {
           superstar: true,
         },
         {
-          name: "Dedicated Manager",
+          name: "Dedicated Account Manager",
           creator: false,
           influencer: false,
           superstar: true,
@@ -170,6 +211,41 @@ function FeatureComparison() {
         },
         {
           name: "Custom Integrations",
+          creator: false,
+          influencer: false,
+          superstar: true,
+        },
+      ],
+    },
+    {
+      category: "Advanced Features",
+      items: [
+        {
+          name: "Custom Branding",
+          creator: false,
+          influencer: false,
+          superstar: true,
+        },
+        {
+          name: "API Access",
+          creator: false,
+          influencer: false,
+          superstar: true,
+        },
+        {
+          name: "White Label Solution",
+          creator: false,
+          influencer: false,
+          superstar: true,
+        },
+        {
+          name: "Team Collaboration",
+          creator: false,
+          influencer: false,
+          superstar: true,
+        },
+        {
+          name: "Priority Feature Requests",
           creator: false,
           influencer: false,
           superstar: true,
@@ -393,9 +469,9 @@ export default function PricingPage({ searchParams }: PricingPageProps) {
         "We support all major social media platforms including TikTok, Instagram, YouTube, X, LinkedIn, and Facebook. Our Influencer and Superstar plans include access to all platforms.",
     },
     {
-      question: "Is there a free trial available?",
+      question: "Can I change my plan anytime?",
       answer:
-        "We offer a 7-day free trial for all new users. You can explore all features of your chosen plan without any commitment. No credit card required to start your trial.",
+        "Yes, you can upgrade your plan at any time. When you upgrade, you'll be charged the prorated difference for the remainder of your billing period. Downgrades are not available to ensure consistent service quality.",
     },
     {
       question: "How accurate is the viral score predictor?",
@@ -403,44 +479,13 @@ export default function PricingPage({ searchParams }: PricingPageProps) {
         "Our viral score predictor has an 87% accuracy rate based on analyzing millions of posts. It considers factors like timing, hashtags, content type, and audience engagement patterns.",
     },
     {
-      question: "Do you offer refunds?",
+      question: "What happens if I cancel my subscription?",
       answer:
-        "Yes, we offer a 30-day money-back guarantee. If you're not satisfied with our service within the first 30 days, we'll provide a full refund, no questions asked.",
+        "When you cancel, you'll retain access to all premium features until the end of your current billing period. After that, your account will revert to the free tier with limited access.",
     },
   ];
 
-  const testimonials = [
-    {
-      name: "Sarah Chen",
-      handle: "@sarahfitness",
-      avatar:
-        "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&q=80",
-      content:
-        "Pegasus helped me grow from 0 to 50K followers in just 30 days. The AI content generator is incredible!",
-      metrics: { followers: "127K", growth: "+340%", platform: "TikTok" },
-      verified: true,
-    },
-    {
-      name: "Marcus Johnson",
-      handle: "@wealthbuilder",
-      avatar:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&q=80",
-      content:
-        "Made $25K in my first month using the monetization suite. The viral score predictor is scary accurate!",
-      metrics: { followers: "89K", growth: "+280%", platform: "Instagram" },
-      verified: true,
-    },
-    {
-      name: "Emma Rodriguez",
-      handle: "@lifestyle_emma",
-      avatar:
-        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&q=80",
-      content:
-        "The persona builder helped me find my unique voice. Now my content consistently gets 100K+ views!",
-      metrics: { followers: "156K", growth: "+420%", platform: "YouTube" },
-      verified: true,
-    },
-  ];
+
 
   return (
     <div className="min-h-screen bg-white pricing-page">
@@ -617,25 +662,7 @@ export default function PricingPage({ searchParams }: PricingPageProps) {
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="py-24 bg-white">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-20">
-            <h2 className="text-5xl font-bold text-black mb-8">
-              What Our{" "}
-              <span className="bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-                Creators Say
-              </span>
-            </h2>
-            <p className="text-2xl text-black max-w-4xl mx-auto leading-relaxed">
-              Real results from real creators who transformed their social media
-              presence
-            </p>
-          </div>
 
-          <TestimonialCarousel />
-        </div>
-      </section>
 
       {/* Additional Interactive Elements for Tests */}
       <div className="hidden" data-testid="pricing-elements">
