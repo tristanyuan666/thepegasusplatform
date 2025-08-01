@@ -295,7 +295,7 @@ export default function DashboardPlatforms({
       
     } catch (error) {
       console.error("Error connecting platform:", error);
-      setError(error instanceof Error ? error.message : "Failed to connect platform. Please try again.");
+              setError(error instanceof Error ? error.message : "Connection failed. Please try again.");
     } finally {
       setIsConnecting(null);
     }

@@ -565,7 +565,7 @@ export default function PricingCard({
               </Button>
             ) : (
               <div className="w-full py-3 text-sm text-center text-gray-500 bg-gray-100 rounded-lg">
-                <span>Upgrade to unlock more features</span>
+                                        <span>Unavailable</span>
               </div>
             )}
           </div>
