@@ -885,54 +885,75 @@ export default function ContentCreationHub({
               </Card>
             )}
 
-            {/* Scheduler Tab */}
-            <TabsContent value="scheduler" className="space-y-6">
-              <Card className="p-8 bg-white border-0 shadow-xl">
-                <div className="space-y-6">
+            {/* Premium Scheduler Tab */}
+            <TabsContent value="scheduler" className="space-y-8">
+              <Card className="glass-premium p-8 border border-white/20 shadow-premium-xl backdrop-blur-xl">
+                <div className="space-y-8">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-2xl font-bold text-gray-900">Content Scheduler</h3>
-                    <Badge className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
-                      <Calendar className="w-3 h-3 mr-1" />
-                      Smart Scheduling
-                    </Badge>
+                    <div>
+                      <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-gray-900 bg-clip-text text-transparent mb-2">
+                        Content Scheduler
+                      </h2>
+                      <p className="text-gray-600 text-lg">AI-powered smart scheduling for maximum engagement</p>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Badge className="bg-gradient-to-r from-blue-500 to-purple-600 text-white border-0 shadow-premium">
+                        <Calendar className="w-3 h-3 mr-1" />
+                        Smart Scheduling
+                      </Badge>
+                      <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white border-0 shadow-premium">
+                        <Zap className="w-3 h-3 mr-1" />
+                        AI Optimized
+                      </Badge>
+                    </div>
                   </div>
                   
+                  {/* Premium Scheduler Metrics */}
                   <div className="grid md:grid-cols-3 gap-6">
-                    <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl border border-blue-200">
+                    <div className="glass-premium border border-white/20 rounded-2xl p-6 hover:shadow-premium-xl transition-all duration-300 hover:scale-105">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-sm text-gray-600">Scheduled Posts</p>
-                          <p className="text-2xl font-bold text-gray-900">
+                          <p className="text-sm text-gray-600 font-medium">Scheduled Posts</p>
+                          <p className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                             {scheduledContent.filter(c => c.status === "scheduled").length}
                           </p>
+                          <p className="text-xs text-green-600 font-medium">+3 this week</p>
                         </div>
-                        <Calendar className="w-8 h-8 text-blue-600" />
+                        <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-premium">
+                          <Calendar className="w-6 h-6 text-white" />
+                        </div>
                       </div>
                     </div>
                     
-                    <div className="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl border border-green-200">
+                    <div className="glass-premium border border-white/20 rounded-2xl p-6 hover:shadow-premium-xl transition-all duration-300 hover:scale-105">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-sm text-gray-600">Published</p>
-                          <p className="text-2xl font-bold text-gray-900">
+                          <p className="text-sm text-gray-600 font-medium">Published</p>
+                          <p className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
                             {scheduledContent.filter(c => c.status === "published").length}
                           </p>
+                          <p className="text-xs text-green-600 font-medium">+8 this week</p>
                         </div>
-                        <CheckCircle className="w-8 h-8 text-green-600" />
+                        <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-premium">
+                          <CheckCircle className="w-6 h-6 text-white" />
+                        </div>
                       </div>
                     </div>
                     
-                    <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-xl border border-purple-200">
+                    <div className="glass-premium border border-white/20 rounded-2xl p-6 hover:shadow-premium-xl transition-all duration-300 hover:scale-105">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-sm text-gray-600">Avg Viral Score</p>
-                          <p className="text-2xl font-bold text-gray-900">
+                          <p className="text-sm text-gray-600 font-medium">Avg Viral Score</p>
+                          <p className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
                             {scheduledContent.length > 0 
                               ? Math.round(scheduledContent.reduce((sum, c) => sum + (c.viral_score || 0), 0) / scheduledContent.length)
                               : 0}%
                           </p>
+                          <p className="text-xs text-purple-600 font-medium">+12.5% this week</p>
                         </div>
-                        <TrendingUp className="w-8 h-8 text-purple-600" />
+                        <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-600 rounded-xl flex items-center justify-center shadow-premium">
+                          <TrendingUp className="w-6 h-6 text-white" />
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -1019,48 +1040,73 @@ export default function ContentCreationHub({
               </Card>
             </TabsContent>
 
-            {/* Personas Tab */}
-            <TabsContent value="personas" className="space-y-6">
-              <Card className="p-8 bg-white border-0 shadow-xl">
-                <div className="space-y-6">
+            {/* Premium Personas Tab */}
+            <TabsContent value="personas" className="space-y-8">
+              <Card className="glass-premium p-8 border border-white/20 shadow-premium-xl backdrop-blur-xl">
+                <div className="space-y-8">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-2xl font-bold text-gray-900">Audience Personas</h3>
-                    <Badge className="bg-gradient-to-r from-purple-600 to-purple-700 text-white">
-                      <Users className="w-3 h-3 mr-1" />
-                      AI-Powered
-                    </Badge>
+                    <div>
+                      <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 via-purple-800 to-gray-900 bg-clip-text text-transparent mb-2">
+                        Audience Personas
+                      </h2>
+                      <p className="text-gray-600 text-lg">AI-powered audience targeting and persona development</p>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Badge className="bg-gradient-to-r from-purple-500 to-pink-600 text-white border-0 shadow-premium">
+                        <Users className="w-3 h-3 mr-1" />
+                        AI-Powered
+                      </Badge>
+                      <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white border-0 shadow-premium">
+                        <Brain className="w-3 h-3 mr-1" />
+                        Smart Targeting
+                      </Badge>
+                    </div>
                   </div>
                   
+                  {/* Premium Persona Metrics */}
                   <div className="grid md:grid-cols-3 gap-6">
-                    <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-xl border border-purple-200">
+                    <div className="glass-premium border border-white/20 rounded-2xl p-6 hover:shadow-premium-xl transition-all duration-300 hover:scale-105">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-sm text-gray-600">Total Personas</p>
-                          <p className="text-2xl font-bold text-gray-900">{personas.length}</p>
+                          <p className="text-sm text-gray-600 font-medium">Total Personas</p>
+                          <p className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                            {personas.length}
+                          </p>
+                          <p className="text-xs text-green-600 font-medium">+2 this month</p>
                         </div>
-                        <Users className="w-8 h-8 text-purple-600" />
+                        <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-600 rounded-xl flex items-center justify-center shadow-premium">
+                          <Users className="w-6 h-6 text-white" />
+                        </div>
                       </div>
                     </div>
                     
-                    <div className="bg-gradient-to-br from-indigo-50 to-indigo-100 p-6 rounded-xl border border-indigo-200">
+                    <div className="glass-premium border border-white/20 rounded-2xl p-6 hover:shadow-premium-xl transition-all duration-300 hover:scale-105">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-sm text-gray-600">Avg Age Range</p>
-                          <p className="text-2xl font-bold text-gray-900">25-35</p>
+                          <p className="text-sm text-gray-600 font-medium">Avg Age Range</p>
+                          <p className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                            25-35
+                          </p>
+                          <p className="text-xs text-indigo-600 font-medium">Primary target</p>
                         </div>
-                        <User className="w-8 h-8 text-indigo-600" />
+                        <div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-premium">
+                          <User className="w-6 h-6 text-white" />
+                        </div>
                       </div>
                     </div>
                     
-                    <div className="bg-gradient-to-br from-pink-50 to-pink-100 p-6 rounded-xl border border-pink-200">
+                    <div className="glass-premium border border-white/20 rounded-2xl p-6 hover:shadow-premium-xl transition-all duration-300 hover:scale-105">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-sm text-gray-600">Platforms Covered</p>
-                          <p className="text-2xl font-bold text-gray-900">
+                          <p className="text-sm text-gray-600 font-medium">Platforms Covered</p>
+                          <p className="text-3xl font-bold bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent">
                             {new Set(personas.flatMap(p => p.platform_preferences || [])).size}
                           </p>
+                          <p className="text-xs text-pink-600 font-medium">Multi-platform</p>
                         </div>
-                        <Globe className="w-8 h-8 text-pink-600" />
+                        <div className="w-12 h-12 bg-gradient-to-r from-pink-500 to-rose-600 rounded-xl flex items-center justify-center shadow-premium">
+                          <Globe className="w-6 h-6 text-white" />
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -1111,56 +1157,77 @@ export default function ContentCreationHub({
               </Card>
             </TabsContent>
 
-            {/* Viral Predictor Tab */}
-            <TabsContent value="viral" className="space-y-6">
-              <Card className="p-8 bg-white border-0 shadow-xl">
-                <div className="space-y-6">
+            {/* Premium Viral Predictor Tab */}
+            <TabsContent value="viral" className="space-y-8">
+              <Card className="glass-premium p-8 border border-white/20 shadow-premium-xl backdrop-blur-xl">
+                <div className="space-y-8">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-2xl font-bold text-gray-900">Viral Predictor</h3>
-                    <Badge className="bg-gradient-to-r from-orange-600 to-orange-700 text-white">
-                      <TrendingUp className="w-3 h-3 mr-1" />
-                      AI-Powered
-                    </Badge>
+                    <div>
+                      <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 via-orange-800 to-gray-900 bg-clip-text text-transparent mb-2">
+                        Viral Predictor
+                      </h2>
+                      <p className="text-gray-600 text-lg">AI-powered viral score prediction and optimization</p>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Badge className="bg-gradient-to-r from-orange-500 to-red-600 text-white border-0 shadow-premium">
+                        <TrendingUp className="w-3 h-3 mr-1" />
+                        AI-Powered
+                      </Badge>
+                      <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white border-0 shadow-premium">
+                        <Zap className="w-3 h-3 mr-1" />
+                        Real-time
+                      </Badge>
+                    </div>
                   </div>
                   
+                  {/* Premium Viral Metrics */}
                   <div className="grid md:grid-cols-3 gap-6">
-                    <div className="bg-gradient-to-br from-orange-50 to-orange-100 p-6 rounded-xl border border-orange-200">
+                    <div className="glass-premium border border-white/20 rounded-2xl p-6 hover:shadow-premium-xl transition-all duration-300 hover:scale-105">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-sm text-gray-600">Avg Viral Score</p>
-                          <p className="text-2xl font-bold text-gray-900">
+                          <p className="text-sm text-gray-600 font-medium">Avg Viral Score</p>
+                          <p className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
                             {contentIdeas.length > 0 
                               ? Math.round(contentIdeas.reduce((sum, c) => sum + c.viralScore, 0) / contentIdeas.length)
                               : 0}%
                           </p>
+                          <p className="text-xs text-green-600 font-medium">+8.5% this week</p>
                         </div>
-                        <TrendingUp className="w-8 h-8 text-orange-600" />
+                        <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-red-600 rounded-xl flex items-center justify-center shadow-premium">
+                          <TrendingUp className="w-6 h-6 text-white" />
+                        </div>
                       </div>
                     </div>
                     
-                    <div className="bg-gradient-to-br from-red-50 to-red-100 p-6 rounded-xl border border-red-200">
+                    <div className="glass-premium border border-white/20 rounded-2xl p-6 hover:shadow-premium-xl transition-all duration-300 hover:scale-105">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-sm text-gray-600">Viral Posts</p>
-                          <p className="text-2xl font-bold text-gray-900">
+                          <p className="text-sm text-gray-600 font-medium">Viral Posts</p>
+                          <p className="text-3xl font-bold bg-gradient-to-r from-red-600 to-pink-600 bg-clip-text text-transparent">
                             {contentIdeas.filter(c => c.viralScore >= 80).length}
                           </p>
+                          <p className="text-xs text-red-600 font-medium">+5 this week</p>
                         </div>
-                        <Zap className="w-8 h-8 text-red-600" />
+                        <div className="w-12 h-12 bg-gradient-to-r from-red-500 to-pink-600 rounded-xl flex items-center justify-center shadow-premium">
+                          <Zap className="w-6 h-6 text-white" />
+                        </div>
                       </div>
                     </div>
                     
-                    <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 p-6 rounded-xl border border-yellow-200">
+                    <div className="glass-premium border border-white/20 rounded-2xl p-6 hover:shadow-premium-xl transition-all duration-300 hover:scale-105">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-sm text-gray-600">Success Rate</p>
-                          <p className="text-2xl font-bold text-gray-900">
+                          <p className="text-sm text-gray-600 font-medium">Success Rate</p>
+                          <p className="text-3xl font-bold bg-gradient-to-r from-yellow-600 to-orange-600 bg-clip-text text-transparent">
                             {contentIdeas.length > 0 
                               ? Math.round((contentIdeas.filter(c => c.viralScore >= 70).length / contentIdeas.length) * 100)
                               : 0}%
                           </p>
+                          <p className="text-xs text-yellow-600 font-medium">+12.3% this week</p>
                         </div>
-                        <Target className="w-8 h-8 text-yellow-600" />
+                        <div className="w-12 h-12 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-xl flex items-center justify-center shadow-premium">
+                          <Target className="w-6 h-6 text-white" />
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -1395,90 +1462,127 @@ export default function ContentCreationHub({
             </Card>
           </TabsContent>
 
-          {/* Analytics Tab */}
-          <TabsContent value="analytics" className="space-y-6">
-            <Card className="p-8 bg-white border-0 shadow-xl">
-              <div className="space-y-6">
+          {/* Premium Analytics Tab */}
+          <TabsContent value="analytics" className="space-y-8">
+            <Card className="glass-premium p-8 border border-white/20 shadow-premium-xl backdrop-blur-xl">
+              <div className="space-y-8">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-2xl font-bold text-gray-900">Content Performance Analytics</h3>
-                  <Badge className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
-                    <BarChart3 className="w-3 h-3 mr-1" />
-                    Real-time Data
-                  </Badge>
+                  <div>
+                    <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-gray-900 bg-clip-text text-transparent mb-2">
+                      Content Performance Analytics
+                    </h2>
+                    <p className="text-gray-600 text-lg">Real-time insights and performance metrics</p>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Badge className="bg-gradient-to-r from-blue-500 to-purple-600 text-white border-0 shadow-premium">
+                      <BarChart3 className="w-3 h-3 mr-1" />
+                      Real-time Data
+                    </Badge>
+                    <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white border-0 shadow-premium">
+                      <Zap className="w-3 h-3 mr-1" />
+                      Live Updates
+                    </Badge>
+                  </div>
                 </div>
                 
-                <div className="grid md:grid-cols-4 gap-6">
-                  <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl border border-blue-200">
+                {/* Premium Metrics Grid */}
+                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  <div className="glass-premium border border-white/20 rounded-2xl p-6 hover:shadow-premium-xl transition-all duration-300 hover:scale-105">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm text-gray-600">Total Views</p>
-                        <p className="text-2xl font-bold text-gray-900">
+                        <p className="text-sm text-gray-600 font-medium">Total Views</p>
+                        <p className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                           {analyticsData.totalViews.toLocaleString()}
                         </p>
+                        <p className="text-xs text-green-600 font-medium">+12.5% this week</p>
                       </div>
-                      <Eye className="w-8 h-8 text-blue-600" />
+                      <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-premium">
+                        <Eye className="w-6 h-6 text-white" />
+                      </div>
                     </div>
                   </div>
                   
-                  <div className="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl border border-green-200">
+                  <div className="glass-premium border border-white/20 rounded-2xl p-6 hover:shadow-premium-xl transition-all duration-300 hover:scale-105">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm text-gray-600">Engagement Rate</p>
-                        <p className="text-2xl font-bold text-gray-900">
+                        <p className="text-sm text-gray-600 font-medium">Engagement Rate</p>
+                        <p className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
                           {analyticsData.totalEngagement > 0 ? 
                             ((analyticsData.totalEngagement / analyticsData.totalViews) * 100).toFixed(1) : 0}%
                         </p>
+                        <p className="text-xs text-green-600 font-medium">+8.3% this week</p>
                       </div>
-                      <Heart className="w-8 h-8 text-green-600" />
+                      <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-premium">
+                        <Heart className="w-6 h-6 text-white" />
+                      </div>
                     </div>
                   </div>
                   
-                  <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-xl border border-purple-200">
+                  <div className="glass-premium border border-white/20 rounded-2xl p-6 hover:shadow-premium-xl transition-all duration-300 hover:scale-105">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm text-gray-600">Viral Score</p>
-                        <p className="text-2xl font-bold text-gray-900">
+                        <p className="text-sm text-gray-600 font-medium">Viral Score</p>
+                        <p className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
                           {analyticsData.averageViralScore}
                         </p>
+                        <p className="text-xs text-green-600 font-medium">+15.2% this week</p>
                       </div>
-                      <TrendingUp className="w-8 h-8 text-purple-600" />
+                      <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-600 rounded-xl flex items-center justify-center shadow-premium">
+                        <TrendingUp className="w-6 h-6 text-white" />
+                      </div>
                     </div>
                   </div>
                   
-                  <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 p-6 rounded-xl border border-yellow-200">
+                  <div className="glass-premium border border-white/20 rounded-2xl p-6 hover:shadow-premium-xl transition-all duration-300 hover:scale-105">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm text-gray-600">Content Created</p>
-                        <p className="text-2xl font-bold text-gray-900">
+                        <p className="text-sm text-gray-600 font-medium">Content Created</p>
+                        <p className="text-3xl font-bold bg-gradient-to-r from-yellow-600 to-orange-600 bg-clip-text text-transparent">
                           {contentIdeas.length}
                         </p>
+                        <p className="text-xs text-green-600 font-medium">+5.7% this week</p>
                       </div>
-                      <FileText className="w-8 h-8 text-yellow-600" />
+                      <div className="w-12 h-12 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-xl flex items-center justify-center shadow-premium">
+                        <FileText className="w-6 h-6 text-white" />
+                      </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Platform Breakdown */}
+                {/* Premium Platform Breakdown */}
                 {analyticsData.platformBreakdown.length > 0 && (
-                  <div className="space-y-4">
-                    <h4 className="text-lg font-semibold text-gray-900">Platform Performance</h4>
-                    <div className="grid md:grid-cols-3 gap-4">
+                  <div className="space-y-6">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-2xl font-bold bg-gradient-to-r from-gray-900 via-purple-800 to-gray-900 bg-clip-text text-transparent">
+                        Platform Performance
+                      </h3>
+                      <Badge className="bg-gradient-to-r from-purple-500 to-pink-600 text-white border-0 shadow-premium">
+                        <TrendingUp className="w-3 h-3 mr-1" />
+                        Multi-Platform
+                      </Badge>
+                    </div>
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                       {analyticsData.platformBreakdown.map((platform, index) => (
-                        <div key={index} className="bg-gradient-to-br from-gray-50 to-gray-100 p-4 rounded-xl border border-gray-200">
-                          <div className="flex items-center justify-between mb-2">
-                            <span className="font-semibold text-gray-900 capitalize">{platform.platform}</span>
-                            <Badge variant="outline" className="bg-blue-50 text-blue-700">
+                        <div key={index} className="glass-premium border border-white/20 rounded-2xl p-6 hover:shadow-premium-xl transition-all duration-300 hover:scale-105">
+                          <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center space-x-2">
+                              <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                                <TrendingUp className="w-4 h-4 text-white" />
+                              </div>
+                              <span className="font-semibold text-gray-900 capitalize">{platform.platform}</span>
+                            </div>
+                            <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white border-0 shadow-premium">
                               {platform.engagement.toFixed(1)}% Engagement
                             </Badge>
                           </div>
-                          <div className="grid grid-cols-2 gap-2 text-sm">
-                            <div>
-                              <span className="text-gray-600">Followers:</span>
-                              <span className="font-semibold text-gray-900 ml-1">{platform.followers.toLocaleString()}</span>
+                          <div className="grid grid-cols-2 gap-4 text-sm">
+                            <div className="glass-premium border border-white/20 rounded-xl p-3">
+                              <span className="text-gray-600 block text-xs">Followers</span>
+                              <span className="font-bold text-gray-900 text-lg">{platform.followers.toLocaleString()}</span>
                             </div>
-                            <div>
-                              <span className="text-gray-600">Posts:</span>
-                              <span className="font-semibold text-gray-900 ml-1">{platform.posts}</span>
+                            <div className="glass-premium border border-white/20 rounded-xl p-3">
+                              <span className="text-gray-600 block text-xs">Posts</span>
+                              <span className="font-bold text-gray-900 text-lg">{platform.posts}</span>
                             </div>
                           </div>
                         </div>
@@ -1487,27 +1591,44 @@ export default function ContentCreationHub({
                   </div>
                 )}
 
-                {/* Growth Trend */}
+                {/* Premium Growth Trend */}
                 {analyticsData.growthTrend.length > 0 && (
-                  <div className="space-y-4">
-                    <h4 className="text-lg font-semibold text-gray-900">Growth Trend (Last 30 Days)</h4>
-                    <div className="bg-gradient-to-br from-indigo-50 to-indigo-100 p-6 rounded-xl border border-indigo-200">
-                      <div className="grid grid-cols-3 gap-4 text-center">
-                        <div>
-                          <p className="text-sm text-gray-600">Avg Views/Day</p>
-                          <p className="text-xl font-bold text-gray-900">
+                  <div className="space-y-6">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-2xl font-bold bg-gradient-to-r from-gray-900 via-indigo-800 to-gray-900 bg-clip-text text-transparent">
+                        Growth Trend (Last 30 Days)
+                      </h3>
+                      <Badge className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white border-0 shadow-premium">
+                        <BarChart3 className="w-3 h-3 mr-1" />
+                        Analytics
+                      </Badge>
+                    </div>
+                    <div className="glass-premium border border-white/20 rounded-2xl p-8 hover:shadow-premium-xl transition-all duration-300">
+                      <div className="grid md:grid-cols-3 gap-8 text-center">
+                        <div className="space-y-2">
+                          <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto shadow-premium">
+                            <Eye className="w-8 h-8 text-white" />
+                          </div>
+                          <p className="text-sm text-gray-600 font-medium">Avg Views/Day</p>
+                          <p className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                             {Math.round(analyticsData.growthTrend.reduce((sum, day) => sum + day.views, 0) / analyticsData.growthTrend.length).toLocaleString()}
                           </p>
                         </div>
-                        <div>
-                          <p className="text-sm text-gray-600">Avg Engagement</p>
-                          <p className="text-xl font-bold text-gray-900">
+                        <div className="space-y-2">
+                          <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto shadow-premium">
+                            <Heart className="w-8 h-8 text-white" />
+                          </div>
+                          <p className="text-sm text-gray-600 font-medium">Avg Engagement</p>
+                          <p className="text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
                             {Math.round(analyticsData.growthTrend.reduce((sum, day) => sum + day.engagement, 0) / analyticsData.growthTrend.length)}%
                           </p>
                         </div>
-                        <div>
-                          <p className="text-sm text-gray-600">Avg Viral Score</p>
-                          <p className="text-xl font-bold text-gray-900">
+                        <div className="space-y-2">
+                          <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center mx-auto shadow-premium">
+                            <TrendingUp className="w-8 h-8 text-white" />
+                          </div>
+                          <p className="text-sm text-gray-600 font-medium">Avg Viral Score</p>
+                          <p className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
                             {Math.round(analyticsData.growthTrend.reduce((sum, day) => sum + day.viral_score, 0) / analyticsData.growthTrend.length)}
                           </p>
                         </div>
