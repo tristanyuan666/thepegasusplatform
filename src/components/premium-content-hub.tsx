@@ -445,59 +445,31 @@ export default function PremiumContentHub({
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50">
-      {/* Premium Header with Proper Blue/Cyan Color Palette */}
-      <div className="bg-gradient-to-r from-blue-600 via-blue-700 to-cyan-600 border-b border-blue-500/20 shadow-lg backdrop-blur-xl">
+      {/* Clean Premium Header */}
+      <div className="bg-white border-b border-gray-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20">
-            <div className="flex items-center space-x-6">
-              <div className="flex items-center space-x-3">
-                <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
-                  <Sparkles className="w-7 h-7 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-2xl font-bold text-white">
-                    Premium Content Hub
-                  </h1>
-                  <p className="text-blue-100 text-sm font-medium">AI-Powered Content Generation & Analytics</p>
-                </div>
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center space-x-4">
+              <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-xl flex items-center justify-center">
+                <Sparkles className="w-5 h-5 text-white" />
               </div>
-              {hasActiveSubscription && (
-                <div className="flex items-center space-x-2">
-                  <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white border-0 shadow-md px-3 py-1">
-                    <Crown className="w-4 h-4 mr-1" />
-                    Premium
-                  </Badge>
-                  <Badge className="bg-gradient-to-r from-green-400 to-emerald-500 text-white border-0 shadow-md px-3 py-1">
-                    <Zap className="w-4 h-4 mr-1" />
-                    AI Powered
-                  </Badge>
-                </div>
-              )}
+              <div>
+                <h1 className="text-xl font-bold text-gray-900">Content Hub</h1>
+                <p className="text-sm text-gray-600">AI-Powered Content Creation</p>
+              </div>
             </div>
             
-            <div className="flex items-center space-x-4">
-              <div className="text-right text-white">
-                <p className="text-sm text-blue-100 font-medium">Connected Platforms</p>
-                <p className="text-2xl font-bold">{platformConnections.length}</p>
+            <div className="flex items-center space-x-3">
+              <div className="text-right">
+                <p className="text-xs text-gray-500">Platforms</p>
+                <p className="text-lg font-semibold text-gray-900">{platformConnections.length}</p>
               </div>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="bg-white/10 border-white/20 text-white hover:bg-white/20 transition-all duration-300 hover:scale-105"
-                onClick={() => setActiveTab("analytics")}
-              >
-                <BarChart3 className="w-4 h-4 mr-2" />
-                Analytics
-              </Button>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="bg-white/10 border-white/20 text-white hover:bg-white/20 transition-all duration-300 hover:scale-105"
-                onClick={() => setActiveTab("scheduler")}
-              >
-                <Calendar className="w-4 h-4 mr-2" />
-                Schedule
-              </Button>
+              {hasActiveSubscription && (
+                <Badge className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white text-xs px-2 py-1">
+                  <Crown className="w-3 h-3 mr-1" />
+                  Premium
+                </Badge>
+              )}
             </div>
           </div>
         </div>
@@ -525,76 +497,61 @@ export default function PremiumContentHub({
       {/* Premium Content Area */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
-          {/* Premium Tab Navigation */}
-          <TabsList className="bg-white/80 backdrop-blur-xl grid w-full grid-cols-7 border border-blue-200 shadow-lg rounded-xl p-1">
-            <TabsTrigger value="create" className="flex items-center space-x-2 hover:bg-blue-50 transition-all duration-300 data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700 rounded-lg">
+          {/* Clean Tab Navigation */}
+          <TabsList className="bg-white border border-gray-200 grid w-full grid-cols-4 shadow-sm rounded-lg p-1">
+            <TabsTrigger value="create" className="flex items-center space-x-2 hover:bg-blue-50 transition-all duration-200 data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700 rounded-md">
               <Wand2 className="w-4 h-4" />
               <span>Create</span>
             </TabsTrigger>
-            <TabsTrigger value="templates" className="flex items-center space-x-2 hover:bg-blue-50 transition-all duration-300 data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700 rounded-lg">
-              <FileText className="w-4 h-4" />
-              <span>Templates</span>
-            </TabsTrigger>
-            <TabsTrigger value="ideas" className="flex items-center space-x-2 hover:bg-blue-50 transition-all duration-300 data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700 rounded-lg">
+            <TabsTrigger value="ideas" className="flex items-center space-x-2 hover:bg-blue-50 transition-all duration-200 data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700 rounded-md">
               <Lightbulb className="w-4 h-4" />
               <span>My Ideas</span>
             </TabsTrigger>
-            <TabsTrigger value="scheduler" className="flex items-center space-x-2 hover:bg-blue-50 transition-all duration-300 data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700 rounded-lg">
+            <TabsTrigger value="scheduler" className="flex items-center space-x-2 hover:bg-blue-50 transition-all duration-200 data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700 rounded-md">
               <Calendar className="w-4 h-4" />
               <span>Schedule</span>
             </TabsTrigger>
-            <TabsTrigger value="personas" className="flex items-center space-x-2 hover:bg-blue-50 transition-all duration-300 data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700 rounded-lg">
-              <Users className="w-4 h-4" />
-              <span>Personas</span>
-            </TabsTrigger>
-            <TabsTrigger value="viral" className="flex items-center space-x-2 hover:bg-blue-50 transition-all duration-300 data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700 rounded-lg">
-              <TrendingUp className="w-4 h-4" />
-              <span>Viral</span>
-            </TabsTrigger>
-            <TabsTrigger value="analytics" className="flex items-center space-x-2 hover:bg-blue-50 transition-all duration-300 data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700 rounded-lg">
+            <TabsTrigger value="analytics" className="flex items-center space-x-2 hover:bg-blue-50 transition-all duration-200 data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700 rounded-md">
               <BarChart3 className="w-4 h-4" />
               <span>Analytics</span>
             </TabsTrigger>
           </TabsList>
 
-          {/* Create Content Tab - Premium Design */}
-          <TabsContent value="create" className="space-y-8">
-            <Card className="bg-white/80 backdrop-blur-xl p-8 border border-blue-200 shadow-xl rounded-2xl">
-              <div className="space-y-8">
-                {/* Premium Header */}
+          {/* Advanced AI Content Generator */}
+          <TabsContent value="create" className="space-y-6">
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
+              <div className="p-6 border-b border-gray-100">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent mb-2">
-                      AI Content Generator
-                    </h2>
-                    <p className="text-gray-600 text-lg">Create viral content with advanced AI technology</p>
+                    <h2 className="text-2xl font-bold text-gray-900">AI Content Generator</h2>
+                    <p className="text-gray-600">Create viral content with advanced AI technology</p>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <Badge className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white">
-                      <Zap className="w-4 h-4 mr-1" />
-                      AI Powered
-                    </Badge>
-                  </div>
+                  <Badge className="bg-blue-100 text-blue-700">
+                    <Zap className="w-3 h-3 mr-1" />
+                    AI Powered
+                  </Badge>
                 </div>
+              </div>
 
-                {/* Content Generation Form */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                  <div className="space-y-6">
+              <div className="p-6">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  {/* Input Section */}
+                  <div className="lg:col-span-2 space-y-6">
                     <div>
-                      <Label className="text-sm font-semibold text-gray-700 mb-2 block">Content Description</Label>
+                      <Label className="text-sm font-medium text-gray-700 mb-2 block">What do you want to create?</Label>
                       <Textarea
                         value={contentInput}
                         onChange={(e) => setContentInput(e.target.value)}
-                        placeholder="Describe the content you want to create (e.g., 'How to grow your business on social media')"
-                        className="min-h-[120px] border-blue-200 focus:border-blue-500 focus:ring-blue-500"
+                        placeholder="Describe your content idea in detail (e.g., 'Create a viral post about growing a business on social media with actionable tips and success stories')"
+                        className="min-h-[120px] border-gray-300 focus:border-blue-500 focus:ring-blue-500"
                       />
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <Label className="text-sm font-semibold text-gray-700 mb-2 block">Platforms</Label>
+                        <Label className="text-sm font-medium text-gray-700 mb-2 block">Platform</Label>
                         <Select value={selectedPlatforms[0]} onValueChange={(value) => setSelectedPlatforms([value])}>
-                          <SelectTrigger className="border-blue-200 focus:border-blue-500 focus:ring-blue-500">
+                          <SelectTrigger className="border-gray-300 focus:border-blue-500 focus:ring-blue-500">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
@@ -609,9 +566,9 @@ export default function PremiumContentHub({
                       </div>
 
                       <div>
-                        <Label className="text-sm font-semibold text-gray-700 mb-2 block">Content Type</Label>
+                        <Label className="text-sm font-medium text-gray-700 mb-2 block">Content Type</Label>
                         <Select value={selectedContentType} onValueChange={setSelectedContentType}>
-                          <SelectTrigger className="border-blue-200 focus:border-blue-500 focus:ring-blue-500">
+                          <SelectTrigger className="border-gray-300 focus:border-blue-500 focus:ring-blue-500">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
@@ -627,36 +584,37 @@ export default function PremiumContentHub({
                     <Button
                       onClick={handleGenerateContent}
                       disabled={isGenerating || !contentInput.trim()}
-                      className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-semibold py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-lg transition-colors"
                     >
                       {isGenerating ? (
                         <>
-                          <RefreshCw className="w-5 h-5 mr-2 animate-spin" />
-                          Generating...
+                          <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                          Generating Content...
                         </>
                       ) : (
                         <>
-                          <Wand2 className="w-5 h-5 mr-2" />
-                          Generate Premium Content
+                          <Wand2 className="w-4 h-4 mr-2" />
+                          Generate Content
                         </>
                       )}
                     </Button>
                   </div>
 
+                  {/* Preview Section */}
                   <div className="space-y-4">
-                    <Label className="text-sm font-semibold text-gray-700 mb-2 block">AI Preview</Label>
-                    <div className="bg-gradient-to-br from-blue-50 to-cyan-50 border border-blue-200 rounded-xl p-6 min-h-[200px] flex items-center justify-center">
+                    <Label className="text-sm font-medium text-gray-700">Preview</Label>
+                    <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 min-h-[200px] flex items-center justify-center">
                       {generatedContent.length > 0 ? (
-                        <div className="space-y-4 w-full">
+                        <div className="space-y-3 w-full">
                           <div className="flex items-center justify-between">
-                            <h4 className="font-semibold text-gray-900">{generatedContent[0].title}</h4>
-                            <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white">
+                            <h4 className="font-medium text-gray-900">{generatedContent[0].title}</h4>
+                            <Badge className="bg-green-100 text-green-700 text-xs">
                               {generatedContent[0].viralScore}% Viral
                             </Badge>
                           </div>
-                          <p className="text-gray-700 text-sm">{generatedContent[0].description}</p>
-                          <div className="flex flex-wrap gap-2">
-                            {generatedContent[0].hashtags?.map((tag: string, index: number) => (
+                          <p className="text-gray-600 text-sm">{generatedContent[0].description}</p>
+                          <div className="flex flex-wrap gap-1">
+                            {generatedContent[0].hashtags?.slice(0, 3).map((tag: string, index: number) => (
                               <Badge key={index} variant="outline" className="text-xs">
                                 #{tag}
                               </Badge>
@@ -665,26 +623,28 @@ export default function PremiumContentHub({
                         </div>
                       ) : (
                         <div className="text-center text-gray-500">
-                          <Wand2 className="w-12 h-12 mx-auto mb-4 text-blue-400" />
-                          <p>Enter content description and generate premium content</p>
+                          <Wand2 className="w-8 h-8 mx-auto mb-2 text-gray-400" />
+                          <p className="text-sm">Content preview will appear here</p>
                         </div>
                       )}
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
 
                 {/* Generated Content Display */}
                 {generatedContent.length > 0 && (
-                  <Card className="p-8 bg-gradient-to-br from-blue-50 to-cyan-50 border-0 shadow-xl rounded-2xl">
-                    <div className="space-y-6">
+                  <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
+                    <div className="p-6 border-b border-gray-100">
                       <div className="flex items-center justify-between">
-                        <h3 className="text-2xl font-bold text-gray-900">Generated Content</h3>
+                        <h3 className="text-xl font-bold text-gray-900">Generated Content</h3>
                         <div className="flex items-center space-x-2">
                           <Button
                             variant="outline"
                             size="sm"
                             onClick={() => navigator.clipboard.writeText(generatedContent[0].content || '')}
-                            className="border-blue-200 text-blue-700 hover:bg-blue-50"
+                            className="border-gray-300 text-gray-700 hover:bg-gray-50"
                           >
                             <Copy className="w-4 h-4 mr-2" />
                             Copy
@@ -693,15 +653,17 @@ export default function PremiumContentHub({
                             variant="outline"
                             size="sm"
                             onClick={() => handleSaveContent(generatedContent[0])}
-                            className="border-green-200 text-green-700 hover:bg-green-50"
+                            className="border-green-300 text-green-700 hover:bg-green-50"
                           >
                             <Save className="w-4 h-4 mr-2" />
                             Save
                           </Button>
                         </div>
                       </div>
+                    </div>
 
-                      <div className="bg-white p-6 rounded-xl border border-gray-200">
+                    <div className="p-6">
+                      <div className="bg-gray-50 p-6 rounded-lg border border-gray-200">
                         <h4 className="text-lg font-semibold text-gray-900 mb-4">{generatedContent[0].title}</h4>
                         <p className="text-gray-700 whitespace-pre-wrap mb-4">{generatedContent[0].content}</p>
                         
@@ -718,7 +680,7 @@ export default function PremiumContentHub({
                           </div>
                           <Button
                             onClick={() => handlePublishContent(generatedContent[0])}
-                            className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white"
+                            className="bg-blue-600 hover:bg-blue-700 text-white"
                           >
                             <Send className="w-4 h-4 mr-2" />
                             Publish
@@ -726,106 +688,32 @@ export default function PremiumContentHub({
                         </div>
                       </div>
                     </div>
-                  </Card>
-                )}
-
-                {/* Premium Features */}
-                {hasActiveSubscription && (
-                  <Card className="p-6 bg-gradient-to-br from-yellow-50 to-orange-50 border border-yellow-200 rounded-xl">
-                    <div className="flex items-center space-x-4">
-                      <div className="w-12 h-12 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl flex items-center justify-center">
-                        <Crown className="w-6 h-6 text-white" />
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-gray-900">Premium Features Enabled</h4>
-                        <p className="text-sm text-gray-600">Real Analytics, AI Insights, Viral Predictions</p>
-                      </div>
-                    </div>
-                  </Card>
+                  </div>
                 )}
               </div>
-            </Card>
+            </div>
           </TabsContent>
 
-          {/* Templates Tab */}
-          <TabsContent value="templates" className="space-y-8">
-            <Card className="bg-white/80 backdrop-blur-xl p-8 border border-blue-200 shadow-xl rounded-2xl">
-              <div className="space-y-8">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent mb-2">
-                      Premium Content Templates
-                    </h2>
-                    <p className="text-gray-600 text-lg">Ready-to-use templates for viral content</p>
-                  </div>
-                  <div className="flex items-center space-x-4">
-                    <div className="text-center">
-                      <p className="text-2xl font-bold text-gray-900">{contentTemplates.length}</p>
-                      <p className="text-sm text-gray-600">Templates</p>
-                    </div>
-                  </div>
-                </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {contentTemplates.map((template: any) => (
-                    <Card key={template.id} className="p-6 border border-gray-200 hover:border-blue-300 transition-all duration-300 hover:shadow-lg rounded-xl">
-                      <div className="space-y-4">
-                        <div className="flex items-center justify-between">
-                          <h4 className="font-semibold text-gray-900">{template.name}</h4>
-                          {template.premium && (
-                            <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs">
-                              <Crown className="w-3 h-3 mr-1" />
-                              Premium
-                            </Badge>
-                          )}
-                        </div>
-                        <p className="text-sm text-gray-600">{template.description}</p>
-                        <div className="flex items-center space-x-4 text-sm text-gray-500">
-                          <span>Viral: {template.viral_score}%</span>
-                          <span>Success: {template.success_rate}%</span>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          {template.platforms?.map((platform: string) => (
-                            <Badge key={platform} variant="outline" className="text-xs">
-                              {platform}
-                            </Badge>
-                          ))}
-                        </div>
-                        <Button
-                          onClick={() => handleUseTemplate(template)}
-                          className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white"
-                        >
-                          <FileText className="w-4 h-4 mr-2" />
-                          Use Template
-                        </Button>
-                      </div>
-                    </Card>
-                  ))}
-                </div>
-              </div>
-            </Card>
-          </TabsContent>
 
           {/* My Ideas Tab */}
-          <TabsContent value="ideas" className="space-y-8">
-            <Card className="bg-white/80 backdrop-blur-xl p-8 border border-blue-200 shadow-xl rounded-2xl">
-              <div className="space-y-6">
+          <TabsContent value="ideas" className="space-y-6">
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
+              <div className="p-6 border-b border-gray-100">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent mb-2">
-                      My Content Ideas
-                    </h2>
-                    <p className="text-gray-600 text-lg">Manage and organize your content ideas</p>
+                    <h2 className="text-2xl font-bold text-gray-900">My Content Ideas</h2>
+                    <p className="text-gray-600">Manage and organize your content ideas</p>
                   </div>
                   <div className="flex items-center space-x-4">
                     <Input
                       placeholder="Search ideas..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-64 border-blue-200 focus:border-blue-500 focus:ring-blue-500"
+                      className="w-64 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
                     />
                     <Select value={filterStatus} onValueChange={setFilterStatus}>
-                      <SelectTrigger className="w-32 border-blue-200 focus:border-blue-500 focus:ring-blue-500">
+                      <SelectTrigger className="w-32 border-gray-300 focus:border-blue-500 focus:ring-blue-500">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -835,22 +723,14 @@ export default function PremiumContentHub({
                         <SelectItem value="published">Published</SelectItem>
                       </SelectContent>
                     </Select>
-                    <Select value={sortBy} onValueChange={setSortBy}>
-                      <SelectTrigger className="w-40 border-blue-200 focus:border-blue-500 focus:ring-blue-500">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="viralScore">Viral Score</SelectItem>
-                        <SelectItem value="createdAt">Date Created</SelectItem>
-                        <SelectItem value="estimatedViews">Estimated Views</SelectItem>
-                      </SelectContent>
-                    </Select>
                   </div>
                 </div>
+              </div>
 
+              <div className="p-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {sortedContent.map((content: any) => (
-                    <Card key={content.id} className="p-6 border border-gray-200 hover:border-blue-300 transition-all duration-300 hover:shadow-lg rounded-xl">
+                    <div key={content.id} className="p-6 border border-gray-200 hover:border-blue-300 transition-all duration-300 hover:shadow-lg rounded-xl">
                       <div className="space-y-4">
                         <div className="flex items-center justify-between">
                           <h4 className="font-semibold text-gray-900">{content.title}</h4>
@@ -869,7 +749,7 @@ export default function PremiumContentHub({
                             variant="outline"
                             size="sm"
                             onClick={() => handleSaveContent(content)}
-                            className="border-blue-200 text-blue-700 hover:bg-blue-50"
+                            className="border-gray-300 text-gray-700 hover:bg-gray-50"
                           >
                             <Save className="w-4 h-4 mr-1" />
                             Save
@@ -878,7 +758,7 @@ export default function PremiumContentHub({
                             variant="outline"
                             size="sm"
                             onClick={() => handlePublishContent(content)}
-                            className="border-green-200 text-green-700 hover:bg-green-50"
+                            className="border-green-300 text-green-700 hover:bg-green-50"
                           >
                             <Send className="w-4 h-4 mr-1" />
                             Publish
@@ -887,30 +767,28 @@ export default function PremiumContentHub({
                             variant="outline"
                             size="sm"
                             onClick={() => handleDeleteContent(content.id)}
-                            className="border-red-200 text-red-700 hover:bg-red-50"
+                            className="border-red-300 text-red-700 hover:bg-red-50"
                           >
                             <Trash2 className="w-4 h-4 mr-1" />
                             Delete
                           </Button>
                         </div>
                       </div>
-                    </Card>
+                    </div>
                   ))}
                 </div>
               </div>
-            </Card>
+            </div>
           </TabsContent>
 
           {/* Scheduler Tab */}
-          <TabsContent value="scheduler" className="space-y-8">
-            <Card className="bg-white/80 backdrop-blur-xl p-8 border border-blue-200 shadow-xl rounded-2xl">
-              <div className="space-y-8">
+          <TabsContent value="scheduler" className="space-y-6">
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
+              <div className="p-6 border-b border-gray-100">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent mb-2">
-                      Content Scheduler
-                    </h2>
-                    <p className="text-gray-600 text-lg">Schedule and manage your content calendar</p>
+                    <h2 className="text-2xl font-bold text-gray-900">Content Scheduler</h2>
+                    <p className="text-gray-600">Schedule and manage your content calendar</p>
                   </div>
                   <div className="flex items-center space-x-6">
                     <div className="text-center">
@@ -921,31 +799,27 @@ export default function PremiumContentHub({
                       <p className="text-2xl font-bold text-green-600">{scheduledContent.filter((item: any) => item.status === 'published').length}</p>
                       <p className="text-sm text-gray-600">Published</p>
                     </div>
-                    <div className="text-center">
-                      <p className="text-2xl font-bold text-blue-600">
-                        {Math.round(scheduledContent.reduce((sum: number, item: any) => sum + (item.viral_score || 0), 0) / Math.max(scheduledContent.length, 1))}%
-                      </p>
-                      <p className="text-sm text-gray-600">Avg Viral Score</p>
-                    </div>
                   </div>
                 </div>
+              </div>
 
+              <div className="p-6">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                   <div className="space-y-6">
                     <h3 className="text-xl font-semibold text-gray-900">Quick Schedule</h3>
                     <div className="space-y-4">
                       <div>
-                        <Label className="text-sm font-semibold text-gray-700 mb-2 block">Content</Label>
+                        <Label className="text-sm font-medium text-gray-700 mb-2 block">Content</Label>
                         <Textarea
                           placeholder="Enter content to schedule..."
-                          className="min-h-[100px] border-blue-200 focus:border-blue-500 focus:ring-blue-500"
+                          className="min-h-[100px] border-gray-300 focus:border-blue-500 focus:ring-blue-500"
                         />
                       </div>
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <Label className="text-sm font-semibold text-gray-700 mb-2 block">Platform</Label>
+                          <Label className="text-sm font-medium text-gray-700 mb-2 block">Platform</Label>
                           <Select>
-                            <SelectTrigger className="border-blue-200 focus:border-blue-500 focus:ring-blue-500">
+                            <SelectTrigger className="border-gray-300 focus:border-blue-500 focus:ring-blue-500">
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -959,11 +833,11 @@ export default function PremiumContentHub({
                           </Select>
                         </div>
                         <div>
-                          <Label className="text-sm font-semibold text-gray-700 mb-2 block">Date & Time</Label>
-                          <Input type="datetime-local" className="border-blue-200 focus:border-blue-500 focus:ring-blue-500" />
+                          <Label className="text-sm font-medium text-gray-700 mb-2 block">Date & Time</Label>
+                          <Input type="datetime-local" className="border-gray-300 focus:border-blue-500 focus:ring-blue-500" />
                         </div>
                       </div>
-                      <Button className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white">
+                      <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">
                         <Calendar className="w-4 h-4 mr-2" />
                         Schedule Content
                       </Button>
@@ -974,7 +848,7 @@ export default function PremiumContentHub({
                     <h3 className="text-xl font-semibold text-gray-900">Upcoming Schedule</h3>
                     <div className="space-y-4 max-h-96 overflow-y-auto">
                       {scheduledContent.slice(0, 5).map((item: any) => (
-                        <Card key={item.id} className="p-4 border border-gray-200 hover:border-blue-300 transition-all duration-300">
+                        <div key={item.id} className="p-4 border border-gray-200 hover:border-blue-300 transition-all duration-300 rounded-lg">
                           <div className="flex items-center justify-between">
                             <div className="space-y-2">
                               <h4 className="font-semibold text-gray-900">{item.title}</h4>
@@ -990,240 +864,59 @@ export default function PremiumContentHub({
                               <p className="text-xs text-gray-500 mt-1">{item.estimated_views} views</p>
                             </div>
                           </div>
-                        </Card>
+                        </div>
                       ))}
                     </div>
                   </div>
                 </div>
               </div>
-            </Card>
-          </TabsContent>
-
-          {/* Personas Tab */}
-          <TabsContent value="personas" className="space-y-8">
-            <Card className="bg-white/80 backdrop-blur-xl p-8 border border-blue-200 shadow-xl rounded-2xl">
-              <div className="space-y-8">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent mb-2">
-                      Audience Personas
-                    </h2>
-                    <p className="text-gray-600 text-lg">Target your content to specific audience segments</p>
-                  </div>
-                  <div className="flex items-center space-x-6">
-                    <div className="text-center">
-                      <p className="text-2xl font-bold text-gray-900">{personas.length}</p>
-                      <p className="text-sm text-gray-600">Total Personas</p>
-                    </div>
-                    <div className="text-center">
-                      <p className="text-2xl font-bold text-blue-600">25-35</p>
-                      <p className="text-sm text-gray-600">Avg Age Range</p>
-                    </div>
-                    <div className="text-center">
-                      <p className="text-2xl font-bold text-green-600">{platformConnections.length}</p>
-                      <p className="text-sm text-gray-600">Platforms Covered</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {personas.map((persona: any) => (
-                    <Card key={persona.id} className="p-6 border border-gray-200 hover:border-blue-300 transition-all duration-300 hover:shadow-lg rounded-xl">
-                      <div className="space-y-4">
-                        <div className="flex items-center justify-between">
-                          <h4 className="font-semibold text-gray-900">{persona.name}</h4>
-                          <Badge variant="outline" className="bg-green-50 text-green-700">
-                            {persona.engagement_rate}% Engagement
-                          </Badge>
-                        </div>
-                        <p className="text-sm text-gray-600">Age: {persona.age_range}</p>
-                        <div className="space-y-2">
-                          <p className="text-sm font-medium text-gray-700">Interests:</p>
-                          <div className="flex flex-wrap gap-2">
-                            {persona.interests?.map((interest: string, index: number) => (
-                              <Badge key={index} variant="outline" className="text-xs">
-                                {interest}
-                              </Badge>
-                            ))}
-                          </div>
-                        </div>
-                        <div className="space-y-2">
-                          <p className="text-sm font-medium text-gray-700">Platforms:</p>
-                          <div className="flex flex-wrap gap-2">
-                            {persona.platform_preferences?.map((platform: string, index: number) => (
-                              <Badge key={index} variant="outline" className="text-xs">
-                                {platform}
-                              </Badge>
-                            ))}
-                          </div>
-                        </div>
-                        <div className="flex items-center justify-between text-sm text-gray-500">
-                          <span>Conversion: {persona.conversion_rate}%</span>
-                          <span>Session: {persona.avg_session_duration}s</span>
-                        </div>
-                      </div>
-                    </Card>
-                  ))}
-                </div>
-              </div>
-            </Card>
-          </TabsContent>
-
-          {/* Viral Predictor Tab */}
-          <TabsContent value="viral" className="space-y-8">
-            <Card className="bg-white/80 backdrop-blur-xl p-8 border border-blue-200 shadow-xl rounded-2xl">
-              <div className="space-y-8">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent mb-2">
-                      Viral Predictor
-                    </h2>
-                    <p className="text-gray-600 text-lg">Predict the viral potential of your content</p>
-                  </div>
-                  <div className="flex items-center space-x-6">
-                    <div className="text-center">
-                      <p className="text-2xl font-bold text-gray-900">
-                        {Math.round(viralPredictions.reduce((sum: number, pred: any) => sum + (pred.viral_score || 0), 0) / Math.max(viralPredictions.length, 1))}%
-                      </p>
-                      <p className="text-sm text-gray-600">Avg Viral Score</p>
-                    </div>
-                    <div className="text-center">
-                      <p className="text-2xl font-bold text-green-600">{viralPredictions.filter((pred: any) => (pred.viral_score || 0) > 80).length}</p>
-                      <p className="text-sm text-gray-600">Viral Posts</p>
-                    </div>
-                    <div className="text-center">
-                      <p className="text-2xl font-bold text-blue-600">
-                        {Math.round(viralPredictions.filter((pred: any) => (pred.viral_score || 0) > 70).length / Math.max(viralPredictions.length, 1) * 100)}%
-                      </p>
-                      <p className="text-sm text-gray-600">Success Rate</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                  <div className="space-y-6">
-                    <h3 className="text-xl font-semibold text-gray-900">Predict Viral Potential</h3>
-                    <div className="space-y-4">
-                      <div>
-                        <Label className="text-sm font-semibold text-gray-700 mb-2 block">Content Description</Label>
-                        <Textarea
-                          placeholder="Describe your content to predict viral potential..."
-                          className="min-h-[100px] border-blue-200 focus:border-blue-500 focus:ring-blue-500"
-                        />
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <Label className="text-sm font-semibold text-gray-700 mb-2 block">Platform</Label>
-                          <Select>
-                            <SelectTrigger className="border-blue-200 focus:border-blue-500 focus:ring-blue-500">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="instagram">Instagram</SelectItem>
-                              <SelectItem value="tiktok">TikTok</SelectItem>
-                              <SelectItem value="youtube">YouTube</SelectItem>
-                              <SelectItem value="x">Twitter/X</SelectItem>
-                              <SelectItem value="linkedin">LinkedIn</SelectItem>
-                              <SelectItem value="facebook">Facebook</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div>
-                          <Label className="text-sm font-semibold text-gray-700 mb-2 block">Content Type</Label>
-                          <Select>
-                            <SelectTrigger className="border-blue-200 focus:border-blue-500 focus:ring-blue-500">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="post">Post</SelectItem>
-                              <SelectItem value="story">Story</SelectItem>
-                              <SelectItem value="reel">Reel</SelectItem>
-                              <SelectItem value="video">Video</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </div>
-                      <Button className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white">
-                        <TrendingUp className="w-4 h-4 mr-2" />
-                        Predict Viral Score
-                      </Button>
-                    </div>
-                  </div>
-
-                  <div className="space-y-6">
-                    <h3 className="text-xl font-semibold text-gray-900">Recent Predictions</h3>
-                    <div className="space-y-4 max-h-96 overflow-y-auto">
-                      {viralPredictions.slice(0, 5).map((prediction: any) => (
-                        <Card key={prediction.id} className="p-4 border border-gray-200 hover:border-blue-300 transition-all duration-300">
-                          <div className="flex items-center justify-between">
-                            <div className="space-y-2">
-                              <h4 className="font-semibold text-gray-900">{prediction.content_id}</h4>
-                              <p className="text-sm text-gray-600">{prediction.platform_optimization}</p>
-                              <p className="text-xs text-gray-500">Posted: {new Date(prediction.created_at).toLocaleDateString()}</p>
-                            </div>
-                            <div className="text-right">
-                              <Badge 
-                                variant="outline" 
-                                className={prediction.viral_score > 80 ? "bg-green-50 text-green-700" : "bg-blue-50 text-blue-700"}
-                              >
-                                {prediction.viral_score}% Viral
-                              </Badge>
-                              <p className="text-xs text-gray-500 mt-1">{prediction.predicted_views} views</p>
-                            </div>
-                          </div>
-                        </Card>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </Card>
+            </div>
           </TabsContent>
 
           {/* Analytics Tab */}
-          <TabsContent value="analytics" className="space-y-8">
-            <Card className="bg-white/80 backdrop-blur-xl p-8 border border-blue-200 shadow-xl rounded-2xl">
-              <div className="space-y-8">
+          <TabsContent value="analytics" className="space-y-6">
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
+              <div className="p-6 border-b border-gray-100">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent mb-2">
-                      Content Performance Analytics
-                    </h2>
-                    <p className="text-gray-600 text-lg">Track your content performance and growth</p>
+                    <h2 className="text-2xl font-bold text-gray-900">Content Performance Analytics</h2>
+                    <p className="text-gray-600">Track your content performance and growth</p>
                   </div>
                 </div>
+              </div>
 
+              <div className="p-6">
                 {/* Metrics Grid */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                  <Card className="p-6 border border-gray-200 hover:border-blue-300 transition-all duration-300">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+                  <div className="p-6 border border-gray-200 hover:border-blue-300 transition-all duration-300 rounded-lg">
                     <div className="text-center">
                       <p className="text-3xl font-bold text-gray-900">{analyticsData.totalViews.toLocaleString()}</p>
                       <p className="text-sm text-gray-600">Total Views</p>
                     </div>
-                  </Card>
-                  <Card className="p-6 border border-gray-200 hover:border-blue-300 transition-all duration-300">
+                  </div>
+                  <div className="p-6 border border-gray-200 hover:border-blue-300 transition-all duration-300 rounded-lg">
                     <div className="text-center">
                       <p className="text-3xl font-bold text-blue-600">{analyticsData.engagementRate}%</p>
                       <p className="text-sm text-gray-600">Engagement Rate</p>
                     </div>
-                  </Card>
-                  <Card className="p-6 border border-gray-200 hover:border-blue-300 transition-all duration-300">
+                  </div>
+                  <div className="p-6 border border-gray-200 hover:border-blue-300 transition-all duration-300 rounded-lg">
                     <div className="text-center">
                       <p className="text-3xl font-bold text-green-600">{analyticsData.averageViralScore}%</p>
                       <p className="text-sm text-gray-600">Viral Score</p>
                     </div>
-                  </Card>
-                  <Card className="p-6 border border-gray-200 hover:border-blue-300 transition-all duration-300">
+                  </div>
+                  <div className="p-6 border border-gray-200 hover:border-blue-300 transition-all duration-300 rounded-lg">
                     <div className="text-center">
                       <p className="text-3xl font-bold text-purple-600">{contentIdeas.length}</p>
                       <p className="text-sm text-gray-600">Content Created</p>
                     </div>
-                  </Card>
+                  </div>
                 </div>
 
                 {/* Platform Performance */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                  <Card className="p-6 border border-gray-200">
+                  <div className="p-6 border border-gray-200 rounded-lg">
                     <h3 className="text-xl font-semibold text-gray-900 mb-4">Platform Performance</h3>
                     <div className="space-y-4">
                       {analyticsData.platformBreakdown.map((platform: any) => (
@@ -1244,9 +937,9 @@ export default function PremiumContentHub({
                         </div>
                       ))}
                     </div>
-                  </Card>
+                  </div>
 
-                  <Card className="p-6 border border-gray-200">
+                  <div className="p-6 border border-gray-200 rounded-lg">
                     <h3 className="text-xl font-semibold text-gray-900 mb-4">Growth Trend (Last 30 Days)</h3>
                     <div className="space-y-4">
                       {analyticsData.growthTrend.slice(-7).map((day: any, index: number) => (
@@ -1262,10 +955,10 @@ export default function PremiumContentHub({
                         </div>
                       ))}
                     </div>
-                  </Card>
+                  </div>
                 </div>
               </div>
-            </Card>
+            </div>
           </TabsContent>
         </Tabs>
       </div>
