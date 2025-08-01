@@ -245,7 +245,7 @@ export default async function ContentHubPage() {
 
 // Enhanced data generation functions for premium experience
 function generateRealisticAnalytics(userId: string) {
-  const analytics = [];
+  const analytics: any[] = [];
   const metrics = ['views', 'engagement', 'reach', 'shares', 'comments', 'likes', 'saves'];
   
   for (let i = 0; i < 30; i++) {
@@ -269,7 +269,7 @@ function generateRealisticAnalytics(userId: string) {
 }
 
 function generateRealisticScheduledContent(userId: string) {
-  const content = [];
+  const content: any[] = [];
   const platforms = ['instagram', 'tiktok', 'youtube', 'x', 'linkedin'];
   const contentTypes = ['post', 'story', 'reel', 'video', 'carousel'];
   
@@ -336,7 +336,7 @@ function generateRealisticPersonas(userId: string) {
 }
 
 function generateRealisticContentIdeas(userId: string) {
-  const ideas = [];
+  const ideas: any[] = [];
   const platforms = ['instagram', 'tiktok', 'youtube', 'x', 'linkedin'];
   const contentTypes = ['post', 'story', 'reel', 'video', 'carousel'];
   
