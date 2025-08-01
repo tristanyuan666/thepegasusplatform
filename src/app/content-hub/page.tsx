@@ -28,18 +28,18 @@ export default async function ContentHubPage() {
   console.log("Content hub: User authenticated, loading page");
 
   // Initialize with enhanced fallback data for premium experience
-  let userProfile = null;
+  let userProfile: any = null;
   let hasActiveSubscription = false;
   let subscriptionTier = "free";
-  let platformConnections = [];
-  let contentAnalytics = [];
-  let scheduledContent = [];
-  let personas = [];
-  let contentIdeas = [];
-  let contentTemplates = [];
-  let viralPredictions = [];
-  let contentPerformance = [];
-  let audienceInsights = [];
+  let platformConnections: any[] = [];
+  let contentAnalytics: any[] = [];
+  let scheduledContent: any[] = [];
+  let personas: any[] = [];
+  let contentIdeas: any[] = [];
+  let contentTemplates: any[] = [];
+  let viralPredictions: any[] = [];
+  let contentPerformance: any[] = [];
+  let audienceInsights: any[] = [];
 
   try {
     // Only try to get user profile if we have a user
