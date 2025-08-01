@@ -141,6 +141,8 @@ interface ContentCreationHubProps {
   contentAnalytics: any[];
   scheduledContent: any[];
   personas: any[];
+  contentIdeas: any[];
+  contentTemplates: any[];
 }
 
 interface ContentIdea {
@@ -201,9 +203,11 @@ export default function ContentCreationHub({
   contentAnalytics,
   scheduledContent,
   personas,
+  contentIdeas,
+  contentTemplates,
 }: ContentCreationHubProps) {
   const [isGenerating, setIsGenerating] = useState(false);
-  const [contentIdeas, setContentIdeas] = useState<ContentIdea[]>([]);
+  const [localContentIdeas, setLocalContentIdeas] = useState<ContentIdea[]>([]);
   const [selectedTemplate, setSelectedTemplate] = useState<ContentTemplate | null>(null);
   const [contentInput, setContentInput] = useState("");
   const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>(["all"]);
@@ -502,7 +506,7 @@ export default function ContentCreationHub({
         return;
       }
 
-      setContentIdeas(prev => [...generatedIdeas, ...prev]);
+              setLocalContentIdeas(prev => [...generatedIdeas, ...prev]);
       setGeneratedContent(generatedIdeas[0]);
       
       setSuccess("✨ Premium content ideas generated successfully! Your viral content is ready.");
@@ -528,7 +532,7 @@ export default function ContentCreationHub({
   };
 
   const handleSaveContent = (content: ContentIdea) => {
-    setContentIdeas(prev => prev.map(item => 
+    setLocalContentIdeas(prev => prev.map(item => 
       item.id === content.id ? { ...item, status: "draft" as const } : item
     ));
     setSuccess("Content saved successfully!");
@@ -536,7 +540,7 @@ export default function ContentCreationHub({
   };
 
   const handlePublishContent = (content: ContentIdea) => {
-    setContentIdeas(prev => prev.map(item => 
+    setLocalContentIdeas(prev => prev.map(item => 
       item.id === content.id ? { ...item, status: "published" as const } : item
     ));
     setSuccess("Content published successfully!");
@@ -544,12 +548,12 @@ export default function ContentCreationHub({
   };
 
   const handleDeleteContent = (contentId: string) => {
-    setContentIdeas(prev => prev.filter(item => item.id !== contentId));
+    setLocalContentIdeas(prev => prev.filter(item => item.id !== contentId));
     setSuccess("Content deleted successfully!");
     setTimeout(() => setSuccess(null), 3000);
   };
 
-  const filteredContent = contentIdeas.filter(content => {
+  const filteredContent = (contentIdeas || []).filter(content => {
     const matchesSearch = content.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          content.description.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesFilter = filterStatus === "all" || content.status === filterStatus;

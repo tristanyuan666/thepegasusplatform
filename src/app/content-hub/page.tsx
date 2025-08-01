@@ -35,6 +35,8 @@ export default async function ContentHubPage() {
   let contentAnalytics = [];
   let scheduledContent = [];
   let personas = [];
+  let contentIdeas = [];
+  let contentTemplates = [];
 
   try {
     // Only try to get user profile if we have a user
@@ -114,6 +116,30 @@ export default async function ContentHubPage() {
         personas = personasData;
         console.log("Content hub: Personas loaded");
       }
+
+      // Get content ideas
+      const { data: ideas, error: ideasError } = await supabase
+        .from("content_ideas")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
+
+      if (!ideasError && ideas) {
+        contentIdeas = ideas;
+        console.log("Content hub: Content ideas loaded");
+      }
+
+      // Get content templates
+      const { data: templates, error: templatesError } = await supabase
+        .from("content_templates")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
+
+      if (!templatesError && templates) {
+        contentTemplates = templates;
+        console.log("Content hub: Content templates loaded");
+      }
     }
 
   } catch (error) {
@@ -140,6 +166,8 @@ export default async function ContentHubPage() {
         contentAnalytics={contentAnalytics}
         scheduledContent={scheduledContent}
         personas={personas}
+        contentIdeas={contentIdeas}
+        contentTemplates={contentTemplates}
       />
     </Suspense>
   );
