@@ -133,7 +133,7 @@ import {
 import Link from "next/link";
 
 interface ContentCreationHubProps {
-  user: SupabaseUser;
+  user: SupabaseUser | null;
   userProfile: any;
   hasActiveSubscription: boolean;
   subscriptionTier: string;
