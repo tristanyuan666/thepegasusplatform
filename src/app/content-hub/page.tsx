@@ -38,8 +38,8 @@ export default async function ContentHubPage() {
   let contentIdeas: any[] = [];
   let contentTemplates: any[] = [];
   let viralPredictions: any[] = [];
-  let contentPerformance: any[] = [];
-  let audienceInsights: any[] = [];
+  let contentPerformance: any = {};
+  let audienceInsights: any = {};
 
   try {
     // Only try to get user profile if we have a user
