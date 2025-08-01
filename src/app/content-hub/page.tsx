@@ -13,8 +13,11 @@ export default async function ContentHubPage() {
   const { data: { user }, error: userError } = await supabase.auth.getUser();
   
   if (userError || !user) {
+    console.log("Content hub: No user found, redirecting to sign-in");
     redirect('/sign-in');
   }
+
+  console.log("Content hub: User authenticated, loading page");
 
   // Initialize with empty data as fallbacks
   let userProfile = null;
@@ -35,6 +38,9 @@ export default async function ContentHubPage() {
 
     if (!profileError && profileData) {
       userProfile = profileData;
+      console.log("Content hub: User profile loaded");
+    } else {
+      console.log("Content hub: No user profile, using fallback");
     }
 
     // Get subscription status
@@ -48,6 +54,7 @@ export default async function ContentHubPage() {
     if (!subError && subscription) {
       hasActiveSubscription = true;
       subscriptionTier = subscription.plan_name?.toLowerCase() || "free";
+      console.log("Content hub: Active subscription found");
     }
 
     // Get platform connections
@@ -59,6 +66,7 @@ export default async function ContentHubPage() {
 
     if (!connectionsError && connections) {
       platformConnections = connections;
+      console.log("Content hub: Platform connections loaded");
     }
 
     // Get content analytics
@@ -71,6 +79,7 @@ export default async function ContentHubPage() {
 
     if (!analyticsError && analytics) {
       contentAnalytics = analytics;
+      console.log("Content hub: Analytics loaded");
     }
 
     // Get scheduled content
@@ -82,6 +91,7 @@ export default async function ContentHubPage() {
 
     if (!scheduledError && scheduled) {
       scheduledContent = scheduled;
+      console.log("Content hub: Scheduled content loaded");
     }
 
     // Get personas
@@ -93,6 +103,7 @@ export default async function ContentHubPage() {
 
     if (!personasError && personasData) {
       personas = personasData;
+      console.log("Content hub: Personas loaded");
     }
 
   } catch (error) {
@@ -100,6 +111,8 @@ export default async function ContentHubPage() {
     console.error("Content hub data loading error:", error);
     // Continue with fallback data
   }
+
+  console.log("Content hub: Rendering component");
 
   // Always return the content hub component, never show error page
   return (
