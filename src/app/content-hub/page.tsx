@@ -79,7 +79,7 @@ export default async function ContentHubPage() {
         .eq("is_active", true);
 
       if (!connectionsError && connections) {
-        platformConnections = connections.map(conn => ({
+        platformConnections = connections.map((conn: any) => ({
           ...conn,
           // Add realistic engagement metrics
           engagement_rate: Math.random() * 8 + 2, // 2-10% realistic range
@@ -114,7 +114,7 @@ export default async function ContentHubPage() {
         .order("scheduled_for", { ascending: true });
 
       if (!scheduledError && scheduled) {
-        scheduledContent = scheduled.map(item => ({
+        scheduledContent = scheduled.map((item: any) => ({
           ...item,
           viral_score: Math.floor(Math.random() * 30) + 70, // 70-100% realistic viral scores
           estimated_views: Math.floor(Math.random() * 50000) + 5000,
@@ -134,7 +134,7 @@ export default async function ContentHubPage() {
         .order("created_at", { ascending: false });
 
       if (!personasError && personasData) {
-        personas = personasData.map(persona => ({
+        personas = personasData.map((persona: any) => ({
           ...persona,
           engagement_rate: Math.random() * 12 + 3, // 3-15% realistic
           conversion_rate: Math.random() * 8 + 2, // 2-10% realistic
@@ -154,7 +154,7 @@ export default async function ContentHubPage() {
         .order("created_at", { ascending: false });
 
       if (!ideasError && ideas) {
-        contentIdeas = ideas.map(idea => ({
+        contentIdeas = ideas.map((idea: any) => ({
           ...idea,
           viral_score: Math.floor(Math.random() * 35) + 65, // 65-100% realistic
           estimated_views: Math.floor(Math.random() * 100000) + 10000,
@@ -176,7 +176,7 @@ export default async function ContentHubPage() {
         .order("created_at", { ascending: false });
 
       if (!templatesError && templates) {
-        contentTemplates = templates.map(template => ({
+        contentTemplates = templates.map((template: any) => ({
           ...template,
           success_rate: Math.floor(Math.random() * 30) + 70, // 70-100% success rate
           avg_viral_score: Math.floor(Math.random() * 25) + 75, // 75-100% viral score
