@@ -1,4 +1,4 @@
-import { createClient } from "../../../supabase/client";
+import { createClient } from "@/supabase/client";
 import { redirect } from "next/navigation";
 import ContentCreationHub from "@/components/content-creation-hub";
 import { Suspense } from "react";
