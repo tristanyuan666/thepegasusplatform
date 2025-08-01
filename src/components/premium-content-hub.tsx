@@ -29,7 +29,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
-interface ContentCreationHubProps {
+interface PremiumContentHubProps {
   user: SupabaseUser | null;
   userProfile: any;
   hasActiveSubscription: boolean;
@@ -98,7 +98,7 @@ interface AnalyticsData {
   avgSessionDuration: number;
 }
 
-export default function ContentCreationHub({
+export default function PremiumContentHub({
   user,
   userProfile,
   hasActiveSubscription,
@@ -112,7 +112,7 @@ export default function ContentCreationHub({
   viralPredictions = [],
   contentPerformance = {},
   audienceInsights = {},
-}: ContentCreationHubProps) {
+}: PremiumContentHubProps) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [localContentIdeas, setLocalContentIdeas] = useState<ContentIdea[]>([]);
   const [selectedTemplate, setSelectedTemplate] = useState<ContentTemplate | null>(null);
@@ -126,6 +126,7 @@ export default function ContentCreationHub({
   const [hasError, setHasError] = useState(false);
   const [activeTab, setActiveTab] = useState("create");
   const [showPremiumUpgrade, setShowPremiumUpgrade] = useState(false);
+
   // Calculate premium analytics data with realistic metrics
   const calculatePremiumAnalytics = () => {
     if (!contentAnalytics || contentAnalytics.length === 0) {
@@ -334,7 +335,7 @@ export default function ContentCreationHub({
       const baseFollowers = platformConnection?.follower_count || 1000;
       
       // Calculate realistic metrics based on follower count
-      const viralScore = Math.floor(Math.random() * 30) + 70; // 70-100 range
+      const viralScore = Math.floor(Math.random() * 30) + 70; // 70-100% range
       const estimatedViews = Math.floor(baseFollowers * (Math.random() * 0.8 + 0.2)); // 20-100% of followers
       const engagement = Math.floor(estimatedViews * (Math.random() * 0.1 + 0.05)); // 5-15% engagement
       const reach = Math.floor(estimatedViews * (1 + Math.random() * 0.5)); // 100-150% of views
@@ -432,7 +433,7 @@ export default function ContentCreationHub({
         return;
       }
 
-              setLocalContentIdeas(prev => [...generatedIdeas, ...prev]);
+      setLocalContentIdeas(prev => [...generatedIdeas, ...prev]);
       setGeneratedContent(generatedIdeas[0]);
       
       setSuccess("✨ Premium content ideas generated successfully! Your viral content is ready.");
@@ -512,7 +513,7 @@ export default function ContentCreationHub({
                 </div>
                 <div>
                   <h1 className="text-2xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-gray-900 bg-clip-text text-transparent">
-                    Content Creation Hub
+                    Premium Content Hub
                   </h1>
                   <p className="text-sm text-gray-600 font-medium">AI-Powered Content Generation & Analytics</p>
                 </div>
@@ -810,405 +811,6 @@ export default function ContentCreationHub({
                 </div>
               </Card>
             )}
-
-            {/* Premium Scheduler Tab */}
-            <TabsContent value="scheduler" className="space-y-8">
-              <Card className="glass-premium p-8 border border-white/20 shadow-premium-xl backdrop-blur-xl">
-                <div className="space-y-8">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-gray-900 bg-clip-text text-transparent mb-2">
-                        Content Scheduler
-                      </h2>
-                      <p className="text-gray-600 text-lg">AI-powered smart scheduling for maximum engagement</p>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Badge className="bg-gradient-to-r from-blue-500 to-purple-600 text-white border-0 shadow-premium">
-                        <Calendar className="w-3 h-3 mr-1" />
-                        Smart Scheduling
-                      </Badge>
-                      <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white border-0 shadow-premium">
-                        <Zap className="w-3 h-3 mr-1" />
-                        AI Optimized
-                      </Badge>
-                    </div>
-                  </div>
-                  
-                  {/* Premium Scheduler Metrics */}
-                  <div className="grid md:grid-cols-3 gap-6">
-                    <div className="glass-premium border border-white/20 rounded-2xl p-6 hover:shadow-premium-xl transition-all duration-300 hover:scale-105">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-sm text-gray-600 font-medium">Scheduled Posts</p>
-                          <p className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                            {scheduledContent.filter(c => c.status === "scheduled").length}
-                          </p>
-                          <p className="text-xs text-green-600 font-medium">+3 this week</p>
-                        </div>
-                        <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-premium">
-                          <Calendar className="w-6 h-6 text-white" />
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="glass-premium border border-white/20 rounded-2xl p-6 hover:shadow-premium-xl transition-all duration-300 hover:scale-105">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-sm text-gray-600 font-medium">Published</p>
-                          <p className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-                            {scheduledContent.filter(c => c.status === "published").length}
-                          </p>
-                          <p className="text-xs text-green-600 font-medium">+8 this week</p>
-                        </div>
-                        <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-premium">
-                          <CheckCircle className="w-6 h-6 text-white" />
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="glass-premium border border-white/20 rounded-2xl p-6 hover:shadow-premium-xl transition-all duration-300 hover:scale-105">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-sm text-gray-600 font-medium">Avg Viral Score</p>
-                          <p className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                            {scheduledContent.length > 0 
-                              ? Math.round(scheduledContent.reduce((sum, c) => sum + (c.viral_score || 0), 0) / scheduledContent.length)
-                              : 0}%
-                          </p>
-                          <p className="text-xs text-purple-600 font-medium">+12.5% this week</p>
-                        </div>
-                        <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-600 rounded-xl flex items-center justify-center shadow-premium">
-                          <TrendingUp className="w-6 h-6 text-white" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Quick Schedule */}
-                  <div className="bg-gradient-to-br from-gray-50 to-gray-100 p-6 rounded-xl border border-gray-200">
-                    <h4 className="text-lg font-semibold text-gray-900 mb-4">Quick Schedule</h4>
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div>
-                        <Label className="text-sm font-medium text-gray-700">Platform</Label>
-                        <Select>
-                          <SelectTrigger className="mt-1">
-                            <SelectValue placeholder="Select platform" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="tiktok">TikTok</SelectItem>
-                            <SelectItem value="instagram">Instagram</SelectItem>
-                            <SelectItem value="youtube">YouTube</SelectItem>
-                            <SelectItem value="x">X</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div>
-                        <Label className="text-sm font-medium text-gray-700">Content Type</Label>
-                        <Select>
-                          <SelectTrigger className="mt-1">
-                            <SelectValue placeholder="Select type" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="post">Post</SelectItem>
-                            <SelectItem value="story">Story</SelectItem>
-                            <SelectItem value="reel">Reel</SelectItem>
-                            <SelectItem value="video">Video</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-                    <div className="mt-4">
-                      <Label className="text-sm font-medium text-gray-700">Content</Label>
-                      <Textarea 
-                        placeholder="Enter your content here..."
-                        className="mt-1"
-                        rows={3}
-                      />
-                    </div>
-                    <Button className="w-full mt-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800">
-                      <Calendar className="w-4 h-4 mr-2" />
-                      Schedule Content
-                    </Button>
-                  </div>
-
-                  {/* Upcoming Schedule */}
-                  <div>
-                    <h4 className="text-lg font-semibold text-gray-900 mb-4">Upcoming Schedule</h4>
-                    <div className="space-y-3">
-                      {scheduledContent.slice(0, 5).map((content, index) => (
-                        <div key={index} className="bg-white p-4 rounded-lg border border-gray-200">
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <h5 className="font-medium text-gray-900">{content.title || "Scheduled Content"}</h5>
-                              <p className="text-sm text-gray-600">{content.content}</p>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Badge variant="outline" className="text-xs">
-                                {content.platform}
-                              </Badge>
-                              <Badge 
-                                variant="outline" 
-                                className={`text-xs ${
-                                  content.viral_score >= 80 ? "text-green-600 border-green-600" :
-                                  content.viral_score >= 60 ? "text-yellow-600 border-yellow-600" :
-                                  "text-red-600 border-red-600"
-                                }`}
-                              >
-                                {content.viral_score}% viral
-                              </Badge>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            </TabsContent>
-
-            {/* Premium Personas Tab */}
-            <TabsContent value="personas" className="space-y-8">
-              <Card className="glass-premium p-8 border border-white/20 shadow-premium-xl backdrop-blur-xl">
-                <div className="space-y-8">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 via-purple-800 to-gray-900 bg-clip-text text-transparent mb-2">
-                        Audience Personas
-                      </h2>
-                      <p className="text-gray-600 text-lg">AI-powered audience targeting and persona development</p>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Badge className="bg-gradient-to-r from-purple-500 to-pink-600 text-white border-0 shadow-premium">
-                        <Users className="w-3 h-3 mr-1" />
-                        AI-Powered
-                      </Badge>
-                      <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white border-0 shadow-premium">
-                        <Brain className="w-3 h-3 mr-1" />
-                        Smart Targeting
-                      </Badge>
-                    </div>
-                  </div>
-                  
-                  {/* Premium Persona Metrics */}
-                  <div className="grid md:grid-cols-3 gap-6">
-                    <div className="glass-premium border border-white/20 rounded-2xl p-6 hover:shadow-premium-xl transition-all duration-300 hover:scale-105">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-sm text-gray-600 font-medium">Total Personas</p>
-                          <p className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                            {personas.length}
-                          </p>
-                          <p className="text-xs text-green-600 font-medium">+2 this month</p>
-                        </div>
-                        <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-600 rounded-xl flex items-center justify-center shadow-premium">
-                          <Users className="w-6 h-6 text-white" />
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="glass-premium border border-white/20 rounded-2xl p-6 hover:shadow-premium-xl transition-all duration-300 hover:scale-105">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-sm text-gray-600 font-medium">Avg Age Range</p>
-                          <p className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                            25-35
-                          </p>
-                          <p className="text-xs text-indigo-600 font-medium">Primary target</p>
-                        </div>
-                        <div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-premium">
-                          <User className="w-6 h-6 text-white" />
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="glass-premium border border-white/20 rounded-2xl p-6 hover:shadow-premium-xl transition-all duration-300 hover:scale-105">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-sm text-gray-600 font-medium">Platforms Covered</p>
-                          <p className="text-3xl font-bold bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent">
-                            {new Set(personas.flatMap(p => p.platform_preferences || [])).size}
-                          </p>
-                          <p className="text-xs text-pink-600 font-medium">Multi-platform</p>
-                        </div>
-                        <div className="w-12 h-12 bg-gradient-to-r from-pink-500 to-rose-600 rounded-xl flex items-center justify-center shadow-premium">
-                          <Globe className="w-6 h-6 text-white" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Persona List */}
-                  <div>
-                    <h4 className="text-lg font-semibold text-gray-900 mb-4">Your Personas</h4>
-                    <div className="grid md:grid-cols-2 gap-4">
-                      {personas.slice(0, 4).map((persona, index) => (
-                        <div key={index} className="bg-white p-4 rounded-lg border border-gray-200">
-                          <div className="flex items-center justify-between mb-3">
-                            <h5 className="font-medium text-gray-900">{persona.name}</h5>
-                            <Badge variant="outline" className="text-xs">
-                              {persona.age_range}
-                            </Badge>
-                          </div>
-                          <div className="space-y-2">
-                            {persona.interests && persona.interests.length > 0 && (
-                              <div>
-                                <p className="text-xs text-gray-600">Interests</p>
-                                <div className="flex flex-wrap gap-1">
-                                  {persona.interests.slice(0, 3).map((interest: string, i: number) => (
-                                    <Badge key={i} variant="secondary" className="text-xs">
-                                      {interest}
-                                    </Badge>
-                                  ))}
-                                </div>
-                              </div>
-                            )}
-                            {persona.platform_preferences && persona.platform_preferences.length > 0 && (
-                              <div>
-                                <p className="text-xs text-gray-600">Platforms</p>
-                                <div className="flex flex-wrap gap-1">
-                                  {persona.platform_preferences.slice(0, 3).map((platform: string, i: number) => (
-                                    <Badge key={i} variant="outline" className="text-xs">
-                                      {platform}
-                                    </Badge>
-                                  ))}
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            </TabsContent>
-
-            {/* Premium Viral Predictor Tab */}
-            <TabsContent value="viral" className="space-y-8">
-              <Card className="glass-premium p-8 border border-white/20 shadow-premium-xl backdrop-blur-xl">
-                <div className="space-y-8">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 via-orange-800 to-gray-900 bg-clip-text text-transparent mb-2">
-                        Viral Predictor
-                      </h2>
-                      <p className="text-gray-600 text-lg">AI-powered viral score prediction and optimization</p>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Badge className="bg-gradient-to-r from-orange-500 to-red-600 text-white border-0 shadow-premium">
-                        <TrendingUp className="w-3 h-3 mr-1" />
-                        AI-Powered
-                      </Badge>
-                      <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white border-0 shadow-premium">
-                        <Zap className="w-3 h-3 mr-1" />
-                        Real-time
-                      </Badge>
-                    </div>
-                  </div>
-                  
-                  {/* Premium Viral Metrics */}
-                  <div className="grid md:grid-cols-3 gap-6">
-                    <div className="glass-premium border border-white/20 rounded-2xl p-6 hover:shadow-premium-xl transition-all duration-300 hover:scale-105">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-sm text-gray-600 font-medium">Avg Viral Score</p>
-                          <p className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
-                            {contentIdeas.length > 0 
-                              ? Math.round(contentIdeas.reduce((sum, c) => sum + c.viralScore, 0) / contentIdeas.length)
-                              : 0}%
-                          </p>
-                          <p className="text-xs text-green-600 font-medium">+8.5% this week</p>
-                        </div>
-                        <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-red-600 rounded-xl flex items-center justify-center shadow-premium">
-                          <TrendingUp className="w-6 h-6 text-white" />
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="glass-premium border border-white/20 rounded-2xl p-6 hover:shadow-premium-xl transition-all duration-300 hover:scale-105">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-sm text-gray-600 font-medium">Viral Posts</p>
-                          <p className="text-3xl font-bold bg-gradient-to-r from-red-600 to-pink-600 bg-clip-text text-transparent">
-                            {contentIdeas.filter(c => c.viralScore >= 80).length}
-                          </p>
-                          <p className="text-xs text-red-600 font-medium">+5 this week</p>
-                        </div>
-                        <div className="w-12 h-12 bg-gradient-to-r from-red-500 to-pink-600 rounded-xl flex items-center justify-center shadow-premium">
-                          <Zap className="w-6 h-6 text-white" />
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="glass-premium border border-white/20 rounded-2xl p-6 hover:shadow-premium-xl transition-all duration-300 hover:scale-105">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-sm text-gray-600 font-medium">Success Rate</p>
-                          <p className="text-3xl font-bold bg-gradient-to-r from-yellow-600 to-orange-600 bg-clip-text text-transparent">
-                            {contentIdeas.length > 0 
-                              ? Math.round((contentIdeas.filter(c => c.viralScore >= 70).length / contentIdeas.length) * 100)
-                              : 0}%
-                          </p>
-                          <p className="text-xs text-yellow-600 font-medium">+12.3% this week</p>
-                        </div>
-                        <div className="w-12 h-12 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-xl flex items-center justify-center shadow-premium">
-                          <Target className="w-6 h-6 text-white" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Viral Prediction Tool */}
-                  <div className="bg-gradient-to-br from-gray-50 to-gray-100 p-6 rounded-xl border border-gray-200">
-                    <h4 className="text-lg font-semibold text-gray-900 mb-4">Predict Viral Potential</h4>
-                    <div className="space-y-4">
-                      <div>
-                        <Label className="text-sm font-medium text-gray-700">Content</Label>
-                        <Textarea 
-                          placeholder="Enter your content to predict viral potential..."
-                          className="mt-1"
-                          rows={4}
-                        />
-                      </div>
-                      <div className="grid md:grid-cols-2 gap-4">
-                        <div>
-                          <Label className="text-sm font-medium text-gray-700">Platform</Label>
-                          <Select>
-                            <SelectTrigger className="mt-1">
-                              <SelectValue placeholder="Select platform" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="tiktok">TikTok</SelectItem>
-                              <SelectItem value="instagram">Instagram</SelectItem>
-                              <SelectItem value="youtube">YouTube</SelectItem>
-                              <SelectItem value="x">X</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div>
-                          <Label className="text-sm font-medium text-gray-700">Content Type</Label>
-                          <Select>
-                            <SelectTrigger className="mt-1">
-                              <SelectValue placeholder="Select type" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="post">Post</SelectItem>
-                              <SelectItem value="story">Story</SelectItem>
-                              <SelectItem value="reel">Reel</SelectItem>
-                              <SelectItem value="video">Video</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </div>
-                      <Button className="w-full bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800">
-                        <Brain className="w-4 h-4 mr-2" />
-                        Predict Viral Score
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            </TabsContent>
           </TabsContent>
 
           {/* Premium Templates Tab */}
@@ -1278,6 +880,137 @@ export default function ContentCreationHub({
                     </div>
                   ))}
                 </div>
+              </div>
+            </Card>
+          </TabsContent>
+
+          {/* Premium Analytics Tab */}
+          <TabsContent value="analytics" className="space-y-8">
+            <Card className="glass-premium p-8 border border-white/20 shadow-premium-xl backdrop-blur-xl">
+              <div className="space-y-8">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-gray-900 bg-clip-text text-transparent mb-2">
+                      Content Performance Analytics
+                    </h2>
+                    <p className="text-gray-600 text-lg">Real-time insights and performance metrics</p>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Badge className="bg-gradient-to-r from-blue-500 to-purple-600 text-white border-0 shadow-premium">
+                      <BarChart3 className="w-3 h-3 mr-1" />
+                      Real-time Data
+                    </Badge>
+                    <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white border-0 shadow-premium">
+                      <Zap className="w-3 h-3 mr-1" />
+                      Live Updates
+                    </Badge>
+                  </div>
+                </div>
+                
+                {/* Premium Metrics Grid */}
+                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  <div className="glass-premium border border-white/20 rounded-2xl p-6 hover:shadow-premium-xl transition-all duration-300 hover:scale-105">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-gray-600 font-medium">Total Views</p>
+                        <p className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                          {analyticsData.totalViews.toLocaleString()}
+                        </p>
+                        <p className="text-xs text-green-600 font-medium">+12.5% this week</p>
+                      </div>
+                      <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-premium">
+                        <Eye className="w-6 h-6 text-white" />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="glass-premium border border-white/20 rounded-2xl p-6 hover:shadow-premium-xl transition-all duration-300 hover:scale-105">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-gray-600 font-medium">Engagement Rate</p>
+                        <p className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                          {analyticsData.engagementRate}%
+                        </p>
+                        <p className="text-xs text-green-600 font-medium">+8.3% this week</p>
+                      </div>
+                      <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-premium">
+                        <Heart className="w-6 h-6 text-white" />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="glass-premium border border-white/20 rounded-2xl p-6 hover:shadow-premium-xl transition-all duration-300 hover:scale-105">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-gray-600 font-medium">Viral Score</p>
+                        <p className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                          {analyticsData.averageViralScore}
+                        </p>
+                        <p className="text-xs text-green-600 font-medium">+15.2% this week</p>
+                      </div>
+                      <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-600 rounded-xl flex items-center justify-center shadow-premium">
+                        <TrendingUp className="w-6 h-6 text-white" />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="glass-premium border border-white/20 rounded-2xl p-6 hover:shadow-premium-xl transition-all duration-300 hover:scale-105">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-gray-600 font-medium">Viral Posts</p>
+                        <p className="text-3xl font-bold bg-gradient-to-r from-yellow-600 to-orange-600 bg-clip-text text-transparent">
+                          {analyticsData.viralPosts}
+                        </p>
+                        <p className="text-xs text-green-600 font-medium">+5.7% this week</p>
+                      </div>
+                      <div className="w-12 h-12 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-xl flex items-center justify-center shadow-premium">
+                        <Zap className="w-6 h-6 text-white" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Premium Platform Breakdown */}
+                {analyticsData.platformBreakdown.length > 0 && (
+                  <div className="space-y-6">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-2xl font-bold bg-gradient-to-r from-gray-900 via-purple-800 to-gray-900 bg-clip-text text-transparent">
+                        Platform Performance
+                      </h3>
+                      <Badge className="bg-gradient-to-r from-purple-500 to-pink-600 text-white border-0 shadow-premium">
+                        <TrendingUp className="w-3 h-3 mr-1" />
+                        Multi-Platform
+                      </Badge>
+                    </div>
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {analyticsData.platformBreakdown.map((platform, index) => (
+                        <div key={index} className="glass-premium border border-white/20 rounded-2xl p-6 hover:shadow-premium-xl transition-all duration-300 hover:scale-105">
+                          <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center space-x-2">
+                              <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                                <TrendingUp className="w-4 h-4 text-white" />
+                              </div>
+                              <span className="font-semibold text-gray-900 capitalize">{platform.platform}</span>
+                            </div>
+                            <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white border-0 shadow-premium">
+                              {platform.engagement.toFixed(1)}% Engagement
+                            </Badge>
+                          </div>
+                          <div className="grid grid-cols-2 gap-4 text-sm">
+                            <div className="glass-premium border border-white/20 rounded-xl p-3">
+                              <span className="text-gray-600 block text-xs">Followers</span>
+                              <span className="font-bold text-gray-900 text-lg">{platform.followers.toLocaleString()}</span>
+                            </div>
+                            <div className="glass-premium border border-white/20 rounded-xl p-3">
+                              <span className="text-gray-600 block text-xs">Viral Posts</span>
+                              <span className="font-bold text-gray-900 text-lg">{platform.viralPosts}</span>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </Card>
           </TabsContent>
@@ -1388,42 +1121,42 @@ export default function ContentCreationHub({
             </Card>
           </TabsContent>
 
-          {/* Premium Analytics Tab */}
-          <TabsContent value="analytics" className="space-y-8">
+          {/* Premium Scheduler Tab */}
+          <TabsContent value="scheduler" className="space-y-8">
             <Card className="glass-premium p-8 border border-white/20 shadow-premium-xl backdrop-blur-xl">
               <div className="space-y-8">
                 <div className="flex items-center justify-between">
                   <div>
                     <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-gray-900 bg-clip-text text-transparent mb-2">
-                      Content Performance Analytics
+                      Content Scheduler
                     </h2>
-                    <p className="text-gray-600 text-lg">Real-time insights and performance metrics</p>
+                    <p className="text-gray-600 text-lg">AI-powered smart scheduling for maximum engagement</p>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Badge className="bg-gradient-to-r from-blue-500 to-purple-600 text-white border-0 shadow-premium">
-                      <BarChart3 className="w-3 h-3 mr-1" />
-                      Real-time Data
+                      <Calendar className="w-3 h-3 mr-1" />
+                      Smart Scheduling
                     </Badge>
                     <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white border-0 shadow-premium">
                       <Zap className="w-3 h-3 mr-1" />
-                      Live Updates
+                      AI Optimized
                     </Badge>
                   </div>
                 </div>
                 
-                {/* Premium Metrics Grid */}
-                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {/* Premium Scheduler Metrics */}
+                <div className="grid md:grid-cols-3 gap-6">
                   <div className="glass-premium border border-white/20 rounded-2xl p-6 hover:shadow-premium-xl transition-all duration-300 hover:scale-105">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm text-gray-600 font-medium">Total Views</p>
+                        <p className="text-sm text-gray-600 font-medium">Scheduled Posts</p>
                         <p className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                          {analyticsData.totalViews.toLocaleString()}
+                          {scheduledContent.filter(c => c.status === "scheduled").length}
                         </p>
-                        <p className="text-xs text-green-600 font-medium">+12.5% this week</p>
+                        <p className="text-xs text-green-600 font-medium">+3 this week</p>
                       </div>
                       <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-premium">
-                        <Eye className="w-6 h-6 text-white" />
+                        <Calendar className="w-6 h-6 text-white" />
                       </div>
                     </div>
                   </div>
@@ -1431,15 +1164,14 @@ export default function ContentCreationHub({
                   <div className="glass-premium border border-white/20 rounded-2xl p-6 hover:shadow-premium-xl transition-all duration-300 hover:scale-105">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm text-gray-600 font-medium">Engagement Rate</p>
+                        <p className="text-sm text-gray-600 font-medium">Published</p>
                         <p className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-                          {analyticsData.totalEngagement > 0 ? 
-                            ((analyticsData.totalEngagement / analyticsData.totalViews) * 100).toFixed(1) : 0}%
+                          {scheduledContent.filter(c => c.status === "published").length}
                         </p>
-                        <p className="text-xs text-green-600 font-medium">+8.3% this week</p>
+                        <p className="text-xs text-green-600 font-medium">+8 this week</p>
                       </div>
                       <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-premium">
-                        <Heart className="w-6 h-6 text-white" />
+                        <CheckCircle className="w-6 h-6 text-white" />
                       </div>
                     </div>
                   </div>
@@ -1447,13 +1179,257 @@ export default function ContentCreationHub({
                   <div className="glass-premium border border-white/20 rounded-2xl p-6 hover:shadow-premium-xl transition-all duration-300 hover:scale-105">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm text-gray-600 font-medium">Viral Score</p>
+                        <p className="text-sm text-gray-600 font-medium">Avg Viral Score</p>
                         <p className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                          {analyticsData.averageViralScore}
+                          {scheduledContent.length > 0 
+                            ? Math.round(scheduledContent.reduce((sum, c) => sum + (c.viral_score || 0), 0) / scheduledContent.length)
+                            : 0}%
                         </p>
-                        <p className="text-xs text-green-600 font-medium">+15.2% this week</p>
+                        <p className="text-xs text-purple-600 font-medium">+12.5% this week</p>
                       </div>
                       <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-600 rounded-xl flex items-center justify-center shadow-premium">
+                        <TrendingUp className="w-6 h-6 text-white" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Quick Schedule */}
+                <div className="bg-gradient-to-br from-gray-50 to-gray-100 p-6 rounded-xl border border-gray-200">
+                  <h4 className="text-lg font-semibold text-gray-900 mb-4">Quick Schedule</h4>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium text-gray-700">Platform</Label>
+                      <Select>
+                        <SelectTrigger className="mt-1">
+                          <SelectValue placeholder="Select platform" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="tiktok">TikTok</SelectItem>
+                          <SelectItem value="instagram">Instagram</SelectItem>
+                          <SelectItem value="youtube">YouTube</SelectItem>
+                          <SelectItem value="x">X</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium text-gray-700">Content Type</Label>
+                      <Select>
+                        <SelectTrigger className="mt-1">
+                          <SelectValue placeholder="Select type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="post">Post</SelectItem>
+                          <SelectItem value="story">Story</SelectItem>
+                          <SelectItem value="reel">Reel</SelectItem>
+                          <SelectItem value="video">Video</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <Label className="text-sm font-medium text-gray-700">Content</Label>
+                    <Textarea 
+                      placeholder="Enter your content here..."
+                      className="mt-1"
+                      rows={3}
+                    />
+                  </div>
+                  <Button className="w-full mt-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800">
+                    <Calendar className="w-4 h-4 mr-2" />
+                    Schedule Content
+                  </Button>
+                </div>
+
+                {/* Upcoming Schedule */}
+                <div>
+                  <h4 className="text-lg font-semibold text-gray-900 mb-4">Upcoming Schedule</h4>
+                  <div className="space-y-3">
+                    {scheduledContent.slice(0, 5).map((content, index) => (
+                      <div key={index} className="bg-white p-4 rounded-lg border border-gray-200">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <h5 className="font-medium text-gray-900">{content.title || "Scheduled Content"}</h5>
+                            <p className="text-sm text-gray-600">{content.content}</p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Badge variant="outline" className="text-xs">
+                              {content.platform}
+                            </Badge>
+                            <Badge 
+                              variant="outline" 
+                              className={`text-xs ${
+                                content.viral_score >= 80 ? "text-green-600 border-green-600" :
+                                content.viral_score >= 60 ? "text-yellow-600 border-yellow-600" :
+                                "text-red-600 border-red-600"
+                              }`}
+                            >
+                              {content.viral_score}% viral
+                            </Badge>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </Card>
+          </TabsContent>
+
+          {/* Premium Personas Tab */}
+          <TabsContent value="personas" className="space-y-8">
+            <Card className="glass-premium p-8 border border-white/20 shadow-premium-xl backdrop-blur-xl">
+              <div className="space-y-8">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 via-purple-800 to-gray-900 bg-clip-text text-transparent mb-2">
+                      Audience Personas
+                    </h2>
+                    <p className="text-gray-600 text-lg">AI-powered audience targeting and persona development</p>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Badge className="bg-gradient-to-r from-purple-500 to-pink-600 text-white border-0 shadow-premium">
+                      <Users className="w-3 h-3 mr-1" />
+                      AI-Powered
+                    </Badge>
+                    <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white border-0 shadow-premium">
+                      <Brain className="w-3 h-3 mr-1" />
+                      Smart Targeting
+                    </Badge>
+                  </div>
+                </div>
+                
+                {/* Premium Persona Metrics */}
+                <div className="grid md:grid-cols-3 gap-6">
+                  <div className="glass-premium border border-white/20 rounded-2xl p-6 hover:shadow-premium-xl transition-all duration-300 hover:scale-105">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-gray-600 font-medium">Total Personas</p>
+                        <p className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                          {personas.length}
+                        </p>
+                        <p className="text-xs text-green-600 font-medium">+2 this month</p>
+                      </div>
+                      <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-600 rounded-xl flex items-center justify-center shadow-premium">
+                        <Users className="w-6 h-6 text-white" />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="glass-premium border border-white/20 rounded-2xl p-6 hover:shadow-premium-xl transition-all duration-300 hover:scale-105">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-gray-600 font-medium">Avg Engagement</p>
+                        <p className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                          {personas.length > 0 ? Math.round(personas.reduce((sum, p) => sum + (p.engagement_rate || 0), 0) / personas.length) : 0}%
+                        </p>
+                        <p className="text-xs text-indigo-600 font-medium">Primary target</p>
+                      </div>
+                      <div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-premium">
+                        <User className="w-6 h-6 text-white" />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="glass-premium border border-white/20 rounded-2xl p-6 hover:shadow-premium-xl transition-all duration-300 hover:scale-105">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-gray-600 font-medium">Platforms Covered</p>
+                        <p className="text-3xl font-bold bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent">
+                          {new Set(personas.flatMap(p => p.platform_preferences || [])).size}
+                        </p>
+                        <p className="text-xs text-pink-600 font-medium">Multi-platform</p>
+                      </div>
+                      <div className="w-12 h-12 bg-gradient-to-r from-pink-500 to-rose-600 rounded-xl flex items-center justify-center shadow-premium">
+                        <Globe className="w-6 h-6 text-white" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Persona List */}
+                <div>
+                  <h4 className="text-lg font-semibold text-gray-900 mb-4">Your Personas</h4>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    {personas.slice(0, 4).map((persona, index) => (
+                      <div key={index} className="bg-white p-4 rounded-lg border border-gray-200">
+                        <div className="flex items-center justify-between mb-3">
+                          <h5 className="font-medium text-gray-900">{persona.name}</h5>
+                          <Badge variant="outline" className="text-xs">
+                            {persona.age_range}
+                          </Badge>
+                        </div>
+                        <div className="space-y-2">
+                          {persona.interests && persona.interests.length > 0 && (
+                            <div>
+                              <p className="text-xs text-gray-600">Interests</p>
+                              <div className="flex flex-wrap gap-1">
+                                {persona.interests.slice(0, 3).map((interest: string, i: number) => (
+                                  <Badge key={i} variant="secondary" className="text-xs">
+                                    {interest}
+                                  </Badge>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                          {persona.platform_preferences && persona.platform_preferences.length > 0 && (
+                            <div>
+                              <p className="text-xs text-gray-600">Platforms</p>
+                              <div className="flex flex-wrap gap-1">
+                                {persona.platform_preferences.slice(0, 3).map((platform: string, i: number) => (
+                                  <Badge key={i} variant="outline" className="text-xs">
+                                    {platform}
+                                  </Badge>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </Card>
+          </TabsContent>
+
+          {/* Premium Viral Predictor Tab */}
+          <TabsContent value="viral" className="space-y-8">
+            <Card className="glass-premium p-8 border border-white/20 shadow-premium-xl backdrop-blur-xl">
+              <div className="space-y-8">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 via-orange-800 to-gray-900 bg-clip-text text-transparent mb-2">
+                      Viral Predictor
+                    </h2>
+                    <p className="text-gray-600 text-lg">AI-powered viral score prediction and optimization</p>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Badge className="bg-gradient-to-r from-orange-500 to-red-600 text-white border-0 shadow-premium">
+                      <TrendingUp className="w-3 h-3 mr-1" />
+                      AI-Powered
+                    </Badge>
+                    <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white border-0 shadow-premium">
+                      <Zap className="w-3 h-3 mr-1" />
+                      Real-time
+                    </Badge>
+                  </div>
+                </div>
+                
+                {/* Premium Viral Metrics */}
+                <div className="grid md:grid-cols-3 gap-6">
+                  <div className="glass-premium border border-white/20 rounded-2xl p-6 hover:shadow-premium-xl transition-all duration-300 hover:scale-105">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-gray-600 font-medium">Avg Viral Score</p>
+                        <p className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
+                          {contentIdeas.length > 0 
+                            ? Math.round(contentIdeas.reduce((sum, c) => sum + c.viralScore, 0) / contentIdeas.length)
+                            : 0}%
+                        </p>
+                        <p className="text-xs text-green-600 font-medium">+8.5% this week</p>
+                      </div>
+                      <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-red-600 rounded-xl flex items-center justify-center shadow-premium">
                         <TrendingUp className="w-6 h-6 text-white" />
                       </div>
                     </div>
@@ -1462,106 +1438,84 @@ export default function ContentCreationHub({
                   <div className="glass-premium border border-white/20 rounded-2xl p-6 hover:shadow-premium-xl transition-all duration-300 hover:scale-105">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm text-gray-600 font-medium">Content Created</p>
-                        <p className="text-3xl font-bold bg-gradient-to-r from-yellow-600 to-orange-600 bg-clip-text text-transparent">
-                          {contentIdeas.length}
+                        <p className="text-sm text-gray-600 font-medium">Viral Posts</p>
+                        <p className="text-3xl font-bold bg-gradient-to-r from-red-600 to-pink-600 bg-clip-text text-transparent">
+                          {contentIdeas.filter(c => c.viralScore >= 80).length}
                         </p>
-                        <p className="text-xs text-green-600 font-medium">+5.7% this week</p>
+                        <p className="text-xs text-red-600 font-medium">+5 this week</p>
+                      </div>
+                      <div className="w-12 h-12 bg-gradient-to-r from-red-500 to-pink-600 rounded-xl flex items-center justify-center shadow-premium">
+                        <Zap className="w-6 h-6 text-white" />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="glass-premium border border-white/20 rounded-2xl p-6 hover:shadow-premium-xl transition-all duration-300 hover:scale-105">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-gray-600 font-medium">Success Rate</p>
+                        <p className="text-3xl font-bold bg-gradient-to-r from-yellow-600 to-orange-600 bg-clip-text text-transparent">
+                          {contentIdeas.length > 0 
+                            ? Math.round((contentIdeas.filter(c => c.viralScore >= 70).length / contentIdeas.length) * 100)
+                            : 0}%
+                        </p>
+                        <p className="text-xs text-yellow-600 font-medium">+12.3% this week</p>
                       </div>
                       <div className="w-12 h-12 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-xl flex items-center justify-center shadow-premium">
-                        <FileText className="w-6 h-6 text-white" />
+                        <Target className="w-6 h-6 text-white" />
                       </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Premium Platform Breakdown */}
-                {analyticsData.platformBreakdown.length > 0 && (
-                  <div className="space-y-6">
-                    <div className="flex items-center justify-between">
-                      <h3 className="text-2xl font-bold bg-gradient-to-r from-gray-900 via-purple-800 to-gray-900 bg-clip-text text-transparent">
-                        Platform Performance
-                      </h3>
-                      <Badge className="bg-gradient-to-r from-purple-500 to-pink-600 text-white border-0 shadow-premium">
-                        <TrendingUp className="w-3 h-3 mr-1" />
-                        Multi-Platform
-                      </Badge>
+                {/* Viral Prediction Tool */}
+                <div className="bg-gradient-to-br from-gray-50 to-gray-100 p-6 rounded-xl border border-gray-200">
+                  <h4 className="text-lg font-semibold text-gray-900 mb-4">Predict Viral Potential</h4>
+                  <div className="space-y-4">
+                    <div>
+                      <Label className="text-sm font-medium text-gray-700">Content</Label>
+                      <Textarea 
+                        placeholder="Enter your content to predict viral potential..."
+                        className="mt-1"
+                        rows={4}
+                      />
                     </div>
-                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                      {analyticsData.platformBreakdown.map((platform, index) => (
-                        <div key={index} className="glass-premium border border-white/20 rounded-2xl p-6 hover:shadow-premium-xl transition-all duration-300 hover:scale-105">
-                          <div className="flex items-center justify-between mb-4">
-                            <div className="flex items-center space-x-2">
-                              <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                                <TrendingUp className="w-4 h-4 text-white" />
-                              </div>
-                              <span className="font-semibold text-gray-900 capitalize">{platform.platform}</span>
-                            </div>
-                            <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white border-0 shadow-premium">
-                              {platform.engagement.toFixed(1)}% Engagement
-                            </Badge>
-                          </div>
-                          <div className="grid grid-cols-2 gap-4 text-sm">
-                            <div className="glass-premium border border-white/20 rounded-xl p-3">
-                              <span className="text-gray-600 block text-xs">Followers</span>
-                              <span className="font-bold text-gray-900 text-lg">{platform.followers.toLocaleString()}</span>
-                            </div>
-                            <div className="glass-premium border border-white/20 rounded-xl p-3">
-                              <span className="text-gray-600 block text-xs">Posts</span>
-                              <span className="font-bold text-gray-900 text-lg">{platform.posts}</span>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Premium Growth Trend */}
-                {analyticsData.growthTrend.length > 0 && (
-                  <div className="space-y-6">
-                    <div className="flex items-center justify-between">
-                      <h3 className="text-2xl font-bold bg-gradient-to-r from-gray-900 via-indigo-800 to-gray-900 bg-clip-text text-transparent">
-                        Growth Trend (Last 30 Days)
-                      </h3>
-                      <Badge className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white border-0 shadow-premium">
-                        <BarChart3 className="w-3 h-3 mr-1" />
-                        Analytics
-                      </Badge>
-                    </div>
-                    <div className="glass-premium border border-white/20 rounded-2xl p-8 hover:shadow-premium-xl transition-all duration-300">
-                      <div className="grid md:grid-cols-3 gap-8 text-center">
-                        <div className="space-y-2">
-                          <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto shadow-premium">
-                            <Eye className="w-8 h-8 text-white" />
-                          </div>
-                          <p className="text-sm text-gray-600 font-medium">Avg Views/Day</p>
-                          <p className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                            {Math.round(analyticsData.growthTrend.reduce((sum, day) => sum + day.views, 0) / analyticsData.growthTrend.length).toLocaleString()}
-                          </p>
-                        </div>
-                        <div className="space-y-2">
-                          <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto shadow-premium">
-                            <Heart className="w-8 h-8 text-white" />
-                          </div>
-                          <p className="text-sm text-gray-600 font-medium">Avg Engagement</p>
-                          <p className="text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-                            {Math.round(analyticsData.growthTrend.reduce((sum, day) => sum + day.engagement, 0) / analyticsData.growthTrend.length)}%
-                          </p>
-                        </div>
-                        <div className="space-y-2">
-                          <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center mx-auto shadow-premium">
-                            <TrendingUp className="w-8 h-8 text-white" />
-                          </div>
-                          <p className="text-sm text-gray-600 font-medium">Avg Viral Score</p>
-                          <p className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                            {Math.round(analyticsData.growthTrend.reduce((sum, day) => sum + day.viral_score, 0) / analyticsData.growthTrend.length)}
-                          </p>
-                        </div>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div>
+                        <Label className="text-sm font-medium text-gray-700">Platform</Label>
+                        <Select>
+                          <SelectTrigger className="mt-1">
+                            <SelectValue placeholder="Select platform" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="tiktok">TikTok</SelectItem>
+                            <SelectItem value="instagram">Instagram</SelectItem>
+                            <SelectItem value="youtube">YouTube</SelectItem>
+                            <SelectItem value="x">X</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label className="text-sm font-medium text-gray-700">Content Type</Label>
+                        <Select>
+                          <SelectTrigger className="mt-1">
+                            <SelectValue placeholder="Select type" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="post">Post</SelectItem>
+                            <SelectItem value="story">Story</SelectItem>
+                            <SelectItem value="reel">Reel</SelectItem>
+                            <SelectItem value="video">Video</SelectItem>
+                          </SelectContent>
+                        </Select>
                       </div>
                     </div>
+                    <Button className="w-full bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800">
+                      <Brain className="w-4 h-4 mr-2" />
+                      Predict Viral Score
+                    </Button>
                   </div>
-                )}
+                </div>
               </div>
             </Card>
           </TabsContent>
@@ -1592,4 +1546,4 @@ export default function ContentCreationHub({
       )}
     </div>
   );
-}
+} 
