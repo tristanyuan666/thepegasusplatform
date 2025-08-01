@@ -6,29 +6,13 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
-import { Card } from "./ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { Badge } from "./ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import {
-  Sparkles, Wand2, Calendar, BarChart3, Target, Zap, Plus, Edit3, Save, Trash2,
-  Copy, Share2, Eye, Heart, MessageCircle, TrendingUp, Clock, Globe, Smartphone,
-  Play, Image, Video, FileText, Hash, Send, RefreshCw, CheckCircle, AlertCircle,
-  Lightbulb, Brain, Palette, Music, Camera, Crown, Star, Rocket, Trophy, Diamond,
-  Briefcase, Users, Activity, Award, DollarSign, ArrowRight, ChevronRight, Settings,
-  Download, Upload, Filter, Search, Bookmark, BookmarkCheck, ThumbsUp, MessageSquare,
-  Repeat, ExternalLink, Lock, Unlock, Infinity, Timer, CheckCircle2, XCircle,
-  AlertTriangle, Info, HelpCircle, Maximize2, Minimize2, RotateCcw, RotateCw,
-  ZoomIn, ZoomOut, Move, GripVertical, MoreHorizontal, MoreVertical, Grid, List,
-  Columns, Layout, Sidebar, SidebarClose, PanelLeft, PanelRight, Split,
-  SplitSquareVertical, SplitSquareHorizontal, Square, Circle, Triangle, Hexagon,
-  Octagon, Smile, Frown, Meh, Laugh, Angry, Coffee, Beer, Wine, Pizza, IceCream,
-  Cake, Cookie, Candy, Apple, Banana, Grape, Cherry, User, BarChart, PieChart,
-  TrendingDown, Users2, Target as TargetIcon, Zap as ZapIcon, Brain as BrainIcon,
-  Palette as PaletteIcon, Calendar as CalendarIcon, BarChart3 as BarChart3Icon,
-  Instagram, Twitter, Youtube, Linkedin, Facebook
+  Sparkles, Wand2, Calendar, BarChart3, Zap, Crown, Save, Send, Trash2,
+  Copy, Eye, TrendingUp, Lightbulb, RefreshCw, CheckCircle, AlertCircle
 } from "lucide-react";
-import Link from "next/link";
 
 interface PremiumContentHubProps {
   user: SupabaseUser | null;
@@ -57,53 +41,20 @@ interface ContentIdea {
   hashtags: string[];
   createdAt: string;
   status: "draft" | "scheduled" | "published";
+  content?: string;
+  caption?: string;
+  script?: string;
   aiGenerated?: boolean;
   premium?: boolean;
-  engagement?: number;
-  reach?: number;
-  shares?: number;
-  comments?: number;
-  likes?: number;
-  saves?: number;
-  content?: string;
-  caption?: string;
-  script?: string;
-  thumbnail?: string;
-}
-
-interface ContentTemplate {
-  id: string;
-  name: string;
-  category: string;
-  description: string;
-  template: string;
-  platforms: string[];
-  viralScore: number;
-  premium?: boolean;
-  usageCount?: number;
-  successRate?: number;
-  content?: string;
-  caption?: string;
-  script?: string;
 }
 
 interface AnalyticsData {
   totalViews: number;
   totalEngagement: number;
-  totalReach: number;
-  totalShares: number;
-  totalComments: number;
-  totalLikes: number;
-  totalSaves: number;
   averageViralScore: number;
-  topPerformingContent: ContentIdea[];
-  recentActivity: any[];
+  engagementRate: number;
   platformBreakdown: any[];
   growthTrend: any[];
-  engagementRate: number;
-  conversionRate: number;
-  viralPosts: number;
-  avgSessionDuration: number;
 }
 
 export default function PremiumContentHub({
@@ -124,7 +75,6 @@ export default function PremiumContentHub({
   const [activeTab, setActiveTab] = useState("create");
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
-  const [sortBy, setSortBy] = useState("viralScore");
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedContent, setGeneratedContent] = useState<ContentIdea[]>([]);
   const [contentInput, setContentInput] = useState("");
@@ -135,83 +85,51 @@ export default function PremiumContentHub({
   const [analyticsData, setAnalyticsData] = useState<AnalyticsData>({
     totalViews: 0,
     totalEngagement: 0,
-    totalReach: 0,
-    totalShares: 0,
-    totalComments: 0,
-    totalLikes: 0,
-    totalSaves: 0,
     averageViralScore: 0,
-    topPerformingContent: [],
-    recentActivity: [],
+    engagementRate: 0,
     platformBreakdown: [],
     growthTrend: [],
-    engagementRate: 0,
-    conversionRate: 0,
-    viralPosts: 0,
-    avgSessionDuration: 0,
   });
 
   // Calculate premium analytics with realistic data
   const calculatePremiumAnalytics = () => {
     const totalViews = contentAnalytics.reduce((sum, item) => sum + (item.metric_value || 0), 0);
     const totalEngagement = contentAnalytics.filter(item => item.metric_type === 'engagement').reduce((sum, item) => sum + (item.metric_value || 0), 0);
-    const totalReach = contentAnalytics.filter(item => item.metric_type === 'reach').reduce((sum, item) => sum + (item.metric_value || 0), 0);
-    const totalShares = contentAnalytics.filter(item => item.metric_type === 'shares').reduce((sum, item) => sum + (item.metric_value || 0), 0);
-    const totalComments = contentAnalytics.filter(item => item.metric_type === 'comments').reduce((sum, item) => sum + (item.metric_value || 0), 0);
-    const totalLikes = contentAnalytics.filter(item => item.metric_type === 'likes').reduce((sum, item) => sum + (item.metric_value || 0), 0);
-    const totalSaves = contentAnalytics.filter(item => item.metric_type === 'saves').reduce((sum, item) => sum + (item.metric_value || 0), 0);
-    
     const avgViralScore = contentAnalytics.length > 0 
       ? Math.round(contentAnalytics.reduce((sum, item) => sum + (item.viral_score || 0), 0) / contentAnalytics.length)
       : 75;
-    
     const engagementRate = totalViews > 0 ? Math.round((totalEngagement / totalViews) * 100 * 100) / 100 : 8.5;
-    const conversionRate = totalViews > 0 ? Math.round((totalLikes / totalViews) * 100 * 100) / 100 : 3.2;
-    const viralPosts = contentAnalytics.filter(item => (item.viral_score || 0) > 80).length;
-    const avgSessionDuration = Math.floor(Math.random() * 300) + 120; // 2-7 minutes
 
     const platformBreakdown = platformConnections.map(platform => ({
       platform: platform.platform,
       followers: platform.follower_count || 0,
       engagement: platform.engagement_rate || Math.random() * 8 + 2,
-      reach: platform.avg_reach || Math.floor(platform.follower_count * 0.3),
-      viralPosts: platform.viral_posts || Math.floor(Math.random() * 10) + 2
     }));
 
     const growthTrend = Array.from({ length: 30 }, (_, i) => ({
       date: new Date(Date.now() - (29 - i) * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
       views: Math.floor(Math.random() * 5000) + 1000,
-      engagement: Math.floor(Math.random() * 500) + 100,
       viralScore: Math.floor(Math.random() * 20) + 75
     }));
 
     return {
       totalViews,
       totalEngagement,
-      totalReach,
-      totalShares,
-      totalComments,
-      totalLikes,
-      totalSaves,
       averageViralScore: avgViralScore,
-      topPerformingContent: contentIdeas.slice(0, 5),
-      recentActivity: contentAnalytics.slice(0, 10),
-      platformBreakdown,
-      growthTrend,
       engagementRate,
-      conversionRate,
-      viralPosts,
-      avgSessionDuration
+      platformBreakdown,
+      growthTrend
     };
   };
 
   useEffect(() => {
     setAnalyticsData(calculatePremiumAnalytics());
-  }, [contentAnalytics, contentIdeas, platformConnections]);
+  }, [contentAnalytics, platformConnections]);
 
-  // Generate truly premium content with advanced AI simulation
+  // Generate premium content with advanced AI simulation
   const generatePremiumContent = async (input: string, platforms: string[], contentType: string): Promise<ContentIdea[]> => {
-    const contentTypes = {
+    const platform = platforms[0];
+    const contentTypes: Record<string, Record<string, string>> = {
       post: {
         instagram: "📸 Visual Storytelling Post",
         tiktok: "🎬 Viral TikTok Video",
@@ -223,157 +141,129 @@ export default function PremiumContentHub({
       story: {
         instagram: "📱 Instagram Story",
         tiktok: "🎬 TikTok Story",
-        youtube: "🎥 YouTube Community Post",
-        x: "🐦 Twitter Moment",
-        linkedin: "💼 LinkedIn Article",
         facebook: "📱 Facebook Story"
       },
       reel: {
         instagram: "🎬 Instagram Reel",
         tiktok: "🎬 TikTok Video",
-        youtube: "🎥 YouTube Short",
-        x: "🐦 Twitter Video",
-        linkedin: "💼 LinkedIn Video",
-        facebook: "📱 Facebook Reel"
+        youtube: "🎥 YouTube Short"
       },
       video: {
-        instagram: "🎥 Instagram Video",
-        tiktok: "🎬 TikTok Video",
         youtube: "🎥 YouTube Video",
-        x: "🐦 Twitter Video",
-        linkedin: "💼 LinkedIn Video",
-        facebook: "📱 Facebook Video"
+        tiktok: "🎬 TikTok Video",
+        instagram: "📹 Instagram Video"
       }
     };
 
-    const generatedContent: ContentIdea[] = [];
+    const content = contentTypes[contentType]?.[platform] || "Content";
+    const viralScore = Math.floor(Math.random() * 25) + 75; // 75-100% realistic range
+    const estimatedViews = Math.floor(Math.random() * 50000) + 10000; // 10k-60k views
+    const hashtags = generatePremiumHashtags(platform, contentType);
 
-    for (const platform of platforms) {
-      const contentTypeName = contentTypes[contentType as keyof typeof contentTypes]?.[platform as keyof typeof contentTypes.post] || "Content";
-      
-      const viralScore = Math.floor(Math.random() * 25) + 75; // 75-100% realistic
-      const estimatedViews = Math.floor(Math.random() * 50000) + 5000;
-      
-      const content = generatePlatformSpecificContent(input, platform, contentType);
-      const hashtags = generatePremiumHashtags(platform, contentType);
-      
-      generatedContent.push({
-        id: `generated_${platform}_${Date.now()}`,
-        title: `${contentTypeName} - ${input.substring(0, 30)}...`,
-        description: `AI-generated ${contentType} for ${platform} with viral potential`,
-        platform,
-        contentType,
-        viralScore,
-        estimatedViews: estimatedViews.toLocaleString(),
-        hashtags,
-        createdAt: new Date().toISOString(),
-        status: "draft",
-        aiGenerated: true,
-        premium: true,
-        content,
-        caption: generateCaption(platform, contentType, hashtags),
-        script: contentType === "video" || contentType === "reel" ? generateScript(input, platform) : undefined,
-        engagement: Math.floor(estimatedViews * (viralScore / 100) * 0.08),
-        reach: Math.floor(estimatedViews * 1.2),
-        shares: Math.floor(estimatedViews * 0.02),
-        comments: Math.floor(estimatedViews * 0.01),
-        likes: Math.floor(estimatedViews * 0.05),
-        saves: Math.floor(estimatedViews * 0.03)
-      });
-    }
+    const generatedIdea: ContentIdea = {
+      id: `content-${Date.now()}`,
+      title: `${content}: ${input.split(' ').slice(0, 5).join(' ')}...`,
+      description: `AI-generated ${contentType} for ${platform} about "${input}". Optimized for maximum engagement and viral potential.`,
+      platform,
+      contentType,
+      viralScore,
+      estimatedViews: estimatedViews.toLocaleString(),
+      hashtags,
+      createdAt: new Date().toISOString(),
+      status: "draft",
+      content: generatePlatformSpecificContent(input, platform, contentType),
+      caption: generateCaption(platform, contentType, hashtags),
+      script: generateScript(input, platform),
+      aiGenerated: true,
+      premium: true
+    };
 
-    return generatedContent;
+    return [generatedIdea];
   };
 
   const generatePlatformSpecificContent = (input: string, platform: string, contentType: string): string => {
     const templates = {
       instagram: {
-        post: `🎯 **${input}**\n\n💡 Here's what you need to know:\n\n✨ Key insights:\n• Point 1\n• Point 2\n• Point 3\n\n🔥 Pro tip: [Actionable advice]\n\n📈 Results: [Expected outcome]\n\n#${input.replace(/\s+/g, '')} #ContentCreation #Growth #Success`,
-        story: `🎬 Story: ${input}\n\n📱 Swipe for more!\n\n💡 Quick tip: [Value]\n\n🔥 Hot take: [Opinion]\n\n📈 Impact: [Result]`,
-        reel: `🎬 Reel: ${input}\n\n🎯 Hook: [Attention grabber]\n\n💡 Value: [What they'll learn]\n\n🔥 Emotion: [Make them feel]\n\n📱 CTA: [What to do next]`,
-        video: `🎥 Video: ${input}\n\n📹 Script:\n1. Hook (0-3s)\n2. Problem (3-10s)\n3. Solution (10-30s)\n4. Proof (30-45s)\n5. CTA (45-60s)\n\n🎯 Goal: [Objective]\n📈 Expected: [Result]`
+        post: `🎯 **${input.toUpperCase()}**\n\nTransform your approach with these proven strategies:\n\n✅ Step-by-step implementation\n✅ Real results from real users\n✅ Actionable insights you can use today\n\nReady to level up? 💪\n\n#${input.replace(/\s+/g, '')} #Growth #Success`,
+        story: `📱 Quick Tip: ${input}\n\nSwipe for the full breakdown 👆\n\n#${input.replace(/\s+/g, '')} #Tips`,
+        reel: `🎬 The ${input} Method\n\nWatch how this changed everything 👆\n\n#${input.replace(/\s+/g, '')} #Viral #Trending`,
+        video: `📹 Complete Guide: ${input}\n\nEverything you need to know in 60 seconds ⏱️\n\n#${input.replace(/\s+/g, '')} #Guide #Tutorial`
       },
       tiktok: {
-        post: `🎬 TikTok: ${input}\n\n🔥 Hook: [First 3 seconds]\n\n💡 Value: [What they get]\n\n🎯 CTA: [Action]\n\n#${input.replace(/\s+/g, '')} #TikTok #Viral #Trending`,
-        story: `📱 TikTok Story: ${input}\n\n🎬 Quick tip: [Value]\n\n🔥 Hot take: [Opinion]\n\n📈 Result: [Outcome]`,
-        reel: `🎬 TikTok Reel: ${input}\n\n🎯 Hook: [Grab attention]\n\n💡 Value: [Learn something]\n\n🔥 Emotion: [Feel something]\n\n📱 CTA: [Do something]`,
-        video: `🎥 TikTok Video: ${input}\n\n📹 Structure:\n• Hook (0-3s)\n• Problem (3-8s)\n• Solution (8-25s)\n• Proof (25-35s)\n• CTA (35-45s)\n\n🎯 Goal: [Objective]`
+        post: `🎬 ${input} #fyp #viral #trending`,
+        story: `📱 ${input} - Swipe for more! 👆`,
+        reel: `🎬 ${input} - Watch till the end! 👀`,
+        video: `📹 ${input} - Full tutorial below 👇`
       },
       youtube: {
-        post: `🎥 YouTube: ${input}\n\n📹 Video Structure:\n• Intro (0-10s)\n• Hook (10-30s)\n• Value (30-2:00)\n• Proof (2:00-2:30)\n• CTA (2:30-3:00)\n\n🎯 Target: [Audience]\n📈 Expected: [Views/Engagement]`,
-        story: `📱 YouTube Community: ${input}\n\n💡 Quick tip: [Value]\n\n🔥 Hot take: [Opinion]\n\n📈 Result: [Outcome]`,
-        reel: `🎥 YouTube Short: ${input}\n\n🎯 Hook: [First 3 seconds]\n\n💡 Value: [What they learn]\n\n🔥 Emotion: [Feel something]\n\n📱 CTA: [Subscribe/Like]`,
-        video: `🎥 YouTube Video: ${input}\n\n📹 Script Outline:\n1. Hook (0-15s)\n2. Problem (15-45s)\n3. Solution (45-2:30)\n4. Proof (2:30-3:00)\n5. CTA (3:00-3:15)\n\n🎯 Goal: [Objective]`
+        post: `🎥 ${input} - Complete Guide\n\nWatch the full video: [Link]\n\n#${input.replace(/\s+/g, '')} #Tutorial #Guide`,
+        story: `📱 ${input} - Quick tip! 👆`,
+        reel: `🎬 ${input} - Short version 👆`,
+        video: `📹 ${input} - Full tutorial below 👇`
       },
       x: {
-        post: `🐦 Twitter: ${input}\n\n🧵 Thread structure:\n\n1/5 Hook: [Attention grabber]\n\n2/5 Value: [Key insight]\n\n3/5 Proof: [Evidence]\n\n4/5 Action: [What to do]\n\n5/5 CTA: [Follow/Share]\n\n#${input.replace(/\s+/g, '')} #Twitter #Thread`,
-        story: `📱 Twitter Moment: ${input}\n\n💡 Quick tip: [Value]\n\n🔥 Hot take: [Opinion]\n\n📈 Result: [Outcome]`,
-        reel: `🎬 Twitter Video: ${input}\n\n🎯 Hook: [First 3 seconds]\n\n💡 Value: [What they learn]\n\n🔥 Emotion: [Feel something]\n\n📱 CTA: [Retweet/Follow]`,
-        video: `🎥 Twitter Video: ${input}\n\n📹 Structure:\n• Hook (0-5s)\n• Value (5-30s)\n• Proof (30-45s)\n• CTA (45-60s)\n\n🎯 Goal: [Objective]`
+        post: `🐦 ${input}\n\nThread 🧵\n\n1/5 Key insights\n2/5 Implementation\n3/5 Results\n4/5 Tips\n5/5 Action items\n\n#${input.replace(/\s+/g, '')} #Growth`,
+        story: `📱 ${input} - Quick thread 👆`,
+        reel: `🎬 ${input} - Video version 👆`,
+        video: `📹 ${input} - Full breakdown 👇`
       },
       linkedin: {
-        post: `💼 LinkedIn: ${input}\n\n📊 Industry insight:\n\n💡 Key takeaway: [Professional value]\n\n🎯 Actionable tip: [What to do]\n\n📈 Expected result: [Outcome]\n\n#${input.replace(/\s+/g, '')} #LinkedIn #Professional #Growth`,
-        story: `📱 LinkedIn Story: ${input}\n\n💡 Professional tip: [Value]\n\n🔥 Industry insight: [Opinion]\n\n📈 Career impact: [Result]`,
-        reel: `🎬 LinkedIn Video: ${input}\n\n🎯 Hook: [Professional attention]\n\n💡 Value: [Career insight]\n\n🔥 Emotion: [Professional feeling]\n\n📱 CTA: [Connect/Follow]`,
-        video: `🎥 LinkedIn Video: ${input}\n\n📹 Professional Structure:\n1. Hook (0-10s)\n2. Problem (10-30s)\n3. Solution (30-1:30)\n4. Proof (1:30-2:00)\n5. CTA (2:00-2:15)\n\n🎯 Goal: [Professional objective]`
+        post: `💼 ${input}\n\nProfessional insights on ${input}:\n\n• Key strategies\n• Implementation tips\n• Expected outcomes\n• Best practices\n\n#${input.replace(/\s+/g, '')} #Professional #Growth`,
+        story: `📱 ${input} - Professional tip 👆`,
+        reel: `🎬 ${input} - Industry insights 👆`,
+        video: `📹 ${input} - Professional guide 👇`
       },
       facebook: {
-        post: `📱 Facebook: ${input}\n\n👥 Community post:\n\n💡 Value: [What they learn]\n\n🔥 Emotion: [Make them feel]\n\n📈 Impact: [Community result]\n\n#${input.replace(/\s+/g, '')} #Facebook #Community #Engagement`,
-        story: `📱 Facebook Story: ${input}\n\n💡 Community tip: [Value]\n\n🔥 Hot take: [Opinion]\n\n📈 Community impact: [Result]`,
-        reel: `🎬 Facebook Reel: ${input}\n\n🎯 Hook: [Community attention]\n\n💡 Value: [Community value]\n\n🔥 Emotion: [Community feeling]\n\n📱 CTA: [Like/Share]`,
-        video: `🎥 Facebook Video: ${input}\n\n📹 Community Structure:\n1. Hook (0-10s)\n2. Problem (10-30s)\n3. Solution (30-1:30)\n4. Proof (1:30-2:00)\n5. CTA (2:00-2:15)\n\n🎯 Goal: [Community objective]`
+        post: `📱 ${input}\n\nCommunity discussion on ${input}:\n\nWhat's your experience with this?\n\nShare your thoughts below! 👇\n\n#${input.replace(/\s+/g, '')} #Community #Discussion`,
+        story: `📱 ${input} - Community tip 👆`,
+        reel: `🎬 ${input} - Community insights 👆`,
+        video: `📹 ${input} - Community guide 👇`
       }
     };
 
-    return templates[platform as keyof typeof templates]?.[contentType as keyof typeof templates.instagram] || 
-           `Content for ${platform} - ${input}`;
+    return templates[platform as keyof typeof templates]?.[contentType as keyof typeof templates.instagram] || `Content about ${input}`;
   };
 
   const generateCaption = (platform: string, contentType: string, hashtags: string[]): string => {
     const captions = {
-      instagram: `✨ ${contentType.charAt(0).toUpperCase() + contentType.slice(1)} that converts!\n\n💡 Pro tip: [Value]\n\n🔥 Hot take: [Opinion]\n\n📈 Results: [Outcome]\n\n${hashtags.map(tag => `#${tag}`).join(' ')}`,
-      tiktok: `🎬 Viral ${contentType} alert!\n\n🔥 Hook: [Attention]\n\n💡 Value: [Learn]\n\n🎯 CTA: [Action]\n\n${hashtags.map(tag => `#${tag}`).join(' ')}`,
-      youtube: `🎥 ${contentType.charAt(0).toUpperCase() + contentType.slice(1)} that grows!\n\n📹 Value: [Learn]\n\n🎯 Goal: [Objective]\n\n📈 Expected: [Result]\n\n${hashtags.map(tag => `#${tag}`).join(' ')}`,
-      x: `🐦 ${contentType.charAt(0).toUpperCase() + contentType.slice(1)} thread!\n\n🧵 Value: [Insight]\n\n🎯 Action: [Do]\n\n📈 Impact: [Result]\n\n${hashtags.map(tag => `#${tag}`).join(' ')}`,
-      linkedin: `💼 Professional ${contentType}!\n\n📊 Insight: [Value]\n\n🎯 Tip: [Action]\n\n📈 Result: [Outcome]\n\n${hashtags.map(tag => `#${tag}`).join(' ')}`,
-      facebook: `📱 Community ${contentType}!\n\n👥 Value: [Learn]\n\n🔥 Emotion: [Feel]\n\n📈 Impact: [Result]\n\n${hashtags.map(tag => `#${tag}`).join(' ')}`
+      instagram: `🎯 Ready to transform your ${contentType} game?\n\nThis ${contentType} will help you:\n✅ Increase engagement\n✅ Grow your audience\n✅ Achieve your goals\n\nDouble tap if you're ready! ❤️\n\n${hashtags.map(tag => `#${tag}`).join(' ')}`,
+      tiktok: `🎬 ${contentType} that actually works!\n\nWatch till the end 👀\nFollow for more tips 👆\n\n${hashtags.map(tag => `#${tag}`).join(' ')}`,
+      youtube: `🎥 Complete ${contentType} guide\n\nSubscribe for more tutorials 👆\nLike if this helped! 👍\n\n${hashtags.map(tag => `#${tag}`).join(' ')}`,
+      x: `🐦 ${contentType} insights\n\nRetweet if helpful 🔄\nFollow for more tips 👆\n\n${hashtags.map(tag => `#${tag}`).join(' ')}`,
+      linkedin: `💼 Professional ${contentType} insights\n\nConnect for more industry tips 👆\nShare if valuable! 🔄\n\n${hashtags.map(tag => `#${tag}`).join(' ')}`,
+      facebook: `📱 ${contentType} that works!\n\nLike and share if helpful 👍\nFollow for more tips 👆\n\n${hashtags.map(tag => `#${tag}`).join(' ')}`
     };
 
-    return captions[platform as keyof typeof captions] || `Amazing ${contentType} content!`;
+    return captions[platform as keyof typeof captions] || `Great ${contentType} content! ${hashtags.map(tag => `#${tag}`).join(' ')}`;
   };
 
   const generateScript = (input: string, platform: string): string => {
     const scripts = {
-      instagram: `🎬 Instagram Script: ${input}\n\n📹 Structure:\n• Hook (0-3s): [Attention grabber]\n• Problem (3-10s): [Pain point]\n• Solution (10-30s): [Your solution]\n• Proof (30-45s): [Evidence]\n• CTA (45-60s): [Action]\n\n🎯 Goal: [Objective]\n📈 Expected: [Result]`,
-      tiktok: `🎬 TikTok Script: ${input}\n\n📹 Structure:\n• Hook (0-3s): [Grab attention]\n• Value (3-15s): [What they learn]\n• Emotion (15-30s): [Make them feel]\n• CTA (30-45s): [Action]\n\n🎯 Goal: [Objective]\n📈 Expected: [Viral]`,
-      youtube: `🎥 YouTube Script: ${input}\n\n📹 Structure:\n• Intro (0-10s): [Greeting]\n• Hook (10-30s): [Attention]\n• Value (30-2:00): [Content]\n• Proof (2:00-2:30): [Evidence]\n• CTA (2:30-3:00): [Action]\n\n🎯 Goal: [Objective]\n📈 Expected: [Views]`,
-      x: `🐦 Twitter Video Script: ${input}\n\n📹 Structure:\n• Hook (0-5s): [Attention]\n• Value (5-30s): [Insight]\n• Proof (30-45s): [Evidence]\n• CTA (45-60s): [Action]\n\n🎯 Goal: [Objective]\n📈 Expected: [Engagement]`,
-      linkedin: `💼 LinkedIn Video Script: ${input}\n\n📹 Structure:\n• Hook (0-10s): [Professional attention]\n• Problem (10-30s): [Industry pain]\n• Solution (30-1:30): [Professional solution]\n• Proof (1:30-2:00): [Evidence]\n• CTA (2:00-2:15): [Connect]\n\n🎯 Goal: [Professional objective]\n📈 Expected: [Career impact]`,
-      facebook: `📱 Facebook Video Script: ${input}\n\n📹 Structure:\n• Hook (0-10s): [Community attention]\n• Problem (10-30s): [Community pain]\n• Solution (30-1:30): [Community solution]\n• Proof (1:30-2:00): [Evidence]\n• CTA (2:00-2:15): [Engage]\n\n🎯 Goal: [Community objective]\n📈 Expected: [Community impact]`
+      instagram: `[Opening Hook]\n"Hey everyone! Today I'm sharing the ${input} method that changed everything for me."\n\n[Main Content]\n"Here's what you need to know:\n1. First step\n2. Second step\n3. Third step"\n\n[Call to Action]\n"Try this out and let me know your results in the comments!"`,
+      tiktok: `[Hook]\n"${input} - this is how you do it right!"\n\n[Content]\n"Watch and learn:\n• Step 1\n• Step 2\n• Step 3"\n\n[CTA]\n"Follow for more tips!"`,
+      youtube: `[Intro]\n"Welcome back! Today we're covering ${input}."\n\n[Content]\n"Here's the complete breakdown:\n1. Understanding the basics\n2. Implementation strategy\n3. Advanced techniques"\n\n[Outro]\n"Don't forget to subscribe and hit the bell!"`,
+      x: `[Thread Start]\n"${input} - A complete thread 🧵"\n\n[Thread Content]\n"1/5: Introduction\n2/5: Key points\n3/5: Implementation\n4/5: Results\n5/5: Next steps"\n\n[CTA]\n"Follow for more insights!"`,
+      linkedin: `[Professional Opening]\n"${input} - Industry insights that matter."\n\n[Content]\n"Key takeaways:\n• Professional approach\n• Industry best practices\n• Measurable outcomes"\n\n[CTA]\n"Connect for more professional insights!"`,
+      facebook: `[Community Opening]\n"${input} - Let's discuss this together!"\n\n[Content]\n"Community insights:\n• What works\n• What doesn't\n• Tips from experience"\n\n[CTA]\n"Share your thoughts below!"`
     };
 
-    return scripts[platform as keyof typeof scripts] || `Video script for ${platform}: ${input}`;
+    return scripts[platform as keyof typeof scripts] || `Script for ${input} content on ${platform}`;
   };
 
   const generatePremiumHashtags = (platform: string, contentType: string): string[] => {
     const hashtagSets = {
-      instagram: ["instagram", "content", "growth", "viral", "engagement", "success", "trending", "socialmedia", "digitalmarketing", "influencer"],
-      tiktok: ["tiktok", "viral", "trending", "fyp", "foryou", "content", "growth", "engagement", "success", "socialmedia"],
-      youtube: ["youtube", "content", "growth", "viral", "engagement", "success", "trending", "socialmedia", "creator", "video"],
-      x: ["twitter", "thread", "viral", "trending", "engagement", "growth", "success", "socialmedia", "content", "digitalmarketing"],
-      linkedin: ["linkedin", "professional", "business", "growth", "networking", "career", "success", "leadership", "industry", "strategy"],
-      facebook: ["facebook", "community", "engagement", "growth", "socialmedia", "content", "viral", "trending", "success", "digitalmarketing"]
+      instagram: ['instagram', 'socialmedia', 'growth', 'success', 'motivation', 'inspiration', 'lifestyle', 'business', 'entrepreneur', 'marketing'],
+      tiktok: ['fyp', 'viral', 'trending', 'tiktok', 'foryou', 'foryoupage', 'viralvideo', 'trending', 'popular', 'funny'],
+      youtube: ['youtube', 'tutorial', 'howto', 'guide', 'tips', 'tricks', 'education', 'learning', 'knowledge', 'skills'],
+      x: ['twitter', 'x', 'thread', 'insights', 'tips', 'growth', 'success', 'business', 'marketing', 'strategy'],
+      linkedin: ['linkedin', 'professional', 'business', 'career', 'networking', 'industry', 'leadership', 'growth', 'success', 'strategy'],
+      facebook: ['facebook', 'community', 'social', 'friends', 'family', 'life', 'fun', 'entertainment', 'viral', 'trending']
     };
 
-    const baseHashtags = hashtagSets[platform as keyof typeof hashtagSets] || ["content", "growth", "viral", "success"];
-    const contentTypeHashtags = {
-      post: ["post", "content", "socialmedia"],
-      story: ["story", "content", "socialmedia"],
-      reel: ["reel", "video", "content", "socialmedia"],
-      video: ["video", "content", "socialmedia"]
-    };
-
-    return [...baseHashtags, ...(contentTypeHashtags[contentType as keyof typeof contentTypeHashtags] || [])];
+    const baseHashtags = hashtagSets[platform as keyof typeof hashtagSets] || ['content', 'socialmedia', 'viral'];
+    const contentSpecific = [contentType, 'content', 'viral', 'trending'];
+    
+    return Array.from(new Set([...baseHashtags, ...contentSpecific])).slice(0, 10);
   };
 
   const handleGenerateContent = async () => {
@@ -386,10 +276,10 @@ export default function PremiumContentHub({
     setError(null);
 
     try {
-      const generated = await generatePremiumContent(contentInput, selectedPlatforms, selectedContentType);
-      setGeneratedContent(generated);
-      setSuccess(`Generated ${generated.length} premium content pieces!`);
-      setTimeout(() => setSuccess(null), 5000);
+      const content = await generatePremiumContent(contentInput, selectedPlatforms, selectedContentType);
+      setGeneratedContent(content);
+      setSuccess("Content generated successfully!");
+      setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
       setError("Failed to generate content. Please try again.");
     } finally {
@@ -397,28 +287,17 @@ export default function PremiumContentHub({
     }
   };
 
-  const handleUseTemplate = (template: ContentTemplate) => {
-    setContentInput(template.description);
-    setSelectedContentType(template.category.toLowerCase());
-    setActiveTab("create");
-    setSuccess(`Template "${template.name}" loaded!`);
-    setTimeout(() => setSuccess(null), 3000);
-  };
-
   const handleSaveContent = (content: ContentIdea) => {
-    // Simulate saving to database
-    setSuccess(`Content "${content.title}" saved successfully!`);
+    setSuccess("Content saved successfully!");
     setTimeout(() => setSuccess(null), 3000);
   };
 
   const handlePublishContent = (content: ContentIdea) => {
-    // Simulate publishing to platform
-    setSuccess(`Content "${content.title}" published to ${content.platform}!`);
+    setSuccess("Content published successfully!");
     setTimeout(() => setSuccess(null), 3000);
   };
 
   const handleDeleteContent = (contentId: string) => {
-    // Simulate deleting from database
     setSuccess("Content deleted successfully!");
     setTimeout(() => setSuccess(null), 3000);
   };
@@ -431,7 +310,7 @@ export default function PremiumContentHub({
   });
 
   const sortedContent = [...filteredContent].sort((a, b) => {
-    switch (sortBy) {
+    switch (activeTab) {
       case "viralScore":
         return b.viralScore - a.viralScore;
       case "createdAt":
@@ -633,68 +512,64 @@ export default function PremiumContentHub({
               </div>
             </div>
 
-                {/* Generated Content Display */}
-                {generatedContent.length > 0 && (
-                  <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
-                    <div className="p-6 border-b border-gray-100">
-                      <div className="flex items-center justify-between">
-                        <h3 className="text-xl font-bold text-gray-900">Generated Content</h3>
-                        <div className="flex items-center space-x-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => navigator.clipboard.writeText(generatedContent[0].content || '')}
-                            className="border-gray-300 text-gray-700 hover:bg-gray-50"
-                          >
-                            <Copy className="w-4 h-4 mr-2" />
-                            Copy
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleSaveContent(generatedContent[0])}
-                            className="border-green-300 text-green-700 hover:bg-green-50"
-                          >
-                            <Save className="w-4 h-4 mr-2" />
-                            Save
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="p-6">
-                      <div className="bg-gray-50 p-6 rounded-lg border border-gray-200">
-                        <h4 className="text-lg font-semibold text-gray-900 mb-4">{generatedContent[0].title}</h4>
-                        <p className="text-gray-700 whitespace-pre-wrap mb-4">{generatedContent[0].content}</p>
-                        
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-4">
-                            <Badge variant="outline" className="bg-blue-50 text-blue-700">
-                              <TrendingUp className="w-3 h-3 mr-1" />
-                              {generatedContent[0].viralScore}% Viral Score
-                            </Badge>
-                            <Badge variant="outline" className="bg-green-50 text-green-700">
-                              <Eye className="w-3 h-3 mr-1" />
-                              {generatedContent[0].estimatedViews} Views
-                            </Badge>
-                          </div>
-                          <Button
-                            onClick={() => handlePublishContent(generatedContent[0])}
-                            className="bg-blue-600 hover:bg-blue-700 text-white"
-                          >
-                            <Send className="w-4 h-4 mr-2" />
-                            Publish
-                          </Button>
-                        </div>
-                      </div>
+            {/* Generated Content Display */}
+            {generatedContent.length > 0 && (
+              <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
+                <div className="p-6 border-b border-gray-100">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-xl font-bold text-gray-900">Generated Content</h3>
+                    <div className="flex items-center space-x-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => navigator.clipboard.writeText(generatedContent[0].content || '')}
+                        className="border-gray-300 text-gray-700 hover:bg-gray-50"
+                      >
+                        <Copy className="w-4 h-4 mr-2" />
+                        Copy
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleSaveContent(generatedContent[0])}
+                        className="border-green-300 text-green-700 hover:bg-green-50"
+                      >
+                        <Save className="w-4 h-4 mr-2" />
+                        Save
+                      </Button>
                     </div>
                   </div>
-                )}
+                </div>
+
+                <div className="p-6">
+                  <div className="bg-gray-50 p-6 rounded-lg border border-gray-200">
+                    <h4 className="text-lg font-semibold text-gray-900 mb-4">{generatedContent[0].title}</h4>
+                    <p className="text-gray-700 whitespace-pre-wrap mb-4">{generatedContent[0].content}</p>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-4">
+                        <Badge variant="outline" className="bg-blue-50 text-blue-700">
+                          <TrendingUp className="w-3 h-3 mr-1" />
+                          {generatedContent[0].viralScore}% Viral Score
+                        </Badge>
+                        <Badge variant="outline" className="bg-green-50 text-green-700">
+                          <Eye className="w-3 h-3 mr-1" />
+                          {generatedContent[0].estimatedViews} Views
+                        </Badge>
+                      </div>
+                      <Button
+                        onClick={() => handlePublishContent(generatedContent[0])}
+                        className="bg-blue-600 hover:bg-blue-700 text-white"
+                      >
+                        <Send className="w-4 h-4 mr-2" />
+                        Publish
+                      </Button>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
+            )}
           </TabsContent>
-
-
 
           {/* My Ideas Tab */}
           <TabsContent value="ideas" className="space-y-6">
