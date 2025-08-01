@@ -575,38 +575,46 @@ export default function ContentCreationHub({
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
-      {/* Premium Header */}
-      <div className="bg-white border-b border-gray-200 shadow-sm">
+      {/* Premium Header with Glassmorphism */}
+      <div className="glass-premium border-b border-white/20 shadow-premium-lg backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg flex items-center justify-center">
-                  <Sparkles className="w-5 h-5 text-white" />
+          <div className="flex items-center justify-between h-20">
+            <div className="flex items-center space-x-6">
+              <div className="flex items-center space-x-3">
+                <div className="w-12 h-12 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-700 rounded-2xl flex items-center justify-center shadow-premium-lg hover:shadow-premium-xl transition-all duration-300 hover:scale-105">
+                  <Sparkles className="w-7 h-7 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-xl font-bold text-gray-900">Content Creation Hub</h1>
-                  <p className="text-sm text-gray-600">AI-Powered Content Generation & Analytics</p>
+                  <h1 className="text-2xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-gray-900 bg-clip-text text-transparent">
+                    Content Creation Hub
+                  </h1>
+                  <p className="text-sm text-gray-600 font-medium">AI-Powered Content Generation & Analytics</p>
                 </div>
               </div>
               {hasActiveSubscription && (
-                <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white border-0">
-                  <Crown className="w-3 h-3 mr-1" />
-                  Premium
-                </Badge>
+                <div className="flex items-center space-x-2">
+                  <Badge className="bg-gradient-to-r from-yellow-400 via-orange-500 to-yellow-500 text-white border-0 shadow-premium px-3 py-1">
+                    <Crown className="w-4 h-4 mr-1" />
+                    Premium
+                  </Badge>
+                  <Badge className="bg-gradient-to-r from-green-400 to-emerald-500 text-white border-0 shadow-premium px-3 py-1">
+                    <Zap className="w-4 h-4 mr-1" />
+                    AI Powered
+                  </Badge>
+                </div>
               )}
             </div>
             
             <div className="flex items-center space-x-4">
               <div className="text-right">
-                <p className="text-sm text-gray-600">Connected Platforms</p>
-                <p className="text-lg font-bold text-gray-900">{platformConnections.length}</p>
+                <p className="text-sm text-gray-600 font-medium">Connected Platforms</p>
+                <p className="text-2xl font-bold text-gray-900">{platformConnections.length}</p>
               </div>
-              <Button variant="outline" size="sm" className="border-blue-200 text-blue-700 hover:bg-blue-50">
+              <Button variant="outline" size="sm" className="glass-premium border-white/20 text-blue-700 hover:bg-white/10 transition-all duration-300 hover:scale-105">
                 <BarChart3 className="w-4 h-4 mr-2" />
                 Analytics
               </Button>
-              <Button variant="outline" size="sm" className="border-blue-200 text-blue-700 hover:bg-blue-50">
+              <Button variant="outline" size="sm" className="glass-premium border-white/20 text-blue-700 hover:bg-white/10 transition-all duration-300 hover:scale-105">
                 <Calendar className="w-4 h-4 mr-2" />
                 Schedule
               </Button>
@@ -615,159 +623,166 @@ export default function ContentCreationHub({
         </div>
       </div>
 
+      {/* Premium Content Area */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-7 bg-white border border-gray-200 shadow-sm">
-            <TabsTrigger value="create" className="flex items-center space-x-2">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
+          {/* Premium Tab Navigation */}
+          <TabsList className="glass-premium grid w-full grid-cols-7 border border-white/20 shadow-premium-lg backdrop-blur-xl">
+            <TabsTrigger value="create" className="flex items-center space-x-2 hover:bg-white/10 transition-all duration-300">
               <Wand2 className="w-4 h-4" />
               <span>Create</span>
             </TabsTrigger>
-            <TabsTrigger value="templates" className="flex items-center space-x-2">
+            <TabsTrigger value="templates" className="flex items-center space-x-2 hover:bg-white/10 transition-all duration-300">
               <FileText className="w-4 h-4" />
               <span>Templates</span>
             </TabsTrigger>
-            <TabsTrigger value="ideas" className="flex items-center space-x-2">
+            <TabsTrigger value="ideas" className="flex items-center space-x-2 hover:bg-white/10 transition-all duration-300">
               <Lightbulb className="w-4 h-4" />
               <span>My Ideas</span>
             </TabsTrigger>
-            <TabsTrigger value="scheduler" className="flex items-center space-x-2">
+            <TabsTrigger value="scheduler" className="flex items-center space-x-2 hover:bg-white/10 transition-all duration-300">
               <Calendar className="w-4 h-4" />
               <span>Schedule</span>
             </TabsTrigger>
-            <TabsTrigger value="personas" className="flex items-center space-x-2">
+            <TabsTrigger value="personas" className="flex items-center space-x-2 hover:bg-white/10 transition-all duration-300">
               <Users className="w-4 h-4" />
               <span>Personas</span>
             </TabsTrigger>
-            <TabsTrigger value="viral" className="flex items-center space-x-2">
+            <TabsTrigger value="viral" className="flex items-center space-x-2 hover:bg-white/10 transition-all duration-300">
               <TrendingUp className="w-4 h-4" />
               <span>Viral</span>
             </TabsTrigger>
-            <TabsTrigger value="analytics" className="flex items-center space-x-2">
+            <TabsTrigger value="analytics" className="flex items-center space-x-2 hover:bg-white/10 transition-all duration-300">
               <BarChart3 className="w-4 h-4" />
               <span>Analytics</span>
             </TabsTrigger>
           </TabsList>
 
-          {/* Create Content Tab */}
-          <TabsContent value="create" className="space-y-6">
-            <Card className="p-8 bg-white border-0 shadow-xl">
+          {/* Create Content Tab - Premium Design */}
+          <TabsContent value="create" className="space-y-8">
+            <Card className="glass-premium p-8 border border-white/20 shadow-premium-xl backdrop-blur-xl">
               <div className="space-y-8">
-                {/* Platform Selection */}
-                <div className="space-y-4">
-                  <Label className="text-lg font-semibold text-gray-900">Target Platforms</Label>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    {platforms.map((platform) => {
-                      const Icon = platform.icon;
-                      const isSelected = selectedPlatforms.includes(platform.id);
-                      return (
-                        <button
-                          key={platform.id}
-                          onClick={() => {
-                            if (platform.id === "all") {
-                              setSelectedPlatforms(["all"]);
-                            } else {
-                              setSelectedPlatforms((prev) =>
-                                prev.includes(platform.id)
-                                  ? prev.filter((p) => p !== platform.id)
-                                  : [...prev.filter((p) => p !== "all"), platform.id]
-                              );
-                            }
-                          }}
-                          className={`flex items-center gap-3 p-4 rounded-xl border-2 transition-all duration-200 ${
-                            isSelected
-                              ? "border-blue-500 bg-blue-50 text-blue-700 shadow-lg"
-                              : "border-gray-200 hover:border-gray-300 bg-white"
-                          } ${platform.premium && !hasActiveSubscription ? 'opacity-50' : ''}`}
-                        >
-                          <Icon className="w-5 h-5" />
-                          <span className="font-medium">{platform.name}</span>
-                          {platform.premium && (
-                            <Crown className="w-4 h-4 text-yellow-500" />
-                          )}
-                        </button>
-                      );
-                    })}
+                {/* Premium Header */}
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-gray-900 bg-clip-text text-transparent mb-2">
+                      AI Content Generator
+                    </h2>
+                    <p className="text-gray-600 text-lg">Create viral content with advanced AI technology</p>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Badge className="bg-gradient-to-r from-blue-500 to-purple-600 text-white border-0 shadow-premium">
+                      <Brain className="w-3 h-3 mr-1" />
+                      AI Powered
+                    </Badge>
+                    <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white border-0 shadow-premium">
+                      <Zap className="w-3 h-3 mr-1" />
+                      Viral Ready
+                    </Badge>
                   </div>
                 </div>
 
-                {/* Content Type Selection */}
-                <div className="space-y-4">
-                  <Label className="text-lg font-semibold text-gray-900">Content Type</Label>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    {contentTypes.map((type) => {
-                      const Icon = type.icon;
-                      const isSelected = contentType === type.id;
-                      return (
-                        <button
-                          key={type.id}
-                          onClick={() => setContentType(type.id)}
-                          className={`flex items-center gap-3 p-4 rounded-xl border-2 transition-all duration-200 ${
-                            isSelected
-                              ? "border-blue-500 bg-blue-50 text-blue-700 shadow-lg"
-                              : "border-gray-200 hover:border-gray-300 bg-white"
-                          }`}
-                        >
-                          <Icon className="w-5 h-5" />
-                          <span className="font-medium">{type.name}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
+                {/* Premium Content Creation Form */}
+                <div className="grid lg:grid-cols-2 gap-8">
+                  {/* Input Section */}
+                  <div className="space-y-6">
+                    <div>
+                      <Label className="text-sm font-semibold text-gray-700 mb-2 block">Content Description</Label>
+                      <Textarea
+                        value={contentInput}
+                        onChange={(e) => setContentInput(e.target.value)}
+                        placeholder="Describe what you want to create content about..."
+                        className="glass-premium border-white/20 focus:border-blue-500/50 transition-all duration-300 min-h-[120px] resize-none"
+                        rows={5}
+                      />
+                    </div>
 
-                {/* Content Input */}
-                <div className="space-y-4">
-                  <Label className="text-lg font-semibold text-gray-900">Your Content Idea</Label>
-                  <Textarea
-                    value={contentInput}
-                    onChange={(e) => setContentInput(e.target.value)}
-                    placeholder="Describe your content idea, target audience, or what you want to achieve..."
-                    className="min-h-[120px] text-lg border-2 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
-                  />
-                </div>
-
-                {/* Generate Button */}
-                <Button
-                  onClick={handleGenerateContent}
-                  disabled={isGenerating || !contentInput.trim()}
-                  className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white text-lg py-4 rounded-xl shadow-lg"
-                >
-                  {isGenerating ? (
-                    <>
-                      <RefreshCw className="w-5 h-5 mr-2 animate-spin" />
-                      Generating Premium Content...
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="w-5 h-5 mr-2" />
-                      Generate Premium Content
-                    </>
-                  )}
-                </Button>
-
-                {/* Platform Connection Prompt */}
-                {platformConnections.length === 0 && (
-                  <div className="bg-gradient-to-br from-yellow-50 to-orange-50 p-4 rounded-xl border border-yellow-200">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center">
-                        <Users className="w-4 h-4 text-white" />
-                      </div>
+                    <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <h4 className="font-semibold text-yellow-900">Connect Your Platforms</h4>
-                        <p className="text-sm text-yellow-700">
-                          Connect your social media accounts to get personalized content recommendations and real analytics.
-                        </p>
+                        <Label className="text-sm font-semibold text-gray-700 mb-2 block">Content Type</Label>
+                        <Select value={contentType} onValueChange={setContentType}>
+                          <SelectTrigger className="glass-premium border-white/20 focus:border-blue-500/50">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="post">Post</SelectItem>
+                            <SelectItem value="story">Story</SelectItem>
+                            <SelectItem value="reel">Reel</SelectItem>
+                            <SelectItem value="video">Video</SelectItem>
+                            <SelectItem value="carousel">Carousel</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div>
+                        <Label className="text-sm font-semibold text-gray-700 mb-2 block">Platforms</Label>
+                        <Select value={selectedPlatforms[0]} onValueChange={(value) => setSelectedPlatforms([value])}>
+                          <SelectTrigger className="glass-premium border-white/20 focus:border-blue-500/50">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="all">All Platforms</SelectItem>
+                            <SelectItem value="instagram">Instagram</SelectItem>
+                            <SelectItem value="tiktok">TikTok</SelectItem>
+                            <SelectItem value="youtube">YouTube</SelectItem>
+                            <SelectItem value="x">X</SelectItem>
+                            <SelectItem value="linkedin">LinkedIn</SelectItem>
+                          </SelectContent>
+                        </Select>
                       </div>
                     </div>
+
                     <Button 
-                      asChild 
-                      size="sm" 
-                      className="mt-3 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white"
+                      onClick={handleGenerateContent}
+                      disabled={isGenerating || !contentInput.trim()}
+                      className="w-full bg-gradient-to-r from-blue-600 via-purple-600 to-blue-700 hover:from-blue-700 hover:via-purple-700 hover:to-blue-800 text-white shadow-premium-lg hover:shadow-premium-xl transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <Link href="/dashboard?tab=platforms">Connect Platforms</Link>
+                      {isGenerating ? (
+                        <>
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
+                          Generating Premium Content...
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="w-4 h-4 mr-2" />
+                          Generate Premium Content
+                        </>
+                      )}
                     </Button>
                   </div>
-                )}
+
+                  {/* Preview Section */}
+                  <div className="space-y-6">
+                    <div>
+                      <Label className="text-sm font-semibold text-gray-700 mb-2 block">AI Preview</Label>
+                      <div className="glass-premium border border-white/20 rounded-xl p-6 min-h-[200px] flex items-center justify-center">
+                        {generatedContent ? (
+                          <div className="space-y-4 w-full">
+                            <div className="flex items-center justify-between">
+                              <h4 className="font-semibold text-gray-900">{generatedContent.title}</h4>
+                              <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white">
+                                {generatedContent.viralScore}% Viral
+                              </Badge>
+                            </div>
+                            <p className="text-gray-700 text-sm">{generatedContent.description}</p>
+                            <div className="flex flex-wrap gap-2">
+                              {generatedContent.hashtags?.map((tag: string, index: number) => (
+                                <Badge key={index} variant="outline" className="text-xs">
+                                  #{tag}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="text-center text-gray-500">
+                            <Sparkles className="w-8 h-8 mx-auto mb-2 text-gray-400" />
+                            <p>Your AI-generated content will appear here</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </Card>
 
@@ -1203,129 +1218,181 @@ export default function ContentCreationHub({
             </TabsContent>
           </TabsContent>
 
-          {/* Templates Tab */}
-          <TabsContent value="templates" className="space-y-6">
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {premiumTemplates.map((template) => (
-                <Card key={template.id} className="p-6 bg-white border-0 shadow-lg hover:shadow-xl transition-all duration-200">
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <h3 className="text-lg font-semibold text-gray-900">{template.name}</h3>
-                      {template.premium && (
-                        <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white">
-                          <Crown className="w-3 h-3 mr-1" />
-                          Premium
-                        </Badge>
-                      )}
-                    </div>
-                    
-                    <p className="text-gray-600 text-sm">{template.description}</p>
-                    
-                    <div className="flex items-center space-x-2">
-                      <Badge variant="outline" className="bg-blue-50 text-blue-700">
-                        <TrendingUp className="w-3 h-3 mr-1" />
-                        {template.viralScore}% Viral Score
-                      </Badge>
-                      {template.usageCount && (
-                        <Badge variant="outline" className="bg-green-50 text-green-700">
-                          <Users className="w-3 h-3 mr-1" />
-                          {template.usageCount} uses
-                        </Badge>
-                      )}
-                    </div>
-
-                    <Button
-                      onClick={() => handleUseTemplate(template)}
-                      className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
-                    >
-                      <Wand2 className="w-4 h-4 mr-2" />
-                      Use Template
-                    </Button>
+          {/* Premium Templates Tab */}
+          <TabsContent value="templates" className="space-y-8">
+            <Card className="glass-premium p-8 border border-white/20 shadow-premium-xl backdrop-blur-xl">
+              <div className="space-y-8">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 via-purple-800 to-gray-900 bg-clip-text text-transparent mb-2">
+                      Premium Content Templates
+                    </h2>
+                    <p className="text-gray-600 text-lg">Ready-to-use templates designed for viral success</p>
                   </div>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-
-          {/* My Ideas Tab */}
-          <TabsContent value="ideas" className="space-y-6">
-            {/* Search and Filter Controls */}
-            <div className="flex flex-col md:flex-row gap-4">
-              <div className="flex-1">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                  <Input
-                    placeholder="Search content ideas..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10 border-2 border-gray-200 focus:border-blue-500"
-                  />
+                  <div className="flex items-center space-x-2">
+                    <Badge className="bg-gradient-to-r from-purple-500 to-purple-600 text-white border-0 shadow-premium">
+                      <FileText className="w-3 h-3 mr-1" />
+                      Premium
+                    </Badge>
+                    <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white border-0 shadow-premium">
+                      <Zap className="w-3 h-3 mr-1" />
+                      Viral Ready
+                    </Badge>
+                  </div>
+                </div>
+                
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {premiumTemplates.map((template) => (
+                    <div key={template.id} className="glass-premium border border-white/20 rounded-2xl p-6 hover:shadow-premium-xl transition-all duration-300 hover:scale-105 group">
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="font-semibold text-gray-900 group-hover:text-purple-700 transition-colors">{template.name}</h3>
+                        <Badge 
+                          className={`text-xs border-0 shadow-premium ${
+                            template.viralScore >= 90 ? "bg-gradient-to-r from-green-500 to-emerald-600 text-white" :
+                            template.viralScore >= 80 ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white" :
+                            "bg-gradient-to-r from-yellow-500 to-orange-600 text-white"
+                          }`}
+                        >
+                          {template.viralScore}% viral
+                        </Badge>
+                      </div>
+                      <p className="text-sm text-gray-600 mb-4">{template.description}</p>
+                      <div className="flex items-center gap-2 mb-4">
+                        {template.platforms.map((platform) => (
+                          <Badge key={platform} variant="outline" className="text-xs border-white/20">
+                            {platform}
+                          </Badge>
+                        ))}
+                      </div>
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center space-x-2">
+                          <div className="flex items-center space-x-1">
+                            <Star className="w-3 h-3 text-yellow-500" />
+                            <span className="text-xs text-gray-600">{template.successRate}% success</span>
+                          </div>
+                        </div>
+                        <div className="text-xs text-gray-500">
+                          {template.usageCount} uses
+                        </div>
+                      </div>
+                      <Button 
+                        onClick={() => handleUseTemplate(template)}
+                        className="w-full bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:from-purple-600 hover:via-purple-700 hover:to-purple-800 text-white shadow-premium-lg hover:shadow-premium-xl transition-all duration-300 hover:scale-105"
+                      >
+                        <FileText className="w-4 h-4 mr-2" />
+                        Use Template
+                      </Button>
+                    </div>
+                  ))}
                 </div>
               </div>
-              <div className="flex gap-2">
-                <select
-                  value={filterStatus}
-                  onChange={(e) => setFilterStatus(e.target.value)}
-                  className="border-2 border-gray-200 rounded-lg px-3 py-2 focus:border-blue-500"
-                >
-                  <option value="all">All Status</option>
-                  <option value="draft">Draft</option>
-                  <option value="scheduled">Scheduled</option>
-                  <option value="published">Published</option>
-                </select>
-                <select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
-                  className="border-2 border-gray-200 rounded-lg px-3 py-2 focus:border-blue-500"
-                >
-                  <option value="viralScore">Sort by Viral Score</option>
-                  <option value="createdAt">Sort by Date</option>
-                  <option value="estimatedViews">Sort by Views</option>
-                </select>
-              </div>
-            </div>
+            </Card>
+          </TabsContent>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {sortedContent.map((idea) => (
-                <Card key={idea.id} className="p-6 bg-white border-0 shadow-lg hover:shadow-xl transition-all duration-200">
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <h3 className="text-lg font-semibold text-gray-900">{idea.title}</h3>
-                      {idea.premium && (
-                        <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white">
-                          <Crown className="w-3 h-3 mr-1" />
-                          Premium
-                        </Badge>
-                      )}
-                    </div>
-                    
-                    <p className="text-gray-600 text-sm line-clamp-3">{idea.description}</p>
-                    
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
-                        <Badge variant="outline" className="bg-blue-50 text-blue-700">
-                          <TrendingUp className="w-3 h-3 mr-1" />
-                          {idea.viralScore}%
-                        </Badge>
-                        <Badge variant="outline" className="bg-green-50 text-green-700">
-                          <Eye className="w-3 h-3 mr-1" />
-                          {idea.estimatedViews}
-                        </Badge>
-                      </div>
-                      
-                      <div className="flex items-center space-x-2">
-                        <Button size="sm" variant="outline">
-                          <Edit3 className="w-4 h-4" />
-                        </Button>
-                        <Button size="sm" variant="outline">
-                          <Share2 className="w-4 h-4" />
-                        </Button>
-                      </div>
+          {/* Premium My Ideas Tab */}
+          <TabsContent value="ideas" className="space-y-8">
+            <Card className="glass-premium p-8 border border-white/20 shadow-premium-xl backdrop-blur-xl">
+              <div className="space-y-8">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-gray-900 bg-clip-text text-transparent mb-2">
+                      My Content Ideas
+                    </h2>
+                    <p className="text-gray-600 text-lg">Manage and organize your content ideas</p>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Badge className="bg-gradient-to-r from-blue-500 to-purple-600 text-white border-0 shadow-premium">
+                      <Lightbulb className="w-3 h-3 mr-1" />
+                      {sortedContent.length} Ideas
+                    </Badge>
+                    <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white border-0 shadow-premium">
+                      <TrendingUp className="w-3 h-3 mr-1" />
+                      AI Generated
+                    </Badge>
+                  </div>
+                </div>
+
+                {/* Premium Search and Filter Controls */}
+                <div className="flex flex-col md:flex-row gap-4">
+                  <div className="flex-1">
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                      <Input
+                        placeholder="Search content ideas..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="glass-premium pl-10 border-white/20 focus:border-blue-500/50 transition-all duration-300"
+                      />
                     </div>
                   </div>
-                </Card>
-              ))}
-            </div>
+                  <div className="flex gap-2">
+                    <Select value={filterStatus} onValueChange={setFilterStatus}>
+                      <SelectTrigger className="glass-premium border-white/20 focus:border-blue-500/50">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Status</SelectItem>
+                        <SelectItem value="draft">Draft</SelectItem>
+                        <SelectItem value="scheduled">Scheduled</SelectItem>
+                        <SelectItem value="published">Published</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Select value={sortBy} onValueChange={setSortBy}>
+                      <SelectTrigger className="glass-premium border-white/20 focus:border-blue-500/50">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="viralScore">Sort by Viral Score</SelectItem>
+                        <SelectItem value="createdAt">Sort by Date</SelectItem>
+                        <SelectItem value="estimatedViews">Sort by Views</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {sortedContent.map((idea) => (
+                    <div key={idea.id} className="glass-premium border border-white/20 rounded-2xl p-6 hover:shadow-premium-xl transition-all duration-300 hover:scale-105 group">
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-700 transition-colors">{idea.title}</h3>
+                          {idea.premium && (
+                            <Badge className="bg-gradient-to-r from-yellow-400 via-orange-500 to-yellow-500 text-white border-0 shadow-premium">
+                              <Crown className="w-3 h-3 mr-1" />
+                              Premium
+                            </Badge>
+                          )}
+                        </div>
+                        
+                        <p className="text-gray-600 text-sm line-clamp-3">{idea.description}</p>
+                        
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-2">
+                            <Badge variant="outline" className="bg-blue-50 text-blue-700">
+                              <TrendingUp className="w-3 h-3 mr-1" />
+                              {idea.viralScore}%
+                            </Badge>
+                            <Badge variant="outline" className="bg-green-50 text-green-700">
+                              <Eye className="w-3 h-3 mr-1" />
+                              {idea.estimatedViews}
+                            </Badge>
+                          </div>
+                          
+                          <div className="flex items-center space-x-2">
+                            <Button size="sm" variant="outline" className="glass-premium border-white/20 hover:bg-white/10">
+                              <Edit3 className="w-4 h-4" />
+                            </Button>
+                            <Button size="sm" variant="outline" className="glass-premium border-white/20 hover:bg-white/10">
+                              <Share2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </Card>
           </TabsContent>
 
           {/* Analytics Tab */}
