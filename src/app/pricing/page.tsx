@@ -471,12 +471,17 @@ export default function PricingPage({ searchParams }: PricingPageProps) {
     {
       question: "Can I change my plan anytime?",
       answer:
-        "Yes, you can upgrade your plan at any time. When you upgrade, you'll be charged the prorated difference for the remainder of your billing period. Downgrades are not available to ensure consistent service quality.",
+        "Yes, you can upgrade your plan at any time. When you upgrade, you'll be charged the prorated difference for the remainder of your billing period. You can also upgrade from monthly to annual billing to save 20%. We focus on upgrades to ensure you get the most value from our platform.",
     },
     {
       question: "How accurate is the viral score predictor?",
       answer:
         "Our viral score predictor has an 87% accuracy rate based on analyzing millions of posts. It considers factors like timing, hashtags, content type, and audience engagement patterns.",
+    },
+    {
+      question: "Can I upgrade from monthly to annual billing?",
+      answer:
+        "Yes! You can upgrade from monthly to annual billing at any time to save 20%. When you upgrade, you'll be charged the prorated difference for the remainder of your billing period, and your new annual billing cycle will begin immediately.",
     },
     {
       question: "What happens if I cancel my subscription?",
@@ -576,18 +581,20 @@ export default function PricingPage({ searchParams }: PricingPageProps) {
                   }`}
                 />
               </button>
-              <span
-                className={`text-sm font-semibold transition-colors ${
-                  isYearly ? "text-gray-900" : "text-gray-500"
-                }`}
-              >
-                Yearly
-              </span>
-              {isYearly && (
-                <div className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-bold animate-pulse shadow-sm">
-                  Save 20%
-                </div>
-              )}
+              <div className="flex items-center gap-2">
+                <span
+                  className={`text-sm font-semibold transition-colors ${
+                    isYearly ? "text-gray-900" : "text-gray-500"
+                  }`}
+                >
+                  Yearly
+                </span>
+                {isYearly && (
+                  <div className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-bold animate-pulse shadow-sm">
+                    Save 20%
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
@@ -623,6 +630,36 @@ export default function PricingPage({ searchParams }: PricingPageProps) {
               <span>50,000+ happy creators</span>
             </div>
           </div>
+
+          {/* Upgrade Promotion for Monthly Users */}
+          {user && (
+            <div className="mt-8 max-w-2xl mx-auto">
+              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-6 text-center">
+                <div className="flex items-center justify-center gap-2 mb-3">
+                  <TrendingUp className="w-5 h-5 text-blue-600" />
+                  <span className="text-lg font-bold text-blue-900">Upgrade & Save</span>
+                </div>
+                <p className="text-blue-700 mb-4">
+                  Switch to annual billing and save 20% on your subscription. 
+                  Perfect for creators committed to long-term growth.
+                </p>
+                <div className="flex items-center justify-center gap-4 text-sm">
+                  <div className="flex items-center gap-1">
+                    <Check className="w-4 h-4 text-green-600" />
+                    <span className="text-blue-800">Instant savings</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Check className="w-4 h-4 text-green-600" />
+                    <span className="text-blue-800">Prorated billing</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Check className="w-4 h-4 text-green-600" />
+                    <span className="text-blue-800">No setup fees</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </section>
 

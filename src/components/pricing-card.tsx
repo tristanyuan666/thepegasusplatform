@@ -337,8 +337,21 @@ export default function PricingCard({
     ["creator", "influencer", "superstar"].indexOf(safePlan.id) >
       ["creator", "influencer", "superstar"].indexOf(userPlan);
   
+  // Check if user can upgrade to annual (if currently on monthly)
+  const canUpgradeToAnnual = 
+    userPlan && 
+    userBilling === "monthly" &&
+    userPlan.toLowerCase() === safePlan.id.toLowerCase() &&
+    isYearly;
+  
+  // Check if user can upgrade plan level
+  const canUpgradePlan = 
+    userPlan &&
+    ["creator", "influencer", "superstar"].indexOf(safePlan.id) >
+      ["creator", "influencer", "superstar"].indexOf(userPlan);
+  
   // Hide downgrade options - users can only upgrade or stay on current plan
-  const shouldShowPlan = !userPlan || isUpgrade || isCurrentPlan;
+  const shouldShowPlan = !userPlan || isUpgrade || isCurrentPlan || canUpgradeToAnnual || canUpgradePlan;
 
   return (
     <div
@@ -399,9 +412,9 @@ export default function PricingCard({
             {isYearly ? (
               <>
                 <div className="flex items-center gap-2 mb-2">
-                                <span className="text-[1.78rem] font-bold text-gray-900">
-                ${((safePlan.price.yearly / 12 / 100) - 0.01).toFixed(2)}
-              </span>
+                  <span className="text-[1.78rem] font-bold text-gray-900">
+                    ${((safePlan.price.yearly / 12 / 100) - 0.01).toFixed(2)}
+                  </span>
                   <span className="text-lg text-gray-400 line-through">
                     ${(safePlan.price.monthly / 100).toFixed(2)}
                   </span>
@@ -414,6 +427,14 @@ export default function PricingCard({
                     `/month, billed $${(safePlan.price.yearly / 100).toFixed(2)}/year`
                   </span>
                 </div>
+                {/* Show upgrade prompt for monthly users */}
+                {userPlan && userBilling === "monthly" && userPlan.toLowerCase() === safePlan.id.toLowerCase() && (
+                  <div className="mt-2 px-3 py-1 bg-blue-50 border border-blue-200 rounded-full">
+                    <span className="text-xs text-blue-700 font-medium">
+                      💡 Upgrade to save 20%
+                    </span>
+                  </div>
+                )}
               </>
             ) : (
               <div className="flex items-center gap-2">
@@ -530,6 +551,10 @@ export default function PricingCard({
                   <span className="text-sm">Retry Payment</span>
                 ) : isCurrentPlan ? (
                   <span className="text-sm">Current Plan</span>
+                ) : canUpgradeToAnnual ? (
+                  <span className="text-sm">Upgrade to Annual</span>
+                ) : canUpgradePlan ? (
+                  <span className="text-sm">Upgrade Plan</span>
                 ) : isUpgrade ? (
                   <span className="text-sm">Upgrade</span>
                 ) : safePlan.popular ? (
@@ -540,7 +565,7 @@ export default function PricingCard({
               </Button>
             ) : (
               <div className="w-full py-3 text-sm text-center text-gray-500 bg-gray-100 rounded-lg">
-                <span>Downgrade not available</span>
+                <span>Upgrade to unlock more features</span>
               </div>
             )}
           </div>
