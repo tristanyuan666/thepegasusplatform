@@ -11,7 +11,8 @@ import { Badge } from "./ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import {
   Sparkles, Wand2, Calendar, BarChart3, Zap, Crown, Save, Send, Trash2,
-  Copy, Eye, TrendingUp, Lightbulb, RefreshCw, CheckCircle, AlertCircle, FileText
+  Copy, Eye, TrendingUp, Lightbulb, RefreshCw, CheckCircle, AlertCircle, FileText,
+  Brain, Target, Users, Clock, Star, TrendingDown, ArrowUpRight, ArrowDownRight
 } from "lucide-react";
 
 interface PremiumContentHubProps {
@@ -604,22 +605,30 @@ export default function PremiumContentHub({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
           {/* Premium Tab Navigation */}
-          <TabsList className="bg-white/90 backdrop-blur-xl border border-slate-200/60 grid w-full grid-cols-4 shadow-lg shadow-slate-200/50 rounded-2xl p-1.5">
-            <TabsTrigger value="create" className="flex items-center space-x-2 hover:bg-gradient-to-r hover:from-blue-50 hover:to-cyan-50 transition-all duration-300 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-100 data-[state=active]:to-cyan-100 data-[state=active]:text-blue-700 data-[state=active]:shadow-sm rounded-xl px-4 py-2.5">
+          <TabsList className="bg-white/90 backdrop-blur-xl border border-slate-200/60 grid w-full grid-cols-6 shadow-lg shadow-slate-200/50 rounded-2xl p-1.5">
+            <TabsTrigger value="create" className="flex items-center space-x-2 hover:bg-gradient-to-r hover:from-blue-50 hover:to-cyan-50 transition-all duration-300 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-100 data-[state=active]:to-cyan-100 data-[state=active]:text-blue-700 data-[state=active]:shadow-sm rounded-xl px-3 py-2">
               <Wand2 className="w-4 h-4" />
-              <span className="font-medium">Create</span>
+              <span className="font-medium text-sm">Create</span>
             </TabsTrigger>
-            <TabsTrigger value="ideas" className="flex items-center space-x-2 hover:bg-gradient-to-r hover:from-blue-50 hover:to-cyan-50 transition-all duration-300 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-100 data-[state=active]:to-cyan-100 data-[state=active]:text-blue-700 data-[state=active]:shadow-sm rounded-xl px-4 py-2.5">
+            <TabsTrigger value="ideas" className="flex items-center space-x-2 hover:bg-gradient-to-r hover:from-blue-50 hover:to-cyan-50 transition-all duration-300 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-100 data-[state=active]:to-cyan-100 data-[state=active]:text-blue-700 data-[state=active]:shadow-sm rounded-xl px-3 py-2">
               <Lightbulb className="w-4 h-4" />
-              <span className="font-medium">Ideas</span>
+              <span className="font-medium text-sm">Ideas</span>
             </TabsTrigger>
-            <TabsTrigger value="scheduler" className="flex items-center space-x-2 hover:bg-gradient-to-r hover:from-blue-50 hover:to-cyan-50 transition-all duration-300 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-100 data-[state=active]:to-cyan-100 data-[state=active]:text-blue-700 data-[state=active]:shadow-sm rounded-xl px-4 py-2.5">
+            <TabsTrigger value="scheduler" className="flex items-center space-x-2 hover:bg-gradient-to-r hover:from-blue-50 hover:to-cyan-50 transition-all duration-300 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-100 data-[state=active]:to-cyan-100 data-[state=active]:text-blue-700 data-[state=active]:shadow-sm rounded-xl px-3 py-2">
               <Calendar className="w-4 h-4" />
-              <span className="font-medium">Schedule</span>
+              <span className="font-medium text-sm">Schedule</span>
             </TabsTrigger>
-            <TabsTrigger value="analytics" className="flex items-center space-x-2 hover:bg-gradient-to-r hover:from-blue-50 hover:to-cyan-50 transition-all duration-300 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-100 data-[state=active]:to-cyan-100 data-[state=active]:text-blue-700 data-[state=active]:shadow-sm rounded-xl px-4 py-2.5">
+            <TabsTrigger value="repurpose" className="flex items-center space-x-2 hover:bg-gradient-to-r hover:from-blue-50 hover:to-cyan-50 transition-all duration-300 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-100 data-[state=active]:to-cyan-100 data-[state=active]:text-blue-700 data-[state=active]:shadow-sm rounded-xl px-3 py-2">
+              <RefreshCw className="w-4 h-4" />
+              <span className="font-medium text-sm">Repurpose</span>
+            </TabsTrigger>
+            <TabsTrigger value="templates" className="flex items-center space-x-2 hover:bg-gradient-to-r hover:from-blue-50 hover:to-cyan-50 transition-all duration-300 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-100 data-[state=active]:to-cyan-100 data-[state=active]:text-blue-700 data-[state=active]:shadow-sm rounded-xl px-3 py-2">
+              <FileText className="w-4 h-4" />
+              <span className="font-medium text-sm">Templates</span>
+            </TabsTrigger>
+            <TabsTrigger value="analytics" className="flex items-center space-x-2 hover:bg-gradient-to-r hover:from-blue-50 hover:to-cyan-50 transition-all duration-300 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-100 data-[state=active]:to-cyan-100 data-[state=active]:text-blue-700 data-[state=active]:shadow-sm rounded-xl px-3 py-2">
               <BarChart3 className="w-4 h-4" />
-              <span className="font-medium">Analytics</span>
+              <span className="font-medium text-sm">Analytics</span>
             </TabsTrigger>
           </TabsList>
 
@@ -667,6 +676,88 @@ export default function PremiumContentHub({
                         placeholder="Describe your content vision in detail. Be specific about your goals, target audience, and desired impact. For example: 'Create a viral post that teaches entrepreneurs how to scale from $0 to $1M in 12 months, with specific actionable steps, case studies, and psychological triggers that will make people take immediate action.'"
                         className="min-h-[140px] border-slate-300 focus:border-blue-500 focus:ring-blue-500 rounded-xl text-slate-700 placeholder-slate-500 resize-none"
                       />
+                      
+                      {/* Advanced Content Customization */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label className="text-sm font-medium text-gray-700 mb-2 block">Content Style</Label>
+                          <Select>
+                            <SelectTrigger className="border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                              <SelectValue placeholder="Select style" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="storytelling">Storytelling</SelectItem>
+                              <SelectItem value="educational">Educational</SelectItem>
+                              <SelectItem value="inspirational">Inspirational</SelectItem>
+                              <SelectItem value="controversial">Controversial</SelectItem>
+                              <SelectItem value="humorous">Humorous</SelectItem>
+                              <SelectItem value="professional">Professional</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div>
+                          <Label className="text-sm font-medium text-gray-700 mb-2 block">Tone</Label>
+                          <Select>
+                            <SelectTrigger className="border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                              <SelectValue placeholder="Select tone" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="casual">Casual & Friendly</SelectItem>
+                              <SelectItem value="professional">Professional</SelectItem>
+                              <SelectItem value="motivational">Motivational</SelectItem>
+                              <SelectItem value="authoritative">Authoritative</SelectItem>
+                              <SelectItem value="conversational">Conversational</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                          <Label className="text-sm font-medium text-gray-700 mb-2 block">Content Length</Label>
+                          <Select>
+                            <SelectTrigger className="border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                              <SelectValue placeholder="Select length" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="short">Short (1-2 paragraphs)</SelectItem>
+                              <SelectItem value="medium">Medium (3-5 paragraphs)</SelectItem>
+                              <SelectItem value="long">Long (6+ paragraphs)</SelectItem>
+                              <SelectItem value="thread">Thread format</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div>
+                          <Label className="text-sm font-medium text-gray-700 mb-2 block">Call to Action</Label>
+                          <Select>
+                            <SelectTrigger className="border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                              <SelectValue placeholder="Select CTA" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="engagement">Ask for engagement</SelectItem>
+                              <SelectItem value="click">Drive clicks</SelectItem>
+                              <SelectItem value="share">Encourage sharing</SelectItem>
+                              <SelectItem value="save">Ask to save</SelectItem>
+                              <SelectItem value="follow">Gain followers</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div>
+                          <Label className="text-sm font-medium text-gray-700 mb-2 block">Viral Elements</Label>
+                          <Select>
+                            <SelectTrigger className="border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                              <SelectValue placeholder="Select elements" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="emotional">Emotional hooks</SelectItem>
+                              <SelectItem value="controversy">Controversy</SelectItem>
+                              <SelectItem value="curiosity">Curiosity gaps</SelectItem>
+                              <SelectItem value="social-proof">Social proof</SelectItem>
+                              <SelectItem value="urgency">Urgency</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -814,9 +905,9 @@ export default function PremiumContentHub({
                   {generatedContent.map((content) => (
                     <div key={content.id} className="bg-gradient-to-br from-gray-50 to-blue-50 p-6 rounded-xl border border-gray-200 hover:border-blue-300 transition-all duration-300">
                       <div className="flex items-center justify-between mb-4">
-                        <div>
-                          <h4 className="text-lg font-semibold text-gray-900">{content.title}</h4>
-                          <p className="text-sm text-gray-600">{content.platform} • {content.contentType}</p>
+                          <div>
+                            <h4 className="text-lg font-semibold text-gray-900">{content.title}</h4>
+                            <p className="text-sm text-gray-600">{content.platform} • {content.contentType}</p>
                         </div>
                         <div className="flex items-center space-x-3">
                           <Badge variant="outline" className="bg-blue-50 text-blue-700">
@@ -875,86 +966,158 @@ export default function PremiumContentHub({
             )}
           </TabsContent>
 
-          {/* My Ideas Tab */}
+          {/* Enhanced Ideas Tab */}
           <TabsContent value="ideas" className="space-y-6">
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
               <div className="p-6 border-b border-gray-100">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h2 className="text-2xl font-bold text-gray-900">My Content Ideas</h2>
-                    <p className="text-gray-600">Manage and organize your content ideas</p>
+                    <h2 className="text-2xl font-bold text-gray-900">Content Ideas & Brainstorming</h2>
+                    <p className="text-gray-600">AI-powered content ideation and viral trend analysis</p>
                   </div>
                   <div className="flex items-center space-x-4">
-                    <Input
-                      placeholder="Search ideas..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-64 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-                    />
-                    <Select value={filterStatus} onValueChange={setFilterStatus}>
-                      <SelectTrigger className="w-32 border-gray-300 focus:border-blue-500 focus:ring-blue-500">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All</SelectItem>
-                        <SelectItem value="draft">Draft</SelectItem>
-                        <SelectItem value="scheduled">Scheduled</SelectItem>
-                        <SelectItem value="published">Published</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <Badge className="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-3 py-1 text-sm font-semibold">
+                      <Brain className="w-4 h-4 mr-2" />
+                      AI Powered
+                    </Badge>
                   </div>
                 </div>
               </div>
 
               <div className="p-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {sortedContent.map((content: any) => (
-                    <div key={content.id} className="p-6 border border-gray-200 hover:border-blue-300 transition-all duration-300 hover:shadow-lg rounded-xl">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                  {/* AI Content Ideas Generator */}
+                  <div className="lg:col-span-2 space-y-6">
+                    <div className="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-xl p-6">
+                      <h3 className="text-xl font-semibold text-gray-900 mb-4">Generate New Ideas</h3>
                       <div className="space-y-4">
-                        <div className="flex items-center justify-between">
-                          <h4 className="font-semibold text-gray-900">{content.title}</h4>
-                          <Badge variant="outline" className="bg-blue-50 text-blue-700">
-                            {content.viral_score}% Viral
-                          </Badge>
+                        <div>
+                          <Label className="text-sm font-medium text-gray-700 mb-2 block">Topic or Niche</Label>
+                          <Input 
+                            placeholder="e.g., productivity tips, business growth, lifestyle hacks..."
+                            className="border-gray-300 focus:border-green-500 focus:ring-green-500"
+                          />
                         </div>
-                        <p className="text-sm text-gray-600">{content.description}</p>
-                        <div className="flex items-center space-x-4 text-sm text-gray-500">
-                          <span>{content.platform}</span>
-                          <span>{content.content_type}</span>
-                          <span>{content.estimated_views} views</span>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <Label className="text-sm font-medium text-gray-700 mb-2 block">Content Type</Label>
+                            <Select>
+                              <SelectTrigger className="border-gray-300 focus:border-green-500 focus:ring-green-500">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="educational">Educational</SelectItem>
+                                <SelectItem value="entertaining">Entertaining</SelectItem>
+                                <SelectItem value="inspirational">Inspirational</SelectItem>
+                                <SelectItem value="behind-scenes">Behind the Scenes</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div>
+                            <Label className="text-sm font-medium text-gray-700 mb-2 block">Platform Focus</Label>
+                            <Select>
+                              <SelectTrigger className="border-gray-300 focus:border-green-500 focus:ring-green-500">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="all">All Platforms</SelectItem>
+                                <SelectItem value="instagram">Instagram</SelectItem>
+                                <SelectItem value="tiktok">TikTok</SelectItem>
+                                <SelectItem value="youtube">YouTube</SelectItem>
+                                <SelectItem value="linkedin">LinkedIn</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
                         </div>
-                        <div className="flex items-center space-x-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleSaveContent(content)}
-                            className="border-gray-300 text-gray-700 hover:bg-gray-50"
-                          >
-                            <Save className="w-4 h-4 mr-1" />
-                            Save
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handlePublishContent(content)}
-                            className="border-green-300 text-green-700 hover:bg-green-50"
-                          >
-                            <Send className="w-4 h-4 mr-1" />
-                            Publish
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleDeleteContent(content.id)}
-                            className="border-red-300 text-red-700 hover:bg-red-50"
-                          >
-                            <Trash2 className="w-4 h-4 mr-1" />
-                            Delete
-                          </Button>
-                        </div>
+                        <Button className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white">
+                          <Brain className="w-4 h-4 mr-2" />
+                          Generate Viral Ideas
+                        </Button>
                       </div>
                     </div>
-                  ))}
+
+                    {/* Trending Topics */}
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold text-gray-900">Trending Topics</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {trendingTopics.slice(0, 4).map((topic: any) => (
+                          <div key={topic.id} className="p-4 border border-gray-200 hover:border-green-300 transition-all duration-300 rounded-lg">
+                            <div className="flex items-center justify-between mb-2">
+                              <h4 className="font-semibold text-gray-900 text-sm">{topic.topic}</h4>
+                              <Badge variant="outline" className="bg-green-50 text-green-700 text-xs">
+                                {topic.trend_score}% trending
+                              </Badge>
+                            </div>
+                            <p className="text-xs text-gray-600 mb-2">{topic.platform} • {topic.engagement_potential} engagement</p>
+                            <div className="flex flex-wrap gap-1">
+                              {topic.viral_keywords.slice(0, 3).map((keyword: string, index: number) => (
+                                <Badge key={index} variant="outline" className="text-xs bg-gray-50 border-gray-300">
+                                  #{keyword}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* My Ideas Management */}
+                  <div className="space-y-6">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-lg font-semibold text-gray-900">My Ideas</h3>
+                      <div className="flex items-center space-x-2">
+                        <Input
+                          placeholder="Search ideas..."
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          className="w-32 border-gray-300 focus:border-green-500 focus:ring-green-500 text-xs"
+                        />
+                        <Select value={filterStatus} onValueChange={setFilterStatus}>
+                          <SelectTrigger className="w-24 border-gray-300 focus:border-green-500 focus:ring-green-500 text-xs">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="all">All</SelectItem>
+                            <SelectItem value="draft">Draft</SelectItem>
+                            <SelectItem value="scheduled">Scheduled</SelectItem>
+                            <SelectItem value="published">Published</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+
+                    <div className="space-y-3 max-h-96 overflow-y-auto">
+                      {sortedContent.slice(0, 8).map((content: any) => (
+                        <div key={content.id} className="p-3 border border-gray-200 hover:border-green-300 transition-all duration-300 rounded-lg">
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                              <h4 className="font-semibold text-gray-900 text-sm">{content.title}</h4>
+                              <Badge variant="outline" className="bg-green-50 text-green-700 text-xs">
+                                {content.viral_score}% Viral
+                              </Badge>
+                            </div>
+                            <p className="text-xs text-gray-600">{content.description}</p>
+                            <div className="flex items-center space-x-3 text-xs text-gray-500">
+                              <span>{content.platform}</span>
+                              <span>{content.content_type}</span>
+                              <span>{content.estimated_views} views</span>
+                            </div>
+                            <div className="flex items-center space-x-1">
+                              <Button variant="outline" size="sm" className="border-gray-300 text-gray-700 hover:bg-gray-50 text-xs px-2 py-1">
+                                <Save className="w-3 h-3 mr-1" />
+                                Save
+                              </Button>
+                              <Button variant="outline" size="sm" className="border-green-300 text-green-700 hover:bg-green-50 text-xs px-2 py-1">
+                                <Send className="w-3 h-3 mr-1" />
+                                Use
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -962,30 +1125,35 @@ export default function PremiumContentHub({
 
 
 
-          {/* Scheduler Tab */}
+          {/* Enhanced Scheduler Tab */}
           <TabsContent value="scheduler" className="space-y-6">
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
               <div className="p-6 border-b border-gray-100">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h2 className="text-2xl font-bold text-gray-900">Content Scheduler</h2>
-                    <p className="text-gray-600">Schedule and manage your content calendar</p>
+                    <h2 className="text-2xl font-bold text-gray-900">Advanced Content Scheduler</h2>
+                    <p className="text-gray-600">AI-powered scheduling with optimal timing and cross-platform management</p>
                   </div>
                   <div className="flex items-center space-x-6">
                     <div className="text-center">
                       <p className="text-2xl font-bold text-gray-900">{scheduledContent.length}</p>
-                      <p className="text-sm text-gray-600">Scheduled Posts</p>
+                      <p className="text-sm text-gray-600">Scheduled</p>
                     </div>
                     <div className="text-center">
                       <p className="text-2xl font-bold text-green-600">{scheduledContent.filter((item: any) => item.status === 'published').length}</p>
                       <p className="text-sm text-gray-600">Published</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-2xl font-bold text-blue-600">{scheduledContent.filter((item: any) => item.viral_score > 80).length}</p>
+                      <p className="text-sm text-gray-600">Viral Ready</p>
                     </div>
                   </div>
                 </div>
               </div>
 
               <div className="p-6">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                  {/* Quick Schedule */}
                   <div className="space-y-6">
                     <h3 className="text-xl font-semibold text-gray-900">Quick Schedule</h3>
                     <div className="space-y-4">
@@ -1014,41 +1182,288 @@ export default function PremiumContentHub({
                           </Select>
                         </div>
                         <div>
-                          <Label className="text-sm font-medium text-gray-700 mb-2 block">Date & Time</Label>
-                          <Input type="datetime-local" className="border-gray-300 focus:border-blue-500 focus:ring-blue-500" />
+                          <Label className="text-sm font-medium text-gray-700 mb-2 block">Content Type</Label>
+                          <Select>
+                            <SelectTrigger className="border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="post">Post</SelectItem>
+                              <SelectItem value="story">Story</SelectItem>
+                              <SelectItem value="reel">Reel</SelectItem>
+                              <SelectItem value="video">Video</SelectItem>
+                            </SelectContent>
+                          </Select>
                         </div>
                       </div>
-                      <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <Label className="text-sm font-medium text-gray-700 mb-2 block">Date</Label>
+                          <Input type="date" className="border-gray-300 focus:border-blue-500 focus:ring-blue-500" />
+                        </div>
+                        <div>
+                          <Label className="text-sm font-medium text-gray-700 mb-2 block">Time</Label>
+                          <Input type="time" className="border-gray-300 focus:border-blue-500 focus:ring-blue-500" />
+                        </div>
+                      </div>
+                      <Button className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white">
                         <Calendar className="w-4 h-4 mr-2" />
                         Schedule Content
                       </Button>
                     </div>
                   </div>
 
+                  {/* AI Timing Optimization */}
+                  <div className="space-y-6">
+                    <h3 className="text-xl font-semibold text-gray-900">AI Timing Optimization</h3>
+                    <div className="bg-gradient-to-br from-blue-50 to-cyan-50 border border-blue-200 rounded-xl p-4">
+                      <div className="space-y-4">
+                        <div className="flex items-center space-x-2">
+                          <Clock className="w-5 h-5 text-blue-600" />
+                          <h4 className="font-semibold text-gray-900">Optimal Posting Times</h4>
+                        </div>
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="text-gray-700">Instagram</span>
+                            <span className="font-medium text-blue-600">18:00 - 21:00</span>
+                          </div>
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="text-gray-700">TikTok</span>
+                            <span className="font-medium text-blue-600">19:00 - 22:00</span>
+                          </div>
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="text-gray-700">LinkedIn</span>
+                            <span className="font-medium text-blue-600">08:00 - 10:00</span>
+                          </div>
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="text-gray-700">X/Twitter</span>
+                            <span className="font-medium text-blue-600">12:00 - 15:00</span>
+                          </div>
+                        </div>
+                        <Button variant="outline" className="w-full border-blue-300 text-blue-700 hover:bg-blue-50">
+                          <Target className="w-4 h-4 mr-2" />
+                          Auto-Optimize Timing
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Schedule Overview */}
                   <div className="space-y-6">
                     <h3 className="text-xl font-semibold text-gray-900">Upcoming Schedule</h3>
-                    <div className="space-y-4 max-h-96 overflow-y-auto">
-                      {scheduledContent.slice(0, 5).map((item: any) => (
-                        <div key={item.id} className="p-4 border border-gray-200 hover:border-blue-300 transition-all duration-300 rounded-lg">
-                          <div className="flex items-center justify-between">
-                            <div className="space-y-2">
-                              <h4 className="font-semibold text-gray-900">{item.title}</h4>
-                              <p className="text-sm text-gray-600">{item.platform} • {item.content_type}</p>
-                              <p className="text-xs text-gray-500">
-                                {new Date(item.scheduled_for).toLocaleDateString()} at {new Date(item.scheduled_for).toLocaleTimeString()}
-                              </p>
-                            </div>
-                            <div className="text-right">
-                              <Badge variant="outline" className="bg-blue-50 text-blue-700">
+                    <div className="space-y-3 max-h-96 overflow-y-auto">
+                      {scheduledContent.slice(0, 6).map((item: any) => (
+                        <div key={item.id} className="p-3 border border-gray-200 hover:border-blue-300 transition-all duration-300 rounded-lg">
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                              <h4 className="font-semibold text-gray-900 text-sm">{item.title}</h4>
+                              <Badge variant="outline" className="bg-blue-50 text-blue-700 text-xs">
                                 {item.viral_score}% Viral
                               </Badge>
-                              <p className="text-xs text-gray-500 mt-1">{item.estimated_views} views</p>
+                            </div>
+                            <p className="text-xs text-gray-600">{item.platform} • {item.content_type}</p>
+                            <p className="text-xs text-gray-500">
+                              {new Date(item.scheduled_for).toLocaleDateString()} at {new Date(item.scheduled_for).toLocaleTimeString()}
+                            </p>
+                            <div className="flex items-center justify-between text-xs text-gray-500">
+                              <span>{item.estimated_views} views</span>
+                              <span>{item.engagement_prediction}% engagement</span>
                             </div>
                           </div>
                         </div>
                       ))}
                     </div>
                   </div>
+                </div>
+
+                {/* Content Calendar View */}
+                <div className="mt-8">
+                  <h3 className="text-xl font-semibold text-gray-900 mb-4">Content Calendar</h3>
+                  <div className="bg-gradient-to-br from-slate-50 to-gray-50 border border-gray-200 rounded-xl p-6">
+                    <div className="grid grid-cols-7 gap-2">
+                      {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
+                        <div key={day} className="text-center text-sm font-medium text-gray-600 py-2">
+                          {day}
+                        </div>
+                      ))}
+                      {Array.from({ length: 35 }, (_, i) => {
+                        const date = new Date();
+                        date.setDate(date.getDate() + i - 15);
+                        const hasContent = scheduledContent.some((item: any) => 
+                          new Date(item.scheduled_for).toDateString() === date.toDateString()
+                        );
+                        return (
+                          <div key={i} className={`p-2 border border-gray-200 rounded-lg text-center text-sm ${
+                            hasContent ? 'bg-blue-50 border-blue-300' : 'bg-white'
+                          }`}>
+                            <div className="text-gray-900">{date.getDate()}</div>
+                            {hasContent && (
+                              <div className="w-2 h-2 bg-blue-600 rounded-full mx-auto mt-1"></div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </TabsContent>
+
+          {/* Repurpose Tab */}
+          <TabsContent value="repurpose" className="space-y-6">
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
+              <div className="p-6 border-b border-gray-100">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-2xl font-bold text-gray-900">Content Repurposing</h2>
+                    <p className="text-gray-600">Transform your best content across all platforms</p>
+                  </div>
+                  <div className="flex items-center space-x-4">
+                    <Badge className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-3 py-1 text-sm font-semibold">
+                      <RefreshCw className="w-4 h-4 mr-2" />
+                      AI Powered
+                    </Badge>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  {/* Original Content Selection */}
+                  <div className="space-y-6">
+                    <h3 className="text-xl font-semibold text-gray-900">Select Content to Repurpose</h3>
+                    <div className="space-y-4 max-h-96 overflow-y-auto">
+                      {contentIdeas.slice(0, 5).map((content: any) => (
+                        <div key={content.id} className="p-4 border border-gray-200 hover:border-purple-300 transition-all duration-300 rounded-lg cursor-pointer">
+                          <div className="flex items-center justify-between">
+                            <div className="space-y-2">
+                              <h4 className="font-semibold text-gray-900">{content.title}</h4>
+                              <p className="text-sm text-gray-600">{content.platform} • {content.content_type}</p>
+                              <div className="flex items-center space-x-4 text-xs text-gray-500">
+                                <span>{content.viral_score}% viral</span>
+                                <span>{content.estimated_views} views</span>
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <Badge variant="outline" className="bg-purple-50 text-purple-700">
+                                {content.engagement_prediction}% engagement
+                              </Badge>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Repurposing Options */}
+                  <div className="space-y-6">
+                    <h3 className="text-xl font-semibold text-gray-900">Repurposing Options</h3>
+                    <div className="space-y-4">
+                      <div>
+                        <Label className="text-sm font-medium text-gray-700 mb-2 block">Target Platforms</Label>
+                        <div className="grid grid-cols-2 gap-3">
+                          {['Instagram', 'TikTok', 'YouTube', 'X', 'LinkedIn', 'Facebook'].map((platform) => (
+                            <div key={platform} className="flex items-center space-x-2 p-3 border border-gray-200 rounded-lg hover:border-purple-300 transition-all duration-300 cursor-pointer">
+                              <input type="checkbox" className="rounded border-gray-300 text-purple-600 focus:ring-purple-500" />
+                              <span className="text-sm font-medium text-gray-900">{platform}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <Label className="text-sm font-medium text-gray-700 mb-2 block">Content Adaptations</Label>
+                        <div className="space-y-2">
+                          {['Tone adjustment', 'Length optimization', 'Hashtag optimization', 'Visual adaptation', 'Platform-specific formatting'].map((adaptation) => (
+                            <div key={adaptation} className="flex items-center space-x-2">
+                              <input type="checkbox" className="rounded border-gray-300 text-purple-600 focus:ring-purple-500" />
+                              <span className="text-sm text-gray-700">{adaptation}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <Button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white">
+                        <RefreshCw className="w-4 h-4 mr-2" />
+                        Repurpose Content
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Repurposed Content Preview */}
+                <div className="mt-8">
+                  <h3 className="text-xl font-semibold text-gray-900 mb-4">Repurposed Content</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {repurposedContent.slice(0, 6).map((content: any) => (
+                      <div key={content.id} className="p-4 border border-gray-200 hover:border-purple-300 transition-all duration-300 rounded-lg">
+                        <div className="flex items-center justify-between mb-2">
+                          <h4 className="font-semibold text-gray-900 text-sm">{content.title}</h4>
+                          <Badge variant="outline" className="bg-purple-50 text-purple-700 text-xs">
+                            {content.viral_score}% viral
+                          </Badge>
+                        </div>
+                        <p className="text-xs text-gray-600 mb-2">{content.platform} • {content.content_type}</p>
+                        <div className="flex items-center justify-between text-xs text-gray-500">
+                          <span>{content.estimated_views} views</span>
+                          <span>{content.engagement_prediction}% engagement</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </TabsContent>
+
+          {/* Templates Tab */}
+          <TabsContent value="templates" className="space-y-6">
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
+              <div className="p-6 border-b border-gray-100">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-2xl font-bold text-gray-900">Content Templates</h2>
+                    <p className="text-gray-600">Use proven templates for consistent viral content</p>
+                  </div>
+                  <div className="flex items-center space-x-4">
+                    <Badge className="bg-gradient-to-r from-orange-600 to-red-600 text-white px-3 py-1 text-sm font-semibold">
+                      <Star className="w-4 h-4 mr-2" />
+                      Proven Success
+                    </Badge>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {contentTemplates.slice(0, 6).map((template: any) => (
+                    <div key={template.id} className="p-6 border border-gray-200 hover:border-orange-300 transition-all duration-300 rounded-xl">
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <h4 className="font-semibold text-gray-900">{template.name}</h4>
+                          <Badge variant="outline" className="bg-orange-50 text-orange-700">
+                            {template.success_rate}% success
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-gray-600">{template.description}</p>
+                        <div className="flex items-center space-x-4 text-xs text-gray-500">
+                          <span>{template.avg_viral_score}% viral</span>
+                          <span>{template.usage_count} uses</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Button variant="outline" size="sm" className="border-orange-300 text-orange-700 hover:bg-orange-50">
+                            <Eye className="w-4 h-4 mr-1" />
+                            Preview
+                          </Button>
+                          <Button size="sm" className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white">
+                            <FileText className="w-4 h-4 mr-1" />
+                            Use Template
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
@@ -1206,6 +1621,59 @@ export default function PremiumContentHub({
                         <div className="flex items-center justify-between text-xs text-gray-500">
                           <span>{content.estimated_views} views</span>
                           <span>{content.engagement_prediction}% engagement</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Viral Predictions */}
+                <div className="p-6 border border-gray-200 rounded-lg bg-gradient-to-br from-yellow-50 to-orange-50">
+                  <h3 className="text-xl font-semibold text-gray-900 mb-4">Viral Predictions</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {viralPredictions.slice(0, 6).map((prediction: any, index: number) => (
+                      <div key={prediction.id} className="p-4 bg-white rounded-lg border border-gray-200 hover:border-yellow-300 transition-all duration-300">
+                        <div className="flex items-center justify-between mb-2">
+                          <h4 className="font-semibold text-gray-900 text-sm">Content {index + 1}</h4>
+                          <Badge variant="outline" className="bg-yellow-50 text-yellow-700 text-xs">
+                            {prediction.viral_score}% viral
+                          </Badge>
+                        </div>
+                        <div className="space-y-2 text-xs text-gray-600">
+                          <div className="flex justify-between">
+                            <span>Predicted Views:</span>
+                            <span className="font-medium">{prediction.predicted_views?.toLocaleString()}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Engagement:</span>
+                            <span className="font-medium">{prediction.predicted_engagement}%</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Confidence:</span>
+                            <span className="font-medium">{prediction.confidence_level}%</span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* AI Recommendations */}
+                <div className="p-6 border border-gray-200 rounded-lg bg-gradient-to-br from-emerald-50 to-green-50">
+                  <h3 className="text-xl font-semibold text-gray-900 mb-4">AI Content Recommendations</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {aiRecommendations.slice(0, 6).map((recommendation: any, index: number) => (
+                      <div key={recommendation.id} className="p-4 bg-white rounded-lg border border-gray-200 hover:border-emerald-300 transition-all duration-300">
+                        <div className="flex items-center justify-between mb-2">
+                          <h4 className="font-semibold text-gray-900 text-sm">{recommendation.title}</h4>
+                          <Badge variant="outline" className="bg-emerald-50 text-emerald-700 text-xs">
+                            {recommendation.ai_confidence}% AI
+                          </Badge>
+                        </div>
+                        <p className="text-xs text-gray-600 mb-2">{recommendation.description}</p>
+                        <div className="flex items-center justify-between text-xs text-gray-500">
+                          <span>{recommendation.platform}</span>
+                          <span>{recommendation.estimated_views?.toLocaleString()} views</span>
                         </div>
                       </div>
                     ))}
