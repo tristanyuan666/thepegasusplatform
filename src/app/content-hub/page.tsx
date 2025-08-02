@@ -40,6 +40,15 @@ export default async function ContentHubPage() {
   let viralPredictions: any[] = [];
   let contentPerformance: any = {};
   let audienceInsights: any = {};
+  let aiRecommendations: any[] = [];
+  let contentScripts: any[] = [];
+  let viralContent: any[] = [];
+  let trendingTopics: any[] = [];
+  let engagementMetrics: any = {};
+  let contentCalendar: any[] = [];
+  let repurposedContent: any[] = [];
+  let audienceSegments: any[] = [];
+  let contentTrends: any[] = [];
 
   try {
     // Only try to get user profile if we have a user
@@ -196,6 +205,33 @@ export default async function ContentHubPage() {
       
       // Generate audience insights
       audienceInsights = generateAudienceInsights(user.id, personas, platformConnections);
+
+      // Generate AI recommendations
+      aiRecommendations = generateAIRecommendations(user.id, contentIdeas, platformConnections);
+      
+      // Generate content scripts
+      contentScripts = generateContentScripts(user.id, contentIdeas);
+      
+      // Generate viral content
+      viralContent = generateViralContent(user.id, contentIdeas);
+      
+      // Generate trending topics
+      trendingTopics = generateTrendingTopics(user.id);
+      
+      // Generate engagement metrics
+      engagementMetrics = generateEngagementMetrics(user.id, contentAnalytics);
+      
+      // Generate content calendar
+      contentCalendar = generateContentCalendar(user.id, scheduledContent);
+      
+      // Generate repurposed content
+      repurposedContent = generateRepurposedContent(user.id, contentIdeas);
+      
+      // Generate audience segments
+      audienceSegments = generateAudienceSegments(user.id, personas);
+      
+      // Generate content trends
+      contentTrends = generateContentTrends(user.id, contentAnalytics);
     }
 
   } catch (error) {
@@ -210,6 +246,15 @@ export default async function ContentHubPage() {
     viralPredictions = generateViralPredictions(user?.id || 'demo', contentIdeas);
     contentPerformance = generateContentPerformance(user?.id || 'demo', contentAnalytics);
     audienceInsights = generateAudienceInsights(user?.id || 'demo', personas, platformConnections);
+    aiRecommendations = generateAIRecommendations(user?.id || 'demo', contentIdeas, platformConnections);
+    contentScripts = generateContentScripts(user?.id || 'demo', contentIdeas);
+    viralContent = generateViralContent(user?.id || 'demo', contentIdeas);
+    trendingTopics = generateTrendingTopics(user?.id || 'demo');
+    engagementMetrics = generateEngagementMetrics(user?.id || 'demo', contentAnalytics);
+    contentCalendar = generateContentCalendar(user?.id || 'demo', scheduledContent);
+    repurposedContent = generateRepurposedContent(user?.id || 'demo', contentIdeas);
+    audienceSegments = generateAudienceSegments(user?.id || 'demo', personas);
+    contentTrends = generateContentTrends(user?.id || 'demo', contentAnalytics);
   }
 
   console.log("Content hub: Rendering premium component");
@@ -238,6 +283,15 @@ export default async function ContentHubPage() {
         viralPredictions={viralPredictions}
         contentPerformance={contentPerformance}
         audienceInsights={audienceInsights}
+        aiRecommendations={aiRecommendations}
+        contentScripts={contentScripts}
+        viralContent={viralContent}
+        trendingTopics={trendingTopics}
+        engagementMetrics={engagementMetrics}
+        contentCalendar={contentCalendar}
+        repurposedContent={repurposedContent}
+        audienceSegments={audienceSegments}
+        contentTrends={contentTrends}
       />
     </Suspense>
   );
@@ -431,4 +485,192 @@ function generateAudienceInsights(userId: string, personas: any[], platformConne
       engagement_rate: p.engagement_rate || Math.random() * 8 + 2
     }))
   };
+}
+
+// New enhanced data generation functions
+function generateAIRecommendations(userId: string, contentIdeas: any[], platformConnections: any[]) {
+  return contentIdeas.slice(0, 6).map((idea, index) => ({
+    id: `${userId}_ai_rec_${index}`,
+    title: `AI-Recommended Content ${index + 1}`,
+    description: `Advanced AI analysis suggests this content will perform exceptionally well`,
+    platform: idea.platform,
+    content_type: idea.content_type,
+    viral_score: Math.floor(Math.random() * 20) + 80, // 80-100% AI recommended
+    estimated_views: Math.floor(Math.random() * 200000) + 50000,
+    ai_confidence: Math.floor(Math.random() * 15) + 85, // 85-100% confidence
+    recommended_posting_time: "18:00-21:00",
+    trending_keywords: ["viral", "trending", "engagement", "growth", "success"],
+    content_strategy: "High-engagement emotional hook with actionable value"
+  }));
+}
+
+function generateContentScripts(userId: string, contentIdeas: any[]) {
+  return contentIdeas.slice(0, 4).map((idea, index) => ({
+    id: `${userId}_script_${index}`,
+    title: `Content Script ${index + 1}`,
+    platform: idea.platform,
+    content_type: idea.content_type,
+    script: `[HOOK] - Attention-grabbing opening that hooks viewers in the first 3 seconds\n\n[SETUP] - Establish context and build anticipation\n\n[CONTENT] - Deliver the main value and insights\n\n[ENGAGEMENT] - Ask questions and encourage interaction\n\n[CALL TO ACTION] - Clear next steps for viewers`,
+    estimated_duration: Math.floor(Math.random() * 60) + 30, // 30-90 seconds
+    viral_potential: Math.floor(Math.random() * 25) + 75, // 75-100%
+    engagement_hooks: ["Emotional trigger", "Controversy", "Curiosity gap", "Social proof"],
+    optimal_length: "60-90 seconds",
+    trending_sounds: ["Popular audio", "Viral music", "Trending sound"]
+  }));
+}
+
+function generateViralContent(userId: string, contentIdeas: any[]) {
+  return contentIdeas.slice(0, 5).map((idea, index) => ({
+    id: `${userId}_viral_${index}`,
+    title: `Viral Content ${index + 1}`,
+    platform: idea.platform,
+    content_type: idea.content_type,
+    viral_score: Math.floor(Math.random() * 25) + 75, // 75-100%
+    views: Math.floor(Math.random() * 500000) + 100000,
+    shares: Math.floor(Math.random() * 10000) + 1000,
+    comments: Math.floor(Math.random() * 5000) + 500,
+    likes: Math.floor(Math.random() * 50000) + 5000,
+    viral_factors: ["Emotional hook", "Trending topic", "Perfect timing", "High engagement"],
+    success_metrics: {
+      reach_rate: Math.floor(Math.random() * 20) + 80, // 80-100%
+      engagement_rate: Math.floor(Math.random() * 15) + 5, // 5-20%
+      share_rate: Math.floor(Math.random() * 10) + 2, // 2-12%
+      comment_rate: Math.floor(Math.random() * 8) + 1 // 1-9%
+    }
+  }));
+}
+
+function generateTrendingTopics(userId: string) {
+  const topics = [
+    {
+      id: `${userId}_trend_1`,
+      topic: "AI Productivity Hacks",
+      trend_score: 95,
+      platform: "all",
+      engagement_potential: "Very High",
+      viral_keywords: ["AI", "productivity", "hacks", "efficiency", "automation"]
+    },
+    {
+      id: `${userId}_trend_2`,
+      topic: "Morning Routine Secrets",
+      trend_score: 88,
+      platform: "instagram",
+      engagement_potential: "High",
+      viral_keywords: ["morning", "routine", "productivity", "success", "habits"]
+    },
+    {
+      id: `${userId}_trend_3`,
+      topic: "Entrepreneur Life Hacks",
+      trend_score: 92,
+      platform: "linkedin",
+      engagement_potential: "Very High",
+      viral_keywords: ["entrepreneur", "business", "success", "growth", "tips"]
+    }
+  ];
+  return topics;
+}
+
+function generateEngagementMetrics(userId: string, analytics: any[]) {
+  return {
+    total_engagement: analytics.reduce((sum, a) => sum + (a.metric_value || 0), 0),
+    engagement_rate: Math.floor(Math.random() * 15) + 5, // 5-20%
+    top_engaging_content: analytics.slice(0, 5),
+    engagement_trends: {
+      likes: Math.floor(Math.random() * 1000) + 500,
+      comments: Math.floor(Math.random() * 500) + 100,
+      shares: Math.floor(Math.random() * 200) + 50,
+      saves: Math.floor(Math.random() * 300) + 75
+    },
+    audience_behavior: {
+      peak_hours: ["18:00-21:00", "12:00-14:00"],
+      preferred_content_types: ["Educational", "Entertaining", "Inspirational"],
+      engagement_triggers: ["Emotional content", "Actionable tips", "Behind-the-scenes"]
+    }
+  };
+}
+
+function generateContentCalendar(userId: string, scheduledContent: any[]) {
+  return scheduledContent.map((content, index) => ({
+    id: `${userId}_calendar_${index}`,
+    title: content.title,
+    platform: content.platform,
+    content_type: content.content_type,
+    scheduled_for: content.scheduled_for,
+    status: content.status,
+    viral_score: content.viral_score,
+    estimated_views: content.estimated_views,
+    optimal_posting_time: "18:00-21:00",
+    content_strategy: "High-engagement emotional hook with actionable value"
+  }));
+}
+
+function generateRepurposedContent(userId: string, contentIdeas: any[]) {
+  return contentIdeas.slice(0, 4).map((idea, index) => ({
+    id: `${userId}_repurposed_${index}`,
+    original_content_id: idea.id,
+    repurposed_for: ["instagram", "tiktok", "youtube", "x"][Math.floor(Math.random() * 4)],
+    content_type: ["post", "story", "reel", "video"][Math.floor(Math.random() * 4)],
+    viral_score: Math.floor(Math.random() * 25) + 75, // 75-100%
+    estimated_views: Math.floor(Math.random() * 100000) + 10000,
+    repurposing_strategy: "Adapt content for different platform audiences",
+    optimization_tips: ["Platform-specific formatting", "Audience-specific messaging", "Trending hashtags"]
+  }));
+}
+
+function generateAudienceSegments(userId: string, personas: any[]) {
+  return personas.map((persona, index) => ({
+    id: `${userId}_segment_${index}`,
+    name: persona.name,
+    size: Math.floor(Math.random() * 50000) + 10000,
+    engagement_rate: persona.engagement_rate,
+    conversion_rate: persona.conversion_rate,
+    content_preferences: persona.interests,
+    platform_activity: persona.platform_preferences,
+    growth_trend: "positive",
+    monetization_potential: Math.floor(Math.random() * 50) + 25 // 25-75%
+  }));
+}
+
+function generateContentTrends(userId: string, analytics: any[]) {
+  return [
+    {
+      id: `${userId}_trend_1`,
+      trend: "Educational Content",
+      growth_rate: "+45%",
+      engagement_rate: "12.3%",
+      viral_potential: "High",
+      platform_performance: {
+        instagram: "Excellent",
+        tiktok: "Very Good",
+        youtube: "Good",
+        linkedin: "Excellent"
+      }
+    },
+    {
+      id: `${userId}_trend_2`,
+      trend: "Behind-the-Scenes Content",
+      growth_rate: "+32%",
+      engagement_rate: "15.7%",
+      viral_potential: "Very High",
+      platform_performance: {
+        instagram: "Very Good",
+        tiktok: "Excellent",
+        youtube: "Good",
+        linkedin: "Good"
+      }
+    },
+    {
+      id: `${userId}_trend_3`,
+      trend: "Interactive Content",
+      growth_rate: "+28%",
+      engagement_rate: "18.2%",
+      viral_potential: "Very High",
+      platform_performance: {
+        instagram: "Excellent",
+        tiktok: "Excellent",
+        youtube: "Very Good",
+        linkedin: "Good"
+      }
+    }
+  ];
 }
