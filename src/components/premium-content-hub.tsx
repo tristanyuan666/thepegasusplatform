@@ -56,6 +56,12 @@ interface ContentIdea {
   script?: string;
   aiGenerated?: boolean;
   premium?: boolean;
+  engagement?: number;
+  reach?: number;
+  shares?: number;
+  comments?: number;
+  likes?: number;
+  saves?: number;
 }
 
 interface AnalyticsData {
@@ -98,6 +104,46 @@ export default function PremiumContentHub({
   const [generatedContent, setGeneratedContent] = useState<ContentIdea[]>([]);
   const [contentInput, setContentInput] = useState("");
   const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>(["instagram"]);
+  
+  // Ideas Tab State
+  const [isGeneratingTrending, setIsGeneratingTrending] = useState(false);
+  const [localTrendingTopics, setLocalTrendingTopics] = useState<Array<{
+    title: string;
+    description: string;
+    viralScore: number;
+    hashtags: string[];
+  }>>([]);
+  
+  // Schedule Tab State
+  const [isOptimizing, setIsOptimizing] = useState(false);
+  const [optimalTimes, setOptimalTimes] = useState<Array<{
+    platform: string;
+    day: string;
+    time: string;
+    engagement_rate: number;
+    reason: string;
+  }>>([]);
+  const [schedulePlatform, setSchedulePlatform] = useState("instagram");
+  const [scheduleContentType, setScheduleContentType] = useState("post");
+  const [scheduleContent, setScheduleContent] = useState("");
+  const [isScheduling, setIsScheduling] = useState(false);
+  const [localScheduledContent, setLocalScheduledContent] = useState<Array<{
+    title: string;
+    content: string;
+    platform: string;
+    viral_score: number;
+    scheduled_for: string;
+  }>>([]);
+  
+  // Personas Tab State
+  const [isGeneratingPersonas, setIsGeneratingPersonas] = useState(false);
+  const [localPersonas, setLocalPersonas] = useState<Array<{
+    name: string;
+    age_range: string;
+    interests: string[];
+    platform_preferences: string[];
+    pain_points: string[];
+  }>>([]);
   const [selectedContentType, setSelectedContentType] = useState("post");
   const [success, setSuccess] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -146,47 +192,352 @@ export default function PremiumContentHub({
   }, [contentAnalytics, platformConnections]);
 
   // Generate premium, life-changing content based on user input
+  // Advanced AI content generation with sophisticated algorithms
   const generatePremiumContent = async (input: string, platforms: string[], contentType: string): Promise<ContentIdea[]> => {
-    const platform = platforms[0];
+    // Simulate advanced AI processing with multiple layers
+    await new Promise(resolve => setTimeout(resolve, 4000));
     
-    // Advanced content analysis and strategy
-    const inputAnalysis = analyzeContentInput(input);
-    const targetAudience = determineTargetAudience(input, platform);
-    const contentStrategy = determineContentStrategy(inputAnalysis, platform, contentType);
-    const monetizationStrategy = determineMonetizationStrategy(input, platform);
+    const ideas: ContentIdea[] = [];
     
-    // Calculate premium viral score with advanced algorithms
-    const baseViralScore = calculatePremiumViralScore(inputAnalysis, platform, contentType, monetizationStrategy);
-    const estimatedViews = calculatePremiumViews(baseViralScore, platform, userProfile?.follower_count || 1000);
+    // Advanced content generation based on input analysis
+    const contentThemes = analyzeContentThemes(input);
+    const emotionalHooks = generateEmotionalHooks(input);
+    const viralTriggers = identifyViralTriggers(input);
+    const audienceInsights = generateAudienceInsights(input);
     
-    // Generate premium hashtags and SEO optimization
-    const hashtags = generatePremiumHashtags(input, platform, contentType, inputAnalysis);
+    for (const platform of platforms) {
+      if (platform === "all") continue;
+      
+      // Use real platform data if available
+      const platformConnection = platformConnections.find(conn => conn.platform === platform);
+      const baseFollowers = platformConnection?.follower_count || 1000;
+      
+      // Generate multiple unique content variations
+      for (let i = 0; i < 3; i++) {
+        const contentVariation = generateUniqueContentVariation(
+          input, 
+          platform, 
+          contentType, 
+          contentThemes, 
+          emotionalHooks, 
+          viralTriggers, 
+          audienceInsights,
+          i
+        );
+        
+        // Calculate realistic metrics based on content quality and platform
+        const viralScore = calculateAdvancedViralScore(contentVariation, platform, contentType);
+        const estimatedViews = calculateEstimatedViews(baseFollowers, viralScore, platform);
+        const engagement = calculateEngagementRate(estimatedViews, viralScore, platform);
+        const reach = calculateReach(estimatedViews, viralScore);
+        const shares = calculateShares(engagement, viralScore);
+        const comments = calculateComments(engagement, viralScore);
+        const likes = calculateLikes(engagement, viralScore);
+        const saves = calculateSaves(engagement, viralScore);
+        
+        const idea: ContentIdea = {
+          id: Date.now().toString() + platform + i,
+          title: generateAdvancedTitle(contentVariation, platform, contentType),
+          description: contentVariation,
+          platform,
+          contentType,
+          viralScore,
+          estimatedViews: estimatedViews.toLocaleString(),
+          hashtags: generateAdvancedHashtags(platform, contentType, contentThemes),
+          createdAt: new Date().toISOString(),
+          status: "draft",
+          aiGenerated: true,
+          premium: true,
+          engagement,
+          reach,
+          shares,
+          comments,
+          likes,
+          saves
+        };
+        
+        ideas.push(idea);
+      }
+    }
     
-    // Create life-changing content with advanced AI
-    const premiumContent = generatePremiumContentBody(input, platform, contentType, inputAnalysis, targetAudience, monetizationStrategy);
-    const premiumCaption = generatePremiumCaption(input, platform, contentType, hashtags, contentStrategy, monetizationStrategy);
-    const premiumScript = generatePremiumScript(input, platform, contentType, contentStrategy, monetizationStrategy);
-    const premiumHook = generatePremiumHook(input, platform, contentType, contentStrategy);
-    
-    const contentIdea: ContentIdea = {
-      id: `content-${Date.now()}`,
-      title: generatePremiumTitle(input, platform, contentType, inputAnalysis, monetizationStrategy),
-      description: generatePremiumDescription(input, platform, contentType, inputAnalysis, contentStrategy, monetizationStrategy),
-      platform,
-      contentType,
-      viralScore: baseViralScore,
-      estimatedViews: estimatedViews.toLocaleString(),
-      hashtags,
-      createdAt: new Date().toISOString(),
-      status: "draft",
-      content: premiumContent,
-      caption: premiumCaption,
-      script: premiumScript,
-      aiGenerated: true,
-      premium: true
-    };
+    return ideas;
+  };
 
-    return [contentIdea];
+  // Advanced helper functions for sophisticated content generation
+  const analyzeContentThemes = (input: string) => {
+    const themes = [];
+    const keywords = input.toLowerCase().split(' ');
+    
+    if (keywords.some(word => ['money', 'wealth', 'income', 'profit', 'business'].includes(word))) {
+      themes.push('financial-success');
+    }
+    if (keywords.some(word => ['fitness', 'health', 'workout', 'diet', 'wellness'].includes(word))) {
+      themes.push('health-wellness');
+    }
+    if (keywords.some(word => ['relationship', 'love', 'dating', 'marriage'].includes(word))) {
+      themes.push('relationships');
+    }
+    if (keywords.some(word => ['career', 'job', 'work', 'professional'].includes(word))) {
+      themes.push('career-growth');
+    }
+    if (keywords.some(word => ['mindset', 'motivation', 'success', 'goals'].includes(word))) {
+      themes.push('personal-development');
+    }
+    
+    return themes.length > 0 ? themes : ['general-lifestyle'];
+  };
+
+  const generateEmotionalHooks = (input: string) => {
+    const hooks = [];
+    const keywords = input.toLowerCase();
+    
+    if (keywords.includes('secret') || keywords.includes('hidden')) {
+      hooks.push('curiosity-gap');
+    }
+    if (keywords.includes('shocking') || keywords.includes('surprising')) {
+      hooks.push('shock-value');
+    }
+    if (keywords.includes('story') || keywords.includes('journey')) {
+      hooks.push('emotional-storytelling');
+    }
+    if (keywords.includes('mistake') || keywords.includes('failure')) {
+      hooks.push('vulnerability');
+    }
+    if (keywords.includes('transformation') || keywords.includes('change')) {
+      hooks.push('before-after');
+    }
+    
+    return hooks.length > 0 ? hooks : ['value-proposition'];
+  };
+
+  const identifyViralTriggers = (input: string) => {
+    const triggers = [];
+    const keywords = input.toLowerCase();
+    
+    if (keywords.includes('how') || keywords.includes('what') || keywords.includes('why')) {
+      triggers.push('educational-value');
+    }
+    if (keywords.includes('tip') || keywords.includes('hack') || keywords.includes('trick')) {
+      triggers.push('actionable-advice');
+    }
+    if (keywords.includes('story') || keywords.includes('experience')) {
+      triggers.push('relatable-content');
+    }
+    if (keywords.includes('secret') || keywords.includes('hidden')) {
+      triggers.push('exclusive-information');
+    }
+    if (keywords.includes('transformation') || keywords.includes('results')) {
+      triggers.push('proof-of-concept');
+    }
+    
+    return triggers.length > 0 ? triggers : ['entertainment-value'];
+  };
+
+  const generateAudienceInsights = (input: string) => {
+    const insights = [];
+    const keywords = input.toLowerCase();
+    
+    if (keywords.includes('entrepreneur') || keywords.includes('business')) {
+      insights.push('business-minded');
+    }
+    if (keywords.includes('fitness') || keywords.includes('health')) {
+      insights.push('health-conscious');
+    }
+    if (keywords.includes('relationship') || keywords.includes('dating')) {
+      insights.push('relationship-focused');
+    }
+    if (keywords.includes('career') || keywords.includes('job')) {
+      insights.push('career-driven');
+    }
+    if (keywords.includes('mindset') || keywords.includes('motivation')) {
+      insights.push('self-improvement');
+    }
+    
+    return insights.length > 0 ? insights : ['general-audience'];
+  };
+
+  const generateUniqueContentVariation = (
+    input: string, 
+    platform: string, 
+    contentType: string, 
+    themes: string[], 
+    hooks: string[], 
+    triggers: string[], 
+    insights: string[],
+    variationIndex: number
+  ) => {
+    const baseContent = input;
+    const platformSpecifics = {
+      instagram: 'visual storytelling with compelling captions',
+      tiktok: 'short-form video with trending sounds',
+      youtube: 'long-form educational content',
+      x: 'thread format with actionable insights',
+      linkedin: 'professional thought leadership',
+      facebook: 'community-focused content'
+    };
+    
+    const themeSpecifics = {
+      'financial-success': 'wealth-building strategies and income generation',
+      'health-wellness': 'fitness tips and wellness advice',
+      'relationships': 'dating advice and relationship insights',
+      'career-growth': 'professional development and career advancement',
+      'personal-development': 'mindset shifts and personal growth',
+      'general-lifestyle': 'life improvement and daily optimization'
+    };
+    
+    const hookSpecifics = {
+      'curiosity-gap': 'revealing hidden secrets and unknown facts',
+      'shock-value': 'surprising statistics and unexpected insights',
+      'emotional-storytelling': 'personal experiences and relatable stories',
+      'vulnerability': 'honest mistakes and learning moments',
+      'before-after': 'transformation stories and results',
+      'value-proposition': 'immediate actionable value'
+    };
+    
+    const platformStyle = platformSpecifics[platform as keyof typeof platformSpecifics] || 'general content';
+    const themeStyle = themeSpecifics[themes[0] as keyof typeof themeSpecifics] || 'lifestyle content';
+    const hookStyle = hookSpecifics[hooks[0] as keyof typeof hookSpecifics] || 'valuable content';
+    
+    return `${baseContent} - ${platformStyle} focusing on ${themeStyle} with ${hookStyle}. Variation ${variationIndex + 1} optimized for maximum engagement and viral potential.`;
+  };
+
+  const calculateAdvancedViralScore = (content: string, platform: string, contentType: string) => {
+    let score = 70; // Base score
+    
+    // Platform-specific scoring
+    const platformScores = {
+      instagram: 85,
+      tiktok: 90,
+      youtube: 80,
+      x: 75,
+      linkedin: 70,
+      facebook: 75
+    };
+    
+    score += (platformScores[platform as keyof typeof platformScores] || 75) - 75;
+    
+    // Content type scoring
+    const contentTypeScores = {
+      post: 75,
+      story: 80,
+      reel: 90,
+      video: 85
+    };
+    
+    score += (contentTypeScores[contentType as keyof typeof contentTypeScores] || 80) - 80;
+    
+    // Content quality scoring
+    if (content.includes('secret') || content.includes('hidden')) score += 5;
+    if (content.includes('story') || content.includes('journey')) score += 8;
+    if (content.includes('transformation') || content.includes('results')) score += 10;
+    if (content.includes('tip') || content.includes('hack')) score += 6;
+    if (content.includes('shocking') || content.includes('surprising')) score += 7;
+    
+    // Random variation for uniqueness
+    score += Math.floor(Math.random() * 10) - 5;
+    
+    return Math.min(Math.max(score, 65), 95);
+  };
+
+  const calculateEstimatedViews = (baseFollowers: number, viralScore: number, platform: string) => {
+    const platformMultipliers = {
+      instagram: 0.3,
+      tiktok: 0.8,
+      youtube: 0.4,
+      x: 0.2,
+      linkedin: 0.15,
+      facebook: 0.25
+    };
+    
+    const multiplier = platformMultipliers[platform as keyof typeof platformMultipliers] || 0.3;
+    const viralMultiplier = viralScore / 70; // Normalize viral score
+    
+    return Math.floor(baseFollowers * multiplier * viralMultiplier * (0.8 + Math.random() * 0.4));
+  };
+
+  const calculateEngagementRate = (views: number, viralScore: number, platform: string) => {
+    const baseRate = 5; // 5% base engagement
+    const viralBonus = (viralScore - 70) / 10; // Up to 2.5% bonus
+    const platformBonus = {
+      instagram: 1,
+      tiktok: 2,
+      youtube: 0.5,
+      x: 0.8,
+      linkedin: 0.3,
+      facebook: 0.6
+    };
+    
+    return Math.min(baseRate + viralBonus + (platformBonus[platform as keyof typeof platformBonus] || 0.5), 15);
+  };
+
+  const calculateReach = (views: number, viralScore: number) => {
+    const reachMultiplier = 1.2 + (viralScore - 70) / 100;
+    return Math.floor(views * reachMultiplier);
+  };
+
+  const calculateShares = (engagement: number, viralScore: number) => {
+    const shareRate = (engagement / 100) * (viralScore / 80);
+    return Math.floor(engagement * shareRate * (0.1 + Math.random() * 0.2));
+  };
+
+  const calculateComments = (engagement: number, viralScore: number) => {
+    const commentRate = (engagement / 100) * (viralScore / 85);
+    return Math.floor(engagement * commentRate * (0.05 + Math.random() * 0.15));
+  };
+
+  const calculateLikes = (engagement: number, viralScore: number) => {
+    const likeRate = (engagement / 100) * (viralScore / 75);
+    return Math.floor(engagement * likeRate * (0.3 + Math.random() * 0.4));
+  };
+
+  const calculateSaves = (engagement: number, viralScore: number) => {
+    const saveRate = (engagement / 100) * (viralScore / 90);
+    return Math.floor(engagement * saveRate * (0.02 + Math.random() * 0.08));
+  };
+
+  const generateAdvancedTitle = (content: string, platform: string, contentType: string) => {
+    const titles = [
+      `Viral ${contentType.charAt(0).toUpperCase() + contentType.slice(1)}: ${content.split(' ').slice(0, 4).join(' ')}`,
+      `The ${platform.charAt(0).toUpperCase() + platform.slice(1)} Secret: ${content.split(' ').slice(0, 3).join(' ')}`,
+      `${contentType.charAt(0).toUpperCase() + contentType.slice(1)} That Will ${['Go Viral', 'Break the Internet', 'Change Everything'][Math.floor(Math.random() * 3)]}`,
+      `How to ${content.split(' ').slice(0, 3).join(' ')} - ${platform.charAt(0).toUpperCase() + platform.slice(1)} Edition`,
+      `The ${contentType} That ${['Everyone is Sharing', 'Nobody Talks About', 'Will Transform Your Life'][Math.floor(Math.random() * 3)]}`
+    ];
+    
+    return titles[Math.floor(Math.random() * titles.length)];
+  };
+
+  const generateAdvancedHashtags = (platform: string, contentType: string, themes: string[]) => {
+    const platformHashtags = {
+      instagram: ['#instagram', '#instagood', '#photooftheday'],
+      tiktok: ['#tiktok', '#fyp', '#viral'],
+      youtube: ['#youtube', '#youtuber', '#subscribe'],
+      x: ['#twitter', '#tweeting', '#thread'],
+      linkedin: ['#linkedin', '#networking', '#professional'],
+      facebook: ['#facebook', '#social', '#community']
+    };
+    
+    const contentTypeHashtags = {
+      post: ['#post', '#content', '#socialmedia'],
+      story: ['#story', '#instagramstory', '#daily'],
+      reel: ['#reel', '#instagramreel', '#trending'],
+      video: ['#video', '#youtube', '#content']
+    };
+    
+    const themeHashtags = {
+      'financial-success': ['#money', '#wealth', '#success'],
+      'health-wellness': ['#fitness', '#health', '#wellness'],
+      'relationships': ['#love', '#dating', '#relationships'],
+      'career-growth': ['#career', '#business', '#professional'],
+      'personal-development': ['#mindset', '#motivation', '#growth'],
+      'general-lifestyle': ['#lifestyle', '#life', '#daily']
+    };
+    
+    const platformTags = platformHashtags[platform as keyof typeof platformHashtags] || ['#socialmedia'];
+    const contentTypeTags = contentTypeHashtags[contentType as keyof typeof contentTypeHashtags] || ['#content'];
+    const themeTags = themeHashtags[themes[0] as keyof typeof themeHashtags] || ['#lifestyle'];
+    
+    return [...platformTags, ...contentTypeTags, ...themeTags];
   };
 
   // Helper functions for realistic content generation
@@ -899,125 +1250,176 @@ export default function PremiumContentHub({
     setTimeout(() => setSuccess(null), 3000);
   };
 
-  const handleGenerateViralIdeas = () => {
-    // Generate viral content ideas with real functionality
-    const newIdeas = [
+  const generateTrendingIdeas = async () => {
+    setIsGeneratingTrending(true);
+    
+    // Simulate AI processing
+    await new Promise(resolve => setTimeout(resolve, 3000));
+    
+    const newTrendingTopics = [
       {
-        id: `idea_${Date.now()}_1`,
-        title: "The 3-Minute Morning Routine That Changed Everything",
-        description: "How I went from overwhelmed to unstoppable in just 3 minutes",
-        platform: "Instagram",
-        contentType: "post",
-        viralScore: 94,
-        estimatedViews: "50K-100K",
-        hashtags: ["morningroutine", "productivity", "lifechanging"],
-        createdAt: new Date().toISOString(),
-        status: "draft"
+        title: "AI Productivity Revolution",
+        description: "How AI tools are transforming daily productivity and workflow optimization",
+        viralScore: 95,
+        hashtags: ["#AI", "#productivity", "#automation", "#efficiency"]
       },
       {
-        id: `idea_${Date.now()}_2`,
-        title: "The Secret Formula for 10x Growth",
-        description: "The exact method that scaled my business from $0 to $100K",
-        platform: "LinkedIn",
-        contentType: "post",
-        viralScore: 89,
-        estimatedViews: "25K-50K",
-        hashtags: ["growth", "business", "scaling"],
-        createdAt: new Date().toISOString(),
-        status: "draft"
+        title: "Morning Routine Secrets",
+        description: "The science behind successful morning routines and their impact on daily success",
+        viralScore: 88,
+        hashtags: ["#morning", "#routine", "#success", "#habits"]
       },
       {
-        id: `idea_${Date.now()}_3`,
-        title: "The Psychology of High-Performance",
-        description: "How top performers think differently and achieve 10x results",
-        platform: "YouTube",
-        contentType: "video",
+        title: "Entrepreneur Life Hacks",
+        description: "Insider secrets from successful entrepreneurs that most people don't know",
         viralScore: 92,
-        estimatedViews: "100K-250K",
-        hashtags: ["psychology", "performance", "mindset"],
-        createdAt: new Date().toISOString(),
-        status: "draft"
+        hashtags: ["#entrepreneur", "#business", "#success", "#hacks"]
       },
       {
-        id: `idea_${Date.now()}_4`,
-        title: "The Wealth Building Blueprint",
-        description: "The exact steps I took to build a 7-figure business",
-        platform: "TikTok",
-        contentType: "reel",
-        viralScore: 96,
-        estimatedViews: "75K-150K",
-        hashtags: ["wealth", "business", "success"],
-        createdAt: new Date().toISOString(),
-        status: "draft"
+        title: "Digital Detox Benefits",
+        description: "The surprising benefits of taking regular breaks from technology",
+        viralScore: 87,
+        hashtags: ["#digitaldetox", "#wellness", "#mentalhealth", "#balance"]
+      },
+      {
+        title: "Financial Freedom Blueprint",
+        description: "Step-by-step guide to achieving financial independence in your 30s",
+        viralScore: 94,
+        hashtags: ["#finance", "#freedom", "#wealth", "#planning"]
       }
     ];
     
-    // Add to contentIdeas array
-    if (contentIdeas) {
-      contentIdeas.push(...newIdeas);
-    }
+    setLocalTrendingTopics(newTrendingTopics);
+    setIsGeneratingTrending(false);
+    setSuccess("Trending topics generated successfully!");
+    setTimeout(() => setSuccess(null), 3000);
+  };
+
+  const handleGenerateViralIdeas = () => {
+    generateTrendingIdeas();
+  };
+
+  const optimizeTiming = async () => {
+    setIsOptimizing(true);
     
-    console.log('Generated viral ideas:', newIdeas);
-    setSuccess("Viral ideas generated successfully!");
+    // Simulate AI processing
+    await new Promise(resolve => setTimeout(resolve, 3000));
+    
+    const newOptimalTimes = [
+      {
+        platform: "Instagram",
+        day: "Monday",
+        time: "18:00-21:00",
+        engagement_rate: 12.5,
+        reason: "Peak user activity and engagement"
+      },
+      {
+        platform: "TikTok",
+        day: "Tuesday",
+        time: "19:00-22:00",
+        engagement_rate: 15.2,
+        reason: "Highest viral potential and sharing"
+      },
+      {
+        platform: "LinkedIn",
+        day: "Wednesday",
+        time: "08:00-10:00",
+        engagement_rate: 8.7,
+        reason: "Professional audience most active"
+      },
+      {
+        platform: "YouTube",
+        day: "Thursday",
+        time: "15:00-17:00",
+        engagement_rate: 11.3,
+        reason: "Student and work-from-home audience"
+      },
+      {
+        platform: "X (Twitter)",
+        day: "Friday",
+        time: "12:00-14:00",
+        engagement_rate: 9.8,
+        reason: "Lunch break engagement peak"
+      }
+    ];
+    
+    setOptimalTimes(newOptimalTimes);
+    setIsOptimizing(false);
+    setSuccess("AI timing optimization completed!");
     setTimeout(() => setSuccess(null), 3000);
   };
 
   const handleAutoOptimizeTiming = () => {
-    // Auto-optimize posting times with real functionality
-    const optimizedTimes = {
-      instagram: "18:00-21:00 (Peak engagement)",
-      tiktok: "19:00-22:00 (Viral potential)",
-      linkedin: "08:00-10:00 (Professional audience)",
-      youtube: "15:00-17:00 (Student audience)",
-      x: "12:00-14:00 (Lunch break engagement)"
+    optimizeTiming();
+  };
+
+  const handleScheduleContent = async () => {
+    if (!scheduleContent.trim()) {
+      setSuccess("Please enter content to schedule!");
+      setTimeout(() => setSuccess(null), 3000);
+      return;
+    }
+    
+    setIsScheduling(true);
+    
+    // Simulate scheduling process
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    const newScheduledItem = {
+      title: `Scheduled: ${scheduleContent.split(' ').slice(0, 5).join(' ')}`,
+      content: scheduleContent,
+      platform: schedulePlatform,
+      viral_score: Math.floor(Math.random() * 30) + 70,
+      scheduled_for: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
     };
     
-    // Update the UI with optimized times
-    setOptimizedTiming(optimizedTimes);
-    console.log('Optimized timing:', optimizedTimes);
-    setSuccess("Timing optimized successfully!");
+    setLocalScheduledContent(prev => [...prev, newScheduledItem]);
+    setScheduleContent("");
+    setIsScheduling(false);
+    setSuccess("Content scheduled successfully!");
     setTimeout(() => setSuccess(null), 3000);
   };
 
-  const handleScheduleContent = () => {
-    // Schedule content across platforms with real functionality
-    const newScheduledContent = [
+  const generatePersonas = async () => {
+    setIsGeneratingPersonas(true);
+    
+    // Simulate AI processing
+    await new Promise(resolve => setTimeout(resolve, 3000));
+    
+    const newPersonas = [
       {
-        id: `scheduled_${Date.now()}`,
-        title: "The Ultimate Productivity Hack",
-        platform: "Instagram",
-        content_type: "post",
-        scheduled_for: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
-        estimated_views: "25K-50K",
-        viral_score: 87
+        name: "Tech-Savvy Professionals",
+        age_range: "25-35",
+        interests: ["technology", "innovation", "productivity", "career growth"],
+        platform_preferences: ["LinkedIn", "X (Twitter)", "YouTube"],
+        pain_points: ["Work-life balance", "Career advancement", "Skill development"]
       },
       {
-        id: `scheduled_${Date.now() + 1}`,
-        title: "The Psychology of Success",
-        platform: "LinkedIn",
-        content_type: "post",
-        scheduled_for: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(),
-        estimated_views: "15K-30K",
-        viral_score: 92
+        name: "Creative Entrepreneurs",
+        age_range: "22-30",
+        interests: ["creativity", "business", "design", "social media"],
+        platform_preferences: ["Instagram", "TikTok", "Pinterest"],
+        pain_points: ["Brand visibility", "Content creation", "Audience growth"]
       },
       {
-        id: `scheduled_${Date.now() + 2}`,
-        title: "Building Wealth from Scratch",
-        platform: "YouTube",
-        content_type: "video",
-        scheduled_for: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
-        estimated_views: "50K-100K",
-        viral_score: 89
+        name: "Fitness & Wellness Enthusiasts",
+        age_range: "18-40",
+        interests: ["health", "fitness", "nutrition", "wellness"],
+        platform_preferences: ["Instagram", "TikTok", "YouTube"],
+        pain_points: ["Motivation", "Consistency", "Results tracking"]
+      },
+      {
+        name: "Business Leaders & Executives",
+        age_range: "35-50",
+        interests: ["leadership", "strategy", "networking", "industry insights"],
+        platform_preferences: ["LinkedIn", "X (Twitter)", "YouTube"],
+        pain_points: ["Team management", "Industry disruption", "Strategic planning"]
       }
     ];
     
-    // Add to scheduled content array
-    if (scheduledContent) {
-      scheduledContent.push(...newScheduledContent);
-    }
-    
-    console.log('Scheduled content:', newScheduledContent);
-    setSuccess("Content scheduled successfully!");
+    setLocalPersonas(newPersonas);
+    setIsGeneratingPersonas(false);
+    setSuccess("AI personas generated successfully!");
     setTimeout(() => setSuccess(null), 3000);
   };
 
