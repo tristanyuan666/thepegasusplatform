@@ -218,6 +218,8 @@ export default function PremiumContentHub({
     return contentVariations.map((variation, index) => ({
       id: `content-${Date.now()}-${index}`,
       ...variation,
+      platform,
+      contentType,
       estimatedViews: variation.estimatedViews.toLocaleString(),
       hashtags,
       createdAt: new Date().toISOString(),
