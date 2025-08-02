@@ -488,35 +488,50 @@ export default function PremiumContentHub({
   };
 
   const generatePremiumHook = (input: string, platform: string, contentType: string, strategy: any) => {
+    // Extract the core topic from the input
+    const cleanInput = input.replace(/[^a-zA-Z0-9\s]/g, '').trim();
+    const words = cleanInput.split(' ').filter(word => word.length > 2);
+    const topic = words.slice(0, 3).join(' ').toUpperCase();
+    
     const hooks = {
-      instagram: `🔥 THE ${input.toUpperCase()} METHOD THAT CHANGED MY LIFE\n\nI went from $0 to $50K in 90 days using this exact strategy...`,
-      tiktok: `🎯 ${input.toUpperCase()} - The secret that changed my life in 30 days!\n\nThis will blow your mind 👀`,
-      youtube: `🚀 ${input.toUpperCase()} - The Complete Masterclass\n\nI've helped 10,000+ people achieve this...`,
-      x: `🧵 ${input.toUpperCase()} - The Complete Thread\n\nI've helped 100,000+ people achieve this...`,
-      linkedin: `💼 ${input.toUpperCase()} - The Professional Blueprint\n\nI've helped 25,000+ professionals achieve this...`,
-      facebook: `📱 ${input.toUpperCase()} - The Community Blueprint\n\nI've helped 75,000+ people achieve this...`
+      instagram: `🔥 THE ${topic} SECRET THAT MADE ME $50K IN 90 DAYS\n\nI was struggling with this exact challenge until I discovered this method...`,
+      tiktok: `🎯 ${topic} - The truth nobody tells you!\n\nThis changed my life in 30 days 👀`,
+      youtube: `🚀 ${topic} - The Complete Masterclass\n\nI've helped 10,000+ people achieve this...`,
+      x: `🧵 ${topic} - The Complete Thread\n\nI've helped 100,000+ people achieve this...`,
+      linkedin: `💼 ${topic} - The Professional Blueprint\n\nI've helped 25,000+ professionals achieve this...`,
+      facebook: `📱 ${topic} - The Community Blueprint\n\nI've helped 75,000+ people achieve this...`
     };
     
-    return hooks[platform as keyof typeof hooks] || `🔥 ${input.toUpperCase()} - The Complete Guide`;
+    return hooks[platform as keyof typeof hooks] || `🔥 ${topic} - The Complete Guide`;
   };
 
   const generatePremiumBody = (input: string, platform: string, contentType: string, analysis: any, targetAudience: string, monetizationStrategy: any) => {
+    // Extract the core topic and create detailed, specific content
+    const cleanInput = input.replace(/[^a-zA-Z0-9\s]/g, '').trim();
+    const words = cleanInput.split(' ').filter(word => word.length > 2);
+    const topic = words.slice(0, 3).join(' ');
+    
     const bodies = {
-      course: `Here's exactly what I learned:\n\n💡 The 3-Step Framework:\n1️⃣ Foundation (Week 1-2)\n2️⃣ Acceleration (Week 3-8)\n3️⃣ Mastery (Week 9-12)\n\n💎 Key Insights:\n• The psychological trigger that 95% miss\n• The exact timeline that works\n• The mindset shift that changes everything\n\n⚡ Pro Tip: Start with the foundation. Most people jump to step 3 and fail.`,
-      product: `Here's what makes this different:\n\n🔥 The 3 Key Benefits:\n1️⃣ Immediate Results\n2️⃣ Long-term Value\n3️⃣ Proven Track Record\n\n💎 Why This Works:\n• Based on real customer success\n• Backed by data and research\n• Designed for maximum impact\n\n⚡ Limited Time: This offer won't last long.`,
-      service: `Here's my proven approach:\n\n🎯 The 3-Step Process:\n1️⃣ Assessment & Strategy\n2️⃣ Implementation & Support\n3️⃣ Optimization & Growth\n\n💎 What You Get:\n• Personalized strategy\n• Expert guidance\n• Measurable results\n\n⚡ Ready to transform? Let's get started.`,
-      affiliate: `Here's why I recommend this:\n\n🔥 The 3 Reasons:\n1️⃣ Personal Experience\n2️⃣ Proven Results\n3️⃣ Exceptional Value\n\n💎 What Makes It Special:\n• I've personally tested it\n• Real results from real people\n• Outstanding customer support\n\n⚡ Don't miss out on this opportunity.`
+      course: `Here's the EXACT method that transformed my life:\n\n💡 The 3-Step Framework:\n1️⃣ Foundation (Week 1-2)\n   • Master the fundamentals\n   • Build the right mindset\n   • Set up your systems\n\n2️⃣ Acceleration (Week 3-8)\n   • Scale your approach\n   • Optimize for results\n   • Break through plateaus\n\n3️⃣ Mastery (Week 9-12)\n   • Advanced strategies\n   • Automation & scaling\n   • Long-term success\n\n💎 Key Insights:\n• The psychological trigger that 95% miss\n• The exact timeline that delivers results\n• The mindset shift that changes everything\n• The hidden bottleneck most people ignore\n• The breakthrough moment to watch for\n\n⚡ Pro Tip: Start with the foundation. Most people jump to step 3 and fail.\n\n🎯 The Secret: It's not about what you do, it's about WHEN you do it.`,
+      product: `Here's what makes this completely different:\n\n🔥 The 3 Key Benefits:\n1️⃣ Immediate Results\n   • See changes in 24-48 hours\n   • No waiting or guessing\n   • Instant confidence boost\n\n2️⃣ Long-term Value\n   • Sustainable growth\n   • Scalable approach\n   • Future-proof strategy\n\n3️⃣ Proven Track Record\n   • 10,000+ success stories\n   • 95% satisfaction rate\n   • Real customer testimonials\n\n💎 Why This Actually Works:\n• Based on real customer success data\n• Backed by 3 years of research\n• Designed for maximum impact\n• Tested across multiple industries\n• Continuously optimized\n\n⚡ Limited Time: This offer won't last long.\n\n🎯 The Truth: Most people fail because they don't have the right system.`,
+      service: `Here's my proven approach that delivers results:\n\n🎯 The 3-Step Process:\n1️⃣ Assessment & Strategy\n   • Deep dive analysis\n   • Custom roadmap creation\n   • Goal alignment\n\n2️⃣ Implementation & Support\n   • Hands-on guidance\n   • Real-time feedback\n   • Continuous optimization\n\n3️⃣ Optimization & Growth\n   • Performance tracking\n   • Scaling strategies\n   • Long-term success\n\n💎 What You Actually Get:\n• Personalized strategy tailored to you\n• Expert guidance every step of the way\n• Measurable results you can track\n• Ongoing support and optimization\n• Access to exclusive resources\n\n⚡ Ready to transform? Let's get started.\n\n🎯 The Difference: I don't just teach, I implement with you.`,
+      affiliate: `Here's why I personally recommend this:\n\n🔥 The 3 Reasons:\n1️⃣ Personal Experience\n   • I've used this myself\n   • Real results I can show\n   • Honest feedback\n\n2️⃣ Proven Results\n   • Thousands of success stories\n   • Consistent positive reviews\n   • Measurable outcomes\n\n3️⃣ Exceptional Value\n   • Outstanding quality\n   • Fair pricing\n   • Amazing support\n\n💎 What Makes It Special:\n• I've personally tested and vetted it\n• Real results from real people\n• Outstanding customer support\n• Continuous updates and improvements\n• Risk-free guarantee\n\n⚡ Don't miss out on this opportunity.\n\n🎯 The Truth: I only recommend what I truly believe in.`
     };
     
     return bodies[monetizationStrategy.hook === 'problem-solution' ? 'course' : 'product'] || bodies.course;
   };
 
   const generatePremiumCTA = (input: string, platform: string, contentType: string, monetizationStrategy: any) => {
+    // Extract the core topic for hashtags
+    const cleanInput = input.replace(/[^a-zA-Z0-9\s]/g, '').trim();
+    const words = cleanInput.split(' ').filter(word => word.length > 2);
+    const topic = words.slice(0, 3).join(' ').replace(/\s+/g, '');
+    
     const ctas = {
-      course: `🎯 Ready to transform your life?\n\nThis method works for everyone who commits.\n\nClick the link in bio to get started!\n\n#${input.replace(/\s+/g, '')} #Success #Transformation`,
-      product: `🔥 Don't wait - this opportunity is limited!\n\nJoin thousands who have already transformed their lives.\n\nClick the link in bio now!\n\n#${input.replace(/\s+/g, '')} #Success #Opportunity`,
-      service: `💼 Ready to take the next step?\n\nLet's work together to achieve your goals.\n\nDM me or click the link in bio!\n\n#${input.replace(/\s+/g, '')} #Success #Partnership`,
-      affiliate: `⚡ This is your chance to change everything!\n\nI've personally vetted this and the results are incredible.\n\nClick the link in bio to get started!\n\n#${input.replace(/\s+/g, '')} #Recommendation #Success`
+      course: `🎯 Ready to transform your life?\n\nThis method works for everyone who commits.\n\nClick the link in bio to get started!\n\n#${topic} #Success #Transformation #LifeChanging`,
+      product: `🔥 Don't wait - this opportunity is limited!\n\nJoin thousands who have already transformed their lives.\n\nClick the link in bio now!\n\n#${topic} #Success #Opportunity #GameChanger`,
+      service: `💼 Ready to take the next step?\n\nLet's work together to achieve your goals.\n\nDM me or click the link in bio!\n\n#${topic} #Success #Partnership #Growth`,
+      affiliate: `⚡ This is your chance to change everything!\n\nI've personally vetted this and the results are incredible.\n\nClick the link in bio to get started!\n\n#${topic} #Recommendation #Success #Trusted`
     };
     
     return ctas.course; // Default to course CTA
@@ -758,7 +773,7 @@ export default function PremiumContentHub({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
           {/* Premium Tab Navigation */}
-          <TabsList className="bg-white/90 backdrop-blur-xl border border-slate-200/60 grid w-full grid-cols-5 shadow-lg shadow-slate-200/50 rounded-2xl p-1.5">
+          <TabsList className="bg-white/90 backdrop-blur-xl border border-slate-200/60 grid w-full grid-cols-6 shadow-lg shadow-slate-200/50 rounded-2xl p-1.5">
             <TabsTrigger value="create" className="flex items-center space-x-2 hover:bg-gradient-to-r hover:from-blue-50 hover:to-cyan-50 transition-all duration-300 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-100 data-[state=active]:to-cyan-100 data-[state=active]:text-blue-700 data-[state=active]:shadow-sm rounded-xl px-3 py-2">
               <Wand2 className="w-4 h-4" />
               <span className="font-medium text-sm">Create</span>
@@ -770,6 +785,10 @@ export default function PremiumContentHub({
             <TabsTrigger value="scheduler" className="flex items-center space-x-2 hover:bg-gradient-to-r hover:from-blue-50 hover:to-cyan-50 transition-all duration-300 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-100 data-[state=active]:to-cyan-100 data-[state=active]:text-blue-700 data-[state=active]:shadow-sm rounded-xl px-3 py-2">
               <Calendar className="w-4 h-4" />
               <span className="font-medium text-sm">Schedule</span>
+            </TabsTrigger>
+            <TabsTrigger value="personas" className="flex items-center space-x-2 hover:bg-gradient-to-r hover:from-blue-50 hover:to-cyan-50 transition-all duration-300 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-100 data-[state=active]:to-cyan-100 data-[state=active]:text-blue-700 data-[state=active]:shadow-sm rounded-xl px-3 py-2">
+              <Brain className="w-4 h-4" />
+              <span className="font-medium text-sm">Personas</span>
             </TabsTrigger>
             <TabsTrigger value="repurpose" className="flex items-center space-x-2 hover:bg-gradient-to-r hover:from-blue-50 hover:to-cyan-50 transition-all duration-300 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-100 data-[state=active]:to-cyan-100 data-[state=active]:text-blue-700 data-[state=active]:shadow-sm rounded-xl px-3 py-2">
               <RefreshCw className="w-4 h-4" />
@@ -1607,7 +1626,184 @@ export default function PremiumContentHub({
             </div>
           </TabsContent>
 
+          {/* Personas Tab */}
+          <TabsContent value="personas" className="space-y-6">
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
+              <div className="p-6 border-b border-gray-100">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-2xl font-bold text-gray-900">AI Persona Builder</h2>
+                    <p className="text-gray-600">Build your creator identity with advanced audience targeting</p>
+                  </div>
+                  <div className="flex items-center space-x-4">
+                    <Badge className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-3 py-1 text-sm font-semibold">
+                      <Brain className="w-4 h-4 mr-2" />
+                      AI Powered
+                    </Badge>
+                  </div>
+                </div>
+              </div>
 
+              <div className="p-6">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                  {/* Persona Creation */}
+                  <div className="lg:col-span-2 space-y-6">
+                    <div className="bg-gradient-to-br from-indigo-50 to-purple-50 border border-indigo-200 rounded-xl p-6">
+                      <h3 className="text-xl font-semibold text-gray-900 mb-4">Create New Persona</h3>
+                      <div className="space-y-4">
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <Label className="text-sm font-medium text-gray-700 mb-2 block">Niche/Focus</Label>
+                            <Input 
+                              placeholder="e.g., fitness, business, lifestyle..."
+                              className="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+                            />
+                          </div>
+                          <div>
+                            <Label className="text-sm font-medium text-gray-700 mb-2 block">Target Audience</Label>
+                            <Select>
+                              <SelectTrigger className="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+                                <SelectValue placeholder="Select audience" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="beginners">Beginners</SelectItem>
+                                <SelectItem value="intermediate">Intermediate</SelectItem>
+                                <SelectItem value="advanced">Advanced</SelectItem>
+                                <SelectItem value="professionals">Professionals</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <Label className="text-sm font-medium text-gray-700 mb-2 block">Content Style</Label>
+                            <Select>
+                              <SelectTrigger className="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+                                <SelectValue placeholder="Select style" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="educational">Educational</SelectItem>
+                                <SelectItem value="entertaining">Entertaining</SelectItem>
+                                <SelectItem value="inspirational">Inspirational</SelectItem>
+                                <SelectItem value="professional">Professional</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div>
+                            <Label className="text-sm font-medium text-gray-700 mb-2 block">Platform Focus</Label>
+                            <Select>
+                              <SelectTrigger className="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+                                <SelectValue placeholder="Select platform" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="instagram">Instagram</SelectItem>
+                                <SelectItem value="tiktok">TikTok</SelectItem>
+                                <SelectItem value="youtube">YouTube</SelectItem>
+                                <SelectItem value="linkedin">LinkedIn</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
+                        <Button className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white">
+                          <Brain className="w-4 h-4 mr-2" />
+                          Generate Persona
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* AI Persona Insights */}
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold text-gray-900">AI Persona Insights</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="p-4 border border-gray-200 rounded-lg">
+                          <div className="flex items-center space-x-2 mb-3">
+                            <Users className="w-5 h-5 text-indigo-600" />
+                            <h4 className="font-semibold text-gray-900 text-sm">Audience Demographics</h4>
+                          </div>
+                          <div className="space-y-2 text-xs text-gray-600">
+                            <div className="flex justify-between">
+                              <span>Age Range:</span>
+                              <span className="font-medium">25-35</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span>Gender Split:</span>
+                              <span className="font-medium">60% Female</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span>Income Level:</span>
+                              <span className="font-medium">$50K-$100K</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span>Location:</span>
+                              <span className="font-medium">Urban/Suburban</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="p-4 border border-gray-200 rounded-lg">
+                          <div className="flex items-center space-x-2 mb-3">
+                            <Target className="w-5 h-5 text-indigo-600" />
+                            <h4 className="font-semibold text-gray-900 text-sm">Content Preferences</h4>
+                          </div>
+                          <div className="space-y-2 text-xs text-gray-600">
+                            <div className="flex justify-between">
+                              <span>Content Type:</span>
+                              <span className="font-medium">Educational</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span>Posting Time:</span>
+                              <span className="font-medium">18:00-21:00</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span>Engagement Style:</span>
+                              <span className="font-medium">Interactive</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span>Brand Voice:</span>
+                              <span className="font-medium">Authentic</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Existing Personas */}
+                  <div className="space-y-6">
+                    <h3 className="text-lg font-semibold text-gray-900">Your Personas</h3>
+                    <div className="space-y-3 max-h-96 overflow-y-auto">
+                      {personas.slice(0, 6).map((persona: any) => (
+                        <div key={persona.id} className="p-3 border border-gray-200 hover:border-indigo-300 transition-all duration-300 rounded-lg">
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                              <h4 className="font-semibold text-gray-900 text-sm">{persona.name}</h4>
+                              <Badge variant="outline" className="bg-indigo-50 text-indigo-700 text-xs">
+                                {persona.engagement_rate}% engagement
+                              </Badge>
+                            </div>
+                            <p className="text-xs text-gray-600">{persona.age_range} • {persona.interests?.slice(0, 2).join(', ')}</p>
+                            <div className="flex items-center justify-between text-xs text-gray-500">
+                              <span>{persona.platform_preferences?.slice(0, 2).join(', ')}</span>
+                              <span>{persona.conversion_rate}% conversion</span>
+                            </div>
+                            <div className="flex items-center space-x-1">
+                              <Button variant="outline" size="sm" className="border-indigo-300 text-indigo-700 hover:bg-indigo-50 text-xs px-2 py-1">
+                                <Eye className="w-3 h-3 mr-1" />
+                                View
+                              </Button>
+                              <Button variant="outline" size="sm" className="border-gray-300 text-gray-700 hover:bg-gray-50 text-xs px-2 py-1">
+                                <Brain className="w-3 h-3 mr-1" />
+                                Optimize
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </TabsContent>
 
           {/* Analytics Tab */}
           <TabsContent value="analytics" className="space-y-6">
