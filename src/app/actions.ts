@@ -452,9 +452,9 @@ export const getUserDashboardData = async (userId: string) => {
     .eq("status", "active")
     .single();
 
-  // Get social connections
-  const { data: socialConnections, error: connectionsError } = await supabase
-    .from("social_connections")
+  // Get platform connections
+  const { data: platformConnections, error: connectionsError } = await supabase
+    .from("platform_connections")
     .select("*")
     .eq("user_id", userId)
     .eq("is_active", true);
@@ -481,7 +481,7 @@ export const getUserDashboardData = async (userId: string) => {
   return {
     userProfile,
     subscription: subscriptionError ? null : subscription,
-    socialConnections: connectionsError ? [] : socialConnections || [],
+    platformConnections: connectionsError ? [] : platformConnections || [],
     recentContent: contentError ? [] : recentContent || [],
     analytics: analyticsError ? [] : analytics || [],
   };
