@@ -513,59 +513,64 @@ export default function PremiumContentHub({
   };
 
   const generateCompellingStory = (topic: string, strategy: any) => {
-    const stories = {
+    const stories: Record<string, string> = {
       course: `I was stuck in the same cycle for 2 years. Every morning, I'd wake up with the same frustration, knowing I had the potential but not the system.\n\nThen I discovered the ${topic} method.\n\nWithin 30 days, I went from $2,300/month to $18,700/month.\n\nHere's exactly what happened:`,
       product: `I spent $47,000 on courses, coaching, and programs trying to figure this out.\n\nNothing worked until I found the ${topic} approach.\n\nIn 90 days, I generated $127,000 in revenue.\n\nHere's the exact process:`,
       service: `I was working 80-hour weeks and barely making ends meet.\n\nThen I implemented the ${topic} strategy.\n\nNow I work 20 hours a week and make 3x more.\n\nHere's the complete system:`,
       affiliate: `I tried every ${topic} method out there.\n\nMost were complete garbage.\n\nThen I found this one.\n\nIt's the only one that actually works.\n\nHere's why:`
     };
     
-    return stories[strategy.type] || stories.course;
+    const strategyType = strategy?.type || 'course';
+    return stories[strategyType] || stories.course;
   };
 
   const generateDetailedFramework = (topic: string, strategy: any) => {
-    const frameworks = {
+    const frameworks: Record<string, string> = {
       course: `💡 The 3-Step ${topic.toUpperCase()} Framework:\n\n1️⃣ Foundation Phase (Week 1-2)\n   • Master the core principles\n   • Build the right mindset\n   • Set up your systems\n   • Create your baseline\n   • Establish daily habits\n\n2️⃣ Acceleration Phase (Week 3-8)\n   • Scale your approach\n   • Optimize for results\n   • Break through plateaus\n   • Implement advanced strategies\n   • Build momentum\n\n3️⃣ Mastery Phase (Week 9-12)\n   • Advanced techniques\n   • Automation & scaling\n   • Long-term success\n   • System optimization\n   • Sustainable growth`,
       product: `🔥 The 3-Step ${topic.toUpperCase()} System:\n\n1️⃣ Discovery Phase\n   • Identify your unique angle\n   • Research market demand\n   • Validate your approach\n   • Test your assumptions\n   • Build your foundation\n\n2️⃣ Launch Phase\n   • Execute your strategy\n   • Optimize for conversion\n   • Scale your reach\n   • Build your audience\n   • Generate momentum\n\n3️⃣ Scale Phase\n   • Automate processes\n   • Expand your reach\n   • Optimize for growth\n   • Build systems\n   • Create sustainability`,
       service: `🎯 The 3-Step ${topic.toUpperCase()} Process:\n\n1️⃣ Assessment & Strategy\n   • Deep dive analysis\n   • Custom roadmap creation\n   • Goal alignment\n   • Resource planning\n   • Timeline development\n\n2️⃣ Implementation & Support\n   • Hands-on guidance\n   • Real-time feedback\n   • Continuous optimization\n   • Performance tracking\n   • Problem solving\n\n3️⃣ Optimization & Growth\n   • Performance analysis\n   • Scaling strategies\n   • Long-term planning\n   • System refinement\n   • Sustainable success`,
       affiliate: `⚡ The 3-Step ${topic.toUpperCase()} Method:\n\n1️⃣ Research & Selection\n   • Thorough product research\n   • Market analysis\n   • Personal testing\n   • Value assessment\n   • Quality verification\n\n2️⃣ Implementation & Testing\n   • Strategic promotion\n   • Performance tracking\n   • Conversion optimization\n   • Audience building\n   • Trust establishment\n\n3️⃣ Scaling & Optimization\n   • Automated systems\n   • Expanded reach\n   • Performance analysis\n   • Continuous improvement\n   • Sustainable growth`
     };
     
-    return frameworks[strategy.type] || frameworks.course;
+    const strategyType = strategy?.type || 'course';
+    return frameworks[strategyType] || frameworks.course;
   };
 
   const generateSocialProof = (topic: string, strategy: any) => {
-    const proofs = {
+    const proofs: Record<string, string> = {
       course: `💎 Real Results from Real People:\n\n• Sarah went from $0 to $47K in 6 months\n• Mike increased his income by 340%\n• Jessica quit her job after 90 days\n• David built a 6-figure business\n• Lisa achieved financial freedom\n\nThese aren't outliers - they're the norm for people who follow this system.`,
       product: `💎 Proven Track Record:\n\n• 10,000+ success stories\n• 95% satisfaction rate\n• 4.9/5 average rating\n• 87% see results in 30 days\n• 73% achieve their goals\n\nThis isn't hype - it's documented results.`,
       service: `💎 Client Success Stories:\n\n• 25,000+ professionals helped\n• Average 3.2x ROI increase\n• 94% client satisfaction\n• 89% achieve their goals\n• 76% see results in 60 days\n\nThese are real people with real results.`,
       affiliate: `💎 Why I Personally Recommend This:\n\n• I've used it myself with great results\n• 15,000+ positive reviews\n• 4.8/5 average rating\n• 92% would recommend to others\n• 81% see immediate value\n\nI only recommend what I truly believe in.`
     };
     
-    return proofs[strategy.type] || proofs.course;
+    const strategyType = strategy?.type || 'course';
+    return proofs[strategyType] || proofs.course;
   };
 
   const generateAdvancedInsights = (topic: string, strategy: any) => {
-    const insights = {
+    const insights: Record<string, string> = {
       course: `🎯 Key Insights That Change Everything:\n\n• The psychological trigger that 95% miss\n• The exact timeline that delivers results\n• The mindset shift that changes everything\n• The hidden bottleneck most people ignore\n• The breakthrough moment to watch for\n• The system that makes it all work\n• The automation that scales everything\n• The optimization that maximizes results\n\n⚡ Pro Tip: Start with the foundation. Most people jump to step 3 and fail.\n\n🎯 The Secret: It's not about what you do, it's about WHEN you do it.`,
       product: `🎯 What Makes This Completely Different:\n\n• Based on real customer success data\n• Backed by 3 years of research\n• Designed for maximum impact\n• Tested across multiple industries\n• Continuously optimized\n• Proven conversion strategies\n• Advanced targeting methods\n• Scalable growth systems\n\n⚡ Limited Time: This offer won't last long.\n\n🎯 The Truth: Most people fail because they don't have the right system.`,
       service: `🎯 What You Actually Get:\n\n• Personalized strategy tailored to you\n• Expert guidance every step of the way\n• Measurable results you can track\n• Ongoing support and optimization\n• Access to exclusive resources\n• Proven methodologies\n• Advanced techniques\n• Continuous improvement\n\n⚡ Ready to transform? Let's get started.\n\n🎯 The Difference: I don't just teach, I implement with you.`,
       affiliate: `🎯 What Makes It Special:\n\n• I've personally tested and vetted it\n• Real results from real people\n• Outstanding customer support\n• Continuous updates and improvements\n• Risk-free guarantee\n• Proven track record\n• Exceptional value\n• Trusted recommendation\n\n⚡ Don't miss out on this opportunity.\n\n🎯 The Truth: I only recommend what I truly believe in.`
     };
     
-    return insights[strategy.type] || insights.course;
+    const strategyType = strategy?.type || 'course';
+    return insights[strategyType] || insights.course;
   };
 
   const generateAdvancedCTA = (topic: string, platform: string, strategy: any) => {
     const cleanTopic = topic.replace(/\s+/g, '');
-    const ctas = {
+    const ctas: Record<string, string> = {
       course: `🎯 Ready to transform your life?\n\nThis method works for everyone who commits.\n\nClick the link in bio to get started!\n\n#${cleanTopic} #Success #Transformation #LifeChanging #GameChanger`,
       product: `🔥 Don't wait - this opportunity is limited!\n\nJoin thousands who have already transformed their lives.\n\nClick the link in bio now!\n\n#${cleanTopic} #Success #Opportunity #GameChanger #LimitedTime`,
       service: `💼 Ready to take the next step?\n\nLet's work together to achieve your goals.\n\nDM me or click the link in bio!\n\n#${cleanTopic} #Success #Partnership #Growth #Collaboration`,
       affiliate: `⚡ This is your chance to change everything!\n\nI've personally vetted this and the results are incredible.\n\nClick the link in bio to get started!\n\n#${cleanTopic} #Recommendation #Success #Trusted #Verified`
     };
     
-    return ctas[strategy.type] || ctas.course;
+    const strategyType = strategy?.type || 'course';
+    return ctas[strategyType] || ctas.course;
   };
 
   const generatePremiumHook = (input: string, platform: string, contentType: string, strategy: any) => {
