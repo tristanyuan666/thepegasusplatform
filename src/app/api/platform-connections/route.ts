@@ -58,30 +58,50 @@ export async function POST(request: NextRequest) {
       .eq('platform', platform)
       .eq('is_active', true);
 
-    if (existingConnections && existingConnections.length > 0) {
-      return NextResponse.json(
-        { error: `You already have an active connection to ${platform}. Please disconnect the existing connection first.` },
-        { status: 409 }
-      );
-    }
+    let data, error;
 
-    // Insert the connection
-    const { data, error } = await supabase
-      .from('platform_connections')
-      .insert({
-        user_id: user.id,
-        platform,
-        platform_username,
-        platform_user_id: platform_user_id || platform_username,
-        username: username || platform_username,
-        follower_count: parseInt(follower_count) || 0,
-        engagement_rate: parseFloat(engagement_rate) || 0.0,
-        is_active: true,
-        connected_at: new Date().toISOString(),
-        last_sync: new Date().toISOString()
-      })
-      .select()
-      .single();
+    if (existingConnections && existingConnections.length > 0) {
+      // Update existing connection instead of creating new one
+      const existingConnection = existingConnections[0];
+      const { data: updateData, error: updateError } = await supabase
+        .from('platform_connections')
+        .update({
+          platform_username,
+          platform_user_id: platform_user_id || platform_username,
+          username: username || platform_username,
+          follower_count: parseInt(follower_count) || 0,
+          engagement_rate: parseFloat(engagement_rate) || 0.0,
+          last_sync: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', existingConnection.id)
+        .select()
+        .single();
+
+      data = updateData;
+      error = updateError;
+    } else {
+      // Create new connection
+      const { data: insertData, error: insertError } = await supabase
+        .from('platform_connections')
+        .insert({
+          user_id: user.id,
+          platform,
+          platform_username,
+          platform_user_id: platform_user_id || platform_username,
+          username: username || platform_username,
+          follower_count: parseInt(follower_count) || 0,
+          engagement_rate: parseFloat(engagement_rate) || 0.0,
+          is_active: true,
+          connected_at: new Date().toISOString(),
+          last_sync: new Date().toISOString()
+        })
+        .select()
+        .single();
+
+      data = insertData;
+      error = insertError;
+    }
 
     if (error) {
       console.error('Database error:', error);

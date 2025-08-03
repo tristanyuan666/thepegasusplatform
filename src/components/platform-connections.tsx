@@ -692,9 +692,27 @@ export default function PlatformConnections({
         conn => conn.platform === platform && conn.is_active
       );
 
-      if (existingConnection) {
+      // Also check database directly to catch any connections not in local state
+      const { data: dbConnections, error: dbError } = await supabase
+        .from("platform_connections")
+        .select("*")
+        .eq("user_id", user.id)
+        .eq("platform", platform)
+        .eq("is_active", true);
+
+      if (dbError) {
+        console.error("Error checking existing connections:", dbError);
+      }
+
+      const hasExistingConnection = existingConnection || (dbConnections && dbConnections.length > 0);
+      const existingDbConnection = dbConnections && dbConnections.length > 0 ? dbConnections[0] : null;
+
+      if (hasExistingConnection) {
         const platformName = platforms.find(p => p.id === platform)?.name || platform;
-        throw new Error(`You already have an active connection to ${platformName} (@${existingConnection.username}). Please disconnect the existing connection first.`);
+        const existingUsername = existingConnection?.username || existingDbConnection?.username || 'unknown';
+        
+        // Instead of throwing error, update the existing connection
+        console.log(`Updating existing connection to ${platformName} (@${existingUsername})`);
       }
 
       // Try direct database insert first
@@ -791,7 +809,9 @@ export default function PlatformConnections({
         onConnectionsUpdate(updatedConnections);
       }
 
-      setSuccess(`Successfully connected to ${manualConnectionData.username} on ${platform}! Your comprehensive data has been saved.`);
+      const platformName = platforms.find(p => p.id === platform)?.name || platform;
+      const action = hasExistingConnection ? 'updated' : 'connected to';
+      setSuccess(`Successfully ${action} ${manualConnectionData.username} on ${platformName}! Your data has been saved.`);
       setTimeout(() => setSuccess(null), 3000);
       
       // Reset manual connection data
@@ -1162,16 +1182,16 @@ export default function PlatformConnections({
           </DialogHeader>
 
           <div className="space-y-4">
-            {/* Show warning if already connected */}
+            {/* Show info if already connected */}
             {selectedPlatform && getConnectionStatus(selectedPlatform) && (
-              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                 <div className="flex items-start gap-2">
-                  <AlertTriangle className="w-5 h-5 text-yellow-600 mt-0.5 flex-shrink-0" />
-                  <div className="text-sm text-yellow-800">
-                    <p className="font-medium mb-1">Already Connected</p>
-                    <p className="text-yellow-700">
+                  <AlertCircle className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                  <div className="text-sm text-blue-800">
+                    <p className="font-medium mb-1">Update Existing Connection</p>
+                    <p className="text-blue-700">
                       You already have an active connection to {platforms.find(p => p.id === selectedPlatform)?.name}. 
-                      You'll need to disconnect the existing connection first before creating a new one.
+                      Your new data will update the existing connection.
                     </p>
                   </div>
                 </div>
