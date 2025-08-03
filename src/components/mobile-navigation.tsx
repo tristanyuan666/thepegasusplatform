@@ -56,7 +56,7 @@ export default function MobileNavigation({
   const pathname = usePathname();
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-0.5 py-0 md:hidden z-50">
+    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-0 py-0 md:hidden z-50">
       <div className="grid grid-cols-5 gap-0">
         {navigationItems.map((item) => {
           const isActive = activeTab === item.name.toLowerCase();
@@ -68,8 +68,8 @@ export default function MobileNavigation({
                 key={item.name}
                 className="flex flex-col items-center gap-0 p-0.5 rounded-lg opacity-50 cursor-not-allowed"
               >
-                <item.icon className="w-3 h-3 text-gray-400" />
-                <span className="text-[7px] font-medium text-gray-400 leading-tight">{item.name}</span>
+                <item.icon className="w-2.5 h-2.5 text-gray-400" />
+                <span className="text-[6px] font-medium text-gray-400 leading-tight">{item.name}</span>
               </div>
             );
           }
@@ -88,8 +88,8 @@ export default function MobileNavigation({
               data-mobile-nav="true"
               data-nav-item={item.name.toLowerCase()}
             >
-              <item.icon className="w-3 h-3" />
-              <span className="text-[7px] font-medium leading-tight">{item.name}</span>
+              <item.icon className="w-2.5 h-2.5" />
+              <span className="text-[6px] font-medium leading-tight">{item.name}</span>
             </Link>
           );
         })}

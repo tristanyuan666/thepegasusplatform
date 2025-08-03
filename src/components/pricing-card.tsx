@@ -380,7 +380,7 @@ export default function PricingCard({
       )}
 
       <div
-        className={`bg-white p-2 md:p-8 h-full relative overflow-hidden transition-all duration-300 rounded-2xl shadow-lg hover:shadow-xl border ${
+        className={`bg-white p-1.5 md:p-8 h-full relative overflow-hidden transition-all duration-300 rounded-2xl shadow-lg hover:shadow-xl border ${
           safePlan.popular
             ? "border-2 border-blue-500/50"
             : "border-gray-200 hover:border-blue-400/50"
@@ -393,17 +393,17 @@ export default function PricingCard({
 
         {/* Header */}
         <div className="relative z-10">
-          <div className="flex items-center gap-1.5 md:gap-4 mb-2 md:mb-6">
+          <div className="flex items-center gap-1 md:gap-4 mb-1.5 md:mb-6">
             <div
-              className={`p-1 md:p-3 rounded-lg md:rounded-2xl bg-gradient-to-r ${safePlan.gradient} text-white group-hover:scale-110 transition-transform duration-300`}
+              className={`p-0.5 md:p-3 rounded-md md:rounded-2xl bg-gradient-to-r ${safePlan.gradient} text-white group-hover:scale-110 transition-transform duration-300`}
             >
               {safePlan.icon}
             </div>
             <div>
-              <h3 className="text-[10px] md:text-2xl font-bold text-gray-900 group-hover:text-blue-600 transition-all duration-300">
+              <h3 className="text-[8px] md:text-2xl font-bold text-gray-900 group-hover:text-blue-600 transition-all duration-300">
                 {safePlan.name}
               </h3>
-              <p className="text-gray-600 text-[6px] md:text-sm">{safePlan.description}</p>
+              <p className="text-gray-600 text-[4px] md:text-sm">{safePlan.description}</p>
             </div>
           </div>
 
