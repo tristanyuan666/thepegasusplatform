@@ -547,13 +547,13 @@ export default function PricingPage({ searchParams }: PricingPageProps) {
                 Premium Plans for Serious Creators
               </span>
             </div>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-black mb-3 sm:mb-4 md:mb-6 px-4">
+            <h1 className="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-black mb-3 sm:mb-4 md:mb-6 px-4">
               Choose Your{" "}
               <span className="bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
                 Creator Plan
               </span>
             </h1>
-            <p className="text-sm sm:text-base md:text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed mb-6 sm:mb-8 md:mb-12 px-4">
+            <p className="text-xs sm:text-base md:text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed mb-6 sm:mb-8 md:mb-12 px-4">
               Unlock the full power of AI-driven content creation and audience
               growth. Premium plans designed for serious creators.
             </p>
@@ -569,15 +569,15 @@ export default function PricingPage({ searchParams }: PricingPageProps) {
               </span>
               <button
                 onClick={() => setIsYearly(!isYearly)}
-                className={`relative w-14 h-7 md:w-16 md:h-8 rounded-full transition-all duration-300 hover:scale-105 shadow-md hover-target interactive-element ${
+                className={`relative w-14 h-7 md:w-12 md:h-6 rounded-full transition-all duration-300 hover:scale-105 shadow-md hover-target interactive-element ${
                   isYearly ? "bg-blue-600" : "bg-gray-300"
                 }`}
                 data-interactive="true"
                 aria-label="Toggle billing period"
               >
                 <div
-                  className={`absolute top-0.5 left-0.5 w-6 h-6 md:w-7 md:h-7 bg-white rounded-full transition-transform duration-300 shadow-lg ${
-                    isYearly ? "translate-x-7 md:translate-x-9" : "translate-x-0"
+                  className={`absolute top-0.5 left-0.5 w-6 h-6 md:w-5 md:h-5 bg-white rounded-full transition-transform duration-300 shadow-lg ${
+                    isYearly ? "translate-x-7 md:translate-x-6" : "translate-x-0"
                   }`}
                 />
               </button>

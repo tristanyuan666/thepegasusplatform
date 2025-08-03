@@ -1013,10 +1013,10 @@ export default function PlatformConnections({
         <div className="grid grid-cols-3 gap-2 md:gap-4">
           <div className="bg-white rounded-lg p-2 md:p-4 border">
             <div className="flex items-center gap-1 md:gap-2 mb-1 md:mb-2">
-              <Users className="w-3 h-3 md:w-4 md:h-4 text-blue-600" />
-              <span className="text-xs font-medium text-gray-700">Followers</span>
+              <Users className="w-2.5 h-2.5 md:w-4 md:h-4 text-blue-600" />
+              <span className="text-[10px] font-medium text-gray-700">Followers</span>
             </div>
-            <p className="text-sm md:text-2xl font-bold text-gray-900">
+            <p className="text-xs md:text-2xl font-bold text-gray-900">
               {localConnections
                 .filter(conn => conn.is_active)
                 .reduce((sum, conn) => sum + (conn.follower_count || 0), 0)
@@ -1026,20 +1026,20 @@ export default function PlatformConnections({
 
           <div className="bg-white rounded-lg p-2 md:p-4 border">
             <div className="flex items-center gap-1 md:gap-2 mb-1 md:mb-2">
-              <TrendingUp className="w-3 h-3 md:w-4 md:h-4 text-green-600" />
-              <span className="text-xs font-medium text-gray-700">Platforms</span>
+              <TrendingUp className="w-2.5 h-2.5 md:w-4 md:h-4 text-green-600" />
+              <span className="text-[10px] font-medium text-gray-700">Platforms</span>
             </div>
-            <p className="text-sm md:text-2xl font-bold text-gray-900">
+            <p className="text-xs md:text-2xl font-bold text-gray-900">
               {localConnections.filter(conn => conn.is_active).length}
             </p>
           </div>
 
           <div className="bg-white rounded-lg p-2 md:p-4 border">
             <div className="flex items-center gap-1 md:gap-2 mb-1 md:mb-2">
-              <Eye className="w-3 h-3 md:w-4 md:h-4 text-purple-600" />
-              <span className="text-xs font-medium text-gray-700">Status</span>
+              <Eye className="w-2.5 h-2.5 md:w-4 md:h-4 text-purple-600" />
+              <span className="text-[10px] font-medium text-gray-700">Status</span>
             </div>
-            <p className="text-xs text-gray-600">
+            <p className="text-[10px] text-gray-600">
               {localConnections.filter(conn => conn.is_active).length > 0
                 ? "Connected"
                 : "None"}
@@ -1065,8 +1065,8 @@ export default function PlatformConnections({
                       <IconComponent className="w-3.5 h-3.5 md:w-5 md:h-5 text-white" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <h3 className="font-semibold text-gray-900 text-sm md:text-base truncate">{platform.name}</h3>
-                      <p className="text-xs md:text-sm text-gray-600 truncate">{platform.description}</p>
+                      <h3 className="font-semibold text-gray-900 text-xs md:text-base truncate">{platform.name}</h3>
+                      <p className="text-[10px] md:text-sm text-gray-600 truncate">{platform.description}</p>
                     </div>
                   </div>
                   

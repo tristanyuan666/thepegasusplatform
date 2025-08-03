@@ -226,10 +226,10 @@ export default function DashboardNavbar({
               <Button
                 variant="ghost"
                 size="icon"
-                className="hover-target interactive-element w-7 h-7 md:w-10 md:h-10"
+                className="hover-target interactive-element w-6 h-6 md:w-10 md:h-10"
                 data-interactive="true"
               >
-                <UserCircle className="h-4 w-4 md:h-6 md:w-6" />
+                <UserCircle className="h-3 w-3 md:h-6 md:w-6" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">

@@ -400,10 +400,10 @@ export default function PricingCard({
               {safePlan.icon}
             </div>
             <div>
-              <h3 className="text-base md:text-2xl font-bold text-gray-900 group-hover:text-blue-600 transition-all duration-300">
+              <h3 className="text-sm md:text-2xl font-bold text-gray-900 group-hover:text-blue-600 transition-all duration-300">
                 {safePlan.name}
               </h3>
-              <p className="text-gray-600 text-xs md:text-sm">{safePlan.description}</p>
+              <p className="text-gray-600 text-[10px] md:text-sm">{safePlan.description}</p>
             </div>
           </div>
 

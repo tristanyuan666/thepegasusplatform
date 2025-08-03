@@ -281,12 +281,12 @@ export default function DashboardHome({
         <CardContent className="p-4 md:p-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
-              <h1 className="text-lg md:text-2xl font-bold mb-2 flex items-center gap-2">
-                <User className="w-5 h-5 md:w-6 md:h-6" />
+              <h1 className="text-base md:text-2xl font-bold mb-2 flex items-center gap-2">
+                <User className="w-4 h-4 md:w-6 md:h-6" />
                 Welcome back, {userProfile?.full_name || userProfile?.name || "Creator"}!
               </h1>
-              <p className="text-blue-100 flex items-center gap-2 text-sm md:text-base">
-                <Rocket className="w-4 h-4" />
+              <p className="text-blue-100 flex items-center gap-2 text-xs md:text-base">
+                <Rocket className="w-3 h-3 md:w-4 md:h-4" />
                 Ready to create some viral content today?
               </p>
             </div>
@@ -305,18 +305,18 @@ export default function DashboardHome({
           <CardContent className="p-3 md:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs md:text-sm text-gray-600">Total Followers</p>
-                <p className="text-lg md:text-2xl font-bold text-gray-900">
+                <p className="text-[10px] md:text-sm text-gray-600">Total Followers</p>
+                <p className="text-sm md:text-2xl font-bold text-gray-900">
                   {analyticsData ? formatNumber(analyticsData.total_followers) : "0"}
                 </p>
                 <div className="flex items-center gap-1 mt-1">
                   {analyticsData && getGrowthIcon(analyticsData.growth_rate)}
-                  <span className={`text-xs font-medium ${getGrowthColor(analyticsData?.growth_rate || 0)}`}>
+                  <span className={`text-[10px] font-medium ${getGrowthColor(analyticsData?.growth_rate || 0)}`}>
                     {analyticsData?.growth_rate || 0}% this month
                   </span>
                 </div>
               </div>
-              <Users className="w-5 h-5 md:w-8 md:h-8 text-blue-600" />
+              <Users className="w-4 h-4 md:w-8 md:h-8 text-blue-600" />
             </div>
           </CardContent>
         </Card>
@@ -325,16 +325,16 @@ export default function DashboardHome({
           <CardContent className="p-3 md:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs md:text-sm text-gray-600">Total Views</p>
-                <p className="text-lg md:text-2xl font-bold text-gray-900">
+                <p className="text-[10px] md:text-sm text-gray-600">Total Views</p>
+                <p className="text-sm md:text-2xl font-bold text-gray-900">
                   {analyticsData ? formatNumber(analyticsData.total_views) : "0"}
                 </p>
                 <div className="flex items-center gap-1 mt-1">
-                  <Eye className="w-3 h-3 md:w-4 md:h-4 text-gray-400" />
-                  <span className="text-xs text-gray-600">lifetime views</span>
+                  <Eye className="w-2.5 h-2.5 md:w-4 md:h-4 text-gray-400" />
+                  <span className="text-[10px] text-gray-600">lifetime views</span>
                 </div>
               </div>
-              <Eye className="w-5 h-5 md:w-8 md:h-8 text-green-600" />
+              <Eye className="w-4 h-4 md:w-8 md:h-8 text-green-600" />
             </div>
           </CardContent>
         </Card>
@@ -343,8 +343,8 @@ export default function DashboardHome({
           <CardContent className="p-3 md:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs md:text-sm text-gray-600">Engagement Rate</p>
-                <p className="text-lg md:text-2xl font-bold text-gray-900">
+                <p className="text-[10px] md:text-sm text-gray-600">Engagement Rate</p>
+                <p className="text-sm md:text-2xl font-bold text-gray-900">
                   {analyticsData ? analyticsData.engagement_rate.toFixed(1) : "0"}%
                 </p>
                 <div className="flex items-center gap-1 mt-1">
