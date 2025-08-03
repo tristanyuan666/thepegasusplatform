@@ -146,74 +146,6 @@ export default function DashboardPlatforms({
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Platform Connections</h1>
-          <p className="text-gray-600 mt-2">
-            Connect your social media accounts to track performance and analytics
-          </p>
-        </div>
-      </div>
-
-      {/* Connection Status Overview */}
-      <Card className="p-6 bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h3 className="text-lg font-semibold text-gray-900">Connection Overview</h3>
-            <p className="text-gray-600">
-              {localConnections.filter(conn => conn.is_active).length} platforms connected
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
-            <Users className="w-5 h-5 text-blue-600" />
-            <span className="text-sm font-medium text-gray-700">
-              {localConnections
-                .filter(conn => conn.is_active)
-                .reduce((sum, conn) => sum + (conn.follower_count || 0), 0)
-                .toLocaleString()} total followers
-            </span>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-white rounded-lg p-4 border">
-            <div className="flex items-center gap-2 mb-2">
-              <TrendingUp className="w-4 h-4 text-green-600" />
-              <span className="text-sm font-medium text-gray-700">Active Platforms</span>
-            </div>
-            <p className="text-2xl font-bold text-gray-900">
-              {localConnections.filter(conn => conn.is_active).length}
-            </p>
-          </div>
-
-          <div className="bg-white rounded-lg p-4 border">
-            <div className="flex items-center gap-2 mb-2">
-              <Users className="w-4 h-4 text-blue-600" />
-              <span className="text-sm font-medium text-gray-700">Total Followers</span>
-            </div>
-            <p className="text-2xl font-bold text-gray-900">
-              {localConnections
-                .filter(conn => conn.is_active)
-                .reduce((sum, conn) => sum + (conn.follower_count || 0), 0)
-                .toLocaleString()}
-            </p>
-          </div>
-
-          <div className="bg-white rounded-lg p-4 border">
-            <div className="flex items-center gap-2 mb-2">
-              <Calendar className="w-4 h-4 text-purple-600" />
-              <span className="text-sm font-medium text-gray-700">Last Sync</span>
-            </div>
-            <p className="text-sm text-gray-600">
-              {localConnections.filter(conn => conn.is_active).length > 0
-                ? "Recently updated"
-                : "No connections"}
-            </p>
-          </div>
-        </div>
-      </Card>
-
       {/* Platform Connections Component */}
       <PlatformConnections
         userId={userProfile.user_id}
@@ -233,15 +165,6 @@ export default function DashboardPlatforms({
           this is useful for managing shared accounts or collaborating with teams. Your data is used to provide 
           personalized analytics and content recommendations.
         </p>
-        <div className="flex gap-3">
-          <Button variant="outline" size="sm">
-            <ExternalLink className="w-4 h-4 mr-2" />
-            View Documentation
-          </Button>
-          <Button variant="outline" size="sm">
-            Contact Support
-          </Button>
-        </div>
       </Card>
     </div>
   );
