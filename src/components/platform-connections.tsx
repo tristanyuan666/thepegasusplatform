@@ -144,7 +144,6 @@ export default function PlatformConnections({
   const [manualConnectionData, setManualConnectionData] = useState({
     username: "",
     followerCount: "",
-    bio: "",
     engagementRate: "",
     averageViews: "",
     averageLikes: "",
@@ -652,9 +651,6 @@ export default function PlatformConnections({
       }
 
       // Validate required fields
-      if (!manualConnectionData.bio) {
-        throw new Error("Bio is required");
-      }
       if (!manualConnectionData.niche) {
         throw new Error("Content niche is required");
       }
@@ -671,22 +667,8 @@ export default function PlatformConnections({
         platform: platform,
         platform_username: manualConnectionData.username,
         platform_user_id: manualConnectionData.username,
-        username: manualConnectionData.username,
-        display_name: manualConnectionData.username,
-        bio: manualConnectionData.bio,
-        profile_image: null,
-        verified: false,
         follower_count: parseInt(manualConnectionData.followerCount) || 0,
         engagement_rate: parseFloat(manualConnectionData.engagementRate) || 0,
-        average_views: parseInt(manualConnectionData.averageViews) || 0,
-        average_likes: parseInt(manualConnectionData.averageLikes) || 0,
-        average_comments: parseInt(manualConnectionData.averageComments) || 0,
-        average_shares: parseInt(manualConnectionData.averageShares) || 0,
-        content_type: manualConnectionData.contentType,
-        niche: manualConnectionData.niche,
-        location: null,
-        website: null,
-        contact_email: null,
         is_active: true,
         connected_at: new Date().toISOString(),
         last_sync: new Date().toISOString(),
@@ -695,6 +677,14 @@ export default function PlatformConnections({
         metadata: {
           manual_connection: true,
           connection_date: new Date().toISOString(),
+          username: manualConnectionData.username,
+          display_name: manualConnectionData.username,
+          average_views: parseInt(manualConnectionData.averageViews) || 0,
+          average_likes: parseInt(manualConnectionData.averageLikes) || 0,
+          average_comments: parseInt(manualConnectionData.averageComments) || 0,
+          average_shares: parseInt(manualConnectionData.averageShares) || 0,
+          content_type: manualConnectionData.contentType,
+          niche: manualConnectionData.niche,
           data_completeness: calculateDataCompleteness(manualConnectionData)
         }
       };
@@ -720,7 +710,7 @@ export default function PlatformConnections({
         platform_username: manualConnectionData.username,
         username: manualConnectionData.username,
         display_name: manualConnectionData.username,
-        bio: manualConnectionData.bio,
+        bio: null,
         profile_image: null,
         verified: false,
         follower_count: parseInt(manualConnectionData.followerCount) || 0,
@@ -755,7 +745,6 @@ export default function PlatformConnections({
       setManualConnectionData({
         username: "",
         followerCount: "",
-        bio: "",
         engagementRate: "",
         averageViews: "",
         averageLikes: "",
@@ -778,7 +767,7 @@ export default function PlatformConnections({
 
   // Helper function to calculate data completeness
   const calculateDataCompleteness = (data: any) => {
-    const requiredFields = ['username', 'bio', 'niche', 'followerCount', 'engagementRate'];
+    const requiredFields = ['username', 'niche', 'followerCount', 'engagementRate'];
     const optionalFields = ['averageViews', 'averageLikes', 'averageComments', 'averageShares'];
     
     const requiredComplete = requiredFields.filter(field => data[field] && data[field] !== "").length;
@@ -894,7 +883,6 @@ export default function PlatformConnections({
     setManualConnectionData({
       username: "",
       followerCount: "",
-      bio: "",
       engagementRate: "",
       averageViews: "",
       averageLikes: "",
@@ -1289,22 +1277,7 @@ export default function PlatformConnections({
                     </div>
                   </div>
 
-                  <div>
-                    <Label htmlFor="manual-bio" className="text-sm font-medium">
-                      Bio/Description <span className="text-red-500">*</span>
-                    </Label>
-                    <Textarea
-                      id="manual-bio"
-                      placeholder="Enter your bio or description"
-                      value={manualConnectionData.bio}
-                      onChange={(e) => setManualConnectionData({
-                        ...manualConnectionData,
-                        bio: e.target.value
-                      })}
-                      required
-                      rows={3}
-                    />
-                  </div>
+
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
@@ -1452,7 +1425,7 @@ export default function PlatformConnections({
                   </Button>
                   <Button
                     onClick={() => selectedPlatform && handleManualConnect(selectedPlatform)}
-                    disabled={!selectedPlatform || !manualConnectionData.username || !manualConnectionData.bio || !manualConnectionData.niche || !manualConnectionData.followerCount || !manualConnectionData.engagementRate || isConnecting === selectedPlatform}
+                    disabled={!selectedPlatform || !manualConnectionData.username || !manualConnectionData.niche || !manualConnectionData.followerCount || !manualConnectionData.engagementRate || isConnecting === selectedPlatform}
                     className="flex-1"
                   >
                     {isConnecting === selectedPlatform ? (
