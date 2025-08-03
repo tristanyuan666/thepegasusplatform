@@ -11,6 +11,7 @@ import DashboardRevenue from "../../components/dashboard-revenue";
 import DashboardPlatforms from "../../components/dashboard-platforms";
 import DashboardSettings from "../../components/dashboard-settings";
 import LoadingSpinner from "@/components/loading-spinner";
+import MobileNavigation from "@/components/mobile-navigation";
 
 type DashboardTab = "home" | "analytics" | "revenue" | "platforms" | "settings";
 
@@ -371,7 +372,7 @@ function DashboardContent() {
         hasFeatureAccess={hasFeatureAccess}
       />
       
-      <main className="pt-20 pb-8">
+      <main className="pt-16 md:pt-20 pb-20 md:pb-8">
         <div className="container mx-auto px-4">
           {activeTab === "home" && (
                 <DashboardHome
@@ -437,7 +438,13 @@ function DashboardContent() {
           )}
         </div>
       </main>
-      </div>
+      
+      {/* Mobile Navigation */}
+      <MobileNavigation 
+        activeTab={activeTab}
+        hasFeatureAccess={hasFeatureAccess}
+      />
+    </div>
   );
 }
 

@@ -123,26 +123,26 @@ export default function DashboardNavbar({
   }
 
   return (
-    <nav className="w-full border-b border-gray-200 bg-white py-4">
+    <nav className="w-full border-b border-gray-200 bg-white py-3 md:py-4">
       <div className="container mx-auto px-4 flex justify-between items-center">
         {/* Logo */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 md:gap-4">
           <Link
             href="/"
-            className="text-xl font-bold hover-target interactive-element"
+            className="text-lg md:text-xl font-bold hover-target interactive-element"
             data-interactive="true"
           >
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">P</span>
+            <div className="flex items-center gap-1 md:gap-2">
+              <div className="w-6 h-6 md:w-8 md:h-8 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-xs md:text-sm">P</span>
               </div>
-              <span className="gradient-text-primary">Pegasus</span>
+              <span className="gradient-text-primary hidden sm:inline">Pegasus</span>
             </div>
           </Link>
         </div>
 
-        {/* Navigation Tabs */}
-        <div className="hidden md:flex items-center gap-1">
+        {/* Navigation Tabs - Hidden on mobile, shown on desktop */}
+        <div className="hidden lg:flex items-center gap-1">
           <Link href="/dashboard?tab=home">
             <Button
               variant={activeTab === "home" ? "default" : "ghost"}
@@ -211,12 +211,13 @@ export default function DashboardNavbar({
         </div>
 
         {/* User Menu */}
-        <div className="flex gap-4 items-center">
-          {/* Plan Badge */}
+        <div className="flex gap-2 md:gap-4 items-center">
+          {/* Plan Badge - Hidden on mobile */}
           {subscription && subscription.plan_name && (
-            <Badge className={getPlanColor(subscription.plan_name)}>
+            <Badge className={`${getPlanColor(subscription.plan_name)} hidden md:flex`}>
               <Crown className="w-3 h-3 mr-1" />
-              {subscription.plan_name} ({subscription.billing_cycle})
+              <span className="hidden lg:inline">{subscription.plan_name} ({subscription.billing_cycle})</span>
+              <span className="lg:hidden">{subscription.plan_name}</span>
             </Badge>
           )}
           
@@ -225,10 +226,10 @@ export default function DashboardNavbar({
               <Button
                 variant="ghost"
                 size="icon"
-                className="hover-target interactive-element"
+                className="hover-target interactive-element w-8 h-8 md:w-10 md:h-10"
                 data-interactive="true"
               >
-                <UserCircle className="h-6 w-6" />
+                <UserCircle className="h-5 w-5 md:h-6 md:w-6" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">

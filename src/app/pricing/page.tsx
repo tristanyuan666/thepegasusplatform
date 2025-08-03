@@ -530,7 +530,7 @@ export default function PricingPage({ searchParams }: PricingPageProps) {
       )}
 
       {/* Hero Section */}
-      <section className="py-16 sm:py-20 md:py-24 bg-gradient-to-br from-blue-50 to-white relative overflow-hidden">
+      <section className="py-12 sm:py-16 md:py-20 lg:py-24 bg-gradient-to-br from-blue-50 to-white relative overflow-hidden">
         <div className="absolute inset-0">
           <div className="absolute top-20 left-10 w-72 h-72 bg-blue-200/20 rounded-full blur-3xl animate-pulse" />
           <div
@@ -540,28 +540,28 @@ export default function PricingPage({ searchParams }: PricingPageProps) {
         </div>
 
         <div className="container mx-auto px-4 sm:px-6 relative z-10">
-          <div className="text-center mb-12 sm:mb-16">
-            <div className="inline-flex items-center px-4 sm:px-6 py-2 sm:py-3 glass-premium mb-6 sm:mb-8 hover-lift">
+          <div className="text-center mb-8 sm:mb-12 md:mb-16">
+            <div className="inline-flex items-center px-3 sm:px-4 md:px-6 py-2 sm:py-3 glass-premium mb-4 sm:mb-6 md:mb-8 hover-lift">
               <Crown className="w-4 sm:w-5 h-4 sm:h-5 text-blue-600 mr-2 sm:mr-3" />
               <span className="text-gray-800 text-xs sm:text-sm font-semibold">
                 Premium Plans for Serious Creators
               </span>
             </div>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-black mb-4 sm:mb-6 px-4">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-black mb-3 sm:mb-4 md:mb-6 px-4">
               Choose Your{" "}
               <span className="bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
                 Creator Plan
               </span>
             </h1>
-            <p className="text-base sm:text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed mb-8 sm:mb-12 px-4">
+            <p className="text-sm sm:text-base md:text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed mb-6 sm:mb-8 md:mb-12 px-4">
               Unlock the full power of AI-driven content creation and audience
               growth. Premium plans designed for serious creators.
             </p>
 
             {/* Billing Toggle - Fixed Mobile Version */}
-            <div className="flex items-center justify-center gap-4 mb-8 bg-white/80 backdrop-blur-md p-3 rounded-2xl shadow-lg border border-white/40 max-w-md mx-auto">
+            <div className="flex items-center justify-center gap-3 md:gap-4 mb-6 md:mb-8 bg-white/80 backdrop-blur-md p-2 md:p-3 rounded-2xl shadow-lg border border-white/40 max-w-sm md:max-w-md mx-auto">
               <span
-                className={`text-sm font-semibold transition-colors ${
+                className={`text-xs md:text-sm font-semibold transition-colors ${
                   !isYearly ? "text-gray-900" : "text-gray-500"
                 }`}
               >
@@ -569,28 +569,28 @@ export default function PricingPage({ searchParams }: PricingPageProps) {
               </span>
               <button
                 onClick={() => setIsYearly(!isYearly)}
-                className={`relative w-12 h-6 rounded-full transition-all duration-300 hover:scale-105 shadow-md hover-target interactive-element ${
+                className={`relative w-10 h-5 md:w-12 md:h-6 rounded-full transition-all duration-300 hover:scale-105 shadow-md hover-target interactive-element ${
                   isYearly ? "bg-blue-600" : "bg-gray-300"
                 }`}
                 data-interactive="true"
                 aria-label="Toggle billing period"
               >
                 <div
-                  className={`absolute top-0.5 w-5 h-5 bg-white rounded-full transition-transform duration-300 shadow-lg ${
-                    isYearly ? "translate-x-6" : "translate-x-0.5"
+                  className={`absolute top-0.5 w-4 h-4 md:w-5 md:h-5 bg-white rounded-full transition-transform duration-300 shadow-lg ${
+                    isYearly ? "translate-x-5 md:translate-x-6" : "translate-x-0.5"
                   }`}
                 />
               </button>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1 md:gap-2">
                 <span
-                  className={`text-sm font-semibold transition-colors ${
+                  className={`text-xs md:text-sm font-semibold transition-colors ${
                     isYearly ? "text-gray-900" : "text-gray-500"
                   }`}
                 >
                   Yearly
                 </span>
                 {isYearly && (
-                  <div className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-bold animate-pulse shadow-sm">
+                  <div className="bg-green-100 text-green-800 text-xs px-1.5 md:px-2 py-0.5 md:py-1 rounded-full font-bold animate-pulse shadow-sm">
                     Save 20%
                   </div>
                 )}
@@ -599,7 +599,7 @@ export default function PricingPage({ searchParams }: PricingPageProps) {
           </div>
 
           {/* Pricing Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 max-w-7xl mx-auto mb-16 pricing-page px-4 sm:px-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8 max-w-7xl mx-auto mb-8 md:mb-16 pricing-page px-4 sm:px-6">
             {defaultPlans.map((plan) => (
               <div
                 key={plan.id}

@@ -1010,13 +1010,13 @@ export default function PlatformConnections({
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div className="bg-white rounded-lg p-4 border">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+          <div className="bg-white rounded-lg p-3 md:p-4 border">
             <div className="flex items-center gap-2 mb-2">
               <Users className="w-4 h-4 text-blue-600" />
-              <span className="text-sm font-medium text-gray-700">Total Followers</span>
+              <span className="text-xs md:text-sm font-medium text-gray-700">Total Followers</span>
             </div>
-            <p className="text-2xl font-bold text-gray-900">
+            <p className="text-xl md:text-2xl font-bold text-gray-900">
               {localConnections
                 .filter(conn => conn.is_active)
                 .reduce((sum, conn) => sum + (conn.follower_count || 0), 0)
@@ -1024,22 +1024,22 @@ export default function PlatformConnections({
             </p>
           </div>
 
-          <div className="bg-white rounded-lg p-4 border">
+          <div className="bg-white rounded-lg p-3 md:p-4 border">
             <div className="flex items-center gap-2 mb-2">
               <TrendingUp className="w-4 h-4 text-green-600" />
-              <span className="text-sm font-medium text-gray-700">Active Platforms</span>
+              <span className="text-xs md:text-sm font-medium text-gray-700">Active Platforms</span>
             </div>
-            <p className="text-2xl font-bold text-gray-900">
+            <p className="text-xl md:text-2xl font-bold text-gray-900">
               {localConnections.filter(conn => conn.is_active).length}
             </p>
           </div>
 
-          <div className="bg-white rounded-lg p-4 border">
+          <div className="bg-white rounded-lg p-3 md:p-4 border">
             <div className="flex items-center gap-2 mb-2">
               <Eye className="w-4 h-4 text-purple-600" />
-              <span className="text-sm font-medium text-gray-700">Last Sync</span>
+              <span className="text-xs md:text-sm font-medium text-gray-700">Last Sync</span>
             </div>
-            <p className="text-sm text-gray-600">
+            <p className="text-xs md:text-sm text-gray-600">
               {localConnections.filter(conn => conn.is_active).length > 0
                 ? "Recently updated"
                 : "No connections"}
@@ -1049,7 +1049,7 @@ export default function PlatformConnections({
       </Card>
 
       {/* Platform Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
         {platforms.map((platform) => {
           const connection = getConnectionStatus(platform.id);
           const IconComponent = platform.icon;
@@ -1058,20 +1058,20 @@ export default function PlatformConnections({
             <Card key={platform.id} className="relative overflow-hidden">
               <div className={`absolute top-0 left-0 right-0 h-1 ${platform.bgColor}`} />
               
-              <div className="p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-lg ${platform.bgColor} flex items-center justify-center`}>
-                      <IconComponent className="w-5 h-5 text-white" />
+              <div className="p-4 md:p-6">
+                <div className="flex items-center justify-between mb-3 md:mb-4">
+                  <div className="flex items-center gap-2 md:gap-3">
+                    <div className={`w-8 h-8 md:w-10 md:h-10 rounded-lg ${platform.bgColor} flex items-center justify-center`}>
+                      <IconComponent className="w-4 h-4 md:w-5 md:h-5 text-white" />
                     </div>
-                    <div>
-                      <h3 className="font-semibold text-gray-900">{platform.name}</h3>
-                      <p className="text-sm text-gray-600">{platform.description}</p>
+                    <div className="min-w-0 flex-1">
+                      <h3 className="font-semibold text-gray-900 text-sm md:text-base truncate">{platform.name}</h3>
+                      <p className="text-xs md:text-sm text-gray-600 truncate">{platform.description}</p>
                     </div>
                   </div>
                   
                   {connection && (
-                    <Badge className="bg-green-100 text-green-800 border-green-200">
+                    <Badge className="bg-green-100 text-green-800 border-green-200 text-xs">
                       Connected
                     </Badge>
                   )}
@@ -1147,7 +1147,7 @@ export default function PlatformConnections({
 
       {/* Connection Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
               Connect {selectedPlatform ? platforms.find(p => p.id === selectedPlatform)?.name : "Platform"}
@@ -1302,7 +1302,7 @@ export default function PlatformConnections({
                     />
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
                     <div>
                       <Label htmlFor="manual-followers" className="text-sm font-medium">
                         Follower Count <span className="text-red-500">*</span>
@@ -1317,6 +1317,7 @@ export default function PlatformConnections({
                           followerCount: e.target.value
                         })}
                         required
+                        className="text-sm"
                       />
                     </div>
                     
@@ -1335,6 +1336,7 @@ export default function PlatformConnections({
                           engagementRate: e.target.value
                         })}
                         required
+                        className="text-sm"
                       />
                     </div>
                   </div>
