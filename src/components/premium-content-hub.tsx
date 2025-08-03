@@ -122,6 +122,11 @@ export default function PremiumContentHub({
   const [ideaContentType, setIdeaContentType] = useState("educational");
   const [ideaPlatform, setIdeaPlatform] = useState("all");
   const [generatedIdeas, setGeneratedIdeas] = useState<ContentIdea[]>([]);
+  const [contentStyle, setContentStyle] = useState("storytelling");
+  const [contentTone, setContentTone] = useState("motivational");
+  const [contentLength, setContentLength] = useState("medium");
+  const [contentCTA, setContentCTA] = useState("engagement");
+  const [viralElements, setViralElements] = useState("emotional");
   
   // Schedule Tab State
   const [isOptimizing, setIsOptimizing] = useState(false);
@@ -1929,51 +1934,80 @@ export default function PremiumContentHub({
   const optimizeTiming = async () => {
     setIsOptimizing(true);
     
-    // Simulate AI processing
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    
-    const newOptimalTimes = [
-      {
-        platform: "Instagram",
-        day: "Monday",
-        time: "18:00-21:00",
-        engagement_rate: 12.5,
-        reason: "Peak user activity and engagement"
-      },
-      {
-        platform: "TikTok",
-        day: "Tuesday",
-        time: "19:00-22:00",
-        engagement_rate: 15.2,
-        reason: "Highest viral potential and sharing"
-      },
-      {
-        platform: "LinkedIn",
-        day: "Wednesday",
-        time: "08:00-10:00",
-        engagement_rate: 8.7,
-        reason: "Professional audience most active"
-      },
-      {
-        platform: "YouTube",
-        day: "Thursday",
-        time: "15:00-17:00",
-        engagement_rate: 11.3,
-        reason: "Student and work-from-home audience"
-      },
-      {
-        platform: "X (Twitter)",
-        day: "Friday",
-        time: "12:00-14:00",
-        engagement_rate: 9.8,
-        reason: "Lunch break engagement peak"
-      }
-    ];
-    
-    setOptimalTimes(newOptimalTimes);
-    setIsOptimizing(false);
-    setSuccess("AI timing optimization completed!");
-    setTimeout(() => setSuccess(null), 3000);
+    try {
+      // Analyze user's platform connections and engagement patterns
+      const userPlatforms = platformConnections.map(p => p.platform);
+      const totalFollowers = platformConnections.reduce((sum, p) => sum + (p.follower_count || 0), 0);
+      
+      // Generate optimal times based on real platform data
+      const newOptimalTimes = platformConnections.map(platform => {
+        const baseEngagement = platform.engagement_rate || 5;
+        const followerCount = platform.follower_count || 0;
+        
+        // Calculate optimal posting time based on platform and follower count
+        let optimalTime = "18:00-21:00";
+        let optimalDay = "Monday";
+        let engagementRate = baseEngagement;
+        let reason = "Based on your audience data";
+        
+        switch(platform.platform.toLowerCase()) {
+          case "instagram":
+            optimalTime = followerCount > 10000 ? "19:00-22:00" : "18:00-21:00";
+            optimalDay = "Monday";
+            engagementRate = baseEngagement * 1.2;
+            reason = "Peak user activity and engagement";
+            break;
+          case "tiktok":
+            optimalTime = followerCount > 5000 ? "20:00-23:00" : "19:00-22:00";
+            optimalDay = "Tuesday";
+            engagementRate = baseEngagement * 1.3;
+            reason = "Highest viral potential and sharing";
+            break;
+          case "linkedin":
+            optimalTime = "08:00-10:00";
+            optimalDay = "Wednesday";
+            engagementRate = baseEngagement * 1.1;
+            reason = "Professional audience most active";
+            break;
+          case "x":
+          case "twitter":
+            optimalTime = "12:00-14:00";
+            optimalDay = "Thursday";
+            engagementRate = baseEngagement * 1.0;
+            reason = "Lunch break engagement peak";
+            break;
+          case "youtube":
+            optimalTime = "17:00-19:00";
+            optimalDay = "Friday";
+            engagementRate = baseEngagement * 1.4;
+            reason = "Student and work-from-home audience";
+            break;
+          default:
+            optimalTime = "18:00-21:00";
+            optimalDay = "Monday";
+            engagementRate = baseEngagement;
+            reason = "General optimal timing";
+        }
+        
+        return {
+          platform: platform.platform,
+          day: optimalDay,
+          time: optimalTime,
+          engagement_rate: Math.round(engagementRate * 10) / 10,
+          reason: reason,
+          followers: followerCount,
+          recommended: followerCount > 1000
+        };
+      });
+      
+      setOptimalTimes(newOptimalTimes);
+      setSuccess("Timing optimized based on your platform data!");
+      setTimeout(() => setSuccess(null), 3000);
+    } catch (err) {
+      setError("Failed to optimize timing. Please try again.");
+    } finally {
+      setIsOptimizing(false);
+    }
   };
 
   const handleAutoOptimizeTiming = () => {
@@ -2217,94 +2251,127 @@ export default function PremiumContentHub({
                         <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-lg flex items-center justify-center">
                           <div className="w-3 h-3 bg-white rounded-full"></div>
                         </div>
-                        <Label className="text-lg font-semibold text-slate-900">Describe Your Vision</Label>
+                        <Label className="text-lg font-semibold text-slate-900">Step 1: Describe Your Vision</Label>
                       </div>
-                      <Textarea
-                        value={contentInput}
-                        onChange={(e) => setContentInput(e.target.value)}
-                        placeholder="Describe your content vision in detail. Be specific about your goals, target audience, and desired impact. For example: 'Create a viral post that teaches entrepreneurs how to scale from $0 to $1M in 12 months, with specific actionable steps, case studies, and psychological triggers that will make people take immediate action.'"
-                        className="min-h-[140px] border-slate-300 focus:border-blue-500 focus:ring-blue-500 rounded-xl text-slate-700 placeholder-slate-500 resize-none"
-                      />
-                      
-                      {/* Advanced Content Customization */}
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <Label className="text-sm font-medium text-gray-700 mb-2 block">Content Style</Label>
-                          <Select>
-                            <SelectTrigger className="border-gray-300 focus:border-blue-500 focus:ring-blue-500">
-                              <SelectValue placeholder="Select style" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="storytelling">Storytelling</SelectItem>
-                              <SelectItem value="educational">Educational</SelectItem>
-                              <SelectItem value="inspirational">Inspirational</SelectItem>
-                              <SelectItem value="controversial">Controversial</SelectItem>
-                              <SelectItem value="humorous">Humorous</SelectItem>
-                              <SelectItem value="professional">Professional</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div>
-                          <Label className="text-sm font-medium text-gray-700 mb-2 block">Tone</Label>
-                          <Select>
-                            <SelectTrigger className="border-gray-300 focus:border-blue-500 focus:ring-blue-500">
-                              <SelectValue placeholder="Select tone" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="casual">Casual & Friendly</SelectItem>
-                              <SelectItem value="professional">Professional</SelectItem>
-                              <SelectItem value="motivational">Motivational</SelectItem>
-                              <SelectItem value="authoritative">Authoritative</SelectItem>
-                              <SelectItem value="conversational">Conversational</SelectItem>
-                            </SelectContent>
-                          </Select>
+                      <div className="space-y-4">
+                        <Textarea
+                          value={contentInput}
+                          onChange={(e) => setContentInput(e.target.value)}
+                          placeholder="🎯 What specific result do you want to achieve? For example: 'I want to create a viral post that teaches entrepreneurs how to scale from $0 to $1M in 12 months, with specific actionable steps, case studies, and psychological triggers that will make people take immediate action.'"
+                          className="min-h-[120px] border-slate-300 focus:border-blue-500 focus:ring-blue-500 rounded-xl text-slate-700 placeholder-slate-500 resize-none"
+                        />
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                          <div className="p-4 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl border border-blue-200">
+                            <h4 className="font-semibold text-blue-900 mb-2">🎯 Goal</h4>
+                            <p className="text-sm text-blue-700">What do you want to achieve with this content?</p>
+                          </div>
+                          <div className="p-4 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border border-green-200">
+                            <h4 className="font-semibold text-green-900 mb-2">👥 Audience</h4>
+                            <p className="text-sm text-green-700">Who is your target audience?</p>
+                          </div>
+                          <div className="p-4 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl border border-purple-200">
+                            <h4 className="font-semibold text-purple-900 mb-2">💡 Impact</h4>
+                            <p className="text-sm text-purple-700">What action should they take?</p>
+                          </div>
                         </div>
                       </div>
                       
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                          <Label className="text-sm font-medium text-gray-700 mb-2 block">Content Length</Label>
-                          <Select>
-                            <SelectTrigger className="border-gray-300 focus:border-blue-500 focus:ring-blue-500">
-                              <SelectValue placeholder="Select length" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="short">Short (1-2 paragraphs)</SelectItem>
-                              <SelectItem value="medium">Medium (3-5 paragraphs)</SelectItem>
-                              <SelectItem value="long">Long (6+ paragraphs)</SelectItem>
-                              <SelectItem value="thread">Thread format</SelectItem>
-                            </SelectContent>
-                          </Select>
+                      {/* Step 2: Content Strategy */}
+                      <div className="space-y-4">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-8 h-8 bg-gradient-to-r from-green-600 to-emerald-600 rounded-lg flex items-center justify-center">
+                            <div className="w-3 h-3 bg-white rounded-full"></div>
+                          </div>
+                          <Label className="text-lg font-semibold text-slate-900">Step 2: Content Strategy</Label>
                         </div>
-                        <div>
-                          <Label className="text-sm font-medium text-gray-700 mb-2 block">Call to Action</Label>
-                          <Select>
-                            <SelectTrigger className="border-gray-300 focus:border-blue-500 focus:ring-blue-500">
-                              <SelectValue placeholder="Select CTA" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="engagement">Ask for engagement</SelectItem>
-                              <SelectItem value="click">Drive clicks</SelectItem>
-                              <SelectItem value="share">Encourage sharing</SelectItem>
-                              <SelectItem value="save">Ask to save</SelectItem>
-                              <SelectItem value="follow">Gain followers</SelectItem>
-                            </SelectContent>
-                          </Select>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <Label className="text-sm font-medium text-gray-700 mb-2 block">Content Style</Label>
+                            <Select value={contentStyle} onValueChange={setContentStyle}>
+                              <SelectTrigger className="border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                                <SelectValue placeholder="Select style" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="storytelling">📖 Storytelling</SelectItem>
+                                <SelectItem value="educational">📚 Educational</SelectItem>
+                                <SelectItem value="inspirational">✨ Inspirational</SelectItem>
+                                <SelectItem value="controversial">🔥 Controversial</SelectItem>
+                                <SelectItem value="humorous">😄 Humorous</SelectItem>
+                                <SelectItem value="professional">💼 Professional</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div>
+                            <Label className="text-sm font-medium text-gray-700 mb-2 block">Tone</Label>
+                            <Select value={contentTone} onValueChange={setContentTone}>
+                              <SelectTrigger className="border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                                <SelectValue placeholder="Select tone" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="casual">😊 Casual & Friendly</SelectItem>
+                                <SelectItem value="professional">💼 Professional</SelectItem>
+                                <SelectItem value="motivational">🔥 Motivational</SelectItem>
+                                <SelectItem value="authoritative">👑 Authoritative</SelectItem>
+                                <SelectItem value="conversational">💬 Conversational</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
                         </div>
-                        <div>
-                          <Label className="text-sm font-medium text-gray-700 mb-2 block">Viral Elements</Label>
-                          <Select>
-                            <SelectTrigger className="border-gray-300 focus:border-blue-500 focus:ring-blue-500">
-                              <SelectValue placeholder="Select elements" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="emotional">Emotional hooks</SelectItem>
-                              <SelectItem value="controversy">Controversy</SelectItem>
-                              <SelectItem value="curiosity">Curiosity gaps</SelectItem>
-                              <SelectItem value="social-proof">Social proof</SelectItem>
-                              <SelectItem value="urgency">Urgency</SelectItem>
-                            </SelectContent>
-                          </Select>
+                      </div>
+                      
+                      {/* Step 3: Content Optimization */}
+                      <div className="space-y-4">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg flex items-center justify-center">
+                            <div className="w-3 h-3 bg-white rounded-full"></div>
+                          </div>
+                          <Label className="text-lg font-semibold text-slate-900">Step 3: Content Optimization</Label>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                          <div>
+                            <Label className="text-sm font-medium text-gray-700 mb-2 block">Content Length</Label>
+                            <Select value={contentLength} onValueChange={setContentLength}>
+                              <SelectTrigger className="border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                                <SelectValue placeholder="Select length" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="short">📝 Short (1-2 paragraphs)</SelectItem>
+                                <SelectItem value="medium">📄 Medium (3-5 paragraphs)</SelectItem>
+                                <SelectItem value="long">📚 Long (6+ paragraphs)</SelectItem>
+                                <SelectItem value="thread">🧵 Thread format</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div>
+                            <Label className="text-sm font-medium text-gray-700 mb-2 block">Call to Action</Label>
+                            <Select value={contentCTA} onValueChange={setContentCTA}>
+                              <SelectTrigger className="border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                                <SelectValue placeholder="Select CTA" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="engagement">💬 Ask for engagement</SelectItem>
+                                <SelectItem value="click">🔗 Drive clicks</SelectItem>
+                                <SelectItem value="share">📤 Encourage sharing</SelectItem>
+                                <SelectItem value="save">💾 Ask to save</SelectItem>
+                                <SelectItem value="follow">👥 Gain followers</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div>
+                            <Label className="text-sm font-medium text-gray-700 mb-2 block">Viral Elements</Label>
+                            <Select value={viralElements} onValueChange={setViralElements}>
+                              <SelectTrigger className="border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                                <SelectValue placeholder="Select elements" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="emotional">💝 Emotional hooks</SelectItem>
+                                <SelectItem value="controversy">🔥 Controversy</SelectItem>
+                                <SelectItem value="curiosity">❓ Curiosity gaps</SelectItem>
+                                <SelectItem value="social-proof">👥 Social proof</SelectItem>
+                                <SelectItem value="urgency">⏰ Urgency</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -2538,65 +2605,110 @@ export default function PremiumContentHub({
                   {/* AI Content Ideas Generator */}
                   <div className="lg:col-span-2 space-y-6">
                     <div className="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-xl p-6">
-                      <h3 className="text-xl font-semibold text-gray-900 mb-4">Generate New Ideas</h3>
-                      <div className="space-y-4">
-                        <div>
-                          <Label className="text-sm font-medium text-gray-700 mb-2 block">Topic or Niche</Label>
+                      <h3 className="text-xl font-semibold text-gray-900 mb-4">🎯 AI-Powered Idea Generator</h3>
+                      <div className="space-y-6">
+                        {/* Step 1: Define Your Niche */}
+                        <div className="space-y-3">
+                          <div className="flex items-center space-x-2">
+                            <div className="w-6 h-6 bg-gradient-to-r from-green-600 to-emerald-600 rounded-full flex items-center justify-center">
+                              <span className="text-white text-xs font-bold">1</span>
+                            </div>
+                            <Label className="text-sm font-semibold text-gray-900">Define Your Niche</Label>
+                          </div>
                           <Input 
                             value={ideaInput}
                             onChange={(e) => setIdeaInput(e.target.value)}
-                            placeholder="e.g., productivity tips, business growth, lifestyle hacks..."
+                            placeholder="🎯 What's your expertise? e.g., 'I'm a fitness coach helping busy professionals lose weight' or 'I teach entrepreneurs how to scale their business'"
                             className="border-gray-300 focus:border-green-500 focus:ring-green-500"
                           />
-                        </div>
-                        <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <Label className="text-sm font-medium text-gray-700 mb-2 block">Content Type</Label>
-                            <Select value={ideaContentType} onValueChange={setIdeaContentType}>
-                              <SelectTrigger className="border-gray-300 focus:border-green-500 focus:ring-green-500">
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="educational">Educational</SelectItem>
-                                <SelectItem value="entertaining">Entertaining</SelectItem>
-                                <SelectItem value="inspirational">Inspirational</SelectItem>
-                                <SelectItem value="behind-scenes">Behind the Scenes</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </div>
-                          <div>
-                            <Label className="text-sm font-medium text-gray-700 mb-2 block">Platform Focus</Label>
-                            <Select value={ideaPlatform} onValueChange={setIdeaPlatform}>
-                              <SelectTrigger className="border-gray-300 focus:border-green-500 focus:ring-green-500">
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="all">All Platforms</SelectItem>
-                                <SelectItem value="instagram">Instagram</SelectItem>
-                                <SelectItem value="tiktok">TikTok</SelectItem>
-                                <SelectItem value="youtube">YouTube</SelectItem>
-                                <SelectItem value="linkedin">LinkedIn</SelectItem>
-                              </SelectContent>
-                            </Select>
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <div className="p-3 bg-white rounded-lg border border-green-200">
+                              <h4 className="font-semibold text-green-900 text-sm">💡 Your Expertise</h4>
+                              <p className="text-xs text-green-700">What are you known for?</p>
+                            </div>
+                            <div className="p-3 bg-white rounded-lg border border-green-200">
+                              <h4 className="font-semibold text-green-900 text-sm">🎯 Target Audience</h4>
+                              <p className="text-xs text-green-700">Who needs your help?</p>
+                            </div>
+                            <div className="p-3 bg-white rounded-lg border border-green-200">
+                              <h4 className="font-semibold text-green-900 text-sm">🚀 Your Goal</h4>
+                              <p className="text-xs text-green-700">What do you want to achieve?</p>
+                            </div>
                           </div>
                         </div>
-                                                  <Button 
+
+                        {/* Step 2: Content Strategy */}
+                        <div className="space-y-3">
+                          <div className="flex items-center space-x-2">
+                            <div className="w-6 h-6 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-full flex items-center justify-center">
+                              <span className="text-white text-xs font-bold">2</span>
+                            </div>
+                            <Label className="text-sm font-semibold text-gray-900">Content Strategy</Label>
+                          </div>
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <Label className="text-sm font-medium text-gray-700 mb-2 block">Content Type</Label>
+                              <Select value={ideaContentType} onValueChange={setIdeaContentType}>
+                                <SelectTrigger className="border-gray-300 focus:border-green-500 focus:ring-green-500">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="educational">📚 Educational</SelectItem>
+                                  <SelectItem value="entertaining">🎭 Entertaining</SelectItem>
+                                  <SelectItem value="inspirational">✨ Inspirational</SelectItem>
+                                  <SelectItem value="behind-scenes">🎬 Behind the Scenes</SelectItem>
+                                  <SelectItem value="tutorial">🎓 Tutorial</SelectItem>
+                                  <SelectItem value="story">📖 Story</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            <div>
+                              <Label className="text-sm font-medium text-gray-700 mb-2 block">Platform Focus</Label>
+                              <Select value={ideaPlatform} onValueChange={setIdeaPlatform}>
+                                <SelectTrigger className="border-gray-300 focus:border-green-500 focus:ring-green-500">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="all">🌐 All Platforms</SelectItem>
+                                  <SelectItem value="instagram">📸 Instagram</SelectItem>
+                                  <SelectItem value="tiktok">🎬 TikTok</SelectItem>
+                                  <SelectItem value="youtube">🎥 YouTube</SelectItem>
+                                  <SelectItem value="linkedin">💼 LinkedIn</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Step 3: Generate */}
+                        <div className="space-y-3">
+                          <div className="flex items-center space-x-2">
+                            <div className="w-6 h-6 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center">
+                              <span className="text-white text-xs font-bold">3</span>
+                            </div>
+                            <Label className="text-sm font-semibold text-gray-900">Generate Unique Ideas</Label>
+                          </div>
+                          <Button 
                             onClick={handleGenerateViralIdeas}
                             disabled={isGeneratingTrending || !ideaInput.trim()}
-                            className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white disabled:opacity-50 disabled:cursor-not-allowed py-4"
                           >
                             {isGeneratingTrending ? (
                               <>
-                                <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                                Generating Ideas...
+                                <RefreshCw className="w-5 h-5 mr-3 animate-spin" />
+                                <span className="text-lg">Generating Unique Ideas...</span>
                               </>
                             ) : (
                               <>
-                                <Brain className="w-4 h-4 mr-2" />
-                                Generate Viral Ideas
+                                <Brain className="w-5 h-5 mr-3" />
+                                <span className="text-lg">Generate Viral Ideas</span>
                               </>
                             )}
                           </Button>
+                          <p className="text-xs text-gray-600 text-center">
+                            AI will analyze your niche and create 8 unique, viral-ready content ideas
+                          </p>
+                        </div>
                       </div>
                     </div>
 
@@ -2739,14 +2851,14 @@ export default function PremiumContentHub({
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                   {/* Quick Schedule */}
                   <div className="space-y-6">
-                    <h3 className="text-xl font-semibold text-gray-900">Quick Schedule</h3>
+                    <h3 className="text-xl font-semibold text-gray-900">📅 Quick Schedule</h3>
                     <div className="space-y-4">
                       <div>
                         <Label className="text-sm font-medium text-gray-700 mb-2 block">Content</Label>
                         <Textarea
                           value={scheduleFormData.content}
                           onChange={(e) => setScheduleFormData({...scheduleFormData, content: e.target.value})}
-                          placeholder="Enter content to schedule..."
+                          placeholder="📝 Enter your content here... (This will be scheduled across your connected platforms)"
                           className="min-h-[100px] border-gray-300 focus:border-blue-500 focus:ring-blue-500"
                         />
                       </div>
