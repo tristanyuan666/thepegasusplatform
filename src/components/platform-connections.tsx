@@ -715,61 +715,34 @@ export default function PlatformConnections({
         console.log(`Updating existing connection to ${platformName} (@${existingUsername})`);
       }
 
-      // Try direct database insert first
+      // Always use the API route to handle the database constraint properly
       let newConnection = null;
-      let insertError = null;
-
       try {
-        // Ensure we have a valid user
-        if (!user) {
-          throw new Error("User not authenticated. Please log in and try again.");
-        }
-        
-        // Create manual connection with authenticated user
-        const result = await supabase
-          .from("platform_connections")
-          .insert({
-            ...connectionData,
-            user_id: user.id // Ensure we use the authenticated user's ID
+        const response = await fetch('/api/platform-connections', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            platform,
+            platform_username: manualConnectionData.username,
+            platform_user_id: manualConnectionData.username,
+            username: manualConnectionData.username,
+            follower_count: manualConnectionData.followerCount,
+            engagement_rate: manualConnectionData.engagementRate
           })
-          .select()
-          .single();
+        });
 
-        newConnection = result.data;
-        insertError = result.error;
-      } catch (error) {
-        console.error("Direct insert failed, trying API route:", error);
-        insertError = error;
-      }
-
-      // If direct insert fails, try API route
-      if (insertError) {
-        console.error("Database insert error:", insertError);
-        console.error("Connection data:", connectionData);
-        console.error("User ID:", user?.id);
-        console.error("User authenticated:", !!user);
-        
-        try {
-          const response = await fetch('/api/platform-connections', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(connectionData)
-          });
-
-          if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(`API error: ${errorData.error || response.statusText}`);
-          }
-
-          const result = await response.json();
-          newConnection = result.data;
-          insertError = null;
-        } catch (apiError) {
-          console.error("API route also failed:", apiError);
-          throw new Error(`Failed to save manual connection to database: ${insertError.message}. Please try again.`);
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
         }
+
+        const result = await response.json();
+        newConnection = result.data;
+      } catch (apiError: any) {
+        console.error("API route failed:", apiError);
+        throw new Error(`Failed to save manual connection to database: ${apiError.message}. Please try again.`);
       }
 
       // Update local connections state with comprehensive data
@@ -1514,7 +1487,18 @@ export default function PlatformConnections({
                   </Button>
                   <Button
                     onClick={() => selectedPlatform && handleManualConnect(selectedPlatform)}
-                    disabled={!selectedPlatform || !manualConnectionData.username || !manualConnectionData.niche || !manualConnectionData.followerCount || !manualConnectionData.engagementRate || isConnecting === selectedPlatform}
+                    disabled={
+                      !selectedPlatform || 
+                      !manualConnectionData.username || 
+                      !manualConnectionData.niche || 
+                      !manualConnectionData.followerCount || 
+                      !manualConnectionData.engagementRate || 
+                      manualConnectionData.username.trim() === "" ||
+                      manualConnectionData.niche.trim() === "" ||
+                      manualConnectionData.followerCount.trim() === "" ||
+                      manualConnectionData.engagementRate.trim() === "" ||
+                      isConnecting === selectedPlatform
+                    }
                     className="flex-1"
                   >
                     {isConnecting === selectedPlatform ? (

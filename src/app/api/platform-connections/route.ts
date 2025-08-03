@@ -45,7 +45,15 @@ export async function POST(request: NextRequest) {
     // Validate required fields
     if (!platform || !platform_username || !follower_count || !engagement_rate) {
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        { error: 'Missing required fields: platform, username, follower_count, and engagement_rate are required' },
+        { status: 400 }
+      );
+    }
+
+    // Validate field values
+    if (platform_username.trim() === "" || follower_count.toString().trim() === "" || engagement_rate.toString().trim() === "") {
+      return NextResponse.json(
+        { error: 'All required fields must have valid values' },
         { status: 400 }
       );
     }
@@ -58,50 +66,26 @@ export async function POST(request: NextRequest) {
       .eq('platform', platform)
       .eq('is_active', true);
 
-    let data, error;
-
-    if (existingConnections && existingConnections.length > 0) {
-      // Update existing connection instead of creating new one
-      const existingConnection = existingConnections[0];
-      const { data: updateData, error: updateError } = await supabase
-        .from('platform_connections')
-        .update({
-          platform_username,
-          platform_user_id: platform_user_id || platform_username,
-          username: username || platform_username,
-          follower_count: parseInt(follower_count) || 0,
-          engagement_rate: parseFloat(engagement_rate) || 0.0,
-          last_sync: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', existingConnection.id)
-        .select()
-        .single();
-
-      data = updateData;
-      error = updateError;
-    } else {
-      // Create new connection
-      const { data: insertData, error: insertError } = await supabase
-        .from('platform_connections')
-        .insert({
-          user_id: user.id,
-          platform,
-          platform_username,
-          platform_user_id: platform_user_id || platform_username,
-          username: username || platform_username,
-          follower_count: parseInt(follower_count) || 0,
-          engagement_rate: parseFloat(engagement_rate) || 0.0,
-          is_active: true,
-          connected_at: new Date().toISOString(),
-          last_sync: new Date().toISOString()
-        })
-        .select()
-        .single();
-
-      data = insertData;
-      error = insertError;
-    }
+    // Use UPSERT to handle the unique constraint properly
+    const { data, error } = await supabase
+      .from('platform_connections')
+      .upsert({
+        user_id: user.id,
+        platform,
+        platform_username,
+        platform_user_id: platform_user_id || platform_username,
+        username: username || platform_username,
+        follower_count: parseInt(follower_count) || 0,
+        engagement_rate: parseFloat(engagement_rate) || 0.0,
+        is_active: true,
+        connected_at: new Date().toISOString(),
+        last_sync: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      }, {
+        onConflict: 'user_id,platform'
+      })
+      .select()
+      .single();
 
     if (error) {
       console.error('Database error:', error);
