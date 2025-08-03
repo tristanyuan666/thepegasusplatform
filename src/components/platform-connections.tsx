@@ -153,6 +153,17 @@ export default function PlatformConnections({
     niche: ""
   });
   const supabase = createClient();
+  
+  // Get current user session
+  const [user, setUser] = useState<any>(null);
+  
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    getUser();
+  }, [supabase.auth]);
 
   // Update local connections when props change
   useEffect(() => {
@@ -661,44 +672,75 @@ export default function PlatformConnections({
         throw new Error("Engagement rate is required");
       }
 
-      // Create comprehensive connection data
+      // Create comprehensive connection data - simplified to avoid metadata issues
       const connectionData = {
         user_id: userId,
         platform: platform,
         platform_username: manualConnectionData.username,
         platform_user_id: manualConnectionData.username,
+        username: manualConnectionData.username,
         follower_count: parseInt(manualConnectionData.followerCount) || 0,
-        engagement_rate: parseFloat(manualConnectionData.engagementRate) || 0,
+        engagement_rate: parseFloat(manualConnectionData.engagementRate) || 0.0,
         is_active: true,
         connected_at: new Date().toISOString(),
-        last_sync: new Date().toISOString(),
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-        metadata: {
-          manual_connection: true,
-          connection_date: new Date().toISOString(),
-          username: manualConnectionData.username,
-          display_name: manualConnectionData.username,
-          average_views: parseInt(manualConnectionData.averageViews) || 0,
-          average_likes: parseInt(manualConnectionData.averageLikes) || 0,
-          average_comments: parseInt(manualConnectionData.averageComments) || 0,
-          average_shares: parseInt(manualConnectionData.averageShares) || 0,
-          content_type: manualConnectionData.contentType,
-          niche: manualConnectionData.niche,
-          data_completeness: calculateDataCompleteness(manualConnectionData)
-        }
+        last_sync: new Date().toISOString()
       };
 
-      // Create manual connection
-      const { data: newConnection, error: insertError } = await supabase
-        .from("platform_connections")
-        .insert(connectionData)
-        .select()
-        .single();
+      // Try direct database insert first
+      let newConnection = null;
+      let insertError = null;
 
+      try {
+        // Ensure we have a valid user
+        if (!user) {
+          throw new Error("User not authenticated. Please log in and try again.");
+        }
+        
+        // Create manual connection with authenticated user
+        const result = await supabase
+          .from("platform_connections")
+          .insert({
+            ...connectionData,
+            user_id: user.id // Ensure we use the authenticated user's ID
+          })
+          .select()
+          .single();
+
+        newConnection = result.data;
+        insertError = result.error;
+      } catch (error) {
+        console.error("Direct insert failed, trying API route:", error);
+        insertError = error;
+      }
+
+      // If direct insert fails, try API route
       if (insertError) {
         console.error("Database insert error:", insertError);
-        throw new Error("Failed to save manual connection to database. Please try again.");
+        console.error("Connection data:", connectionData);
+        console.error("User ID:", user?.id);
+        console.error("User authenticated:", !!user);
+        
+        try {
+          const response = await fetch('/api/platform-connections', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(connectionData)
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(`API error: ${errorData.error || response.statusText}`);
+          }
+
+          const result = await response.json();
+          newConnection = result.data;
+          insertError = null;
+        } catch (apiError) {
+          console.error("API route also failed:", apiError);
+          throw new Error(`Failed to save manual connection to database: ${insertError.message}. Please try again.`);
+        }
       }
 
       // Update local connections state with comprehensive data
