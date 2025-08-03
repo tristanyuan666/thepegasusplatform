@@ -39,6 +39,7 @@ interface PlatformConnectionsProps {
   userId: string;
   connections: SocialConnection[];
   featureAccess: FeatureAccess;
+  onConnectionsUpdate?: (connections: SocialConnection[]) => void;
 }
 
 interface PlatformAccount {
@@ -124,6 +125,7 @@ export default function PlatformConnections({
   userId,
   connections,
   featureAccess,
+  onConnectionsUpdate,
 }: PlatformConnectionsProps) {
   const [isConnecting, setIsConnecting] = useState<string | null>(null);
   const [isRefreshing, setIsRefreshing] = useState<string | null>(null);
@@ -134,10 +136,16 @@ export default function PlatformConnections({
   const [searchResults, setSearchResults] = useState<PlatformAccount[]>([]);
   const [selectedPlatform, setSelectedPlatform] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [localConnections, setLocalConnections] = useState<SocialConnection[]>(connections);
   const supabase = createClient();
 
+  // Update local connections when props change
+  useEffect(() => {
+    setLocalConnections(connections);
+  }, [connections]);
+
   const getConnectionStatus = (platformId: string) => {
-    return connections.find(
+    return localConnections.find(
       (conn) => conn.platform === platformId && conn.is_active,
     );
   };
@@ -204,6 +212,8 @@ export default function PlatformConnections({
     setError(null);
 
     try {
+      console.log("Attempting to connect account:", account);
+      
       // Check if this account is already connected by another user
       const { data: existingConnections, error: checkError } = await supabase
         .from("platform_connections")
@@ -219,24 +229,72 @@ export default function PlatformConnections({
       // If account is already connected by another user, allow it (as per requirements)
       // Multiple users can use the same social media account
 
+      console.log("Storing connection in database...");
+      
       // Store connection in database
-      const { error: dbError } = await supabase
+      const { data: newConnection, error: dbError } = await supabase
         .from("platform_connections")
         .upsert({
           user_id: userId,
           platform: account.platform,
           platform_username: account.username,
+          platform_user_id: account.username, // Use username as platform_user_id for now
           is_active: true,
           connection_attempted_at: new Date().toISOString(),
           connected_at: new Date().toISOString(),
           last_sync: new Date().toISOString(),
           follower_count: account.followerCount,
           engagement_rate: Math.random() * 5 + 2
-        });
+        })
+        .select()
+        .single();
 
       if (dbError) {
         console.error("Database error:", dbError);
         throw new Error("Failed to save connection to database");
+      }
+
+      console.log("Connection saved successfully:", newConnection);
+
+      // Update local connections state
+      const updatedConnections = [...localConnections];
+      const existingIndex = updatedConnections.findIndex(
+        conn => conn.platform === account.platform
+      );
+
+      if (existingIndex >= 0) {
+        // Update existing connection
+        updatedConnections[existingIndex] = {
+          ...updatedConnections[existingIndex],
+          platform_username: account.username,
+          follower_count: account.followerCount,
+          is_active: true,
+          updated_at: new Date().toISOString()
+        };
+      } else {
+        // Add new connection
+        const newSocialConnection: SocialConnection = {
+          id: newConnection.id,
+          user_id: userId,
+          platform: account.platform,
+          platform_user_id: account.username,
+          platform_username: account.username,
+          username: account.username,
+          follower_count: account.followerCount,
+          is_active: true,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        };
+        updatedConnections.push(newSocialConnection);
+      }
+
+      console.log("Updated local connections:", updatedConnections);
+      setLocalConnections(updatedConnections);
+      
+      // Notify parent component of connection update
+      if (onConnectionsUpdate) {
+        console.log("Notifying parent component of connection update");
+        onConnectionsUpdate(updatedConnections);
       }
 
       setSuccess(`Successfully connected to ${account.username} on ${account.platform}!`);
@@ -248,12 +306,9 @@ export default function PlatformConnections({
       setSearchResults([]);
       setSelectedPlatform(null);
 
-      // Refresh the page to show updated connections
-      window.location.reload();
-
     } catch (error) {
-      console.error(`Error connecting to ${account.platform}:`, error);
-      setError(error instanceof Error ? error.message : `Failed to connect to ${account.platform}. Please try again.`);
+      console.error("Connection error:", error);
+      setError("Connection failed. Please try again.");
     } finally {
       setIsConnecting(null);
     }
@@ -263,10 +318,6 @@ export default function PlatformConnections({
     connectionId: string,
     platformName: string,
   ) => {
-    if (!confirm(`Are you sure you want to disconnect from ${platformName}?`)) {
-      return;
-    }
-
     try {
       const { error } = await supabase
         .from("platform_connections")
@@ -275,13 +326,22 @@ export default function PlatformConnections({
 
       if (error) throw error;
 
-      setSuccess(`Successfully disconnected from ${platformName}`);
+      // Update local connections state
+      const updatedConnections = localConnections.map(conn =>
+        conn.id === connectionId ? { ...conn, is_active: false } : conn
+      );
+      setLocalConnections(updatedConnections);
+
+      // Notify parent component of connection update
+      if (onConnectionsUpdate) {
+        onConnectionsUpdate(updatedConnections);
+      }
+
+      setSuccess(`Disconnected from ${platformName}`);
       setTimeout(() => setSuccess(null), 3000);
-      
-      // Refresh the page to show updated connections
-      window.location.reload();
+
     } catch (error) {
-      console.error("Error disconnecting:", error);
+      console.error("Disconnect error:", error);
       setError("Failed to disconnect. Please try again.");
     }
   };
@@ -290,29 +350,48 @@ export default function PlatformConnections({
     connectionId: string,
     platformId: string,
   ) => {
-    setIsRefreshing(connectionId);
+    setIsRefreshing(platformId);
+    setError(null);
 
     try {
       // Simulate API call to refresh stats
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      await new Promise(resolve => setTimeout(resolve, 2000));
 
-      const newFollowerCount = Math.floor(Math.random() * 15000) + 5000;
+      // Update follower count and engagement rate
+      const newFollowerCount = Math.floor(Math.random() * 50000) + 1000;
+      const newEngagementRate = Math.random() * 5 + 2;
 
       const { error } = await supabase
         .from("platform_connections")
         .update({
           follower_count: newFollowerCount,
-          updated_at: new Date().toISOString(),
+          engagement_rate: newEngagementRate,
+          last_sync: new Date().toISOString()
         })
         .eq("id", connectionId);
 
       if (error) throw error;
 
-      setSuccess("Stats refreshed successfully!");
+      // Update local connections state
+      const updatedConnections = localConnections.map(conn =>
+        conn.id === connectionId 
+          ? { 
+              ...conn, 
+              follower_count: newFollowerCount,
+              updated_at: new Date().toISOString()
+            } 
+          : conn
+      );
+      setLocalConnections(updatedConnections);
+
+      // Notify parent component of connection update
+      if (onConnectionsUpdate) {
+        onConnectionsUpdate(updatedConnections);
+      }
+
+      setSuccess(`Stats refreshed for ${platformId}`);
       setTimeout(() => setSuccess(null), 3000);
-      
-      // Refresh the page to show updated stats
-      window.location.reload();
+
     } catch (error) {
       console.error("Error refreshing stats:", error);
       setError("Failed to refresh stats. Please try again.");
@@ -364,274 +443,270 @@ export default function PlatformConnections({
       {/* Connection Status Overview */}
       <Card className="p-6 bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-gray-900">
-            Connection Status
-          </h3>
-          <Badge variant="outline" className="bg-white">
-            {connections.filter((c) => c.is_active).length} / {platforms.length}{" "}
-            Connected
-          </Badge>
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900">Connection Status</h3>
+            <p className="text-gray-600">
+              {localConnections.filter(conn => conn.is_active).length} of {platforms.length} platforms connected
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="flex -space-x-2">
+              {platforms.slice(0, 4).map((platform) => {
+                const connection = getConnectionStatus(platform.id);
+                return (
+                  <div
+                    key={platform.id}
+                    className={`w-8 h-8 rounded-full border-2 border-white flex items-center justify-center ${
+                      connection ? "bg-green-500" : "bg-gray-300"
+                    }`}
+                    title={`${platform.name}: ${connection ? "Connected" : "Not Connected"}`}
+                  >
+                    {connection ? (
+                      <CheckCircle className="w-4 h-4 text-white" />
+                    ) : (
+                      <Plus className="w-4 h-4 text-gray-600" />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+            {localConnections.filter(conn => conn.is_active).length > 4 && (
+              <Badge variant="secondary" className="ml-2">
+                +{localConnections.filter(conn => conn.is_active).length - 4} more
+              </Badge>
+            )}
+          </div>
         </div>
-        <div className="grid grid-cols-3 gap-4">
-          {platforms.map((platform) => {
-            const connection = getConnectionStatus(platform.id);
-            const Icon = platform.icon;
 
-            return (
-              <div key={platform.id} className="text-center">
-                <div
-                  className={`w-12 h-12 ${platform.bgColor} rounded-full flex items-center justify-center mx-auto mb-2 relative`}
-                >
-                  <Icon className="w-6 h-6 text-white" />
-                  {connection && (
-                    <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
-                      <CheckCircle className="w-3 h-3 text-white" />
-                    </div>
-                  )}
-                </div>
-                <div className="text-sm font-medium text-gray-900">
-                  {platform.name}
-                </div>
-                <div
-                  className={`text-xs ${connection ? "text-green-600" : "text-gray-500"}`}
-                >
-                  {connection ? "Connected" : "Not connected"}
-                </div>
-              </div>
-            );
-          })}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="bg-white rounded-lg p-4 border">
+            <div className="flex items-center gap-2 mb-2">
+              <Users className="w-4 h-4 text-blue-600" />
+              <span className="text-sm font-medium text-gray-700">Total Followers</span>
+            </div>
+            <p className="text-2xl font-bold text-gray-900">
+              {localConnections
+                .filter(conn => conn.is_active)
+                .reduce((sum, conn) => sum + (conn.follower_count || 0), 0)
+                .toLocaleString()}
+            </p>
+          </div>
+
+          <div className="bg-white rounded-lg p-4 border">
+            <div className="flex items-center gap-2 mb-2">
+              <TrendingUp className="w-4 h-4 text-green-600" />
+              <span className="text-sm font-medium text-gray-700">Active Platforms</span>
+            </div>
+            <p className="text-2xl font-bold text-gray-900">
+              {localConnections.filter(conn => conn.is_active).length}
+            </p>
+          </div>
+
+          <div className="bg-white rounded-lg p-4 border">
+            <div className="flex items-center gap-2 mb-2">
+              <Eye className="w-4 h-4 text-purple-600" />
+              <span className="text-sm font-medium text-gray-700">Last Sync</span>
+            </div>
+            <p className="text-sm text-gray-600">
+              {localConnections.filter(conn => conn.is_active).length > 0
+                ? "Recently updated"
+                : "No connections"}
+            </p>
+          </div>
         </div>
       </Card>
 
-      {/* Platform Cards */}
-      <div className="grid gap-6">
+      {/* Platform Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {platforms.map((platform) => {
           const connection = getConnectionStatus(platform.id);
-          const Icon = platform.icon;
-          const isCurrentlyConnecting = isConnecting === platform.id;
-          const isCurrentlyRefreshing = isRefreshing === connection?.id;
+          const IconComponent = platform.icon;
 
           return (
-            <Card key={platform.id} className="p-6">
-              <div className="flex items-start justify-between">
-                <div className="flex items-start gap-4">
-                  <div
-                    className={`w-16 h-16 ${platform.bgColor} rounded-xl flex items-center justify-center`}
-                  >
-                    <Icon className="w-8 h-8 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      <h3 className="text-xl font-semibold text-gray-900">
-                        {platform.name}
-                      </h3>
-                      {connection ? (
-                        <Badge className="bg-green-100 text-green-700 border-green-200">
-                          <CheckCircle className="w-3 h-3 mr-1" />
-                          Connected
-                        </Badge>
-                      ) : (
-                        <Badge variant="outline" className="text-gray-600">
-                          <AlertCircle className="w-3 h-3 mr-1" />
-                          Not connected
-                        </Badge>
-                      )}
+            <Card key={platform.id} className="relative overflow-hidden">
+              <div className={`absolute top-0 left-0 right-0 h-1 ${platform.bgColor}`} />
+              
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className={`w-10 h-10 rounded-lg ${platform.bgColor} flex items-center justify-center`}>
+                      <IconComponent className="w-5 h-5 text-white" />
                     </div>
-                    <p className="text-gray-600 mb-4">{platform.description}</p>
-
-                    {/* Connection Stats */}
-                    {connection && (
-                      <div className="grid grid-cols-3 gap-4 p-4 bg-gray-50 rounded-lg">
-                        <div className="text-center">
-                          <div className="text-lg font-bold text-gray-900">
-                            {connection.follower_count?.toLocaleString() || "N/A"}
-                          </div>
-                          <div className="text-sm text-gray-600">Followers</div>
-                        </div>
-                        <div className="text-center">
-                          <div className="text-lg font-bold text-gray-900">
-                            @{connection.username}
-                          </div>
-                          <div className="text-sm text-gray-600">Username</div>
-                        </div>
-                        <div className="text-center">
-                          <div className="text-lg font-bold text-green-600">
-                            Active
-                          </div>
-                          <div className="text-sm text-gray-600">Status</div>
-                        </div>
-                      </div>
-                    )}
+                    <div>
+                      <h3 className="font-semibold text-gray-900">{platform.name}</h3>
+                      <p className="text-sm text-gray-600">{platform.description}</p>
+                    </div>
                   </div>
+                  
+                  {connection && (
+                    <Badge className="bg-green-100 text-green-800 border-green-200">
+                      Connected
+                    </Badge>
+                  )}
                 </div>
 
-                {/* Action Buttons */}
-                <div className="flex flex-col gap-2">
-                  {connection ? (
-                    <>
+                {connection ? (
+                  <div className="space-y-4">
+                    <div className="bg-gray-50 rounded-lg p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm font-medium text-gray-700">@{connection.username}</span>
+                        {connection.follower_count && (
+                          <span className="text-sm text-gray-600">
+                            {connection.follower_count.toLocaleString()} followers
+                          </span>
+                        )}
+                      </div>
+                      
+                      <div className="flex items-center gap-2 text-sm text-gray-600">
+                        <CheckCircle className="w-4 h-4 text-green-600" />
+                        <span>Connected {new Date(connection.created_at).toLocaleDateString()}</span>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-2">
                       <Button
-                        onClick={() =>
-                          handleRefreshStats(connection.id, platform.id)
-                        }
-                        disabled={isCurrentlyRefreshing}
                         variant="outline"
                         size="sm"
+                        onClick={() => handleRefreshStats(connection.id, platform.id)}
+                        disabled={isRefreshing === platform.id}
+                        className="flex-1"
                       >
-                        {isCurrentlyRefreshing ? (
-                          <RefreshCw className="w-4 h-4 animate-spin" />
+                        {isRefreshing === platform.id ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
                         ) : (
                           <RefreshCw className="w-4 h-4" />
                         )}
+                        Refresh
                       </Button>
+                      
                       <Button
-                        onClick={() =>
-                          handleDisconnect(connection.id, platform.name)
-                        }
                         variant="outline"
                         size="sm"
-                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                        onClick={() => handleDisconnect(connection.id, platform.name)}
+                        className="text-red-600 hover:text-red-700 border-red-200 hover:border-red-300"
                       >
                         <Unlink className="w-4 h-4" />
                       </Button>
-                    </>
-                  ) : (
-                    <Dialog open={isDialogOpen && selectedPlatform === platform.id} onOpenChange={setIsDialogOpen}>
-                      <DialogTrigger asChild>
-                        <Button
-                          onClick={() => openConnectionDialog(platform.id)}
-                          className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-                        >
-                          <div className="flex items-center gap-2">
-                            <Plus className="w-4 h-4" />
-                            Connect
-                          </div>
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent className="sm:max-w-md">
-                        <DialogHeader>
-                          <DialogTitle className="flex items-center gap-2">
-                            <Icon className="w-5 h-5" />
-                            Connect to {platform.name}
-                          </DialogTitle>
-                        </DialogHeader>
-                        <div className="space-y-4">
-                          <div>
-                            <Label htmlFor="username" className="text-sm font-medium text-gray-700">
-                              Search for Account
-                            </Label>
-                            <div className="mt-1 flex gap-2">
-                              <Input
-                                id="username"
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                placeholder={platform.searchPlaceholder}
-                                className="flex-1"
-                                onKeyPress={(e) => {
-                                  if (e.key === 'Enter') {
-                                    searchPlatformAccounts(platform.id, searchQuery);
-                                  }
-                                }}
-                              />
-                              <Button
-                                onClick={() => searchPlatformAccounts(platform.id, searchQuery)}
-                                disabled={isSearching === platform.id || !searchQuery.trim()}
-                                size="sm"
-                              >
-                                {isSearching === platform.id ? (
-                                  <Loader2 className="w-4 h-4 animate-spin" />
-                                ) : (
-                                  <Search className="w-4 h-4" />
-                                )}
-                              </Button>
-                            </div>
-                          </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="bg-gray-50 rounded-lg p-4 text-center">
+                      <div className="w-12 h-12 mx-auto mb-2 bg-gray-200 rounded-full flex items-center justify-center">
+                        <Plus className="w-6 h-6 text-gray-400" />
+                      </div>
+                      <p className="text-sm text-gray-600">Not connected</p>
+                    </div>
 
-                          {/* Search Results */}
-                          {searchResults.length > 0 && (
-                            <div className="space-y-2">
-                              <Label className="text-sm font-medium text-gray-700">
-                                Found Accounts
-                              </Label>
-                              <div className="space-y-2 max-h-60 overflow-y-auto">
-                                {searchResults.map((account, index) => (
-                                  <div
-                                    key={index}
-                                    className="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50"
-                                  >
-                                    <div className="flex items-center gap-3">
-                                      <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
-                                        <User className="w-5 h-5 text-gray-600" />
-                                      </div>
-                                      <div>
-                                        <div className="flex items-center gap-2">
-                                          <span className="font-medium">@{account.username}</span>
-                                          {account.verified && (
-                                            <Badge className="bg-blue-100 text-blue-700 text-xs">
-                                              Verified
-                                            </Badge>
-                                          )}
-                                        </div>
-                                        <div className="text-sm text-gray-600">
-                                          {account.followerCount.toLocaleString()} followers
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <Button
-                                      onClick={() => handleConnectAccount(account)}
-                                      disabled={isConnecting === account.platform}
-                                      size="sm"
-                                      className="bg-green-600 hover:bg-green-700"
-                                    >
-                                      {isConnecting === account.platform ? (
-                                        <Loader2 className="w-4 h-4 animate-spin" />
-                                      ) : (
-                                        <Plus className="w-4 h-4" />
-                                      )}
-                                    </Button>
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-
-                          {/* No Results */}
-                          {searchQuery && searchResults.length === 0 && !isSearching && (
-                            <div className="text-center py-4 text-gray-500">
-                              No accounts found for "{searchQuery}"
-                            </div>
-                          )}
-                        </div>
-                      </DialogContent>
-                    </Dialog>
-                  )}
-                </div>
+                    <Button
+                      onClick={() => openConnectionDialog(platform.id)}
+                      className={`w-full ${platform.bgColor} text-white hover:opacity-90`}
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      Connect {platform.name}
+                    </Button>
+                  </div>
+                )}
               </div>
             </Card>
           );
         })}
       </div>
 
-      {/* Help Section */}
-      <Card className="p-6 bg-blue-50 border-blue-200">
-        <h3 className="text-lg font-semibold text-gray-900 mb-2 flex items-center gap-2">
-          <Settings className="w-5 h-5 text-blue-600" />
-          How to Connect
-        </h3>
-        <p className="text-gray-600 mb-4">
-          Enter the username of the social media account you want to connect. 
-          Multiple users can connect to the same account - this is useful for 
-          managing shared accounts or collaborating with teams.
-        </p>
-        <div className="flex gap-3">
-          <Button variant="outline" size="sm">
-            <ExternalLink className="w-4 h-4 mr-2" />
-            View Guides
-          </Button>
-          <Button variant="outline" size="sm">
-            Contact Support
-          </Button>
-        </div>
-      </Card>
+      {/* Connection Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              Connect {selectedPlatform ? platforms.find(p => p.id === selectedPlatform)?.name : "Platform"}
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="search-query">Search for account</Label>
+              <div className="flex gap-2 mt-2">
+                <Input
+                  id="search-query"
+                  placeholder={selectedPlatform ? platforms.find(p => p.id === selectedPlatform)?.searchPlaceholder : "Enter username"}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyPress={(e) => {
+                    if (e.key === "Enter" && selectedPlatform && searchQuery.trim()) {
+                      searchPlatformAccounts(selectedPlatform, searchQuery.trim());
+                    }
+                  }}
+                />
+                <Button
+                  onClick={() => selectedPlatform && searchQuery.trim() && searchPlatformAccounts(selectedPlatform, searchQuery.trim())}
+                  disabled={!selectedPlatform || !searchQuery.trim() || isSearching === selectedPlatform}
+                >
+                  {isSearching === selectedPlatform ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Search className="w-4 h-4" />
+                  )}
+                </Button>
+              </div>
+            </div>
+
+            {searchResults.length > 0 && (
+              <div className="space-y-2">
+                <Label>Select an account to connect:</Label>
+                <div className="space-y-2 max-h-60 overflow-y-auto">
+                  {searchResults.map((account, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 cursor-pointer"
+                      onClick={() => handleConnectAccount(account)}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
+                          <User className="w-5 h-5 text-gray-600" />
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium">@{account.username}</span>
+                            {account.verified && (
+                              <Badge variant="secondary" className="text-xs">
+                                Verified
+                              </Badge>
+                            )}
+                          </div>
+                          <p className="text-sm text-gray-600">{account.displayName}</p>
+                          <p className="text-xs text-gray-500">{account.followerCount.toLocaleString()} followers</p>
+                        </div>
+                      </div>
+                      
+                      <Button
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleConnectAccount(account);
+                        }}
+                        disabled={isConnecting === account.platform}
+                      >
+                        {isConnecting === account.platform ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <Plus className="w-4 h-4" />
+                        )}
+                        Connect
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {searchResults.length === 0 && searchQuery && !isSearching && (
+              <div className="text-center py-4 text-gray-500">
+                No accounts found. Try a different username.
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

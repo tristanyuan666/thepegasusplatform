@@ -58,6 +58,7 @@ interface PlatformConnection {
   is_active: boolean;
   connected_at: string;
   last_sync: string;
+  follower_count?: number; // Added for mock analytics
 }
 
 interface AnalyticsData {
@@ -248,70 +249,64 @@ function DashboardContent() {
           if (!analyticsError && analytics) {
             setAnalyticsData(analytics);
           } else {
-            // Set default analytics data for connected platforms
-            setAnalyticsData({
-              total_followers: 0,
-              total_views: 0,
-              engagement_rate: 0,
-              viral_score: 0,
-              content_count: 0,
-              revenue: 0,
-              growth_rate: 0,
-              platform_breakdown: {
-                instagram: { followers: 0, engagement: 0, posts: 0 },
-                tiktok: { followers: 0, engagement: 0, posts: 0 },
-                youtube: { followers: 0, engagement: 0, posts: 0 },
-                x: { followers: 0, engagement: 0, posts: 0 },
-              },
-              recent_performance: [],
+            // Generate mock analytics based on platform connections
+            const mockAnalytics = generateMockAnalytics(connections);
+
+            // Update platform breakdown based on actual connections
+            connections.forEach((conn: PlatformConnection) => {
+              if (conn.platform in mockAnalytics.platform_breakdown) {
+                mockAnalytics.platform_breakdown[conn.platform as keyof typeof mockAnalytics.platform_breakdown] = {
+                  followers: conn.follower_count || 0,
+                  engagement: Math.floor(Math.random() * 10) + 5,
+                  posts: Math.floor(Math.random() * 20) + 5,
+                };
+              }
             });
+
+            setAnalyticsData(mockAnalytics);
           }
-        } catch (analyticsError) {
-          console.warn("Analytics error:", analyticsError);
-          // Set default analytics data
-          setAnalyticsData({
-            total_followers: 0,
-            total_views: 0,
-            engagement_rate: 0,
-            viral_score: 0,
-            content_count: 0,
-            revenue: 0,
-            growth_rate: 0,
-            platform_breakdown: {
-              instagram: { followers: 0, engagement: 0, posts: 0 },
-              tiktok: { followers: 0, engagement: 0, posts: 0 },
-              youtube: { followers: 0, engagement: 0, posts: 0 },
-              x: { followers: 0, engagement: 0, posts: 0 },
-            },
-            recent_performance: [],
-          });
+        } catch (error) {
+          console.warn("Analytics error:", error);
         }
-      } else {
-        // No platforms connected - show zero data
-        setAnalyticsData({
-          total_followers: 0,
-          total_views: 0,
-          engagement_rate: 0,
-          viral_score: 0,
-          content_count: 0,
-          revenue: 0,
-          growth_rate: 0,
-          platform_breakdown: {
-            instagram: { followers: 0, engagement: 0, posts: 0 },
-            tiktok: { followers: 0, engagement: 0, posts: 0 },
-            youtube: { followers: 0, engagement: 0, posts: 0 },
-            x: { followers: 0, engagement: 0, posts: 0 },
-          },
-          recent_performance: [],
-        });
       }
 
-    } catch (err) {
-      console.error("Error fetching user data:", err);
-      setError(err instanceof Error ? err.message : "An error occurred");
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      setError("Failed to load dashboard data. Please try again.");
     } finally {
       setLoading(false);
     }
+  };
+
+  // Handle connection updates
+  const handleConnectionsUpdate = () => {
+    // Refresh the data when connections are updated
+    fetchUserData();
+  };
+
+  // Generate mock analytics based on platform connections
+  const generateMockAnalytics = (connections: PlatformConnection[]): AnalyticsData => {
+    return {
+      total_followers: connections.reduce((sum: number, conn: PlatformConnection) => sum + (conn.follower_count || 0), 0),
+      total_views: connections.reduce((sum: number, conn: PlatformConnection) => sum + Math.floor((conn.follower_count || 0) * 0.3), 0),
+      engagement_rate: 8.5,
+      viral_score: 75,
+      content_count: Math.floor(Math.random() * 50) + 10,
+      revenue: Math.floor(Math.random() * 5000) + 500,
+      growth_rate: 12.5,
+      platform_breakdown: {
+        instagram: { followers: 0, engagement: 0, posts: 0 },
+        tiktok: { followers: 0, engagement: 0, posts: 0 },
+        youtube: { followers: 0, engagement: 0, posts: 0 },
+        x: { followers: 0, engagement: 0, posts: 0 },
+      },
+      recent_performance: Array.from({ length: 7 }, (_, i) => ({
+        date: new Date(Date.now() - (6 - i) * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        views: Math.floor(Math.random() * 1000) + 100,
+        engagement: Math.floor(Math.random() * 50) + 10,
+        viral_score: Math.floor(Math.random() * 20) + 70,
+      })),
+    };
   };
 
   useEffect(() => {
@@ -428,7 +423,7 @@ function DashboardContent() {
               userProfile={userProfile}
               subscription={subscription}
               platformConnections={platformConnections}
-              onConnectionsUpdate={() => fetchUserData()}
+              onConnectionsUpdate={handleConnectionsUpdate}
               hasFeatureAccess={hasFeatureAccess}
             />
           )}

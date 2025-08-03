@@ -51,6 +51,7 @@ export interface SocialConnection {
   user_id: string;
   platform: string;
   platform_user_id: string | null;
+  platform_username: string | null;
   username: string | null;
   follower_count: number;
   is_active: boolean;
