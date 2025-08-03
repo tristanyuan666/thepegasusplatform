@@ -56,8 +56,8 @@ export default function MobileNavigation({
   const pathname = usePathname();
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-2 md:hidden z-50">
-      <div className="grid grid-cols-5 gap-1">
+    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-2 py-1 md:hidden z-50">
+      <div className="grid grid-cols-5 gap-0">
         {navigationItems.map((item) => {
           const isActive = activeTab === item.name.toLowerCase();
           const hasAccess = hasFeatureAccess(item.feature);
@@ -66,10 +66,10 @@ export default function MobileNavigation({
             return (
               <div
                 key={item.name}
-                className="flex flex-col items-center gap-1 p-2 rounded-lg opacity-50 cursor-not-allowed"
+                className="flex flex-col items-center gap-0.5 p-1 rounded-lg opacity-50 cursor-not-allowed"
               >
-                <item.icon className="w-5 h-5 text-gray-400" />
-                <span className="text-xs font-medium text-gray-400">{item.name}</span>
+                <item.icon className="w-4 h-4 text-gray-400" />
+                <span className="text-[10px] font-medium text-gray-400 leading-tight">{item.name}</span>
               </div>
             );
           }
@@ -79,7 +79,7 @@ export default function MobileNavigation({
               key={item.name}
               href={item.href}
               className={cn(
-                "flex flex-col items-center gap-1 p-2 rounded-lg transition-colors hover-target interactive-element",
+                "flex flex-col items-center gap-0.5 p-1 rounded-lg transition-colors hover-target interactive-element",
                 isActive
                   ? "bg-blue-50 text-blue-600"
                   : "text-gray-500 hover:text-gray-700 hover:bg-gray-50",
@@ -88,8 +88,8 @@ export default function MobileNavigation({
               data-mobile-nav="true"
               data-nav-item={item.name.toLowerCase()}
             >
-              <item.icon className="w-5 h-5" />
-              <span className="text-xs font-medium">{item.name}</span>
+              <item.icon className="w-4 h-4" />
+              <span className="text-[10px] font-medium leading-tight">{item.name}</span>
             </Link>
           );
         })}

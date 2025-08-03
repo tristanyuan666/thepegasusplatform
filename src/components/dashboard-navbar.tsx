@@ -123,17 +123,17 @@ export default function DashboardNavbar({
   }
 
   return (
-    <nav className="w-full border-b border-gray-200 bg-white py-3 md:py-4">
-      <div className="container mx-auto px-4 flex justify-between items-center">
+    <nav className="w-full border-b border-gray-200 bg-white py-2 md:py-4">
+      <div className="container mx-auto px-3 md:px-4 flex justify-between items-center">
         {/* Logo */}
         <div className="flex items-center gap-2 md:gap-4">
           <Link
             href="/"
-            className="text-lg md:text-xl font-bold hover-target interactive-element"
+            className="text-base md:text-xl font-bold hover-target interactive-element"
             data-interactive="true"
           >
             <div className="flex items-center gap-1 md:gap-2">
-              <div className="w-6 h-6 md:w-8 md:h-8 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg flex items-center justify-center">
+              <div className="w-5 h-5 md:w-8 md:h-8 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-xs md:text-sm">P</span>
               </div>
               <span className="gradient-text-primary hidden sm:inline">Pegasus</span>
@@ -226,10 +226,10 @@ export default function DashboardNavbar({
               <Button
                 variant="ghost"
                 size="icon"
-                className="hover-target interactive-element w-8 h-8 md:w-10 md:h-10"
+                className="hover-target interactive-element w-7 h-7 md:w-10 md:h-10"
                 data-interactive="true"
               >
-                <UserCircle className="h-5 w-5 md:h-6 md:w-6" />
+                <UserCircle className="h-4 w-4 md:h-6 md:w-6" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
