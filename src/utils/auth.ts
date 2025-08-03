@@ -53,8 +53,24 @@ export interface SocialConnection {
   platform_user_id: string | null;
   platform_username: string | null;
   username: string | null;
+  display_name: string | null;
+  bio: string | null;
+  profile_image: string | null;
+  verified: boolean;
   follower_count: number;
+  engagement_rate: number;
+  average_views: number;
+  average_likes: number;
+  average_comments: number;
+  average_shares: number;
+  content_type: string;
+  niche: string | null;
+  location: string | null;
+  website: string | null;
+  contact_email: string | null;
   is_active: boolean;
+  connected_at: string | null;
+  last_sync: string | null;
   created_at: string;
   updated_at: string;
 }

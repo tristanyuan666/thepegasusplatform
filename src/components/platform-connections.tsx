@@ -34,6 +34,9 @@ import {
 import { createClient } from "../../supabase/client";
 import { SocialConnection } from "@/utils/auth";
 import { FeatureAccess } from "@/utils/feature-access";
+import { Textarea } from "./ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { Checkbox } from "./ui/checkbox";
 
 interface PlatformConnectionsProps {
   userId: string;
@@ -142,7 +145,19 @@ export default function PlatformConnections({
     username: "",
     displayName: "",
     followerCount: 0,
-    bio: ""
+    bio: "",
+    profileImage: "",
+    verified: false,
+    engagementRate: 0,
+    averageViews: 0,
+    averageLikes: 0,
+    averageComments: 0,
+    averageShares: 0,
+    contentType: "mixed",
+    niche: "",
+    location: "",
+    website: "",
+    email: ""
   });
   const supabase = createClient();
 
@@ -626,23 +641,55 @@ export default function PlatformConnections({
         throw new Error("Username is required");
       }
 
+      // Validate required fields
+      if (!manualConnectionData.displayName) {
+        throw new Error("Display name is required");
+      }
+      if (!manualConnectionData.bio) {
+        throw new Error("Bio is required");
+      }
+      if (!manualConnectionData.niche) {
+        throw new Error("Content niche is required");
+      }
+
+      // Create comprehensive connection data
+      const connectionData = {
+        user_id: userId,
+        platform: platform,
+        platform_username: manualConnectionData.username,
+        platform_user_id: manualConnectionData.username,
+        username: manualConnectionData.username,
+        display_name: manualConnectionData.displayName,
+        bio: manualConnectionData.bio,
+        profile_image: manualConnectionData.profileImage,
+        verified: manualConnectionData.verified,
+        follower_count: manualConnectionData.followerCount,
+        engagement_rate: manualConnectionData.engagementRate,
+        average_views: manualConnectionData.averageViews,
+        average_likes: manualConnectionData.averageLikes,
+        average_comments: manualConnectionData.averageComments,
+        average_shares: manualConnectionData.averageShares,
+        content_type: manualConnectionData.contentType,
+        niche: manualConnectionData.niche,
+        location: manualConnectionData.location,
+        website: manualConnectionData.website,
+        contact_email: manualConnectionData.email,
+        is_active: true,
+        connected_at: new Date().toISOString(),
+        last_sync: new Date().toISOString(),
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        metadata: {
+          manual_connection: true,
+          connection_date: new Date().toISOString(),
+          data_completeness: calculateDataCompleteness(manualConnectionData)
+        }
+      };
+
       // Create manual connection
       const { data: newConnection, error: insertError } = await supabase
         .from("platform_connections")
-        .insert({
-          user_id: userId,
-          platform: platform,
-          platform_username: manualConnectionData.username,
-          platform_user_id: manualConnectionData.username,
-          username: manualConnectionData.username,
-          is_active: true,
-          connected_at: new Date().toISOString(),
-          last_sync: new Date().toISOString(),
-          follower_count: manualConnectionData.followerCount,
-          engagement_rate: Math.random() * 5 + 2,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        })
+        .insert(connectionData)
         .select()
         .single();
 
@@ -651,7 +698,7 @@ export default function PlatformConnections({
         throw new Error("Failed to save manual connection to database. Please try again.");
       }
 
-      // Update local connections state
+      // Update local connections state with comprehensive data
       const newSocialConnection: SocialConnection = {
         id: Date.now().toString(),
         user_id: userId,
@@ -659,7 +706,21 @@ export default function PlatformConnections({
         platform_user_id: manualConnectionData.username,
         platform_username: manualConnectionData.username,
         username: manualConnectionData.username,
+        display_name: manualConnectionData.displayName,
+        bio: manualConnectionData.bio,
+        profile_image: manualConnectionData.profileImage,
+        verified: manualConnectionData.verified,
         follower_count: manualConnectionData.followerCount,
+        engagement_rate: manualConnectionData.engagementRate,
+        average_views: manualConnectionData.averageViews,
+        average_likes: manualConnectionData.averageLikes,
+        average_comments: manualConnectionData.averageComments,
+        average_shares: manualConnectionData.averageShares,
+        content_type: manualConnectionData.contentType,
+        niche: manualConnectionData.niche,
+        location: manualConnectionData.location,
+        website: manualConnectionData.website,
+        contact_email: manualConnectionData.email,
         is_active: true,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
@@ -672,7 +733,7 @@ export default function PlatformConnections({
         onConnectionsUpdate(updatedConnections);
       }
 
-      setSuccess(`Successfully connected to ${manualConnectionData.username} on ${platform}!`);
+      setSuccess(`Successfully connected to ${manualConnectionData.username} on ${platform}! Your comprehensive data has been saved.`);
       setTimeout(() => setSuccess(null), 3000);
       
       // Reset manual connection data
@@ -680,7 +741,19 @@ export default function PlatformConnections({
         username: "",
         displayName: "",
         followerCount: 0,
-        bio: ""
+        bio: "",
+        profileImage: "",
+        verified: false,
+        engagementRate: 0,
+        averageViews: 0,
+        averageLikes: 0,
+        averageComments: 0,
+        averageShares: 0,
+        contentType: "mixed",
+        niche: "",
+        location: "",
+        website: "",
+        email: ""
       });
       setManualConnectionMode(false);
       setIsDialogOpen(false);
@@ -692,6 +765,28 @@ export default function PlatformConnections({
     } finally {
       setIsConnecting(null);
     }
+  };
+
+  // Helper function to calculate data completeness
+  const calculateDataCompleteness = (data: any) => {
+    const requiredFields = ['username', 'displayName', 'bio', 'niche'];
+    const optionalFields = ['followerCount', 'engagementRate', 'averageViews', 'averageLikes', 'averageComments', 'averageShares', 'location', 'website', 'email'];
+    
+    const requiredComplete = requiredFields.filter(field => data[field] && data[field] !== "").length;
+    const optionalComplete = optionalFields.filter(field => data[field] && data[field] !== "").length;
+    
+    const requiredPercentage = (requiredComplete / requiredFields.length) * 100;
+    const optionalPercentage = (optionalComplete / optionalFields.length) * 100;
+    
+    return {
+      required_complete: requiredComplete,
+      required_total: requiredFields.length,
+      required_percentage: requiredPercentage,
+      optional_complete: optionalComplete,
+      optional_total: optionalFields.length,
+      optional_percentage: optionalPercentage,
+      overall_percentage: Math.round((requiredPercentage * 0.7) + (optionalPercentage * 0.3))
+    };
   };
 
   const handleDisconnect = async (
@@ -791,7 +886,19 @@ export default function PlatformConnections({
       username: "",
       displayName: "",
       followerCount: 0,
-      bio: ""
+      bio: "",
+      profileImage: "",
+      verified: false,
+      engagementRate: 0,
+      averageViews: 0,
+      averageLikes: 0,
+      averageComments: 0,
+      averageShares: 0,
+      contentType: "mixed",
+      niche: "",
+      location: "",
+      website: "",
+      email: ""
     });
     setIsDialogOpen(true);
   };
@@ -1126,57 +1233,288 @@ export default function PlatformConnections({
             ) : (
               <>
                 <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="manual-username">Username</Label>
-                    <Input
-                      id="manual-username"
-                      placeholder="Enter your username"
-                      value={manualConnectionData.username}
-                      onChange={(e) => setManualConnectionData({
-                        ...manualConnectionData,
-                        username: e.target.value
-                      })}
-                    />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="manual-username" className="text-sm font-medium">
+                        Username <span className="text-red-500">*</span>
+                      </Label>
+                      <Input
+                        id="manual-username"
+                        placeholder="Enter your username"
+                        value={manualConnectionData.username}
+                        onChange={(e) => setManualConnectionData({
+                          ...manualConnectionData,
+                          username: e.target.value
+                        })}
+                        required
+                      />
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="manual-display-name" className="text-sm font-medium">
+                        Display Name <span className="text-red-500">*</span>
+                      </Label>
+                      <Input
+                        id="manual-display-name"
+                        placeholder="Enter your display name"
+                        value={manualConnectionData.displayName}
+                        onChange={(e) => setManualConnectionData({
+                          ...manualConnectionData,
+                          displayName: e.target.value
+                        })}
+                        required
+                      />
+                    </div>
                   </div>
-                  
-                  <div>
-                    <Label htmlFor="manual-display-name">Display Name (Optional)</Label>
-                    <Input
-                      id="manual-display-name"
-                      placeholder="Enter your display name"
-                      value={manualConnectionData.displayName}
-                      onChange={(e) => setManualConnectionData({
-                        ...manualConnectionData,
-                        displayName: e.target.value
-                      })}
-                    />
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="manual-followers" className="text-sm font-medium">
+                        Follower Count <span className="text-red-500">*</span>
+                      </Label>
+                      <Input
+                        id="manual-followers"
+                        type="number"
+                        placeholder="Enter your follower count"
+                        value={manualConnectionData.followerCount}
+                        onChange={(e) => setManualConnectionData({
+                          ...manualConnectionData,
+                          followerCount: parseInt(e.target.value) || 0
+                        })}
+                        required
+                      />
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="manual-engagement" className="text-sm font-medium">
+                        Engagement Rate (%) <span className="text-red-500">*</span>
+                      </Label>
+                      <Input
+                        id="manual-engagement"
+                        type="number"
+                        step="0.1"
+                        placeholder="e.g., 3.5"
+                        value={manualConnectionData.engagementRate}
+                        onChange={(e) => setManualConnectionData({
+                          ...manualConnectionData,
+                          engagementRate: parseFloat(e.target.value) || 0
+                        })}
+                        required
+                      />
+                    </div>
                   </div>
-                  
+
                   <div>
-                    <Label htmlFor="manual-followers">Follower Count (Optional)</Label>
-                    <Input
-                      id="manual-followers"
-                      type="number"
-                      placeholder="Enter your follower count"
-                      value={manualConnectionData.followerCount}
-                      onChange={(e) => setManualConnectionData({
-                        ...manualConnectionData,
-                        followerCount: parseInt(e.target.value) || 0
-                      })}
-                    />
-                  </div>
-                  
-                  <div>
-                    <Label htmlFor="manual-bio">Bio (Optional)</Label>
-                    <Input
+                    <Label htmlFor="manual-bio" className="text-sm font-medium">
+                      Bio/Description <span className="text-red-500">*</span>
+                    </Label>
+                    <Textarea
                       id="manual-bio"
-                      placeholder="Enter your bio"
+                      placeholder="Enter your bio or description"
                       value={manualConnectionData.bio}
                       onChange={(e) => setManualConnectionData({
                         ...manualConnectionData,
                         bio: e.target.value
                       })}
+                      required
+                      rows={3}
                     />
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="manual-niche" className="text-sm font-medium">
+                        Content Niche <span className="text-red-500">*</span>
+                      </Label>
+                      <Select
+                        value={manualConnectionData.niche}
+                        onValueChange={(value) => setManualConnectionData({
+                          ...manualConnectionData,
+                          niche: value
+                        })}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select your niche" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="lifestyle">Lifestyle</SelectItem>
+                          <SelectItem value="fitness">Fitness & Health</SelectItem>
+                          <SelectItem value="business">Business & Entrepreneurship</SelectItem>
+                          <SelectItem value="technology">Technology</SelectItem>
+                          <SelectItem value="education">Education</SelectItem>
+                          <SelectItem value="entertainment">Entertainment</SelectItem>
+                          <SelectItem value="fashion">Fashion & Beauty</SelectItem>
+                          <SelectItem value="food">Food & Cooking</SelectItem>
+                          <SelectItem value="travel">Travel</SelectItem>
+                          <SelectItem value="gaming">Gaming</SelectItem>
+                          <SelectItem value="finance">Finance & Investing</SelectItem>
+                          <SelectItem value="parenting">Parenting & Family</SelectItem>
+                          <SelectItem value="comedy">Comedy & Humor</SelectItem>
+                          <SelectItem value="motivation">Motivation & Self-Help</SelectItem>
+                          <SelectItem value="news">News & Politics</SelectItem>
+                          <SelectItem value="sports">Sports</SelectItem>
+                          <SelectItem value="art">Art & Creativity</SelectItem>
+                          <SelectItem value="science">Science & Research</SelectItem>
+                          <SelectItem value="other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="manual-content-type" className="text-sm font-medium">
+                        Content Type <span className="text-red-500">*</span>
+                      </Label>
+                      <Select
+                        value={manualConnectionData.contentType}
+                        onValueChange={(value) => setManualConnectionData({
+                          ...manualConnectionData,
+                          contentType: value
+                        })}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select content type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="videos">Videos</SelectItem>
+                          <SelectItem value="photos">Photos</SelectItem>
+                          <SelectItem value="stories">Stories</SelectItem>
+                          <SelectItem value="reels">Reels/Short Videos</SelectItem>
+                          <SelectItem value="live">Live Streams</SelectItem>
+                          <SelectItem value="mixed">Mixed Content</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="manual-avg-views" className="text-sm font-medium">
+                        Average Views per Post
+                      </Label>
+                      <Input
+                        id="manual-avg-views"
+                        type="number"
+                        placeholder="Average views"
+                        value={manualConnectionData.averageViews}
+                        onChange={(e) => setManualConnectionData({
+                          ...manualConnectionData,
+                          averageViews: parseInt(e.target.value) || 0
+                        })}
+                      />
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="manual-avg-likes" className="text-sm font-medium">
+                        Average Likes per Post
+                      </Label>
+                      <Input
+                        id="manual-avg-likes"
+                        type="number"
+                        placeholder="Average likes"
+                        value={manualConnectionData.averageLikes}
+                        onChange={(e) => setManualConnectionData({
+                          ...manualConnectionData,
+                          averageLikes: parseInt(e.target.value) || 0
+                        })}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="manual-avg-comments" className="text-sm font-medium">
+                        Average Comments per Post
+                      </Label>
+                      <Input
+                        id="manual-avg-comments"
+                        type="number"
+                        placeholder="Average comments"
+                        value={manualConnectionData.averageComments}
+                        onChange={(e) => setManualConnectionData({
+                          ...manualConnectionData,
+                          averageComments: parseInt(e.target.value) || 0
+                        })}
+                      />
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="manual-avg-shares" className="text-sm font-medium">
+                        Average Shares per Post
+                      </Label>
+                      <Input
+                        id="manual-avg-shares"
+                        type="number"
+                        placeholder="Average shares"
+                        value={manualConnectionData.averageShares}
+                        onChange={(e) => setManualConnectionData({
+                          ...manualConnectionData,
+                          averageShares: parseInt(e.target.value) || 0
+                        })}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="manual-location" className="text-sm font-medium">
+                        Location
+                      </Label>
+                      <Input
+                        id="manual-location"
+                        placeholder="City, Country"
+                        value={manualConnectionData.location}
+                        onChange={(e) => setManualConnectionData({
+                          ...manualConnectionData,
+                          location: e.target.value
+                        })}
+                      />
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="manual-website" className="text-sm font-medium">
+                        Website
+                      </Label>
+                      <Input
+                        id="manual-website"
+                        type="url"
+                        placeholder="https://yourwebsite.com"
+                        value={manualConnectionData.website}
+                        onChange={(e) => setManualConnectionData({
+                          ...manualConnectionData,
+                          website: e.target.value
+                        })}
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="manual-email" className="text-sm font-medium">
+                      Contact Email
+                    </Label>
+                    <Input
+                      id="manual-email"
+                      type="email"
+                      placeholder="your@email.com"
+                      value={manualConnectionData.email}
+                      onChange={(e) => setManualConnectionData({
+                        ...manualConnectionData,
+                        email: e.target.value
+                      })}
+                    />
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="manual-verified"
+                      checked={manualConnectionData.verified}
+                      onCheckedChange={(checked) => setManualConnectionData({
+                        ...manualConnectionData,
+                        verified: checked as boolean
+                      })}
+                    />
+                    <Label htmlFor="manual-verified" className="text-sm">
+                      Verified Account
+                    </Label>
                   </div>
                 </div>
 
@@ -1190,7 +1528,7 @@ export default function PlatformConnections({
                   </Button>
                   <Button
                     onClick={() => selectedPlatform && handleManualConnect(selectedPlatform)}
-                    disabled={!selectedPlatform || !manualConnectionData.username || isConnecting === selectedPlatform}
+                    disabled={!selectedPlatform || !manualConnectionData.username || !manualConnectionData.displayName || !manualConnectionData.bio || !manualConnectionData.niche || isConnecting === selectedPlatform}
                     className="flex-1"
                   >
                     {isConnecting === selectedPlatform ? (
