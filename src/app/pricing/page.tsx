@@ -547,7 +547,7 @@ export default function PricingPage({ searchParams }: PricingPageProps) {
                 Premium Plans for Serious Creators
               </span>
             </div>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-black mb-3 sm:mb-4 md:mb-6 px-4">
+            <h1 className="text-3xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-black mb-3 sm:mb-4 md:mb-6 px-4">
               Choose Your{" "}
               <span className="bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
                 Creator Plan
@@ -559,9 +559,9 @@ export default function PricingPage({ searchParams }: PricingPageProps) {
             </p>
 
             {/* Billing Toggle - Fixed Mobile Version */}
-            <div className="flex items-center justify-center gap-3 md:gap-4 mb-6 md:mb-8 bg-white/80 backdrop-blur-md p-3 md:p-4 rounded-2xl shadow-lg border border-white/40 max-w-sm md:max-w-md mx-auto">
+            <div className="flex items-center justify-center gap-2 md:gap-4 mb-4 md:mb-8 bg-white/80 backdrop-blur-md p-2 md:p-4 rounded-xl md:rounded-2xl shadow-lg border border-white/40 max-w-xs md:max-w-md mx-auto">
               <span
-                className={`text-sm md:text-base font-semibold transition-colors ${
+                className={`text-xs md:text-base font-semibold transition-colors ${
                   !isYearly ? "text-gray-900" : "text-gray-500"
                 }`}
               >
@@ -569,28 +569,28 @@ export default function PricingPage({ searchParams }: PricingPageProps) {
               </span>
               <button
                 onClick={() => setIsYearly(!isYearly)}
-                className={`relative w-10 h-5 md:w-12 md:h-6 rounded-full transition-all duration-300 hover:scale-105 shadow-md hover-target interactive-element ${
+                className={`relative w-8 h-4 md:w-12 md:h-6 rounded-full transition-all duration-300 hover:scale-105 shadow-md hover-target interactive-element ${
                   isYearly ? "bg-blue-600" : "bg-gray-300"
                 }`}
                 data-interactive="true"
                 aria-label="Toggle billing period"
               >
                 <div
-                  className={`absolute top-0.5 left-0.5 w-4 h-4 md:w-5 md:h-5 bg-white rounded-full transition-transform duration-300 shadow-lg ${
-                    isYearly ? "translate-x-5 md:translate-x-6" : "translate-x-0"
+                  className={`absolute top-0.5 left-0.5 w-3 h-3 md:w-5 md:h-5 bg-white rounded-full transition-transform duration-300 shadow-lg ${
+                    isYearly ? "translate-x-4 md:translate-x-6" : "translate-x-0"
                   }`}
                 />
               </button>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1 md:gap-2">
                 <span
-                  className={`text-sm md:text-base font-semibold transition-colors ${
+                  className={`text-xs md:text-base font-semibold transition-colors ${
                     isYearly ? "text-gray-900" : "text-gray-500"
                   }`}
                 >
                   Yearly
                 </span>
                 {isYearly && (
-                  <div className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-bold animate-pulse shadow-sm">
+                  <div className="bg-green-100 text-green-800 text-[10px] md:text-xs px-1.5 md:px-2 py-0.5 md:py-1 rounded-full font-bold animate-pulse shadow-sm">
                     Save 20%
                   </div>
                 )}

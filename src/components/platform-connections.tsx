@@ -1011,12 +1011,12 @@ export default function PlatformConnections({
         </div>
 
         <div className="grid grid-cols-3 gap-1 md:gap-4">
-          <div className="bg-white rounded-lg p-1.5 md:p-4 border">
-            <div className="flex items-center gap-1 md:gap-2 mb-1 md:mb-2">
-              <Users className="w-2 h-2 md:w-4 md:h-4 text-blue-600" />
-              <span className="text-[8px] font-medium text-gray-700">Followers</span>
+          <div className="bg-white rounded-lg p-1 md:p-4 border">
+            <div className="flex items-center gap-0.5 md:gap-2 mb-0.5 md:mb-2">
+              <Users className="w-1.5 h-1.5 md:w-4 md:h-4 text-blue-600" />
+              <span className="text-[6px] font-medium text-gray-700">Followers</span>
             </div>
-            <p className="text-[10px] md:text-2xl font-bold text-gray-900">
+            <p className="text-[8px] md:text-2xl font-bold text-gray-900">
               {localConnections
                 .filter(conn => conn.is_active)
                 .reduce((sum, conn) => sum + (conn.follower_count || 0), 0)
@@ -1024,22 +1024,22 @@ export default function PlatformConnections({
             </p>
           </div>
 
-          <div className="bg-white rounded-lg p-1.5 md:p-4 border">
-            <div className="flex items-center gap-1 md:gap-2 mb-1 md:mb-2">
-              <TrendingUp className="w-2 h-2 md:w-4 md:h-4 text-green-600" />
-              <span className="text-[8px] font-medium text-gray-700">Platforms</span>
+          <div className="bg-white rounded-lg p-1 md:p-4 border">
+            <div className="flex items-center gap-0.5 md:gap-2 mb-0.5 md:mb-2">
+              <TrendingUp className="w-1.5 h-1.5 md:w-4 md:h-4 text-green-600" />
+              <span className="text-[6px] font-medium text-gray-700">Platforms</span>
             </div>
-            <p className="text-[10px] md:text-2xl font-bold text-gray-900">
+            <p className="text-[8px] md:text-2xl font-bold text-gray-900">
               {localConnections.filter(conn => conn.is_active).length}
             </p>
           </div>
 
-          <div className="bg-white rounded-lg p-1.5 md:p-4 border">
-            <div className="flex items-center gap-1 md:gap-2 mb-1 md:mb-2">
-              <Eye className="w-2 h-2 md:w-4 md:h-4 text-purple-600" />
-              <span className="text-[8px] font-medium text-gray-700">Status</span>
+          <div className="bg-white rounded-lg p-1 md:p-4 border">
+            <div className="flex items-center gap-0.5 md:gap-2 mb-0.5 md:mb-2">
+              <Eye className="w-1.5 h-1.5 md:w-4 md:h-4 text-purple-600" />
+              <span className="text-[6px] font-medium text-gray-700">Status</span>
             </div>
-            <p className="text-[8px] text-gray-600">
+            <p className="text-[6px] text-gray-600">
               {localConnections.filter(conn => conn.is_active).length > 0
                 ? "Connected"
                 : "None"}
@@ -1049,7 +1049,7 @@ export default function PlatformConnections({
       </Card>
 
       {/* Platform Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1.5 md:gap-6">
         {platforms.map((platform) => {
           const connection = getConnectionStatus(platform.id);
           const IconComponent = platform.icon;
@@ -1058,20 +1058,20 @@ export default function PlatformConnections({
             <Card key={platform.id} className="relative overflow-hidden">
               <div className={`absolute top-0 left-0 right-0 h-1 ${platform.bgColor}`} />
               
-              <div className="p-2.5 md:p-6">
-                <div className="flex items-center justify-between mb-2 md:mb-4">
-                  <div className="flex items-center gap-2 md:gap-3">
-                    <div className={`w-6 h-6 md:w-10 md:h-10 rounded-lg ${platform.bgColor} flex items-center justify-center`}>
-                      <IconComponent className="w-3 h-3 md:w-5 md:h-5 text-white" />
+              <div className="p-2 md:p-6">
+                <div className="flex items-center justify-between mb-1.5 md:mb-4">
+                  <div className="flex items-center gap-1.5 md:gap-3">
+                    <div className={`w-5 h-5 md:w-10 md:h-10 rounded-lg ${platform.bgColor} flex items-center justify-center`}>
+                      <IconComponent className="w-2.5 h-2.5 md:w-5 md:h-5 text-white" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <h3 className="font-semibold text-gray-900 text-[10px] md:text-base truncate">{platform.name}</h3>
-                      <p className="text-[8px] md:text-sm text-gray-600 truncate">{platform.description}</p>
+                      <h3 className="font-semibold text-gray-900 text-[8px] md:text-base truncate">{platform.name}</h3>
+                      <p className="text-[6px] md:text-sm text-gray-600 truncate">{platform.description}</p>
                     </div>
                   </div>
                   
                   {connection && (
-                    <Badge className="bg-green-100 text-green-800 border-green-200 text-[8px]">
+                    <Badge className="bg-green-100 text-green-800 border-green-200 text-[6px]">
                       Connected
                     </Badge>
                   )}
