@@ -584,8 +584,24 @@ export default function PlatformConnections({
           platform_user_id: account.username,
           platform_username: account.username,
           username: account.username,
+          display_name: account.displayName,
+          bio: account.bio || null,
+          profile_image: account.profileImage || null,
+          verified: account.verified,
           follower_count: account.followerCount,
+          engagement_rate: 0,
+          average_views: 0,
+          average_likes: 0,
+          average_comments: 0,
+          average_shares: 0,
+          content_type: 'mixed',
+          niche: null,
+          location: null,
+          website: null,
+          contact_email: null,
           is_active: true,
+          connected_at: new Date().toISOString(),
+          last_sync: new Date().toISOString(),
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         };
@@ -722,6 +738,8 @@ export default function PlatformConnections({
         website: manualConnectionData.website,
         contact_email: manualConnectionData.email,
         is_active: true,
+        connected_at: new Date().toISOString(),
+        last_sync: new Date().toISOString(),
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       };
