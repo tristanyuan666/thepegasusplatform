@@ -137,6 +137,13 @@ export default function PlatformConnections({
   const [selectedPlatform, setSelectedPlatform] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [localConnections, setLocalConnections] = useState<SocialConnection[]>(connections);
+  const [manualConnectionMode, setManualConnectionMode] = useState(false);
+  const [manualConnectionData, setManualConnectionData] = useState({
+    username: "",
+    displayName: "",
+    followerCount: 0,
+    bio: ""
+  });
   const supabase = createClient();
 
   // Update local connections when props change
@@ -193,26 +200,26 @@ export default function PlatformConnections({
       }
 
       if (realAccounts.length === 0) {
-        setError(`No ${platform} accounts found for "${cleanQuery}". Please try a different username.`);
+        setError(`No ${platform} accounts found for "${cleanQuery}". Please try a different username or check if the account exists.`);
         setSearchResults([]);
       } else {
         setSearchResults(realAccounts);
         setSuccess(`Found ${realAccounts.length} ${platform} account(s) for "${cleanQuery}"`);
-        setTimeout(() => setSuccess(null), 3000);
       }
-
     } catch (error) {
-      console.error(`Error searching ${platform}:`, error);
-      setError(`Failed to search ${platform}. Please try again.`);
+      console.error("Search error:", error);
+      setError(`Failed to search ${platform} accounts. Please try again or enter a different username.`);
       setSearchResults([]);
     } finally {
       setIsSearching(null);
     }
   };
 
-  // Instagram account search - REAL implementation
+  // Instagram account search - IMPROVED with better error handling
   const searchInstagramAccounts = async (query: string): Promise<PlatformAccount[]> => {
     try {
+      console.log(`Attempting to search Instagram for: ${query}`);
+      
       // Try to access Instagram profile directly
       const response = await fetch(`https://www.instagram.com/${query}/`, {
         method: 'GET',
@@ -240,6 +247,7 @@ export default function PlatformConnections({
         const bioMatch = html.match(/"biography":"([^"]+)"/);
         const bio = bioMatch ? bioMatch[1] : `Instagram account for ${query}`;
 
+        console.log(`Found Instagram account: ${query} with ${followerCount} followers`);
         return [{
           username: query,
           displayName: fullName,
@@ -248,25 +256,21 @@ export default function PlatformConnections({
           bio,
           platform: "instagram"
         }];
+      } else {
+        console.log(`Instagram account not found: ${query}`);
+        throw new Error(`Instagram account "${query}" not found. Please check the username and try again.`);
       }
     } catch (error) {
-      console.log("Instagram scraping failed");
+      console.error("Instagram search failed:", error);
+      throw new Error(`Unable to verify Instagram account "${query}". Please check the username and try again.`);
     }
-
-    // Fallback: Return the account as if it exists (for testing)
-    return [{
-      username: query,
-      displayName: query.charAt(0).toUpperCase() + query.slice(1),
-      followerCount: Math.floor(Math.random() * 50000) + 1000,
-      verified: Math.random() > 0.8,
-      bio: `Instagram account for ${query}`,
-      platform: "instagram"
-    }];
   };
 
-  // TikTok account search - REAL implementation
+  // TikTok account search - IMPROVED with better error handling
   const searchTikTokAccounts = async (query: string): Promise<PlatformAccount[]> => {
     try {
+      console.log(`Attempting to search TikTok for: ${query}`);
+      
       const response = await fetch(`https://www.tiktok.com/@${query}`, {
         method: 'GET',
         headers: {
@@ -289,6 +293,7 @@ export default function PlatformConnections({
         const bioMatch = html.match(/"signature":"([^"]+)"/);
         const bio = bioMatch ? bioMatch[1] : `TikTok account for ${query}`;
 
+        console.log(`Found TikTok account: ${query} with ${followerCount} followers`);
         return [{
           username: query,
           displayName,
@@ -297,25 +302,21 @@ export default function PlatformConnections({
           bio,
           platform: "tiktok"
         }];
+      } else {
+        console.log(`TikTok account not found: ${query}`);
+        throw new Error(`TikTok account "${query}" not found. Please check the username and try again.`);
       }
     } catch (error) {
-      console.log("TikTok scraping failed");
+      console.error("TikTok search failed:", error);
+      throw new Error(`Unable to verify TikTok account "${query}". Please check the username and try again.`);
     }
-
-    // Fallback
-    return [{
-      username: query,
-      displayName: query.charAt(0).toUpperCase() + query.slice(1),
-      followerCount: Math.floor(Math.random() * 100000) + 2000,
-      verified: Math.random() > 0.7,
-      bio: `TikTok account for ${query}`,
-      platform: "tiktok"
-    }];
   };
 
-  // YouTube account search - REAL implementation
+  // YouTube account search - IMPROVED with better error handling
   const searchYouTubeAccounts = async (query: string): Promise<PlatformAccount[]> => {
     try {
+      console.log(`Attempting to search YouTube for: ${query}`);
+      
       // Try to access YouTube channel directly
       const response = await fetch(`https://www.youtube.com/@${query}`, {
         method: 'GET',
@@ -327,47 +328,48 @@ export default function PlatformConnections({
       if (response.ok) {
         const html = await response.text();
         
-        // Extract subscriber count
-        const subscriberMatch = html.match(/"subscriberCountText":{"simpleText":"([^"]+)"}/);
-        const subscriberText = subscriberMatch ? subscriberMatch[1] : "0";
+        // Extract subscriber count from YouTube page
+        const subscriberMatch = html.match(/"subscriberCountText":\{"simpleText":"([^"]+)"}/);
+        const subscriberText = subscriberMatch ? subscriberMatch[1] : "0 subscribers";
         
-        // Convert subscriber text to number (e.g., "1.2M" -> 1200000)
+        // Convert subscriber text to number
         let followerCount = 0;
-        if (subscriberText.includes('M')) {
-          followerCount = Math.floor(parseFloat(subscriberText.replace('M', '')) * 1000000);
-        } else if (subscriberText.includes('K')) {
-          followerCount = Math.floor(parseFloat(subscriberText.replace('K', '')) * 1000);
+        if (subscriberText.includes('K')) {
+          followerCount = parseInt(subscriberText.replace('K', '')) * 1000;
+        } else if (subscriberText.includes('M')) {
+          followerCount = parseInt(subscriberText.replace('M', '')) * 1000000;
         } else {
           followerCount = parseInt(subscriberText.replace(/[^\d]/g, '')) || 0;
         }
+        
+        // Extract channel name
+        const nameMatch = html.match(/"title":"([^"]+)"/);
+        const displayName = nameMatch ? nameMatch[1] : query.charAt(0).toUpperCase() + query.slice(1);
 
+        console.log(`Found YouTube account: ${query} with ${followerCount} subscribers`);
         return [{
           username: query,
-          displayName: query.charAt(0).toUpperCase() + query.slice(1),
+          displayName,
           followerCount,
           verified: false,
           bio: `YouTube channel for ${query}`,
           platform: "youtube"
         }];
+      } else {
+        console.log(`YouTube account not found: ${query}`);
+        throw new Error(`YouTube account "${query}" not found. Please check the channel name and try again.`);
       }
     } catch (error) {
-      console.log("YouTube scraping failed");
+      console.error("YouTube search failed:", error);
+      throw new Error(`Unable to verify YouTube account "${query}". Please check the channel name and try again.`);
     }
-
-    // Fallback
-    return [{
-      username: query,
-      displayName: query.charAt(0).toUpperCase() + query.slice(1),
-      followerCount: Math.floor(Math.random() * 20000) + 500,
-      verified: Math.random() > 0.6,
-      bio: `YouTube channel for ${query}`,
-      platform: "youtube"
-    }];
   };
 
-  // X (Twitter) account search - REAL implementation
+  // X (Twitter) account search - IMPROVED with better error handling
   const searchXAccounts = async (query: string): Promise<PlatformAccount[]> => {
     try {
+      console.log(`Attempting to search X for: ${query}`);
+      
       const response = await fetch(`https://twitter.com/${query}`, {
         method: 'GET',
         headers: {
@@ -378,7 +380,7 @@ export default function PlatformConnections({
       if (response.ok) {
         const html = await response.text();
         
-        // Extract follower count from Twitter page
+        // Extract follower count from X page
         const followerMatch = html.match(/"followers_count":(\d+)/);
         const followerCount = followerMatch ? parseInt(followerMatch[1]) : 0;
         
@@ -386,113 +388,73 @@ export default function PlatformConnections({
         const nameMatch = html.match(/"name":"([^"]+)"/);
         const displayName = nameMatch ? nameMatch[1] : query.charAt(0).toUpperCase() + query.slice(1);
         
-        // Check verification
-        const verified = html.includes('verified') || html.includes('"verified":true');
-        
+        // Extract bio
+        const bioMatch = html.match(/"description":"([^"]+)"/);
+        const bio = bioMatch ? bioMatch[1] : `X account for ${query}`;
+
+        console.log(`Found X account: ${query} with ${followerCount} followers`);
         return [{
           username: query,
           displayName,
           followerCount,
-          verified,
-          bio: `X account for ${query}`,
+          verified: false,
+          bio,
           platform: "x"
         }];
+      } else {
+        console.log(`X account not found: ${query}`);
+        throw new Error(`X account "${query}" not found. Please check the username and try again.`);
       }
     } catch (error) {
-      console.log("X scraping failed");
+      console.error("X search failed:", error);
+      throw new Error(`Unable to verify X account "${query}". Please check the username and try again.`);
     }
-
-    // Fallback
-    return [{
-      username: query,
-      displayName: query.charAt(0).toUpperCase() + query.slice(1),
-      followerCount: Math.floor(Math.random() * 30000) + 1000,
-      verified: Math.random() > 0.8,
-      bio: `X account for ${query}`,
-      platform: "x"
-    }];
   };
 
-  // LinkedIn account search - REAL implementation
+  // LinkedIn account search - IMPROVED with better error handling
   const searchLinkedInAccounts = async (query: string): Promise<PlatformAccount[]> => {
     try {
-      const response = await fetch(`https://www.linkedin.com/in/${query}/`, {
-        method: 'GET',
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-        }
-      });
-
-      if (response.ok) {
-        const html = await response.text();
-        
-        // Extract follower count if available
-        const followerMatch = html.match(/"followerCount":(\d+)/);
-        const followerCount = followerMatch ? parseInt(followerMatch[1]) : Math.floor(Math.random() * 10000) + 500;
-        
-        return [{
-          username: query,
-          displayName: query.charAt(0).toUpperCase() + query.slice(1),
-          followerCount,
-          verified: false,
-          bio: `LinkedIn profile for ${query}`,
-          platform: "linkedin"
-        }];
-      }
+      console.log(`Attempting to search LinkedIn for: ${query}`);
+      
+      // LinkedIn requires authentication, so we'll provide a helpful message
+      console.log(`LinkedIn search requires authentication. Providing manual connection option.`);
+      
+      // Return a placeholder that allows manual connection
+      return [{
+        username: query,
+        displayName: query.charAt(0).toUpperCase() + query.slice(1),
+        followerCount: 0, // Will be updated when user provides real data
+        verified: false,
+        bio: `LinkedIn profile for ${query}`,
+        platform: "linkedin"
+      }];
     } catch (error) {
-      console.log("LinkedIn scraping failed");
+      console.error("LinkedIn search failed:", error);
+      throw new Error(`LinkedIn account verification requires authentication. You can manually connect your account.`);
     }
-
-    // Fallback
-    return [{
-      username: query,
-      displayName: query.charAt(0).toUpperCase() + query.slice(1),
-      followerCount: Math.floor(Math.random() * 10000) + 500,
-      verified: false,
-      bio: `LinkedIn profile for ${query}`,
-      platform: "linkedin"
-    }];
   };
 
-  // Facebook account search - REAL implementation
+  // Facebook account search - IMPROVED with better error handling
   const searchFacebookAccounts = async (query: string): Promise<PlatformAccount[]> => {
     try {
-      const response = await fetch(`https://www.facebook.com/${query}`, {
-        method: 'GET',
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-        }
-      });
-
-      if (response.ok) {
-        const html = await response.text();
-        
-        // Extract follower count if available
-        const followerMatch = html.match(/"follower_count":(\d+)/);
-        const followerCount = followerMatch ? parseInt(followerMatch[1]) : Math.floor(Math.random() * 50000) + 1000;
-        
-        return [{
-          username: query,
-          displayName: query.charAt(0).toUpperCase() + query.slice(1),
-          followerCount,
-          verified: false,
-          bio: `Facebook page for ${query}`,
-          platform: "facebook"
-        }];
-      }
+      console.log(`Attempting to search Facebook for: ${query}`);
+      
+      // Facebook requires authentication, so we'll provide a helpful message
+      console.log(`Facebook search requires authentication. Providing manual connection option.`);
+      
+      // Return a placeholder that allows manual connection
+      return [{
+        username: query,
+        displayName: query.charAt(0).toUpperCase() + query.slice(1),
+        followerCount: 0, // Will be updated when user provides real data
+        verified: false,
+        bio: `Facebook page for ${query}`,
+        platform: "facebook"
+      }];
     } catch (error) {
-      console.log("Facebook scraping failed");
+      console.error("Facebook search failed:", error);
+      throw new Error(`Facebook account verification requires authentication. You can manually connect your account.`);
     }
-
-    // Fallback
-    return [{
-      username: query,
-      displayName: query.charAt(0).toUpperCase() + query.slice(1),
-      followerCount: Math.floor(Math.random() * 50000) + 1000,
-      verified: false,
-      bio: `Facebook page for ${query}`,
-      platform: "facebook"
-    }];
   };
 
   const handleConnectAccount = async (account: PlatformAccount) => {
@@ -521,7 +483,7 @@ export default function PlatformConnections({
 
       if (checkError) {
         console.error("Error checking existing connections:", checkError);
-        throw new Error("Failed to check existing connections");
+        throw new Error("Failed to check existing connections. Please try again.");
       }
 
       // If user already has an active connection for this platform, update it
@@ -533,6 +495,7 @@ export default function PlatformConnections({
           .update({
             platform_username: account.username,
             platform_user_id: account.username,
+            username: account.username,
             follower_count: account.followerCount,
             engagement_rate: Math.random() * 5 + 2,
             last_sync: new Date().toISOString(),
@@ -546,7 +509,7 @@ export default function PlatformConnections({
 
         if (updateError) {
           console.error("Database update error:", updateError);
-          throw new Error("Failed to update connection in database");
+          throw new Error("Failed to update connection in database. Please try again.");
         }
 
         console.log("Connection updated successfully:", updatedConnection);
@@ -561,6 +524,7 @@ export default function PlatformConnections({
             platform: account.platform,
             platform_username: account.username,
             platform_user_id: account.username,
+            username: account.username,
             is_active: true,
             connected_at: new Date().toISOString(),
             last_sync: new Date().toISOString(),
@@ -574,7 +538,7 @@ export default function PlatformConnections({
 
         if (insertError) {
           console.error("Database insert error:", insertError);
-          throw new Error("Failed to save connection to database");
+          throw new Error("Failed to save connection to database. Please try again.");
         }
 
         console.log("Connection created successfully:", newConnection);
@@ -633,7 +597,98 @@ export default function PlatformConnections({
 
     } catch (error) {
       console.error("Connection error:", error);
-      setError(error instanceof Error ? error.message : "Connection failed. Please try again.");
+      const errorMessage = error instanceof Error ? error.message : "Connection failed. Please try again.";
+      setError(errorMessage);
+      
+      // Provide more specific error messages
+      if (errorMessage.includes("database") || errorMessage.includes("Failed to save")) {
+        setError("Database connection issue. Please refresh the page and try again.");
+      } else if (errorMessage.includes("User ID is required")) {
+        setError("Authentication issue. Please log out and log back in.");
+      } else {
+        setError(errorMessage);
+      }
+    } finally {
+      setIsConnecting(null);
+    }
+  };
+
+  const handleManualConnect = async (platform: string) => {
+    setIsConnecting(platform);
+    setError(null);
+
+    try {
+      if (!userId) {
+        throw new Error("User ID is required");
+      }
+
+      if (!manualConnectionData.username) {
+        throw new Error("Username is required");
+      }
+
+      // Create manual connection
+      const { data: newConnection, error: insertError } = await supabase
+        .from("platform_connections")
+        .insert({
+          user_id: userId,
+          platform: platform,
+          platform_username: manualConnectionData.username,
+          platform_user_id: manualConnectionData.username,
+          username: manualConnectionData.username,
+          is_active: true,
+          connected_at: new Date().toISOString(),
+          last_sync: new Date().toISOString(),
+          follower_count: manualConnectionData.followerCount,
+          engagement_rate: Math.random() * 5 + 2,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        })
+        .select()
+        .single();
+
+      if (insertError) {
+        console.error("Database insert error:", insertError);
+        throw new Error("Failed to save manual connection to database. Please try again.");
+      }
+
+      // Update local connections state
+      const newSocialConnection: SocialConnection = {
+        id: Date.now().toString(),
+        user_id: userId,
+        platform: platform,
+        platform_user_id: manualConnectionData.username,
+        platform_username: manualConnectionData.username,
+        username: manualConnectionData.username,
+        follower_count: manualConnectionData.followerCount,
+        is_active: true,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
+
+      const updatedConnections = [...localConnections, newSocialConnection];
+      setLocalConnections(updatedConnections);
+      
+      if (onConnectionsUpdate) {
+        onConnectionsUpdate(updatedConnections);
+      }
+
+      setSuccess(`Successfully connected to ${manualConnectionData.username} on ${platform}!`);
+      setTimeout(() => setSuccess(null), 3000);
+      
+      // Reset manual connection data
+      setManualConnectionData({
+        username: "",
+        displayName: "",
+        followerCount: 0,
+        bio: ""
+      });
+      setManualConnectionMode(false);
+      setIsDialogOpen(false);
+
+    } catch (error) {
+      console.error("Manual connection error:", error);
+      const errorMessage = error instanceof Error ? error.message : "Manual connection failed. Please try again.";
+      setError(errorMessage);
     } finally {
       setIsConnecting(null);
     }
@@ -730,6 +785,14 @@ export default function PlatformConnections({
     setSearchQuery("");
     setSearchResults([]);
     setError(null);
+    setSuccess(null);
+    setManualConnectionMode(false);
+    setManualConnectionData({
+      username: "",
+      displayName: "",
+      followerCount: 0,
+      bio: ""
+    });
     setIsDialogOpen(true);
   };
 
@@ -948,86 +1011,174 @@ export default function PlatformConnections({
           </DialogHeader>
 
           <div className="space-y-4">
-            <div>
-              <Label htmlFor="search-query">Search for account</Label>
-              <div className="flex gap-2 mt-2">
-                <Input
-                  id="search-query"
-                  placeholder={selectedPlatform ? platforms.find(p => p.id === selectedPlatform)?.searchPlaceholder : "Enter username"}
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyPress={(e) => {
-                    if (e.key === "Enter" && selectedPlatform && searchQuery.trim()) {
-                      searchPlatformAccounts(selectedPlatform, searchQuery.trim());
-                    }
-                  }}
-                />
-                <Button
-                  onClick={() => selectedPlatform && searchQuery.trim() && searchPlatformAccounts(selectedPlatform, searchQuery.trim())}
-                  disabled={!selectedPlatform || !searchQuery.trim() || isSearching === selectedPlatform}
-                >
-                  {isSearching === selectedPlatform ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <Search className="w-4 h-4" />
-                  )}
-                </Button>
-              </div>
-            </div>
-
-            {searchResults.length > 0 && (
-              <div className="space-y-2">
-                <Label>Select an account to connect:</Label>
-                <div className="space-y-2 max-h-60 overflow-y-auto">
-                  {searchResults.map((account, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 cursor-pointer"
-                      onClick={() => handleConnectAccount(account)}
+            {!manualConnectionMode ? (
+              <>
+                <div>
+                  <Label htmlFor="search-query">Search for account</Label>
+                  <div className="flex gap-2 mt-2">
+                    <Input
+                      id="search-query"
+                      placeholder={selectedPlatform ? platforms.find(p => p.id === selectedPlatform)?.searchPlaceholder : "Enter username"}
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      onKeyPress={(e) => {
+                        if (e.key === "Enter" && selectedPlatform && searchQuery.trim()) {
+                          searchPlatformAccounts(selectedPlatform, searchQuery.trim());
+                        }
+                      }}
+                    />
+                    <Button
+                      onClick={() => selectedPlatform && searchQuery.trim() && searchPlatformAccounts(selectedPlatform, searchQuery.trim())}
+                      disabled={!selectedPlatform || !searchQuery.trim() || isSearching === selectedPlatform}
                     >
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
-                          <User className="w-5 h-5 text-gray-600" />
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <span className="font-medium">@{account.username}</span>
-                            {account.verified && (
-                              <Badge variant="secondary" className="text-xs">
-                                Verified
-                              </Badge>
-                            )}
-                          </div>
-                          <p className="text-sm text-gray-600">{account.displayName}</p>
-                          <p className="text-xs text-gray-500">{account.followerCount.toLocaleString()} followers</p>
-                        </div>
-                      </div>
-                      
-                      <Button
-                        size="sm"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleConnectAccount(account);
-                        }}
-                        disabled={isConnecting === account.platform}
-                      >
-                        {isConnecting === account.platform ? (
-                          <Loader2 className="w-4 h-4 animate-spin" />
-                        ) : (
-                          <Plus className="w-4 h-4" />
-                        )}
-                        Connect
-                      </Button>
-                    </div>
-                  ))}
+                      {isSearching === selectedPlatform ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <Search className="w-4 h-4" />
+                      )}
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            )}
 
-            {searchResults.length === 0 && searchQuery && !isSearching && (
-              <div className="text-center py-4 text-gray-500">
-                No accounts found. Try a different username.
-              </div>
+                {/* Manual Connection Option */}
+                <div className="border-t pt-4">
+                  <div className="text-center">
+                    <p className="text-sm text-gray-600 mb-2">
+                      Can't find your account? Some platforms require authentication.
+                    </p>
+                    <Button
+                      variant="outline"
+                      onClick={() => setManualConnectionMode(true)}
+                      className="text-sm"
+                    >
+                      <User className="w-4 h-4 mr-2" />
+                      Connect Manually
+                    </Button>
+                  </div>
+                </div>
+
+                {searchResults.length > 0 && (
+                  <div className="space-y-2">
+                    <Label>Select an account to connect:</Label>
+                    <div className="space-y-2 max-h-60 overflow-y-auto">
+                      {searchResults.map((account, index) => (
+                        <div
+                          key={index}
+                          className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 cursor-pointer"
+                          onClick={() => handleConnectAccount(account)}
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
+                              <User className="w-5 h-5 text-gray-600" />
+                            </div>
+                            <div>
+                              <p className="font-medium text-gray-900">@{account.username}</p>
+                              <p className="text-sm text-gray-600">{account.displayName}</p>
+                              {account.followerCount > 0 && (
+                                <p className="text-xs text-gray-500">
+                                  {account.followerCount.toLocaleString()} followers
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                          <Button
+                            size="sm"
+                            disabled={isConnecting === account.platform}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleConnectAccount(account);
+                            }}
+                          >
+                            {isConnecting === account.platform ? (
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                              "Connect"
+                            )}
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </>
+            ) : (
+              <>
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="manual-username">Username</Label>
+                    <Input
+                      id="manual-username"
+                      placeholder="Enter your username"
+                      value={manualConnectionData.username}
+                      onChange={(e) => setManualConnectionData({
+                        ...manualConnectionData,
+                        username: e.target.value
+                      })}
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="manual-display-name">Display Name (Optional)</Label>
+                    <Input
+                      id="manual-display-name"
+                      placeholder="Enter your display name"
+                      value={manualConnectionData.displayName}
+                      onChange={(e) => setManualConnectionData({
+                        ...manualConnectionData,
+                        displayName: e.target.value
+                      })}
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="manual-followers">Follower Count (Optional)</Label>
+                    <Input
+                      id="manual-followers"
+                      type="number"
+                      placeholder="Enter your follower count"
+                      value={manualConnectionData.followerCount}
+                      onChange={(e) => setManualConnectionData({
+                        ...manualConnectionData,
+                        followerCount: parseInt(e.target.value) || 0
+                      })}
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="manual-bio">Bio (Optional)</Label>
+                    <Input
+                      id="manual-bio"
+                      placeholder="Enter your bio"
+                      value={manualConnectionData.bio}
+                      onChange={(e) => setManualConnectionData({
+                        ...manualConnectionData,
+                        bio: e.target.value
+                      })}
+                    />
+                  </div>
+                </div>
+
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    onClick={() => setManualConnectionMode(false)}
+                    className="flex-1"
+                  >
+                    Back to Search
+                  </Button>
+                  <Button
+                    onClick={() => selectedPlatform && handleManualConnect(selectedPlatform)}
+                    disabled={!selectedPlatform || !manualConnectionData.username || isConnecting === selectedPlatform}
+                    className="flex-1"
+                  >
+                    {isConnecting === selectedPlatform ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      "Connect Manually"
+                    )}
+                  </Button>
+                </div>
+              </>
             )}
           </div>
         </DialogContent>
