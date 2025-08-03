@@ -50,6 +50,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Check if user already has a connection for this platform
+    const { data: existingConnections } = await supabase
+      .from('platform_connections')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('platform', platform)
+      .eq('is_active', true);
+
+    if (existingConnections && existingConnections.length > 0) {
+      return NextResponse.json(
+        { error: `You already have an active connection to ${platform}. Please disconnect the existing connection first.` },
+        { status: 409 }
+      );
+    }
+
     // Insert the connection
     const { data, error } = await supabase
       .from('platform_connections')
