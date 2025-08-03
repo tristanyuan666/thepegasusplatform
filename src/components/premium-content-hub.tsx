@@ -2243,6 +2243,24 @@ export default function PremiumContentHub({
               </div>
 
               <div className="p-8">
+                {/* Beta Disclaimer */}
+                <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200 rounded-xl">
+                  <div className="flex items-start space-x-3">
+                    <div className="w-6 h-6 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Sparkles className="w-3 h-3 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="text-sm font-semibold text-blue-900 mb-1">AI Content Generation - Beta Phase</h4>
+                      <p className="text-sm text-blue-700 leading-relaxed">
+                        Our advanced AI content generation is currently in beta and may not always display optimal results. 
+                        We're continuously improving the algorithms and features. The full enhanced version with perfect accuracy 
+                        and real-time optimization will be available very soon! For now, please review and refine the generated content 
+                        to match your specific needs and brand voice.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
                 <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
                   {/* Advanced Input Section */}
                   <div className="xl:col-span-2 space-y-8">
@@ -2601,6 +2619,24 @@ export default function PremiumContentHub({
               </div>
 
               <div className="p-6">
+                {/* Beta Disclaimer for Ideas */}
+                <div className="mb-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl">
+                  <div className="flex items-start space-x-3">
+                    <div className="w-6 h-6 bg-gradient-to-r from-green-600 to-emerald-600 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Lightbulb className="w-3 h-3 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="text-sm font-semibold text-green-900 mb-1">AI Content Ideas - Beta Phase</h4>
+                      <p className="text-sm text-green-700 leading-relaxed">
+                        Our AI-powered content ideation is currently in beta and may not always generate the most optimal ideas. 
+                        We're continuously improving the algorithms to provide better, more targeted content suggestions. 
+                        The enhanced version with perfect accuracy and trend prediction will be available very soon! 
+                        For now, please review and refine the generated ideas to match your specific content strategy.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                   {/* AI Content Ideas Generator */}
                   <div className="lg:col-span-2 space-y-6">
