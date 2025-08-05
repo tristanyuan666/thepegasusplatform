@@ -424,7 +424,7 @@ export default function PricingCard({
                 </div>
                 <div className="flex items-center gap-1">
                   <span className="text-xs text-gray-500 text-center">
-                    `/month, billed $${(safePlan.price.yearly / 100).toFixed(2)}/year`
+                    `/month`
                   </span>
                 </div>
                 {/* Show upgrade prompt for monthly users */}

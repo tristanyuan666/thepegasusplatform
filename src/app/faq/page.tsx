@@ -114,6 +114,11 @@ export default function FAQPage() {
           answer:
             "Our subscription plans are designed for maximum flexibility. You can upgrade, downgrade, or cancel at any time without penalties or long-term commitments.",
         },
+        {
+          question: "What is your refund policy?",
+          answer:
+            "We do not provide refunds for any payments made. All sales are final. However, you can cancel your subscription at any time and your access will continue until the end of your current billing period. This policy helps us maintain fair pricing and continue developing our platform.",
+        },
       ],
     },
     {

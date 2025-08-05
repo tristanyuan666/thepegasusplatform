@@ -24,7 +24,7 @@ export default function TermsPage() {
         </p>
         <h2 className="text-2xl font-semibold mt-8 mb-4">4. Subscription & Payments</h2>
         <p className="mb-4 text-gray-700">
-          By subscribing to a paid plan, you agree to pay all applicable fees. Subscriptions renew automatically unless cancelled. Refunds are subject to our refund policy.
+          By subscribing to a paid plan, you agree to pay all applicable fees. Subscriptions renew automatically unless cancelled. You can cancel your subscription at any time, and your access will continue until the end of your current billing period. However, we do not provide refunds for any payments made. All sales are final.
         </p>
         <h2 className="text-2xl font-semibold mt-8 mb-4">5. Termination</h2>
         <p className="mb-4 text-gray-700">
