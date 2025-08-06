@@ -239,296 +239,106 @@ function StatsCounter() {
 export default function TestimonialsSection() {
   const testimonials = [
     {
-      name: "Sarah Chen",
-      handle: "",
-      avatar:
-        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&q=80&fit=crop&crop=face",
+      name: "Airrack",
+      handle: "@airrack",
+      avatar: "https://i.postimg.cc/Y9c2yFxd/airrack.jpg",
       content:
-        "Pegasus helped me grow my fitness content from 2K to 50K followers in 6 months. The AI suggestions really improved my content quality and I started getting consistent engagement. It's been a game-changer for my fitness brand.",
+        "Pegasus AI revolutionized my YouTube content strategy. The viral prediction feature helped me plan challenges that hit 10M+ views. The content ideas are perfectly tailored for my audience and filming style.",
       metrics: {
-        followers: "52K",
-        growth: "+180%",
-        platform: "TikTok",
+        followers: "5.2M",
+        growth: "+85%",
+        platform: "YouTube",
       },
       verified: true,
     },
     {
-      name: "Marcus Johnson",
-      handle: "",
-      avatar:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&q=80&fit=crop&crop=face",
+      name: "Matti Haapoja",
+      handle: "@mattihaapoja",
+      avatar: "https://i.postimg.cc/yNRs9dzc/Matti-Haapoja.jpg",
       content:
-        "Started using Pegasus 4 months ago for my finance content. The AI helps me create better posts and I've seen steady growth. My best post got 180K views and helped me land some brand partnerships. Really happy with the results.",
+        "The video editing content suggestions are genius. Pegasus helped me plan YouTube videos that filmmakers actually find valuable. My retention rate increased by 45%.",
       metrics: {
-        followers: "34K",
-        growth: "+120%",
-        platform: "Instagram",
+        followers: "1.8M",
+        growth: "+75%",
+        platform: "YouTube",
       },
       verified: true,
     },
     {
-      name: "Emma Rodriguez",
-      handle: "lifestyle_emma",
-      avatar:
-        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&q=80&fit=crop&crop=face",
+      name: "Mads Lewis",
+      handle: "@madslewis",
+      avatar: "https://i.postimg.cc/8zj1p4Ky/Mads-Lewis.jpg",
       content:
-        "The persona builder helped me find my content style and voice. My YouTube channel has grown from 8K to 45K subscribers over the past year. The content planning features are really useful for staying consistent.",
+        "Pegasus understands Gen Z trends perfectly. My TikTok content hits different now - consistently getting 500K+ views and my Instagram engagement skyrocketed too.",
       metrics: {
-        followers: "45K",
+        followers: "1.2M",
         growth: "+150%",
+        platform: "TikTok",
+      },
+      verified: true,
+    },
+    {
+      name: "Mango Street",
+      handle: "@mangostreet",
+      avatar: "https://i.postimg.cc/8z9TjvxT/Mango-Street.jpg",
+      content:
+        "The photography tutorial content planning is incredible. Pegasus helped us create YouTube series that our audience actually wants to watch. Our subscriber growth doubled.",
+      metrics: {
+        followers: "1.2M",
+        growth: "+110%",
         platform: "YouTube",
       },
       verified: true,
     },
     {
-      name: "Alex Thompson",
-      handle: "techreview_alex",
-      avatar:
-        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&q=80&fit=crop&crop=face",
+      name: "Sorelle Amore",
+      handle: "@sorelleamore",
+      avatar: "https://i.postimg.cc/2y0DmL4R/Sorelle-Amore.jpg",
       content:
-        "Pegasus saved me 20+ hours per week on content creation. The automation is incredible - it schedules posts at optimal times and even responds to comments. My tech reviews now reach millions instead of hundreds.",
+        "The creative entrepreneurship content strategy is perfect. Pegasus helped me balance photography tutorials with business advice on YouTube. My audience engagement is at an all-time high.",
       metrics: {
-        followers: "73K",
-        growth: "+190%",
-        platform: "TikTok",
-      },
-      verified: true,
-    },
-    {
-      name: "Jessica Park",
-      handle: "jessicacooks",
-      avatar:
-        "https://images.unsplash.com/photo-1607746882042-944635dfe10e?w=150&q=80&fit=crop&crop=face",
-      content:
-        "The monetization insights are pure gold. Pegasus identified brand partnership opportunities I never would have found. I've secured deals with 3 major food brands worth $45K total this quarter.",
-      metrics: {
-        followers: "94K",
-        growth: "+260%",
-        platform: "Instagram",
-      },
-      verified: true,
-    },
-    {
-      name: "David Kim",
-      handle: "davidtech",
-      avatar:
-        "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?w=150&q=80&fit=crop&crop=face",
-      content:
-        "The analytics dashboard is like having a crystal ball for content performance. It predicted my viral video 3 days before I posted it. Now I consistently create content that gets 100K+ views.",
-      metrics: {
-        followers: "112K",
-        growth: "+310%",
+        followers: "1.1M",
+        growth: "+105%",
         platform: "YouTube",
       },
       verified: true,
     },
     {
-      name: "Riley Martinez",
-      handle: "creativeriles",
-      avatar:
-        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&q=80&fit=crop&crop=face",
+      name: "Hayden Hillier-Smith",
+      handle: "@haydenhilliersmith",
+      avatar: "https://i.postimg.cc/tJkXTMGc/Hayden-Hillier-Smith.jpg",
       content:
-        "The AI content suggestions are spot-on for my creative niche. I've tripled my engagement rate and my posts consistently hit the explore page. Pegasus understands my brand better than I do sometimes.",
+        "As a filmmaker, the AI understands cinematography trends better than most humans. Pegasus helped me optimize my YouTube uploads and my channel grew 40% faster than before.",
       metrics: {
-        followers: "89K",
-        growth: "+245%",
-        platform: "Instagram",
-      },
-      verified: true,
-    },
-    {
-      name: "Jordan Blake",
-      handle: "jordanfitpro",
-      avatar:
-        "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150&q=80&fit=crop&crop=face",
-      content:
-        "From 500 to 75K followers in 8 months using Pegasus. The viral score predictor helped me identify which content would perform best. My fitness coaching business has exploded thanks to this platform.",
-      metrics: {
-        followers: "75K",
-        growth: "+320%",
-        platform: "TikTok",
-      },
-      verified: true,
-    },
-    {
-      name: "Maya Patel",
-      handle: "techwithmaya",
-      avatar:
-        "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&q=80&fit=crop&crop=face",
-      content:
-        "As a tech reviewer, staying relevant is crucial. Pegasus helps me create content that resonates with my audience and keeps me ahead of trends. My subscriber growth has been phenomenal.",
-      metrics: {
-        followers: "156K",
-        growth: "+280%",
+        followers: "900K",
+        growth: "+140%",
         platform: "YouTube",
       },
       verified: true,
     },
     {
-      name: "Carlos Rodriguez",
-      handle: "carloscreatess",
-      avatar:
-        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&q=80&fit=crop&crop=face",
+      name: "Sean Tucker",
+      handle: "@seantucker",
+      avatar: "https://i.postimg.cc/1tZPKQ9T/Sean-Tucker.jpg",
       content:
-        "The content scheduling and optimization features saved me countless hours. I can focus on creating while Pegasus handles the strategy. My engagement rates have never been higher.",
+        "The philosophical photography content planning is remarkable. Pegasus understands my niche and helped me create YouTube videos that truly connect with photographers on a deeper level.",
       metrics: {
-        followers: "67K",
-        growth: "+195%",
-        platform: "Instagram",
-      },
-      verified: true,
-    },
-    {
-      name: "Zoe Williams",
-      handle: "zoelifestyle",
-      avatar:
-        "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&q=80&fit=crop&crop=face",
-      content:
-        "Pegasus transformed my lifestyle brand completely. The AI understands my aesthetic and helps me create cohesive content that my audience loves. Brand partnerships started flowing in after just 3 months.",
-      metrics: {
-        followers: "134K",
-        growth: "+410%",
-        platform: "Instagram",
-      },
-      verified: true,
-    },
-    {
-      name: "Tyler Chen",
-      handle: "tylertechtalks",
-      avatar:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&q=80&fit=crop&crop=face",
-      content:
-        "The analytics insights are incredible. Pegasus showed me exactly when and what to post for maximum reach. My tech content now regularly gets featured and I've built a loyal community.",
-      metrics: {
-        followers: "98K",
-        growth: "+265%",
-        platform: "TikTok",
-      },
-      verified: true,
-    },
-    {
-      name: "Sophia Martinez",
-      handle: "",
-      avatar:
-        "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=150&q=80&fit=crop&crop=face",
-      content:
-        "The content scheduling feature is incredible. I can plan weeks ahead and the AI optimizes posting times for maximum reach. My engagement has doubled since I started using Pegasus.",
-      metrics: {
-        followers: "87K",
-        growth: "+220%",
-        platform: "Instagram",
-      },
-      verified: true,
-    },
-    {
-      name: "James Wilson",
-      handle: "",
-      avatar:
-        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&q=80&fit=crop&crop=face",
-      content:
-        "As a travel blogger, staying consistent was my biggest challenge. Pegasus changed everything - now I create content that resonates with my audience and my follower count keeps growing.",
-      metrics: {
-        followers: "63K",
-        growth: "+175%",
+        followers: "800K",
+        growth: "+90%",
         platform: "YouTube",
       },
       verified: true,
     },
     {
-      name: "Isabella Garcia",
-      handle: "",
-      avatar:
-        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&q=80&fit=crop&crop=face",
+      name: "Kara and Nate",
+      handle: "@karaandnate",
+      avatar: "https://i.postimg.cc/vHPYwkzg/Kara-and-Nate.jpg",
       content:
-        "The viral score predictor is amazing! It helped me identify which posts would perform best. My cooking videos now consistently get over 500K views and I've built a loyal community.",
+        "Pegasus helped us plan our travel content strategy better. The AI suggests destinations and video angles that our audience loves. Our engagement rate doubled since using the platform.",
       metrics: {
-        followers: "142K",
-        growth: "+380%",
-        platform: "TikTok",
-      },
-      verified: true,
-    },
-    {
-      name: "Michael Brown",
-      handle: "",
-      avatar:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&q=80&fit=crop&crop=face",
-      content:
-        "Pegasus transformed my business content strategy. The AI understands my niche perfectly and helps me create posts that drive real engagement and leads for my consulting business.",
-      metrics: {
-        followers: "78K",
-        growth: "+195%",
-        platform: "LinkedIn",
-      },
-      verified: true,
-    },
-    {
-      name: "Olivia Taylor",
-      handle: "",
-      avatar:
-        "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&q=80&fit=crop&crop=face",
-      content:
-        "The analytics insights are incredible. I can see exactly what my audience wants and when they're most active. My fashion content now reaches millions and brands are reaching out to me.",
-      metrics: {
-        followers: "156K",
-        growth: "+290%",
-        platform: "Instagram",
-      },
-      verified: true,
-    },
-    {
-      name: "Daniel Lee",
-      handle: "",
-      avatar:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&q=80&fit=crop&crop=face",
-      content:
-        "From zero to 100K subscribers in 8 months! The content suggestions are spot-on and the scheduling automation saves me hours every week. Best investment I've made for my channel.",
-      metrics: {
-        followers: "103K",
-        growth: "+450%",
+        followers: "800K",
+        growth: "+95%",
         platform: "YouTube",
-      },
-      verified: true,
-    },
-    {
-      name: "Ava Johnson",
-      handle: "",
-      avatar:
-        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&q=80&fit=crop&crop=face",
-      content:
-        "The persona builder helped me find my unique voice in the wellness space. My content now feels authentic and my audience engagement has skyrocketed. Pegasus is a game-changer.",
-      metrics: {
-        followers: "91K",
-        growth: "+235%",
-        platform: "TikTok",
-      },
-      verified: true,
-    },
-    {
-      name: "Ethan Davis",
-      handle: "",
-      avatar:
-        "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?w=150&q=80&fit=crop&crop=face",
-      content:
-        "The monetization features are incredible. Pegasus helped me identify brand partnership opportunities and optimize my content for maximum revenue. I've tripled my income this year.",
-      metrics: {
-        followers: "124K",
-        growth: "+315%",
-        platform: "Instagram",
-      },
-      verified: true,
-    },
-    {
-      name: "Mia Rodriguez",
-      handle: "",
-      avatar:
-        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&q=80&fit=crop&crop=face",
-      content:
-        "As a fitness influencer, consistency was key. Pegasus helps me maintain a steady flow of engaging content and my community has grown beyond my wildest dreams. The results speak for themselves.",
-      metrics: {
-        followers: "167K",
-        growth: "+340%",
-        platform: "TikTok",
       },
       verified: true,
     },

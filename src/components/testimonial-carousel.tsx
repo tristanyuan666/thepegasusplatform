@@ -26,305 +26,170 @@ interface Testimonial {
   rating: number;
 }
 
-// 25 testimonials for 5 slides with 5 reviews each
+// 15 testimonials from real creators
 const testimonials: Testimonial[] = [
   {
     id: "1",
-    name: "Jordan Martinez",
-    handle: "",
-    avatar:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&q=80",
+    name: "Airrack",
+    handle: "@airrack",
+    avatar: "https://i.postimg.cc/Y9c2yFxd/airrack.jpg",
     content:
-      "Pegasus AI helped me scale my lifestyle content from 200K to 800K followers in 6 months. The content suggestions are spot-on for my audience!",
-    metrics: { followers: "847K", growth: "+320%", platform: "Creator" },
+      "Pegasus AI revolutionized my YouTube content strategy. The viral prediction feature helped me plan challenges that hit 10M+ views. The content ideas are perfectly tailored for my audience and filming style.",
+    metrics: { followers: "5.2M", growth: "+85%", platform: "YouTube" },
     verified: true,
     rating: 5,
   },
   {
     id: "2",
-    name: "Taylor Johnson",
-    handle: "",
-    avatar:
-      "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&q=80",
+    name: "Hayden Hillier-Smith",
+    handle: "@haydenhilliersmith",
+    avatar: "https://i.postimg.cc/tJkXTMGc/Hayden-Hillier-Smith.jpg",
     content:
-      "The AI content generator understands beauty trends perfectly. My engagement rate doubled and I'm getting brand deals I never thought possible!",
-    metrics: { followers: "1.2M", growth: "+180%", platform: "Creator" },
+      "As a filmmaker, the AI understands cinematography trends better than most humans. Pegasus helped me optimize my YouTube uploads and my channel grew 40% faster than before.",
+    metrics: { followers: "900K", growth: "+140%", platform: "YouTube" },
     verified: true,
     rating: 5,
   },
   {
     id: "3",
-    name: "Casey Thompson",
-    handle: "",
-    avatar:
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&q=80",
+    name: "Lizzie Peirce",
+    handle: "@lizziepeirce",
+    avatar: "https://i.postimg.cc/nVGV0C91/izzie-Peirce.jpg",
     content:
-      "As a photographer, the visual content suggestions from Pegasus are incredible. My content grew from 500K to 900K followers this year!",
-    metrics: { followers: "923K", growth: "+85%", platform: "Creator" },
+      "Pegasus transformed my photography business content. The AI suggests photo concepts that resonate with my audience and helped me book 3x more clients through my YouTube channel.",
+    metrics: { followers: "400K", growth: "+165%", platform: "YouTube" },
     verified: true,
     rating: 5,
   },
   {
     id: "4",
-    name: "Riley Anderson",
-    handle: "",
-    avatar:
-      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&q=80",
+    name: "Jessica Kobeissi",
+    handle: "@jessicakobeissi",
+    avatar: "https://i.postimg.cc/gjmzGPQR/Jessica-Kobeissi.jpg",
     content:
-      "The viral prediction feature is scary accurate! 8 out of 10 posts I created based on AI suggestions hit over 1M views. This platform is a game-changer.",
-    metrics: { followers: "1.1M", growth: "+95%", platform: "Creator" },
+      "The content planning for photography tutorials is incredible. Pegasus helped me structure my YouTube videos better and my watch time increased by 60%. Game changer for creative businesses.",
+    metrics: { followers: "450K", growth: "+125%", platform: "YouTube" },
     verified: true,
     rating: 5,
   },
   {
     id: "5",
-    name: "Morgan Davis",
-    handle: "",
-    avatar:
-      "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&q=80",
+    name: "Jordan Hammond",
+    handle: "@jordanhammond",
+    avatar: "https://i.postimg.cc/bJQYXvCp/Jordan-Hammond.jpg",
     content:
-      "Pegasus helped me diversify my content beyond makeup. The AI suggested lifestyle and fashion content that my audience loves. Revenue up 400%!",
-    metrics: { followers: "1.8M", growth: "+150%", platform: "Creator" },
+      "As a photographer, the AI understands visual storytelling perfectly. My YouTube channel growth accelerated and I'm getting brand partnerships I never thought possible.",
+    metrics: { followers: "300K", growth: "+180%", platform: "YouTube" },
     verified: true,
     rating: 5,
   },
   {
     id: "6",
-    name: "Alex Rivera",
-    handle: "",
-    avatar:
-      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&q=80",
+    name: "Kara and Nate",
+    handle: "@karaandnate",
+    avatar: "https://i.postimg.cc/vHPYwkzg/Kara-and-Nate.jpg",
     content:
-      "The finance content templates are perfect for my niche. My content went from 100K to 750K followers, and my course sales increased by 300%!",
-    metrics: { followers: "756K", growth: "+650%", platform: "Creator" },
+      "Pegasus helped us plan our travel content strategy better. The AI suggests destinations and video angles that our audience loves. Our engagement rate doubled since using the platform.",
+    metrics: { followers: "800K", growth: "+95%", platform: "YouTube" },
     verified: true,
     rating: 5,
   },
   {
     id: "7",
-    name: "Sam Wilson",
-    handle: "",
-    avatar:
-      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&q=80",
+    name: "Kinfolk",
+    handle: "@kinfolk",
+    avatar: "https://i.postimg.cc/HsWYKdQ1/Kinfolk.jpg",
     content:
-      "The minimalism and productivity content suggestions are incredible. My channel hit 1M subscribers and my podcast downloads tripled!",
-    metrics: { followers: "1.0M", growth: "+120%", platform: "Creator" },
+      "The minimalist aesthetic suggestions are spot-on for our brand. Pegasus helped us maintain consistency across Instagram while growing our engaged community by 200%.",
+    metrics: { followers: "600K", growth: "+120%", platform: "Instagram" },
     verified: true,
     rating: 5,
   },
   {
     id: "8",
-    name: "Jamie Chen",
-    handle: "",
-    avatar:
-      "https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=150&q=80",
+    name: "Mads Lewis",
+    handle: "@madslewis",
+    avatar: "https://i.postimg.cc/8zj1p4Ky/Mads-Lewis.jpg",
     content:
-      "Pegasus AI revolutionized my fitness content strategy. The workout video suggestions helped me grow from 800K to 1.5M subscribers in 8 months!",
-    metrics: { followers: "1.5M", growth: "+87%", platform: "Creator" },
+      "Pegasus understands Gen Z trends perfectly. My TikTok content hits different now - consistently getting 500K+ views and my Instagram engagement skyrocketed too.",
+    metrics: { followers: "1.2M", growth: "+150%", platform: "TikTok" },
     verified: true,
     rating: 5,
   },
   {
     id: "9",
-    name: "Blake Parker",
-    handle: "",
-    avatar:
-      "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&q=80",
+    name: "Mango Street",
+    handle: "@mangostreet",
+    avatar: "https://i.postimg.cc/8z9TjvxT/Mango-Street.jpg",
     content:
-      "The business and creative content AI is spot-on. My following grew to 500K and I'm booking speaking gigs left and right!",
-    metrics: { followers: "523K", growth: "+200%", platform: "Creator" },
+      "The photography tutorial content planning is incredible. Pegasus helped us create YouTube series that our audience actually wants to watch. Our subscriber growth doubled.",
+    metrics: { followers: "1.2M", growth: "+110%", platform: "YouTube" },
     verified: true,
     rating: 5,
   },
   {
     id: "10",
-    name: "Avery Kim",
-    handle: "",
-    avatar:
-      "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=150&q=80",
+    name: "Matti Haapoja",
+    handle: "@mattihaapoja",
+    avatar: "https://i.postimg.cc/yNRs9dzc/Matti-Haapoja.jpg",
     content:
-      "The lifestyle and travel content suggestions are amazing! My content grew from 300K to 900K followers, and brand partnerships increased 500%!",
-    metrics: { followers: "912K", growth: "+204%", platform: "Creator" },
+      "The video editing content suggestions are genius. Pegasus helped me plan YouTube videos that filmmakers actually find valuable. My retention rate increased by 45%.",
+    metrics: { followers: "1.8M", growth: "+75%", platform: "YouTube" },
     verified: true,
     rating: 5,
   },
   {
     id: "11",
-    name: "Dakota Smith",
-    handle: "",
-    avatar:
-      "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&q=80",
+    name: "Sawyer Hartman",
+    handle: "@sawyerhartman",
+    avatar: "https://i.postimg.cc/sX9z6Nx2/Sawyer-Hartman.jpg",
     content:
-      "The AI helped me pivot from gaming to tech reviews seamlessly. My subscriber count doubled in just 4 months with better engagement rates!",
-    metrics: { followers: "678K", growth: "+145%", platform: "Creator" },
+      "Pegasus helped me diversify my content beyond just lifestyle vlogs. The AI suggested creative projects that resonated with my audience and grew my YouTube channel significantly.",
+    metrics: { followers: "500K", growth: "+135%", platform: "YouTube" },
     verified: true,
     rating: 5,
   },
   {
     id: "12",
-    name: "Phoenix Lee",
-    handle: "",
-    avatar:
-      "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=150&q=80",
+    name: "Sean Tucker",
+    handle: "@seantucker",
+    avatar: "https://i.postimg.cc/1tZPKQ9T/Sean-Tucker.jpg",
     content:
-      "My cooking content went viral thanks to Pegasus AI's recipe suggestions. From 50K to 400K followers in 3 months - incredible growth!",
-    metrics: { followers: "423K", growth: "+746%", platform: "Creator" },
+      "The philosophical photography content planning is remarkable. Pegasus understands my niche and helped me create YouTube videos that truly connect with photographers on a deeper level.",
+    metrics: { followers: "800K", growth: "+90%", platform: "YouTube" },
     verified: true,
     rating: 5,
   },
   {
     id: "13",
-    name: "River Brown",
-    handle: "",
-    avatar:
-      "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&q=80",
+    name: "Sorelle Amore",
+    handle: "@sorelleamore",
+    avatar: "https://i.postimg.cc/2y0DmL4R/Sorelle-Amore.jpg",
     content:
-      "The fashion content AI understands trends before they hit mainstream. My engagement is through the roof with 2M+ views per post!",
-    metrics: { followers: "890K", growth: "+234%", platform: "Creator" },
+      "The creative entrepreneurship content strategy is perfect. Pegasus helped me balance photography tutorials with business advice on YouTube. My audience engagement is at an all-time high.",
+    metrics: { followers: "1.1M", growth: "+105%", platform: "YouTube" },
     verified: true,
     rating: 5,
   },
   {
     id: "14",
-    name: "Sage Miller",
-    handle: "",
-    avatar:
-      "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&q=80",
+    name: "Taylor Cut Films",
+    handle: "@taylorcutfilms",
+    avatar: "https://i.postimg.cc/44PZpqjL/Taylor-Cut-Films.jpg",
     content:
-      "Pet content creation became so much easier with AI suggestions. My dog's account now has more followers than most humans!",
-    metrics: { followers: "1.3M", growth: "+567%", platform: "Creator" },
+      "The filmmaking tutorial content planning is incredible. Pegasus helped me structure my YouTube videos better and my channel growth accelerated by 60%. Perfect for creative professionals.",
+    metrics: { followers: "350K", growth: "+160%", platform: "YouTube" },
     verified: true,
     rating: 5,
   },
   {
     id: "15",
-    name: "Rowan Taylor",
-    handle: "",
-    avatar:
-      "https://images.unsplash.com/photo-1552058544-f2b08422138a?w=150&q=80",
+    name: "Zach Star",
+    handle: "@zachstar",
+    avatar: "https://i.postimg.cc/7hHkpnJn/Zach-Star.jpg",
     content:
-      "DIY and craft content suggestions helped me build a community of makers. My tutorials now get 500K+ views consistently!",
-    metrics: { followers: "734K", growth: "+189%", platform: "Creator" },
-    verified: true,
-    rating: 5,
-  },
-  {
-    id: "16",
-    name: "Ember Wilson",
-    handle: "",
-    avatar:
-      "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&q=80",
-    content:
-      "Music production content became my niche thanks to AI insights. From bedroom producer to 600K followers sharing beats and tutorials!",
-    metrics: { followers: "612K", growth: "+298%", platform: "Creator" },
-    verified: true,
-    rating: 5,
-  },
-  {
-    id: "17",
-    name: "Storm Garcia",
-    handle: "",
-    avatar:
-      "https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?w=150&q=80",
-    content:
-      "Comedy skits suggested by the AI hit different. My content went from 20K to 800K followers with content that actually makes people laugh!",
-    metrics: { followers: "834K", growth: "+4070%", platform: "Creator" },
-    verified: true,
-    rating: 5,
-  },
-  {
-    id: "18",
-    name: "Ocean Martinez",
-    handle: "",
-    avatar:
-      "https://images.unsplash.com/photo-1463453091185-61582044d556?w=150&q=80",
-    content:
-      "Plant care and gardening content flourished with AI guidance. My green thumb content now reaches 1M+ plant parents every month!",
-    metrics: { followers: "567K", growth: "+223%", platform: "Creator" },
-    verified: true,
-    rating: 5,
-  },
-  {
-    id: "19",
-    name: "Sky Anderson",
-    handle: "",
-    avatar:
-      "https://images.unsplash.com/photo-1607746882042-944635dfe10e?w=150&q=80",
-    content:
-      "Book reviews and reading content got a major boost from AI suggestions. My account now influences thousands of reading choices!",
-    metrics: { followers: "445K", growth: "+312%", platform: "Creator" },
-    verified: true,
-    rating: 5,
-  },
-  {
-    id: "20",
-    name: "Luna Rodriguez",
-    handle: "",
-    avatar:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=150&q=80",
-    content:
-      "Art tutorials and speed painting videos took off with AI content planning. My creative process videos now inspire 700K+ artists worldwide!",
-    metrics: { followers: "723K", growth: "+267%", platform: "Creator" },
-    verified: true,
-    rating: 5,
-  },
-  {
-    id: "21",
-    name: "Sage Thompson",
-    handle: "",
-    avatar:
-      "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150&q=80",
-    content:
-      "The travel content AI helped me turn my wanderlust into a profitable brand. My travel vlogs now fund my adventures around the world!",
-    metrics: { followers: "892K", growth: "+245%", platform: "Creator" },
-    verified: true,
-    rating: 5,
-  },
-  {
-    id: "22",
-    name: "River Kim",
-    handle: "",
-    avatar:
-      "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=150&q=80",
-    content:
-      "Tech review content became my specialty with AI guidance. My honest reviews now influence millions of purchasing decisions!",
-    metrics: { followers: "1.4M", growth: "+189%", platform: "Creator" },
-    verified: true,
-    rating: 5,
-  },
-  {
-    id: "23",
-    name: "Phoenix Davis",
-    handle: "",
-    avatar:
-      "https://images.unsplash.com/photo-1521119989659-a83eee488004?w=150&q=80",
-    content:
-      "Home decor and interior design content flourished with AI insights. My design tips now inspire thousands of home makeovers!",
-    metrics: { followers: "678K", growth: "+156%", platform: "Creator" },
-    verified: true,
-    rating: 5,
-  },
-  {
-    id: "24",
-    name: "Ocean Wilson",
-    handle: "",
-    avatar:
-      "https://images.unsplash.com/photo-1541101767792-f9b2b1c4f127?w=150&q=80",
-    content:
-      "Parenting content got a major boost from AI suggestions. My parenting hacks and tips now help millions of families worldwide!",
-    metrics: { followers: "1.1M", growth: "+278%", platform: "Creator" },
-    verified: true,
-    rating: 5,
-  },
-  {
-    id: "25",
-    name: "Storm Lee",
-    handle: "",
-    avatar:
-      "https://images.unsplash.com/photo-1566492031773-4f4e44671d66?w=150&q=80",
-    content:
-      "Educational content creation became effortless with AI. My science explanations now make complex topics accessible to millions!",
-    metrics: { followers: "956K", growth: "+234%", platform: "Creator" },
+      "Pegasus understands educational content perfectly. The AI helped me plan engineering and math videos that students actually enjoy watching. My YouTube growth has been exponential.",
+    metrics: { followers: "600K", growth: "+145%", platform: "YouTube" },
     verified: true,
     rating: 5,
   },
