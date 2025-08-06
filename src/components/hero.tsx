@@ -209,9 +209,9 @@ function InteractiveDashboardDemo({ isMounted }: { isMounted: boolean }) {
   if (!isMounted || typeof window === "undefined") {
     return (
       <div className="relative max-w-full sm:max-w-6xl mx-auto mt-8 sm:mt-16 px-2 sm:px-0">
-        <div className="glass-premium p-4 sm:p-8 hover-lift transition-all duration-300">
-          <div className="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-6 border border-gray-200">
-            <div className="flex items-center justify-between mb-6">
+        <div className="glass-premium p-2 sm:p-8 hover-lift transition-all duration-300">
+          <div className="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-3 sm:p-6 border border-gray-200">
+            <div className="flex items-center justify-between mb-3 sm:mb-6">
               <div>
                 <h3 className="text-lg font-semibold text-gray-900">
                   Creator Dashboard
@@ -225,7 +225,7 @@ function InteractiveDashboardDemo({ isMounted }: { isMounted: boolean }) {
                 Live Data
               </div>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+            <div className="grid grid-cols-4 gap-1 sm:gap-3 mb-3 sm:mb-6">
               {[
                 {
                   label: "Followers",
@@ -379,10 +379,10 @@ function InteractiveDashboardDemo({ isMounted }: { isMounted: boolean }) {
 
   return (
     <div className="relative max-w-full sm:max-w-6xl mx-auto mt-8 sm:mt-16 px-2 sm:px-0">
-      <div className="glass-premium p-4 sm:p-8 hover-lift transition-all duration-300">
-        <div className="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-6 border border-gray-200">
+      <div className="glass-premium p-2 sm:p-8 hover-lift transition-all duration-300">
+        <div className="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-3 sm:p-6 border border-gray-200">
           {/* Dashboard Header */}
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-3 sm:mb-6">
             <div>
               <h3 className="text-lg font-semibold text-gray-900">
                 Creator Dashboard
@@ -398,7 +398,7 @@ function InteractiveDashboardDemo({ isMounted }: { isMounted: boolean }) {
           </div>
 
           {/* Enhanced Metrics Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+          <div className="grid grid-cols-4 gap-1 sm:gap-3 mb-3 sm:mb-6">
             {[
               {
                 label: "Followers",
@@ -431,33 +431,33 @@ function InteractiveDashboardDemo({ isMounted }: { isMounted: boolean }) {
             ].map((metric, index) => (
               <div
                 key={index}
-                className={`bg-white rounded-xl p-3 border transition-all duration-300 hover:shadow-md ${
+                className={`bg-white rounded-lg p-1.5 sm:p-3 border transition-all duration-300 hover:shadow-md ${
                   activeMetric === index
                     ? "border-blue-300 shadow-lg scale-105"
                     : "border-gray-200"
                 }`}
               >
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-5 h-5 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+                <div className="flex items-center gap-1 mb-1 sm:gap-2 sm:mb-2">
+                  <div className="w-3 h-3 sm:w-5 sm:h-5 bg-gradient-to-r from-blue-500 to-blue-600 rounded flex items-center justify-center">
                     {metric.icon === "followers" && (
-                      <Users className="w-3 h-3 text-white" />
+                      <Users className="w-2 h-2 sm:w-3 sm:h-3 text-white" />
                     )}
                     {metric.icon === "views" && (
-                      <Eye className="w-3 h-3 text-white" />
+                      <Eye className="w-2 h-2 sm:w-3 sm:h-3 text-white" />
                     )}
                     {metric.icon === "engagement" && (
-                      <Heart className="w-3 h-3 text-white" />
+                      <Heart className="w-2 h-2 sm:w-3 sm:h-3 text-white" />
                     )}
                     {metric.icon === "revenue" && (
-                      <DollarSign className="w-3 h-3 text-white" />
+                      <DollarSign className="w-2 h-2 sm:w-3 sm:h-3 text-white" />
                     )}
                   </div>
-                  <div className="text-xs text-gray-600">{metric.label}</div>
+                  <div className="text-xs text-gray-600 hidden sm:block">{metric.label}</div>
                 </div>
-                <div className="text-xl font-bold text-gray-900 mb-1">
+                <div className="text-sm sm:text-xl font-bold text-gray-900 mb-0.5 sm:mb-1 text-center sm:text-left">
                   {metric.value}
                 </div>
-                <div className={`text-xs font-medium ${metric.color}`}>
+                <div className={`text-xs font-medium ${metric.color} hidden sm:block`}>
                   {metric.change}
                 </div>
               </div>

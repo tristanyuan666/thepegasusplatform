@@ -157,13 +157,13 @@ export default function Home() {
                 Experience the Power
               </span>
             </div>
-            <h2 className="text-3xl sm:text-3xl md:text-4xl font-bold text-black mb-8">
+            <h2 className="text-4xl sm:text-3xl md:text-4xl font-bold text-black mb-8">
               AI-Driven Creation{" "}
               <span className="bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
                 Platform
               </span>
             </h2>
-            <p className="text-lg sm:text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl sm:text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
               See how our platform transforms content creation across all social platforms with intelligent automation
             </p>
           </div>
@@ -536,13 +536,13 @@ export default function Home() {
       <section className="py-24 bg-gradient-to-br from-gray-50 to-white">
         <div className="container mx-auto px-6">
           <div className="text-center mb-20">
-            <h2 className="text-2xl sm:text-2xl md:text-3xl font-bold text-black mb-6 sm:mb-8">
+            <h2 className="text-3xl sm:text-2xl md:text-3xl font-bold text-black mb-6 sm:mb-8">
               Everything You Need to{" "}
               <span className="bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
                 Go Viral
               </span>
             </h2>
-            <p className="text-lg sm:text-lg text-black max-w-4xl mx-auto leading-relaxed">
+            <p className="text-xl sm:text-lg text-black max-w-4xl mx-auto leading-relaxed">
               Our comprehensive suite of AI-powered tools designed to maximize your social media success
             </p>
           </div>
@@ -614,13 +614,13 @@ export default function Home() {
       <section className="py-24 bg-white">
         <div className="container mx-auto px-6">
           <div className="text-center mb-20">
-            <h2 className="text-2xl sm:text-2xl md:text-3xl font-bold text-black mb-6 sm:mb-8">
+            <h2 className="text-3xl sm:text-2xl md:text-3xl font-bold text-black mb-6 sm:mb-8">
               How{" "}
               <span className="bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
                 Pegasus Works
               </span>
             </h2>
-            <p className="text-lg sm:text-lg text-black max-w-4xl mx-auto leading-relaxed">
+            <p className="text-xl sm:text-lg text-black max-w-4xl mx-auto leading-relaxed">
               From zero to viral in three simple, powerful steps
             </p>
           </div>
@@ -686,13 +686,13 @@ export default function Home() {
       >
         <div className="container mx-auto px-6">
           <div className="text-center mb-20">
-            <h2 className="text-2xl sm:text-2xl md:text-3xl font-bold text-black mb-8">
+            <h2 className="text-3xl sm:text-2xl md:text-3xl font-bold text-black mb-8">
               What Our{" "}
               <span className="bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
                 Creators Say
               </span>
             </h2>
-            <p className="text-lg sm:text-lg text-black max-w-4xl mx-auto leading-relaxed">
+            <p className="text-xl sm:text-lg text-black max-w-4xl mx-auto leading-relaxed">
               Real results from real creators who transformed their social media
               presence
             </p>
@@ -713,13 +713,13 @@ export default function Home() {
                 Ready to Go Viral?
               </span>
             </div>
-            <h2 className="text-2xl sm:text-2xl md:text-3xl font-bold text-black mb-8">
+            <h2 className="text-3xl sm:text-2xl md:text-3xl font-bold text-black mb-8">
               Start Building Your{" "}
               <span className="bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
                 Content Empire
               </span>
             </h2>
-            <p className="text-lg sm:text-lg text-black mb-12 leading-relaxed">
+            <p className="text-xl sm:text-lg text-black mb-12 leading-relaxed">
               Join 50,000+ creators who are already using AI to create viral
               content and build their influence. Start your journey today.
             </p>
