@@ -400,10 +400,10 @@ export default function PricingCard({
               {safePlan.icon}
             </div>
             <div>
-              <h3 className="text-[8px] md:text-2xl font-bold text-gray-900 group-hover:text-blue-600 transition-all duration-300">
+              <h3 className="text-lg md:text-2xl font-bold text-gray-900 group-hover:text-blue-600 transition-all duration-300">
                 {safePlan.name}
               </h3>
-              <p className="text-gray-600 text-[4px] md:text-sm">{safePlan.description}</p>
+              <p className="text-gray-600 text-sm md:text-sm">{safePlan.description}</p>
             </div>
           </div>
 
@@ -412,7 +412,7 @@ export default function PricingCard({
             {isYearly ? (
               <>
                 <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 mb-2">
-                  <span className="text-lg md:text-[1.78rem] font-bold text-gray-900">
+                  <span className="text-xl md:text-[1.78rem] font-bold text-gray-900">
                     ${((safePlan.price.yearly / 12 / 100) - 0.01).toFixed(2)}
                   </span>
                   <span className="text-sm md:text-lg text-gray-400 line-through">
@@ -438,7 +438,7 @@ export default function PricingCard({
               </>
             ) : (
               <div className="flex items-center gap-2">
-                <span className="text-lg md:text-[1.78rem] font-bold text-gray-900">
+                <span className="text-xl md:text-[1.78rem] font-bold text-gray-900">
                   ${(safePlan.price.monthly / 100).toFixed(2)}
                 </span>
                 <span className="text-xs text-gray-500">

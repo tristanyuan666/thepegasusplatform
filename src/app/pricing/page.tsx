@@ -530,7 +530,7 @@ export default function PricingPage({ searchParams }: PricingPageProps) {
       )}
 
       {/* Hero Section */}
-      <section className="py-12 sm:py-16 md:py-20 lg:py-24 bg-gradient-to-br from-blue-50 to-white relative overflow-hidden">
+      <section className="pt-20 pb-12 sm:py-16 md:py-20 lg:py-24 bg-gradient-to-br from-blue-50 to-white relative overflow-hidden">
         <div className="absolute inset-0">
           <div className="absolute top-20 left-10 w-72 h-72 bg-blue-200/20 rounded-full blur-3xl animate-pulse" />
           <div
@@ -569,15 +569,15 @@ export default function PricingPage({ searchParams }: PricingPageProps) {
               </span>
               <button
                 onClick={() => setIsYearly(!isYearly)}
-                className={`relative w-6 h-3 md:w-12 md:h-6 rounded-full transition-all duration-300 hover:scale-105 shadow-md hover-target interactive-element ${
+                className={`relative w-10 h-5 md:w-12 md:h-6 rounded-full transition-all duration-300 hover:scale-105 shadow-md hover-target interactive-element ${
                   isYearly ? "bg-blue-600" : "bg-gray-300"
                 }`}
                 data-interactive="true"
                 aria-label="Toggle billing period"
               >
                 <div
-                  className={`absolute top-0.5 left-0.5 w-2 h-2 md:w-5 md:h-5 bg-white rounded-full transition-transform duration-300 shadow-lg ${
-                    isYearly ? "translate-x-3 md:translate-x-6" : "translate-x-0"
+                  className={`absolute top-0.5 left-0.5 w-4 h-4 md:w-5 md:h-5 bg-white rounded-full transition-transform duration-300 shadow-lg ${
+                    isYearly ? "translate-x-5 md:translate-x-6" : "translate-x-0"
                   }`}
                 />
               </button>

@@ -351,7 +351,7 @@ export default function SignUpPage() {
               />
               <Label
                 htmlFor="terms"
-                className="text-sm text-gray-600 leading-relaxed"
+                className="text-xs sm:text-sm text-gray-600 leading-relaxed"
               >
                 I agree to the{" "}
                 <Link

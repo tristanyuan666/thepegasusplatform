@@ -206,7 +206,7 @@ export default function SignInPage({ searchParams }: LoginProps) {
               />
               <Label
                 htmlFor="remember_me"
-                className="text-sm text-gray-700 cursor-pointer hover-target interactive-element"
+                className="text-xs sm:text-sm text-gray-700 cursor-pointer hover-target interactive-element"
                 data-interactive="true"
               >
                 Remember me
