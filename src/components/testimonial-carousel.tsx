@@ -26,7 +26,7 @@ interface Testimonial {
   rating: number;
 }
 
-// 15 testimonials from real creators
+// 15 testimonials from real creators (3 slides with 5 reviews each)
 const testimonials: Testimonial[] = [
   {
     id: "1",
@@ -271,8 +271,8 @@ export default function TestimonialCarousel() {
   const [isMounted, setIsMounted] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
 
-  const totalSlides = 5;
   const reviewsPerSlide = 5;
+  const totalSlides = Math.ceil(testimonials.length / reviewsPerSlide);
 
   useEffect(() => {
     setIsMounted(true);
