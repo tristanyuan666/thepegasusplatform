@@ -157,13 +157,13 @@ export default function Home() {
                 Experience the Power
               </span>
             </div>
-            <h2 className="text-5xl font-bold text-black mb-8">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-black mb-8">
               AI-Driven Creation{" "}
               <span className="bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
                 Platform
               </span>
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-base sm:text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
               See how our platform transforms content creation across all social platforms with intelligent automation
             </p>
           </div>
@@ -194,9 +194,9 @@ export default function Home() {
                 <button
                       key={index}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-3 px-10 py-5 rounded-2xl font-semibold transition-all duration-500 hover:scale-105 ${
+                  className={`flex items-center gap-2 sm:gap-3 px-4 py-3 sm:px-10 sm:py-5 rounded-2xl font-semibold transition-all duration-300 hover:scale-105 text-sm sm:text-base will-change-transform ${
                     activeTab === tab.id
-                      ? `bg-gradient-to-r ${tab.color} text-white shadow-2xl scale-110`
+                      ? `bg-gradient-to-r ${tab.color} text-white shadow-2xl scale-105`
                       : "text-gray-600 hover:text-gray-900 hover:bg-gray-100 hover:shadow-lg"
                   }`}
                 >
@@ -518,13 +518,13 @@ export default function Home() {
                   icon: <Globe className="w-5 h-5" />
                 },
               ].map((metric, index) => (
-                <div key={index} className={`${metric.bgColor} rounded-xl p-6 border border-gray-200 hover:shadow-md transition-all duration-300`}>
-                  <div className="flex items-center gap-3 mb-3">
+                <div key={index} className={`${metric.bgColor} rounded-xl p-4 sm:p-6 border border-gray-200 hover:shadow-md transition-all duration-300`}>
+                  <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
                     <div className={`${metric.color}`}>{metric.icon}</div>
-                    <div className="text-sm text-gray-600">{metric.label}</div>
+                    <div className="text-xs sm:text-sm text-gray-600">{metric.label}</div>
                   </div>
-                  <div className="text-2xl font-bold text-gray-900 mb-1">{metric.value}</div>
-                  <div className={`text-sm font-medium ${metric.color}`}>{metric.change} this week</div>
+                  <div className="text-lg sm:text-2xl font-bold text-gray-900 mb-1">{metric.value}</div>
+                  <div className={`text-xs sm:text-sm font-medium ${metric.color}`}>{metric.change} this week</div>
                 </div>
               ))}
             </div>
@@ -536,13 +536,13 @@ export default function Home() {
       <section className="py-24 bg-gradient-to-br from-gray-50 to-white">
         <div className="container mx-auto px-6">
           <div className="text-center mb-20">
-            <h2 className="text-2xl sm:text-3xl lg:text-5xl font-bold text-black mb-6 sm:mb-8">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-black mb-6 sm:mb-8">
               Everything You Need to{" "}
               <span className="bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
                 Go Viral
               </span>
             </h2>
-            <p className="text-lg sm:text-xl lg:text-2xl text-black max-w-4xl mx-auto leading-relaxed">
+            <p className="text-base sm:text-lg text-black max-w-4xl mx-auto leading-relaxed">
               Our comprehensive suite of AI-powered tools designed to maximize your social media success
             </p>
           </div>
@@ -614,13 +614,13 @@ export default function Home() {
       <section className="py-24 bg-white">
         <div className="container mx-auto px-6">
           <div className="text-center mb-20">
-            <h2 className="text-2xl sm:text-3xl lg:text-5xl font-bold text-black mb-6 sm:mb-8">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-black mb-6 sm:mb-8">
               How{" "}
               <span className="bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
                 Pegasus Works
               </span>
             </h2>
-            <p className="text-lg sm:text-xl lg:text-2xl text-black max-w-4xl mx-auto leading-relaxed">
+            <p className="text-base sm:text-lg text-black max-w-4xl mx-auto leading-relaxed">
               From zero to viral in three simple, powerful steps
             </p>
           </div>
@@ -686,13 +686,13 @@ export default function Home() {
       >
         <div className="container mx-auto px-6">
           <div className="text-center mb-20">
-            <h2 className="text-5xl font-bold text-black mb-8">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-black mb-8">
               What Our{" "}
               <span className="bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
                 Creators Say
               </span>
             </h2>
-            <p className="text-2xl text-black max-w-4xl mx-auto leading-relaxed">
+            <p className="text-base sm:text-lg text-black max-w-4xl mx-auto leading-relaxed">
               Real results from real creators who transformed their social media
               presence
             </p>
@@ -713,13 +713,13 @@ export default function Home() {
                 Ready to Go Viral?
               </span>
             </div>
-            <h2 className="text-5xl font-bold text-black mb-8">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-black mb-8">
               Start Building Your{" "}
               <span className="bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
                 Content Empire
               </span>
             </h2>
-            <p className="text-2xl text-black mb-12 leading-relaxed">
+            <p className="text-base sm:text-lg text-black mb-12 leading-relaxed">
               Join 50,000+ creators who are already using AI to create viral
               content and build their influence. Start your journey today.
             </p>
@@ -727,7 +727,7 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
               <Link
                 href="/pricing"
-                className="group relative px-12 py-6 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-bold text-xl rounded-2xl shadow-xl hover-lift overflow-hidden transition-all duration-300 hover-target interactive-element magnetic pricing-nav pricing-link"
+                className="group relative px-8 py-4 sm:px-12 sm:py-6 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-bold text-lg sm:text-xl rounded-2xl shadow-xl hover-lift overflow-hidden transition-all duration-300 hover-target interactive-element magnetic pricing-nav pricing-link"
                 data-interactive="true"
                 data-pricing-nav="true"
                 data-pricing-link="true"

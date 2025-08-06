@@ -198,18 +198,18 @@ const testimonials: Testimonial[] = [
 function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
   return (
     <div
-      className="bg-white rounded-xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 h-full flex flex-col aspect-[4/5] hover-target interactive-element card"
+      className="bg-white rounded-xl p-2 sm:p-4 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 h-full flex flex-col aspect-[4/5] hover-target interactive-element card"
       data-interactive="true"
       data-card="true"
       data-testimonial-card="true"
     >
       {/* Header */}
-      <div className="flex items-center gap-2 mb-4">
+      <div className="flex items-center gap-1 sm:gap-2 mb-2 sm:mb-4">
         <div className="relative">
           <img
             src={testimonial.avatar}
             alt={testimonial.name}
-            className="w-10 h-10 rounded-full object-cover border-2 border-blue-200"
+            className="w-6 h-6 sm:w-10 sm:h-10 rounded-full object-cover border-2 border-blue-200"
             loading="lazy"
           />
           {testimonial.verified && (
@@ -220,7 +220,7 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1 mb-1">
-            <h4 className="font-semibold text-gray-900 text-sm truncate">
+            <h4 className="font-semibold text-gray-900 text-xs sm:text-sm truncate">
               {testimonial.name}
             </h4>
             {testimonial.verified && (
@@ -229,36 +229,36 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
           </div>
           <div className="flex items-center gap-0.5">
             {[...Array(testimonial.rating)].map((_, i) => (
-              <Star key={i} className="w-3 h-3 text-yellow-400 fill-current" />
+              <Star key={i} className="w-2 h-2 sm:w-3 sm:h-3 text-yellow-400 fill-current" />
             ))}
           </div>
         </div>
       </div>
 
       {/* Content */}
-      <blockquote className="text-gray-700 leading-relaxed mb-4 flex-1 text-sm">
+      <blockquote className="text-gray-700 leading-relaxed mb-2 sm:mb-4 flex-1 text-xs sm:text-sm">
         "{testimonial.content}"
       </blockquote>
 
       {/* Metrics */}
-      <div className="pt-3 border-t border-gray-200">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1">
-              <Users className="w-3 h-3 text-blue-500" />
+      <div className="pt-2 sm:pt-3 border-t border-gray-200">
+        <div className="flex items-center justify-between mb-1 sm:mb-3">
+          <div className="flex items-center gap-1 sm:gap-3">
+            <div className="flex items-center gap-0.5 sm:gap-1">
+              <Users className="w-2 h-2 sm:w-3 sm:h-3 text-blue-500" />
               <span className="font-semibold text-gray-900 text-xs">
                 {testimonial.metrics.followers}
               </span>
             </div>
-            <div className="flex items-center gap-1">
-              <TrendingUp className="w-3 h-3 text-green-500" />
+            <div className="flex items-center gap-0.5 sm:gap-1">
+              <TrendingUp className="w-2 h-2 sm:w-3 sm:h-3 text-green-500" />
               <span className="font-semibold text-green-600 text-xs">
                 {testimonial.metrics.growth}
               </span>
             </div>
           </div>
         </div>
-        <div className="text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded-full font-semibold text-center">
+        <div className="text-xs text-blue-600 bg-blue-50 px-1 sm:px-2 py-0.5 sm:py-1 rounded-full font-semibold text-center">
           {testimonial.metrics.platform}
         </div>
       </div>
@@ -284,7 +284,7 @@ export default function TestimonialCarousel() {
 
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % totalSlides);
-    }, 4000); // Change slide every 4 seconds
+    }, 5000); // Change slide every 5 seconds for better UX
 
     return () => clearInterval(interval);
   }, [isMounted, isPaused, totalSlides]);
@@ -329,8 +329,8 @@ export default function TestimonialCarousel() {
       <div className="relative overflow-hidden">
         {/* Slides */}
         <div
-          className="flex transition-transform duration-500 ease-in-out"
-          style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+          className="flex transition-transform duration-300 ease-out will-change-transform"
+          style={{ transform: `translate3d(-${currentSlide * 100}%, 0, 0)` }}
         >
           {Array.from({ length: totalSlides }).map((_, slideIndex) => {
             const slideTestimonials = testimonials.slice(
@@ -360,9 +360,9 @@ export default function TestimonialCarousel() {
                   ))}
                 </div>
 
-                {/* Mobile: Show all cards in single column */}
-                <div className="md:hidden grid grid-cols-1 gap-3">
-                  {slideTestimonials.map((testimonial) => (
+                {/* Mobile: Show 3 cards horizontally */}
+                <div className="md:hidden grid grid-cols-3 gap-2">
+                  {slideTestimonials.slice(0, 3).map((testimonial) => (
                     <TestimonialCard
                       key={testimonial.id}
                       testimonial={testimonial}
@@ -397,11 +397,11 @@ export default function TestimonialCarousel() {
       </Button>
 
       {/* Slide Indicators - Mobile Optimized */}
-      <div className="flex justify-center mt-6 sm:mt-8 gap-1.5 sm:gap-2">
+      <div className="flex justify-center mt-6 sm:mt-8 gap-1 sm:gap-2">
         {Array.from({ length: totalSlides }).map((_, index) => (
           <button
             key={index}
-            className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${
+            className={`w-1.5 h-1.5 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${
               index === currentSlide
                 ? "bg-blue-600 scale-110"
                 : "bg-gray-300 hover:bg-gray-400"
@@ -413,38 +413,38 @@ export default function TestimonialCarousel() {
       </div>
 
       {/* Stats Summary */}
-      <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+      <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-8 text-center">
         <div
           className="hover-target interactive-element card"
           data-interactive="true"
           data-card="true"
         >
-          <div className="text-3xl font-bold text-blue-600 mb-2">50K+</div>
-          <div className="text-gray-600 font-medium">Happy Creators</div>
+          <div className="text-lg sm:text-3xl font-bold text-blue-600 mb-1 sm:mb-2">50K+</div>
+          <div className="text-gray-600 font-medium text-xs sm:text-base">Happy Creators</div>
         </div>
         <div
           className="hover-target interactive-element card"
           data-interactive="true"
           data-card="true"
         >
-          <div className="text-3xl font-bold text-blue-600 mb-2">340%</div>
-          <div className="text-gray-600 font-medium">Avg Growth Rate</div>
+          <div className="text-lg sm:text-3xl font-bold text-blue-600 mb-1 sm:mb-2">340%</div>
+          <div className="text-gray-600 font-medium text-xs sm:text-base">Avg Growth Rate</div>
         </div>
         <div
           className="hover-target interactive-element card"
           data-interactive="true"
           data-card="true"
         >
-          <div className="text-3xl font-bold text-blue-600 mb-2">1B+</div>
-          <div className="text-gray-600 font-medium">Viral Views</div>
+          <div className="text-lg sm:text-3xl font-bold text-blue-600 mb-1 sm:mb-2">1B+</div>
+          <div className="text-gray-600 font-medium text-xs sm:text-base">Viral Views</div>
         </div>
         <div
           className="hover-target interactive-element card"
           data-interactive="true"
           data-card="true"
         >
-          <div className="text-3xl font-bold text-blue-600 mb-2">$25M+</div>
-          <div className="text-gray-600 font-medium">Revenue Generated</div>
+          <div className="text-lg sm:text-3xl font-bold text-blue-600 mb-1 sm:mb-2">$25M+</div>
+          <div className="text-gray-600 font-medium text-xs sm:text-base">Revenue Generated</div>
         </div>
       </div>
     </div>

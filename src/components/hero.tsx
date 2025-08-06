@@ -82,10 +82,10 @@ function TypewriterText({ isMounted }: { isMounted: boolean }) {
     isMounted && typeof window !== "undefined" ? displayText : staticText;
 
   return (
-    <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-semibold text-gray-900 mb-4 tracking-tight animate-slide-up min-h-[3rem] sm:min-h-[4rem] flex items-center justify-center text-center px-4 sm:px-0 leading-tight">
+    <h1 className="text-4xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-semibold text-gray-900 mb-4 tracking-tight animate-slide-up min-h-[3rem] sm:min-h-[4rem] flex items-center justify-center text-center px-4 sm:px-0 leading-tight">
       <span className="gradient-text-hero">{showText}</span>
       {isMounted && typeof window !== "undefined" && (
-        <span className="border-r-2 border-blue-600 animate-pulse ml-2 h-6 sm:h-8">
+        <span className="border-r-2 border-blue-600 animate-pulse ml-2 h-8 sm:h-8">
           |
         </span>
       )}
@@ -117,11 +117,11 @@ function FloatingParticles({ isMounted }: { isMounted: boolean }) {
     try {
       const colors = ["#3B82F6", "#1D4ED8", "#1E40AF", "#2563EB", "#1E3A8A"];
       setParticles(
-        Array.from({ length: 40 }, (_, i) => ({
+        Array.from({ length: 25 }, (_, i) => ({
           id: i,
           left: Math.random() * 100,
           delay: Math.random() * 20,
-          size: 3 + Math.random() * 5,
+          size: 3 + Math.random() * 4,
           color: colors[Math.floor(Math.random() * colors.length)],
         })),
       );
@@ -465,7 +465,7 @@ function InteractiveDashboardDemo({ isMounted }: { isMounted: boolean }) {
           </div>
 
           {/* Enhanced Chart with Content Preview */}
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <div className="bg-white rounded-xl p-4 border border-gray-200">
               <div className="flex items-center justify-between mb-4">
                 <h4 className="font-medium text-gray-900 flex items-center gap-2">
@@ -559,14 +559,14 @@ function InteractiveDashboardDemo({ isMounted }: { isMounted: boolean }) {
 // Simple stats counter without dynamic import
 function StatsCounter({ isMounted }: { isMounted: boolean }) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 max-w-2xl mx-auto">
+    <div className="grid grid-cols-3 gap-2 sm:gap-4 max-w-2xl mx-auto">
       <div
         className="glass-premium p-2 sm:p-4 text-center hover-lift card-3d micro-bounce group transform-3d hover-target interactive-element card"
         data-interactive="true"
         data-card="true"
       >
         <TrendingUp className="w-4 h-4 sm:w-6 sm:h-6 text-blue-600 mx-auto mb-1 sm:mb-2" />
-        <div className="text-lg sm:text-2xl font-bold gradient-text-primary mb-0.5 sm:mb-1 font-display">
+        <div className="text-base sm:text-2xl font-bold gradient-text-primary mb-0.5 sm:mb-1 font-display">
           50K+
         </div>
         <div className="text-gray-600 text-xs font-medium font-body">
@@ -581,7 +581,7 @@ function StatsCounter({ isMounted }: { isMounted: boolean }) {
       >
         <Zap className="w-4 h-4 sm:w-6 sm:h-6 text-purple-600 mx-auto mb-1 sm:mb-2" />
         <div
-          className="text-lg sm:text-2xl font-bold gradient-text-primary mb-0.5 sm:mb-1 font-display"
+          className="text-base sm:text-2xl font-bold gradient-text-primary mb-0.5 sm:mb-1 font-display"
           data-metric="1B+"
         >
           1B+
@@ -598,7 +598,7 @@ function StatsCounter({ isMounted }: { isMounted: boolean }) {
       >
         <Star className="w-4 h-4 sm:w-6 sm:h-6 text-pink-600 mx-auto mb-1 sm:mb-2" />
         <div
-          className="text-lg sm:text-2xl font-bold gradient-text-primary mb-0.5 sm:mb-1 font-display"
+          className="text-base sm:text-2xl font-bold gradient-text-primary mb-0.5 sm:mb-1 font-display"
           data-metric="$25M+"
         >
           $25M+
@@ -731,19 +731,19 @@ export default function Hero() {
       <AnimatedBackground isMounted={isMounted} />
       <FloatingIcons />
 
-      {/* Floating Particles */}
+      {/* Floating Particles - Optimized */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {Array.from({ length: 40 }, (_, i) => (
+        {Array.from({ length: 20 }, (_, i) => (
           <div
             key={i}
             className="particle"
             style={{
               left: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 20}s`,
-              width: `${3 + Math.random() * 5}px`,
-              height: `${3 + Math.random() * 5}px`,
+              animationDelay: `${Math.random() * 15}s`,
+              width: `${4 + Math.random() * 3}px`,
+              height: `${4 + Math.random() * 3}px`,
               background: `linear-gradient(45deg, #3B82F6, #1D4ED8)`,
-              boxShadow: `0 0 ${(3 + Math.random() * 5) * 2}px #3B82F640`,
+              boxShadow: `0 0 ${(4 + Math.random() * 3) * 1.5}px #3B82F640`,
             }}
           />
         ))}
@@ -771,7 +771,7 @@ export default function Hero() {
 
             {/* Premium Subheadline - Mobile Optimized */}
             <p
-              className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl text-gray-600 mb-8 sm:mb-10 max-w-5xl mx-auto leading-relaxed animate-slide-up px-4 sm:px-0"
+              className="text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl text-gray-600 mb-8 sm:mb-10 max-w-5xl mx-auto leading-relaxed animate-slide-up px-4 sm:px-0"
               style={{ animationDelay: "200ms" }}
             >
               Transform into an{" "}
@@ -789,7 +789,7 @@ export default function Hero() {
             >
               <Link
                 href={getBuildFameHref()}
-                className="group relative w-full sm:w-auto px-6 py-3 sm:px-8 sm:py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold text-sm sm:text-base rounded-xl shadow-lg hover-lift overflow-hidden transition-all duration-300 hover-target interactive-element magnetic button link min-h-[44px] sm:min-h-[52px] flex items-center justify-center"
+                className="group relative w-full sm:w-auto px-8 py-4 sm:px-8 sm:py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold text-lg sm:text-base rounded-xl shadow-lg hover-lift overflow-hidden transition-all duration-300 hover-target interactive-element magnetic button link min-h-[52px] sm:min-h-[52px] flex items-center justify-center"
                 data-interactive="true"
                 data-button="true"
                 data-link="true"
@@ -807,7 +807,7 @@ export default function Hero() {
 
               <Link
                 href={getGetStartedHref()}
-                className="group glass-premium w-full sm:w-auto px-6 py-3 sm:px-8 sm:py-4 text-gray-800 font-semibold text-sm sm:text-base transition-all duration-300 hover:bg-white/60 flex items-center justify-center gap-2 sm:gap-3 hover-lift rounded-xl hover-target interactive-element magnetic button link min-h-[44px] sm:min-h-[52px]"
+                className="group glass-premium w-full sm:w-auto px-8 py-4 sm:px-8 sm:py-4 text-gray-800 font-semibold text-lg sm:text-base transition-all duration-300 hover:bg-white/60 flex items-center justify-center gap-3 sm:gap-3 hover-lift rounded-xl hover-target interactive-element magnetic button link min-h-[52px] sm:min-h-[52px]"
                 data-interactive="true"
                 data-button="true"
                 data-link="true"
