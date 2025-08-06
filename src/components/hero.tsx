@@ -64,7 +64,7 @@ function TypewriterText({ isMounted }: { isMounted: boolean }) {
             }
           }
         },
-        isDeleting ? 50 : 120,
+        isDeleting ? 75 : 150,
       );
       return () => {
         if (typeof clearTimeout !== "undefined") {
@@ -208,8 +208,8 @@ function InteractiveDashboardDemo({ isMounted }: { isMounted: boolean }) {
 
   if (!isMounted || typeof window === "undefined") {
     return (
-      <div className="relative max-w-6xl mx-auto mt-16">
-        <div className="glass-premium p-8 hover-lift transition-all duration-300">
+      <div className="relative max-w-full sm:max-w-6xl mx-auto mt-8 sm:mt-16 px-2 sm:px-0">
+        <div className="glass-premium p-4 sm:p-8 hover-lift transition-all duration-300">
           <div className="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-6 border border-gray-200">
             <div className="flex items-center justify-between mb-6">
               <div>
@@ -302,7 +302,7 @@ function InteractiveDashboardDemo({ isMounted }: { isMounted: boolean }) {
                     (height, index) => (
                       <div
                         key={index}
-                        className="bg-gradient-to-t from-blue-500 via-blue-400 to-blue-300 rounded-t flex-1 hover:scale-y-110 transition-all duration-300 cursor-pointer"
+                        className="bg-gradient-to-t from-blue-500 via-blue-400 to-blue-300 rounded-t flex-1 hover:scale-y-110 transition-transform duration-300 cursor-pointer will-change-transform"
                         style={{ 
                           height: `${height}%`, 
                           minHeight: "8px",
@@ -364,7 +364,7 @@ function InteractiveDashboardDemo({ isMounted }: { isMounted: boolean }) {
               </div>
             </div>
           </div>
-          <div className="mt-6 text-center">
+          <div className="mt-6 text-center hidden sm:block">
             <h3 className="text-gray-900 font-semibold text-lg mb-2">
               Interactive Dashboard Experience
             </h3>
@@ -378,8 +378,8 @@ function InteractiveDashboardDemo({ isMounted }: { isMounted: boolean }) {
   }
 
   return (
-    <div className="relative max-w-6xl mx-auto mt-16">
-      <div className="glass-premium p-8 hover-lift transition-all duration-300">
+    <div className="relative max-w-full sm:max-w-6xl mx-auto mt-8 sm:mt-16 px-2 sm:px-0">
+      <div className="glass-premium p-4 sm:p-8 hover-lift transition-all duration-300">
         <div className="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-6 border border-gray-200">
           {/* Dashboard Header */}
           <div className="flex items-center justify-between mb-6">
@@ -481,7 +481,7 @@ function InteractiveDashboardDemo({ isMounted }: { isMounted: boolean }) {
                   (height, index) => (
                     <div
                       key={index}
-                      className="bg-gradient-to-t from-blue-500 via-blue-400 to-blue-300 rounded-t flex-1 hover:scale-y-110 transition-all duration-300 cursor-pointer"
+                      className="bg-gradient-to-t from-blue-500 via-blue-400 to-blue-300 rounded-t flex-1 hover:scale-y-110 transition-transform duration-300 cursor-pointer will-change-transform"
                       style={{
                         height: `${height}%`,
                         transitionDelay: `${index * 25}ms`,
@@ -543,7 +543,7 @@ function InteractiveDashboardDemo({ isMounted }: { isMounted: boolean }) {
           </div>
         </div>
 
-        <div className="mt-6 text-center">
+        <div className="mt-6 text-center hidden sm:block">
           <h3 className="text-gray-900 font-semibold text-lg mb-2">
             Interactive Dashboard Experience
           </h3>
@@ -789,7 +789,7 @@ export default function Hero() {
             >
               <Link
                 href={getBuildFameHref()}
-                className="group relative w-full sm:w-auto px-8 py-4 sm:px-8 sm:py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold text-lg sm:text-base rounded-xl shadow-lg hover-lift overflow-hidden transition-all duration-300 hover-target interactive-element magnetic button link min-h-[52px] sm:min-h-[52px] flex items-center justify-center"
+                className="group relative w-full sm:w-auto px-6 py-3 sm:px-8 sm:py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold text-base sm:text-base rounded-xl shadow-lg hover-lift overflow-hidden transition-all duration-300 hover-target interactive-element magnetic button link min-h-[48px] sm:min-h-[52px] flex items-center justify-center"
                 data-interactive="true"
                 data-button="true"
                 data-link="true"
@@ -807,7 +807,7 @@ export default function Hero() {
 
               <Link
                 href={getGetStartedHref()}
-                className="group glass-premium w-full sm:w-auto px-8 py-4 sm:px-8 sm:py-4 text-gray-800 font-semibold text-lg sm:text-base transition-all duration-300 hover:bg-white/60 flex items-center justify-center gap-3 sm:gap-3 hover-lift rounded-xl hover-target interactive-element magnetic button link min-h-[52px] sm:min-h-[52px]"
+                className="group glass-premium w-full sm:w-auto px-6 py-3 sm:px-8 sm:py-4 text-gray-800 font-semibold text-base sm:text-base transition-all duration-300 hover:bg-white/60 flex items-center justify-center gap-2 sm:gap-3 hover-lift rounded-xl hover-target interactive-element magnetic button link min-h-[48px] sm:min-h-[52px]"
                 data-interactive="true"
                 data-button="true"
                 data-link="true"

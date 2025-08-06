@@ -284,7 +284,7 @@ export default function TestimonialCarousel() {
 
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % totalSlides);
-    }, 5000); // Change slide every 5 seconds for better UX
+    }, typeof window !== 'undefined' && window.innerWidth < 768 ? 8000 : 5000); // Longer on mobile
 
     return () => clearInterval(interval);
   }, [isMounted, isPaused, totalSlides]);
@@ -375,33 +375,33 @@ export default function TestimonialCarousel() {
         </div>
       </div>
 
-      {/* Navigation Buttons - Mobile Optimized */}
+      {/* Navigation Buttons - Desktop Only */}
       <Button
         variant="outline"
         size="icon"
-        className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-sm hover:bg-white shadow-lg z-10 w-8 h-8 sm:w-10 sm:h-10"
+        className="hidden sm:block absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-sm hover:bg-white shadow-lg z-10 w-10 h-10"
         onClick={prevSlide}
         aria-label="Previous slide"
       >
-        <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+        <ChevronLeft className="w-5 h-5" />
       </Button>
 
       <Button
         variant="outline"
         size="icon"
-        className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-sm hover:bg-white shadow-lg z-10 w-8 h-8 sm:w-10 sm:h-10"
+        className="hidden sm:block absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-sm hover:bg-white shadow-lg z-10 w-10 h-10"
         onClick={nextSlide}
         aria-label="Next slide"
       >
-        <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
+        <ChevronRight className="w-5 h-5" />
       </Button>
 
-      {/* Slide Indicators - Mobile Optimized */}
-      <div className="flex justify-center mt-6 sm:mt-8 gap-1 sm:gap-2">
+      {/* Slide Indicators - Desktop Only */}
+      <div className="hidden sm:flex justify-center mt-8 gap-2">
         {Array.from({ length: totalSlides }).map((_, index) => (
           <button
             key={index}
-            className={`w-1.5 h-1.5 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${
+            className={`w-3 h-3 rounded-full transition-all duration-300 ${
               index === currentSlide
                 ? "bg-blue-600 scale-110"
                 : "bg-gray-300 hover:bg-gray-400"
