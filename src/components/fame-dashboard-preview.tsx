@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   TrendingUp,
   Users,
@@ -43,24 +43,24 @@ function StatCard({ title, value, change, icon, color }: StatCardProps) {
   }, [targetValue]);
 
   return (
-    <div className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-white/20 group hover:scale-105">
-      <div className="flex items-center justify-between mb-4">
-        <div className={`p-3 rounded-xl bg-gradient-to-r ${color} shadow-lg`}>
-          <div className="text-white">{icon}</div>
+    <div className="bg-white/80 backdrop-blur-sm p-3 sm:p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-white/20 group hover:scale-105">
+      <div className="flex items-center justify-between mb-2 sm:mb-4">
+        <div className={`p-2 sm:p-3 rounded-xl bg-gradient-to-r ${color} shadow-lg`}>
+          <div className="text-white">{React.cloneElement(icon as React.ReactElement, { className: "w-4 h-4 sm:w-6 sm:h-6" })}</div>
         </div>
         <div
-          className={`text-sm font-semibold px-3 py-1 rounded-full bg-gradient-to-r ${color} text-white shadow-md`}
+          className={`text-xs sm:text-sm font-semibold px-2 sm:px-3 py-0.5 sm:py-1 rounded-full bg-gradient-to-r ${color} text-white shadow-md`}
         >
           {change}
         </div>
       </div>
-      <div className="space-y-2">
-        <p className="text-2xl font-bold text-gray-800">
+      <div className="space-y-1 sm:space-y-2">
+        <p className="text-lg sm:text-2xl font-bold text-gray-800">
           {value.includes("K") || value.includes("M") || value.includes("$")
             ? value
             : animatedValue.toLocaleString()}
         </p>
-        <p className="text-gray-600 text-sm font-medium">{title}</p>
+        <p className="text-gray-600 text-xs sm:text-sm font-medium">{title}</p>
       </div>
     </div>
   );
@@ -89,9 +89,9 @@ function ViralScorePredictor() {
   }, [targetScore]);
 
   return (
-    <div className="bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-white/20">
+    <div className="bg-white/80 backdrop-blur-sm p-4 sm:p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-white/20">
       <div className="text-center">
-        <h3 className="text-xl font-bold text-gray-800 mb-6">
+        <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-4 sm:mb-6">
           Viral Score Predictor
         </h3>
         <div className="relative w-32 h-32 mx-auto mb-6">
@@ -156,15 +156,15 @@ function GrowthChart() {
   const dataPoints = [30, 45, 40, 65, 55, 75, 70, 85, 80, 95];
 
   return (
-    <div className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-white/20">
-      <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-bold text-gray-800">Growth Analytics</h3>
-        <div className="flex items-center gap-2 text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full shadow-sm">
-          <TrendingUp className="w-4 h-4" />
-          <span className="text-sm font-semibold">+85%</span>
+    <div className="bg-white/80 backdrop-blur-sm p-3 sm:p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-white/20">
+      <div className="flex items-center justify-between mb-4 sm:mb-6">
+        <h3 className="text-base sm:text-lg font-bold text-gray-800">Growth Analytics</h3>
+        <div className="flex items-center gap-1 sm:gap-2 text-emerald-600 bg-emerald-50 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full shadow-sm">
+          <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4" />
+          <span className="text-xs sm:text-sm font-semibold">+85%</span>
         </div>
       </div>
-      <div className="h-40 flex items-end justify-between gap-3 p-4 bg-gray-50/50 rounded-xl">
+      <div className="h-32 sm:h-40 flex items-end justify-between gap-2 sm:gap-3 p-2 sm:p-4 bg-gray-50/50 rounded-xl">
         {dataPoints.map((height, index) => (
           <div
             key={index}
@@ -227,8 +227,8 @@ export default function FameDashboardPreview() {
         </div>
 
         <div className="max-w-7xl mx-auto">
-          {/* Stats Grid with Neumorphic Design */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+          {/* Stats Grid with Neumorphic Design - Mobile Optimized */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-8 sm:mb-12">
             <StatCard
               title="Total Followers"
               value="23K"
@@ -259,9 +259,9 @@ export default function FameDashboardPreview() {
             />
           </div>
 
-          {/* Dashboard Grid with Glass Morphism */}
-          <div className="grid md:grid-cols-3 gap-8 mb-12">
-            <div className="md:col-span-2">
+          {/* Dashboard Grid with Glass Morphism - Mobile Optimized */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 mb-8 sm:mb-12">
+            <div className="lg:col-span-2">
               <GrowthChart />
             </div>
             <div>
@@ -269,9 +269,9 @@ export default function FameDashboardPreview() {
             </div>
           </div>
 
-          {/* Recent Activity with Enhanced Glass Effect */}
-          <div className="bg-white/70 backdrop-blur-md p-8 rounded-2xl shadow-xl border border-white/30 hover:shadow-2xl transition-all duration-300">
-            <h3 className="text-xl font-bold text-gray-800 mb-6">
+          {/* Recent Activity with Enhanced Glass Effect - Mobile Optimized */}
+          <div className="bg-white/70 backdrop-blur-md p-4 sm:p-8 rounded-2xl shadow-xl border border-white/30 hover:shadow-2xl transition-all duration-300">
+            <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-4 sm:mb-6">
               Recent Activity
             </h3>
             <div className="space-y-4">

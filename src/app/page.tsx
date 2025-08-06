@@ -206,11 +206,11 @@ export default function Home() {
               ))}
             </div>
 
-            {/* Main Demo Area */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Main Demo Area - Mobile Optimized */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
               {/* Feature Demo */}
-              <div className="glass-premium p-8 hover-lift">
-                <div className="bg-white rounded-2xl p-8 border border-gray-200 shadow-sm">
+              <div className="glass-premium p-4 sm:p-8 hover-lift">
+                <div className="bg-white rounded-2xl p-4 sm:p-8 border border-gray-200 shadow-sm">
                   {activeTab === "ai-generator" && (
                     <div className="mb-8">
                       <div className="flex items-center gap-3 mb-6">
@@ -261,8 +261,8 @@ export default function Home() {
                           </div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
-                          <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-4 border border-blue-200">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                          <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-3 sm:p-4 border border-blue-200">
                             <div className="flex items-center gap-2 mb-2">
                               <div className="w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
                                 <span className="text-white text-xs font-bold">#</span>
@@ -275,7 +275,7 @@ export default function Home() {
                               <span className="text-xs bg-blue-200 text-blue-800 px-2 py-1 rounded-full">#SuccessTips</span>
                             </div>
                           </div>
-                          <div className="bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-4 border border-green-200">
+                          <div className="bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-3 sm:p-4 border border-green-200">
                             <div className="flex items-center gap-2 mb-2">
                               <div className="w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
                                 <Target className="w-2 h-2 text-white" />
@@ -404,8 +404,8 @@ export default function Home() {
               </div>
 
               {/* Integration Showcase */}
-              <div className="glass-premium p-8 hover-lift">
-                <div className="bg-white rounded-2xl p-8 border border-gray-200 shadow-sm">
+              <div className="glass-premium p-4 sm:p-8 hover-lift">
+                <div className="bg-white rounded-2xl p-4 sm:p-8 border border-gray-200 shadow-sm">
                   <div className="flex items-center gap-3 mb-6">
                     <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
                       <Globe className="w-5 h-5 text-white" />
@@ -416,8 +416,8 @@ export default function Home() {
                     </div>
                   </div>
 
-                  {/* Platform Statistics */}
-                  <div className="grid grid-cols-2 gap-4 mb-6">
+                  {/* Platform Statistics - Mobile Optimized */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6">
                     <div className="bg-purple-50 rounded-lg p-4 border border-purple-200">
                       <div className="flex items-center gap-2 mb-2">
                         <div className="w-4 h-4 bg-purple-500 rounded-full flex items-center justify-center">
@@ -440,8 +440,8 @@ export default function Home() {
                     </div>
                   </div>
 
-                  {/* Platform Grid */}
-                  <div className="grid grid-cols-2 gap-4 mb-6">
+                  {/* Platform Grid - Mobile Optimized */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6">
                     {[
                       { name: "Instagram", icon: <Instagram className="w-6 h-6" />, color: "text-pink-600", connected: true, followers: "847K" },
                       { name: "TikTok", icon: <Video className="w-6 h-6" />, color: "text-black", connected: true, followers: "2.1M" },
@@ -536,18 +536,18 @@ export default function Home() {
       <section className="py-24 bg-gradient-to-br from-gray-50 to-white">
         <div className="container mx-auto px-6">
           <div className="text-center mb-20">
-            <h2 className="text-5xl font-bold text-black mb-8">
+            <h2 className="text-2xl sm:text-3xl lg:text-5xl font-bold text-black mb-6 sm:mb-8">
               Everything You Need to{" "}
               <span className="bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
                 Go Viral
               </span>
             </h2>
-            <p className="text-2xl text-black max-w-4xl mx-auto leading-relaxed">
+            <p className="text-lg sm:text-xl lg:text-2xl text-black max-w-4xl mx-auto leading-relaxed">
               Our comprehensive suite of AI-powered tools designed to maximize your social media success
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-7xl mx-auto">
             {[
               {
                 icon: <Sparkles className="w-8 h-8" />,
@@ -576,7 +576,7 @@ export default function Home() {
             ].map((feature, index) => (
               <div
                 key={index}
-                className="glass-premium p-8 hover-lift transition-all duration-300 group hover-target interactive-element card"
+                className="glass-premium p-4 sm:p-8 hover-lift transition-all duration-300 group hover-target interactive-element card"
                 data-interactive="true"
                 data-card="true"
               >
@@ -614,18 +614,18 @@ export default function Home() {
       <section className="py-24 bg-white">
         <div className="container mx-auto px-6">
           <div className="text-center mb-20">
-            <h2 className="text-5xl font-bold text-black mb-8">
+            <h2 className="text-2xl sm:text-3xl lg:text-5xl font-bold text-black mb-6 sm:mb-8">
               How{" "}
               <span className="bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
                 Pegasus Works
               </span>
             </h2>
-            <p className="text-2xl text-black max-w-4xl mx-auto leading-relaxed">
+            <p className="text-lg sm:text-xl lg:text-2xl text-black max-w-4xl mx-auto leading-relaxed">
               From zero to viral in three simple, powerful steps
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-12 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-12 max-w-6xl mx-auto">
             {[
               {
                 step: "01",

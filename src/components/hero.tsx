@@ -559,14 +559,14 @@ function InteractiveDashboardDemo({ isMounted }: { isMounted: boolean }) {
 // Simple stats counter without dynamic import
 function StatsCounter({ isMounted }: { isMounted: boolean }) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto">
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 max-w-2xl mx-auto">
       <div
-        className="glass-premium p-4 text-center hover-lift card-3d micro-bounce group transform-3d hover-target interactive-element card"
+        className="glass-premium p-2 sm:p-4 text-center hover-lift card-3d micro-bounce group transform-3d hover-target interactive-element card"
         data-interactive="true"
         data-card="true"
       >
-        <TrendingUp className="w-6 h-6 text-blue-600 mx-auto mb-2" />
-        <div className="text-2xl font-bold gradient-text-primary mb-1 font-display">
+        <TrendingUp className="w-4 h-4 sm:w-6 sm:h-6 text-blue-600 mx-auto mb-1 sm:mb-2" />
+        <div className="text-lg sm:text-2xl font-bold gradient-text-primary mb-0.5 sm:mb-1 font-display">
           50K+
         </div>
         <div className="text-gray-600 text-xs font-medium font-body">
@@ -575,13 +575,13 @@ function StatsCounter({ isMounted }: { isMounted: boolean }) {
       </div>
 
       <div
-        className="glass-premium p-4 text-center hover-lift card-3d micro-bounce group transform-3d hover-target interactive-element card"
+        className="glass-premium p-2 sm:p-4 text-center hover-lift card-3d micro-bounce group transform-3d hover-target interactive-element card"
         data-interactive="true"
         data-card="true"
       >
-        <Zap className="w-6 h-6 text-purple-600 mx-auto mb-2" />
+        <Zap className="w-4 h-4 sm:w-6 sm:h-6 text-purple-600 mx-auto mb-1 sm:mb-2" />
         <div
-          className="text-2xl font-bold gradient-text-primary mb-1 font-display"
+          className="text-lg sm:text-2xl font-bold gradient-text-primary mb-0.5 sm:mb-1 font-display"
           data-metric="1B+"
         >
           1B+
@@ -592,13 +592,13 @@ function StatsCounter({ isMounted }: { isMounted: boolean }) {
       </div>
 
       <div
-        className="glass-premium p-4 text-center hover-lift card-3d micro-bounce group transform-3d hover-target interactive-element card"
+        className="glass-premium p-2 sm:p-4 text-center hover-lift card-3d micro-bounce group transform-3d hover-target interactive-element card"
         data-interactive="true"
         data-card="true"
       >
-        <Star className="w-6 h-6 text-pink-600 mx-auto mb-2" />
+        <Star className="w-4 h-4 sm:w-6 sm:h-6 text-pink-600 mx-auto mb-1 sm:mb-2" />
         <div
-          className="text-2xl font-bold gradient-text-primary mb-1 font-display"
+          className="text-lg sm:text-2xl font-bold gradient-text-primary mb-0.5 sm:mb-1 font-display"
           data-metric="$25M+"
         >
           $25M+
@@ -752,14 +752,14 @@ export default function Hero() {
       <div className="relative z-10 pt-24 pb-16">
         <div className="container mx-auto px-6">
           <div className="text-center max-w-6xl mx-auto">
-            {/* Premium Badge - Smaller */}
+            {/* Premium Badge - Mobile Optimized */}
             <div
-              className="inline-flex items-center px-6 py-2 glass-premium mb-8 animate-fade-in hover-lift hover-target interactive-element button"
+              className="inline-flex items-center px-3 py-1.5 sm:px-6 sm:py-2 glass-premium mb-8 animate-fade-in hover-lift hover-target interactive-element button"
               data-interactive="true"
               data-button="true"
             >
-              <Sparkles className="w-4 h-4 text-blue-600 mr-2" />
-              <span className="text-gray-800 text-sm font-medium">
+              <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-blue-600 mr-1.5 sm:mr-2" />
+              <span className="text-gray-800 text-xs sm:text-sm font-medium">
                 AI-Powered Content Creation Platform
               </span>
             </div>
@@ -789,7 +789,7 @@ export default function Hero() {
             >
               <Link
                 href={getBuildFameHref()}
-                className="group relative w-full sm:w-auto px-8 py-4 sm:py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold text-base sm:text-base rounded-xl shadow-lg hover-lift overflow-hidden transition-all duration-300 hover-target interactive-element magnetic button link min-h-[52px] flex items-center justify-center"
+                className="group relative w-full sm:w-auto px-6 py-3 sm:px-8 sm:py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold text-sm sm:text-base rounded-xl shadow-lg hover-lift overflow-hidden transition-all duration-300 hover-target interactive-element magnetic button link min-h-[44px] sm:min-h-[52px] flex items-center justify-center"
                 data-interactive="true"
                 data-button="true"
                 data-link="true"
@@ -807,7 +807,7 @@ export default function Hero() {
 
               <Link
                 href={getGetStartedHref()}
-                className="group glass-premium w-full sm:w-auto px-8 py-4 sm:py-4 text-gray-800 font-semibold text-base sm:text-base transition-all duration-300 hover:bg-white/60 flex items-center justify-center gap-3 hover-lift rounded-xl hover-target interactive-element magnetic button link min-h-[52px]"
+                className="group glass-premium w-full sm:w-auto px-6 py-3 sm:px-8 sm:py-4 text-gray-800 font-semibold text-sm sm:text-base transition-all duration-300 hover:bg-white/60 flex items-center justify-center gap-2 sm:gap-3 hover-lift rounded-xl hover-target interactive-element magnetic button link min-h-[44px] sm:min-h-[52px]"
                 data-interactive="true"
                 data-button="true"
                 data-link="true"
