@@ -141,7 +141,14 @@ export default function SubscriptionPage() {
   };
 
   if (loading) {
-    return <LoadingSpinner size="lg" />;
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <LoadingSpinner size="lg" />
+          <p className="mt-4 text-gray-600">Loading subscription management...</p>
+        </div>
+      </div>
+    );
   }
 
   if (error || !user || !userProfile) {
@@ -149,7 +156,12 @@ export default function SubscriptionPage() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
         <div className="text-center max-w-sm">
           <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">Access Denied</h1>
-          <p className="text-sm sm:text-base text-gray-600 mb-4">{error || "Please sign in to access subscription management."}</p>
+          <p className="text-sm sm:text-base text-gray-600 mb-4">
+            {error || "Please sign in to access subscription management."}
+          </p>
+          <p className="text-xs text-gray-500 mb-4">
+            Debug: User: {user ? "Yes" : "No"}, Profile: {userProfile ? "Yes" : "No"}, Error: {error || "None"}
+          </p>
           <a href="/sign-in" className="text-blue-600 hover:text-blue-700 text-sm sm:text-base">
             Sign In
           </a>
