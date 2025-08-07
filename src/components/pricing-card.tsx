@@ -403,7 +403,7 @@ export default function PricingCard({
               <h3 className="text-lg md:text-2xl font-bold text-gray-900 group-hover:text-blue-600 transition-all duration-300">
                 {safePlan.name}
               </h3>
-              <p className="text-gray-600 text-sm md:text-sm -mt-2">{safePlan.description}</p>
+              <p className="text-gray-600 text-sm md:text-sm -mt-3">{safePlan.description}</p>
             </div>
           </div>
 
@@ -529,7 +529,7 @@ export default function PricingCard({
               <Button
                 onClick={handleCheckout}
                 disabled={isLoading || !!isCurrentPlan}
-                className={`w-full py-1.5 sm:py-3 text-sm font-bold transition-all duration-300 magnetic interactive-element hover-target pricing-button checkout-button stripe-button button ${
+                className={`w-full py-1 sm:py-3 text-sm font-bold transition-all duration-300 magnetic interactive-element hover-target pricing-button checkout-button stripe-button button ${
                   safePlan.popular
                     ? `bg-gradient-to-r ${safePlan.gradient} hover:shadow-premium-lg text-white`
                     : "bg-gray-800 hover:bg-gray-700 text-white"

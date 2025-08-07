@@ -631,7 +631,7 @@ export default function Home() {
                 step: "01",
                 title: "Define Your Persona",
                 description: "Tell our AI about your niche, style, and goals. Our persona builder creates a custom content strategy tailored to your unique voice and audience.",
-                icon: <Brain className="w-12 h-12" />,
+                icon: <Brain className="w-8 h-8 sm:w-12 sm:h-12" />,
                 color: "from-blue-500 to-blue-600",
                 time: "2 minutes",
               },
@@ -639,7 +639,7 @@ export default function Home() {
                 step: "02",
                 title: "Generate Viral Content",
                 description: "Our AI creates high-quality content optimized for each platform. Get scripts, captions, hashtags, and posting schedules that maximize engagement.",
-                icon: <Sparkles className="w-12 h-12" />,
+                icon: <Sparkles className="w-8 h-8 sm:w-12 sm:h-12" />,
                 color: "from-purple-500 to-purple-600",
                 time: "5 minutes",
               },
@@ -647,7 +647,7 @@ export default function Home() {
                 step: "03",
                 title: "Scale & Monetize",
                 description: "Watch your following grow exponentially. Our monetization suite helps you turn your influence into income through brand partnerships and direct monetization.",
-                icon: <DollarSign className="w-12 h-12" />,
+                icon: <DollarSign className="w-8 h-8 sm:w-12 sm:h-12" />,
                 color: "from-green-500 to-green-600",
                 time: "Ongoing",
               },
@@ -658,15 +658,15 @@ export default function Home() {
                     {step.step}
                   </div>
                   <div
-                    className={`w-20 h-20 bg-gradient-to-r ${step.color} rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg`}
+                    className={`w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r ${step.color} rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg`}
                   >
                     <div className="text-white">{step.icon}</div>
                 </div>
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">
                   {step.title}
                 </h3>
-                <p className="text-gray-600 leading-relaxed text-lg mb-4">
+                <p className="text-gray-600 leading-relaxed text-base sm:text-lg mb-4">
                   {step.description}
                 </p>
                 <div className="inline-flex items-center gap-2 text-sm text-gray-500">
