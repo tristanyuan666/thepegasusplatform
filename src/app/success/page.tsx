@@ -596,10 +596,14 @@ export default function SuccessPage() {
                             body: { user_id: user?.id }
                           });
                           if (error) throw error;
-                          if (data?.url) window.location.href = data.url;
+                          if (data?.url) {
+                            window.location.href = data.url;
+                          } else {
+                            window.location.href = "/dashboard?tab=settings&open=billing";
+                          }
                         } catch (error) {
                           console.error("Error opening portal:", error);
-                          window.location.href = "/pricing";
+                          window.location.href = "/dashboard?tab=settings&open=billing";
                         }
                       }}
                     >
