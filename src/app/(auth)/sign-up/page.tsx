@@ -344,7 +344,7 @@ export default function SignUpPage() {
                 onCheckedChange={(checked) =>
                   setAcceptTerms(checked as boolean)
                 }
-                className="mt-1 h-2 w-2 sm:h-4 sm:w-4 hover-target interactive-element input"
+                className="mt-1 h-3 w-3 sm:h-4 sm:w-4 hover-target interactive-element input"
                 data-interactive="true"
                 data-input="true"
                 disabled={isLoading}

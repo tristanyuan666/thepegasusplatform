@@ -529,7 +529,7 @@ export default function PricingCard({
               <Button
                 onClick={handleCheckout}
                 disabled={isLoading || !!isCurrentPlan}
-                className={`w-full py-1 sm:py-3 text-sm font-bold transition-all duration-300 magnetic interactive-element hover-target pricing-button checkout-button stripe-button button ${
+                className={`w-full py-2 sm:py-3 text-xs sm:text-sm font-bold transition-all duration-300 magnetic interactive-element hover-target pricing-button checkout-button stripe-button button ${
                   safePlan.popular
                     ? `bg-gradient-to-r ${safePlan.gradient} hover:shadow-premium-lg text-white`
                     : "bg-gray-800 hover:bg-gray-700 text-white"

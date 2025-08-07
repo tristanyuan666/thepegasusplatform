@@ -569,15 +569,15 @@ export default function PricingPage({ searchParams }: PricingPageProps) {
               </span>
               <button
                 onClick={() => setIsYearly(!isYearly)}
-                className={`relative w-6 h-3 md:w-12 md:h-6 rounded-full transition-all duration-300 hover:scale-105 shadow-md hover-target interactive-element ${
+                className={`relative w-8 h-4 md:w-12 md:h-6 rounded-full transition-all duration-300 hover:scale-105 shadow-md hover-target interactive-element ${
                   isYearly ? "bg-blue-600" : "bg-gray-300"
                 }`}
                 data-interactive="true"
                 aria-label="Toggle billing period"
               >
                 <div
-                  className={`absolute top-0.5 left-0.5 w-2 h-2 md:w-5 md:h-5 bg-white rounded-full transition-transform duration-300 shadow-lg ${
-                    isYearly ? "translate-x-3 md:translate-x-6" : "translate-x-0"
+                  className={`absolute top-0.5 left-0.5 w-3 h-3 md:w-5 md:h-5 bg-white rounded-full transition-transform duration-300 shadow-lg ${
+                    isYearly ? "translate-x-4 md:translate-x-6" : "translate-x-0"
                   }`}
                 />
               </button>
@@ -601,15 +601,7 @@ export default function PricingPage({ searchParams }: PricingPageProps) {
           {/* Pricing Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8 max-w-7xl mx-auto mb-8 md:mb-16 pricing-page px-4 sm:px-6">
             {defaultPlans.map((plan) => (
-              <div
-                key={plan.id}
-                className="pricing-card hover-target interactive-element card w-full"
-                data-pricing-card="true"
-                data-interactive="true"
-                data-card="true"
-              >
-                <PricingCard plan={plan} isYearly={isYearly} user={user} />
-              </div>
+              <PricingCard key={plan.id} plan={plan} isYearly={isYearly} user={user} />
             ))}
           </div>
 
