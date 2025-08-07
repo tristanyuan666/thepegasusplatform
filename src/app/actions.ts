@@ -188,9 +188,22 @@ export const signInAction = async (formData: FormData) => {
           full_name:
             data.user.user_metadata?.full_name ||
             data.user.user_metadata?.name ||
-            null,
+            data.user.email?.split('@')[0] || "User",
           avatar_url: data.user.user_metadata?.avatar_url || null,
           token_identifier: data.user.id,
+          plan: null,
+          plan_status: null,
+          plan_billing: null,
+          is_active: false,
+          niche: null,
+          tone: null,
+          content_format: null,
+          fame_goals: null,
+          follower_count: null,
+          viral_score: 0,
+          monetization_forecast: 0,
+          onboarding_completed: false,
+          created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
         },
         { onConflict: "user_id" },
@@ -215,9 +228,9 @@ export const signInAction = async (formData: FormData) => {
         .select("*")
         .eq("user_id", data.user.id)
         .eq("status", "active")
-        .single();
+        .maybeSingle();
 
-      if (subError && subError.code !== "PGRST116") {
+      if (subError) {
         console.error("Subscription check error:", subError);
       } else {
         subscription = subData;
@@ -373,9 +386,10 @@ export const checkUserSubscription = async (userId: string) => {
     .select("*")
     .eq("user_id", userId)
     .eq("status", "active")
-    .single();
+    .maybeSingle();
 
   if (error) {
+    console.error("Subscription check error:", error);
     return false;
   }
 

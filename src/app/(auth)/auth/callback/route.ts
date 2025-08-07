@@ -94,9 +94,22 @@ export async function GET(request: NextRequest) {
             full_name:
               data.user.user_metadata?.full_name ||
               data.user.user_metadata?.name ||
-              null,
+              data.user.email?.split('@')[0] || "User",
             avatar_url: data.user.user_metadata?.avatar_url || null,
             token_identifier: data.user.id,
+            plan: null,
+            plan_status: null,
+            plan_billing: null,
+            is_active: false,
+            niche: null,
+            tone: null,
+            content_format: null,
+            fame_goals: null,
+            follower_count: null,
+            viral_score: 0,
+            monetization_forecast: 0,
+            onboarding_completed: false,
+            created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
           },
           { onConflict: "user_id" },
@@ -120,7 +133,7 @@ export async function GET(request: NextRequest) {
           .select("*")
           .eq("user_id", data.user.id)
           .eq("status", "active")
-          .single();
+          .maybeSingle();
 
         console.log("Subscription check:", {
           hasSubscription: !!subscription,
@@ -143,6 +156,12 @@ export async function GET(request: NextRequest) {
               currentDomain,
             ),
           );
+        }
+
+        // If user has active subscription, redirect to dashboard
+        if (subscription) {
+          console.log("User has active subscription, redirecting to dashboard");
+          return NextResponse.redirect(new URL("/dashboard", currentDomain));
         }
 
         // Check if there's a specific redirect_to parameter

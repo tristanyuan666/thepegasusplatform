@@ -181,6 +181,88 @@ Deno.serve(async (req) => {
     }
   }
 
+  // Manual user creation endpoint
+  if (url.searchParams.get("create_user") === "true") {
+    console.log("Manual user creation requested");
+    
+    const email = url.searchParams.get("email");
+    const userId = url.searchParams.get("user_id");
+    const fullName = url.searchParams.get("full_name") || "User";
+    
+    if (!email || !userId) {
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: "Missing email or user_id parameters",
+          required_params: ["email", "user_id"],
+          optional_params: ["full_name"]
+        }),
+        {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
+      );
+    }
+    
+    try {
+      // Create user profile
+      const { data: user, error: userError } = await supabase
+        .from("users")
+        .insert({
+          user_id: userId,
+          email: email,
+          full_name: fullName,
+          token_identifier: userId, // Add required field
+          plan: null,
+          plan_status: null,
+          plan_billing: null,
+          is_active: false,
+          niche: null,
+          tone: null,
+          content_format: null,
+          fame_goals: null,
+          follower_count: null,
+          viral_score: 0,
+          monetization_forecast: 0,
+          onboarding_completed: false,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        })
+        .select()
+        .single();
+      
+      if (userError) {
+        throw new Error(`User creation failed: ${userError.message}`);
+      }
+      
+      return new Response(
+        JSON.stringify({ 
+          success: true, 
+          message: "User created successfully",
+          user: user,
+          timestamp: new Date().toISOString()
+        }),
+        {
+          status: 200,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
+      );
+    } catch (error) {
+      console.error("User creation failed:", error);
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: error.message,
+          timestamp: new Date().toISOString()
+        }),
+        {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
+      );
+    }
+  }
+
   // Manual subscription processing endpoint
   if (url.searchParams.get("process_subscription") === "true") {
     console.log("Manual subscription processing requested");
