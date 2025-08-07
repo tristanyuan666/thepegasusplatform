@@ -235,6 +235,15 @@ export default function DashboardSettings({
     }
   }, [searchParams]);
 
+  // Additional useEffect to handle URL parameters on mount
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const openParam = urlParams.get("open");
+    if (openParam === "billing") {
+      setActiveTab("billing");
+    }
+  }, []);
+
   const loadDeviceSessions = async () => {
     if (!userProfile?.user_id) return;
     
