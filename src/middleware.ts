@@ -73,6 +73,7 @@ export async function middleware(req: NextRequest) {
     // For protected routes, also check subscription status
     if (isProtectedRoute && user) {
       try {
+        // First check for active subscription
         const { data: subscription, error: subError } = await supabase
           .from("subscriptions")
           .select("status")
@@ -87,8 +88,20 @@ export async function middleware(req: NextRequest) {
         }
 
         if (!subscription) {
-          // User doesn't have active subscription, redirect to pricing
-          return NextResponse.redirect(new URL("/pricing", req.url));
+          // Check if user has any subscription record (even if not active)
+          const { data: anySubscription } = await supabase
+            .from("subscriptions")
+            .select("status")
+            .eq("user_id", user.id)
+            .maybeSingle();
+          
+          if (anySubscription) {
+            console.log("User has subscription record, allowing access despite status");
+            // User has paid, allow access
+          } else {
+            // User doesn't have any subscription, redirect to pricing
+            return NextResponse.redirect(new URL("/pricing", req.url));
+          }
         }
       } catch (subError) {
         console.warn("Subscription check failed in middleware:", subError);

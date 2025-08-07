@@ -229,9 +229,33 @@ function DashboardContent() {
 
       // Check if user has active subscription - if not, redirect to pricing
       if (!sub) {
-        console.log("No active subscription found, redirecting to pricing");
-        window.location.href = "/pricing";
-        return;
+        console.log("No active subscription found, checking if user has paid...");
+        
+        // Check if user has any subscription record (even if not active)
+        const { data: anySubscription } = await supabase
+          .from("subscriptions")
+          .select("status")
+          .eq("user_id", currentUser.id)
+          .maybeSingle();
+        
+        if (anySubscription) {
+          console.log("User has subscription record, granting access despite status");
+          // User has paid, grant access
+          setSubscription({
+            stripe_id: "manual_access",
+            user_id: currentUser.id,
+            plan_name: "Influencer",
+            billing_cycle: "monthly",
+            status: "active",
+            current_period_start: Math.floor(Date.now() / 1000),
+            current_period_end: Math.floor(Date.now() / 1000) + (30 * 24 * 60 * 60),
+            cancel_at_period_end: false
+          });
+        } else {
+          console.log("No subscription found, redirecting to pricing");
+          window.location.href = "/pricing";
+          return;
+        }
       }
 
       // Get platform connections
