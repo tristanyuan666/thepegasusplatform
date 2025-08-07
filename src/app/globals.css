@@ -415,6 +415,38 @@
       font-size: 12px;
       padding: 8px 12px;
     }
+    
+    /* Mobile content hub optimizations */
+    .content-hub {
+      padding: 1rem;
+      margin-bottom: 4rem;
+    }
+    
+    .content-hub .tabs-list {
+      border-radius: 8px;
+      overflow-x: auto;
+    }
+    
+    .content-hub .tabs-trigger {
+      font-size: 11px;
+      padding: 6px 8px;
+      white-space: nowrap;
+    }
+    
+    .content-hub .card {
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .content-hub .textarea {
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    
+    .content-hub .badge {
+      font-size: 10px;
+      padding: 4px 8px;
+    }
 
     .overflow-x-auto::-webkit-scrollbar {
       display: none;

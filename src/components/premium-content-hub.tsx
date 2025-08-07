@@ -2124,26 +2124,26 @@ export default function PremiumContentHub({
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50">
       {/* Ultra Premium Header */}
       <div className="bg-gradient-to-r from-slate-50 to-blue-50 border-b border-slate-200/60 backdrop-blur-xl">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20">
-            <div className="flex items-center space-x-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16 md:h-20">
+            <div className="flex items-center space-x-3 md:space-x-6">
               <div className="relative">
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-600 via-blue-700 to-cyan-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/25">
-                  <Sparkles className="w-6 h-6 text-white" />
+                <div className="w-8 h-8 md:w-12 md:h-12 bg-gradient-to-br from-blue-600 via-blue-700 to-cyan-600 rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/25">
+                  <Sparkles className="w-4 h-4 md:w-6 md:h-6 text-white" />
                 </div>
-                <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-r from-emerald-500 to-green-600 rounded-full flex items-center justify-center">
-                  <div className="w-2 h-2 bg-white rounded-full"></div>
+                <div className="absolute -top-1 -right-1 w-3 h-3 md:w-4 md:h-4 bg-gradient-to-r from-emerald-500 to-green-600 rounded-full flex items-center justify-center">
+                  <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-white rounded-full"></div>
                 </div>
               </div>
               <div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
+                <h1 className="text-lg md:text-2xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
                   Content Hub
                 </h1>
-                <p className="text-sm text-slate-600 font-medium">Advanced AI-Powered Content Creation</p>
+                <p className="text-xs md:text-sm text-slate-600 font-medium">Advanced AI-Powered Content Creation</p>
               </div>
             </div>
             
-            <div className="flex items-center space-x-6">
+            <div className="flex items-center space-x-3 md:space-x-6">
               <div className="hidden md:flex items-center space-x-4">
                 <div className="text-center">
                   <p className="text-xs font-medium text-slate-500 uppercase tracking-wide">Connected</p>
@@ -2157,11 +2157,11 @@ export default function PremiumContentHub({
               </div>
               {hasActiveSubscription && (
                 <div className="flex items-center space-x-2">
-                  <Badge className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white px-3 py-1.5 text-xs font-semibold shadow-sm">
-                    <Crown className="w-3 h-3 mr-1.5" />
+                  <Badge className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white px-2 md:px-3 py-1 md:py-1.5 text-xs font-semibold shadow-sm">
+                    <Crown className="w-2.5 h-2.5 md:w-3 md:h-3 mr-1 md:mr-1.5" />
                     Premium
                   </Badge>
-                  <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+                  <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-emerald-500 rounded-full animate-pulse"></div>
                 </div>
               )}
             </div>
@@ -2189,69 +2189,69 @@ export default function PremiumContentHub({
       )}
 
       {/* Premium Content Area */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-8">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6 md:space-y-8">
           {/* Premium Tab Navigation */}
-          <TabsList className="bg-white/90 backdrop-blur-xl border border-slate-200/60 grid w-full grid-cols-5 shadow-lg shadow-slate-200/50 rounded-2xl p-1.5">
-            <TabsTrigger value="create" className="flex items-center space-x-2 hover:bg-gradient-to-r hover:from-blue-50 hover:to-cyan-50 transition-all duration-300 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-100 data-[state=active]:to-cyan-100 data-[state=active]:text-blue-700 data-[state=active]:shadow-sm rounded-xl px-3 py-2">
-              <Wand2 className="w-4 h-4" />
-              <span className="font-medium text-sm">Create</span>
+          <TabsList className="bg-white/90 backdrop-blur-xl border border-slate-200/60 grid w-full grid-cols-5 shadow-lg shadow-slate-200/50 rounded-xl p-1 md:p-1.5">
+            <TabsTrigger value="create" className="flex items-center gap-1 md:gap-2 hover:bg-gradient-to-r hover:from-blue-50 hover:to-cyan-50 transition-all duration-300 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-100 data-[state=active]:to-cyan-100 data-[state=active]:text-blue-700 data-[state=active]:shadow-sm rounded-lg px-2 md:px-3 py-2 text-xs md:text-sm">
+              <Wand2 className="w-3 h-3 md:w-4 md:h-4" />
+              <span className="font-medium">Create</span>
             </TabsTrigger>
-            <TabsTrigger value="ideas" className="flex items-center space-x-2 hover:bg-gradient-to-r hover:from-blue-50 hover:to-cyan-50 transition-all duration-300 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-100 data-[state=active]:to-cyan-100 data-[state=active]:text-blue-700 data-[state=active]:shadow-sm rounded-xl px-3 py-2">
-              <Lightbulb className="w-4 h-4" />
-              <span className="font-medium text-sm">Ideas</span>
+            <TabsTrigger value="ideas" className="flex items-center gap-1 md:gap-2 hover:bg-gradient-to-r hover:from-blue-50 hover:to-cyan-50 transition-all duration-300 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-100 data-[state=active]:to-cyan-100 data-[state=active]:text-blue-700 data-[state=active]:shadow-sm rounded-lg px-2 md:px-3 py-2 text-xs md:text-sm">
+              <Lightbulb className="w-3 h-3 md:w-4 md:h-4" />
+              <span className="font-medium">Ideas</span>
             </TabsTrigger>
-            <TabsTrigger value="scheduler" className="flex items-center space-x-2 hover:bg-gradient-to-r hover:from-blue-50 hover:to-cyan-50 transition-all duration-300 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-100 data-[state=active]:to-cyan-100 data-[state=active]:text-blue-700 data-[state=active]:shadow-sm rounded-xl px-3 py-2">
-              <Calendar className="w-4 h-4" />
-              <span className="font-medium text-sm">Schedule</span>
+            <TabsTrigger value="scheduler" className="flex items-center gap-1 md:gap-2 hover:bg-gradient-to-r hover:from-blue-50 hover:to-cyan-50 transition-all duration-300 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-100 data-[state=active]:to-cyan-100 data-[state=active]:text-blue-700 data-[state=active]:shadow-sm rounded-lg px-2 md:px-3 py-2 text-xs md:text-sm">
+              <Calendar className="w-3 h-3 md:w-4 md:h-4" />
+              <span className="font-medium">Schedule</span>
             </TabsTrigger>
-            <TabsTrigger value="personas" className="flex items-center space-x-2 hover:bg-gradient-to-r hover:from-blue-50 hover:to-cyan-50 transition-all duration-300 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-100 data-[state=active]:to-cyan-100 data-[state=active]:text-blue-700 data-[state=active]:shadow-sm rounded-xl px-3 py-2">
-              <Brain className="w-4 h-4" />
-              <span className="font-medium text-sm">Personas</span>
+            <TabsTrigger value="personas" className="flex items-center gap-1 md:gap-2 hover:bg-gradient-to-r hover:from-blue-50 hover:to-cyan-50 transition-all duration-300 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-100 data-[state=active]:to-cyan-100 data-[state=active]:text-blue-700 data-[state=active]:shadow-sm rounded-lg px-2 md:px-3 py-2 text-xs md:text-sm">
+              <Brain className="w-3 h-3 md:w-4 md:h-4" />
+              <span className="font-medium">Personas</span>
             </TabsTrigger>
-            <TabsTrigger value="analytics" className="flex items-center space-x-2 hover:bg-gradient-to-r hover:from-blue-50 hover:to-cyan-50 transition-all duration-300 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-100 data-[state=active]:to-cyan-100 data-[state=active]:text-blue-700 data-[state=active]:shadow-sm rounded-xl px-3 py-2">
-              <BarChart3 className="w-4 h-4" />
-              <span className="font-medium text-sm">Analytics</span>
+            <TabsTrigger value="analytics" className="flex items-center gap-1 md:gap-2 hover:bg-gradient-to-r hover:from-blue-50 hover:to-cyan-50 transition-all duration-300 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-100 data-[state=active]:to-cyan-100 data-[state=active]:text-blue-700 data-[state=active]:shadow-sm rounded-lg px-2 md:px-3 py-2 text-xs md:text-sm">
+              <BarChart3 className="w-3 h-3 md:w-4 md:h-4" />
+              <span className="font-medium">Analytics</span>
             </TabsTrigger>
           </TabsList>
 
           {/* Ultra Premium AI Content Generator */}
-          <TabsContent value="create" className="space-y-8">
-            <div className="bg-gradient-to-br from-white via-slate-50/50 to-blue-50/30 rounded-3xl border border-slate-200/60 shadow-xl shadow-slate-200/20 backdrop-blur-xl">
-              <div className="p-8 border-b border-slate-200/40">
-                <div className="flex items-center justify-between">
+          <TabsContent value="create" className="space-y-6 md:space-y-8">
+            <div className="bg-gradient-to-br from-white via-slate-50/50 to-blue-50/30 rounded-2xl md:rounded-3xl border border-slate-200/60 shadow-xl shadow-slate-200/20 backdrop-blur-xl">
+              <div className="p-4 md:p-8 border-b border-slate-200/40">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div className="space-y-2">
                     <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-gradient-to-br from-blue-600 via-blue-700 to-cyan-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/25">
-                        <Zap className="w-5 h-5 text-white" />
+                      <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-blue-600 via-blue-700 to-cyan-600 rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/25">
+                        <Zap className="w-4 h-4 md:w-5 md:h-5 text-white" />
                       </div>
                       <div>
-                        <h2 className="text-3xl font-bold bg-gradient-to-r from-slate-900 via-blue-900 to-slate-900 bg-clip-text text-transparent">
+                        <h2 className="text-xl md:text-3xl font-bold bg-gradient-to-r from-slate-900 via-blue-900 to-slate-900 bg-clip-text text-transparent">
                           Advanced AI Content Generator
                         </h2>
-                        <p className="text-slate-600 font-medium">Create life-changing viral content with cutting-edge AI</p>
+                        <p className="text-xs md:text-sm text-slate-600 font-medium">Create life-changing viral content with cutting-edge AI</p>
                       </div>
                     </div>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <Badge className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white px-4 py-2 text-sm font-semibold shadow-lg">
-                      <Sparkles className="w-4 h-4 mr-2" />
+                    <Badge className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white px-3 md:px-4 py-1.5 md:py-2 text-xs md:text-sm font-semibold shadow-lg">
+                      <Sparkles className="w-3 h-3 md:w-4 md:h-4 mr-1.5 md:mr-2" />
                       AI Powered
                     </Badge>
                   </div>
                 </div>
               </div>
 
-              <div className="p-8">
+              <div className="p-4 md:p-8">
                 {/* Beta Disclaimer */}
-                <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200 rounded-xl">
-                  <div className="flex items-start space-x-3">
-                    <div className="w-6 h-6 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <Sparkles className="w-3 h-3 text-white" />
+                <div className="mb-4 md:mb-6 p-3 md:p-4 bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200 rounded-lg md:rounded-xl">
+                  <div className="flex items-start space-x-2 md:space-x-3">
+                    <div className="w-5 h-5 md:w-6 md:h-6 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Sparkles className="w-2.5 h-2.5 md:w-3 md:h-3 text-white" />
                     </div>
                     <div className="flex-1">
-                      <h4 className="text-sm font-semibold text-blue-900 mb-1">AI Content Generation - Beta Phase</h4>
-                      <p className="text-sm text-blue-700 leading-relaxed">
+                      <h4 className="text-xs md:text-sm font-semibold text-blue-900 mb-1">AI Content Generation - Beta Phase</h4>
+                      <p className="text-xs md:text-sm text-blue-700 leading-relaxed">
                         Our advanced AI content generation is currently in beta and may not always display optimal results. 
                         We're continuously improving the algorithms and features. The full enhanced version with perfect accuracy 
                         and real-time optimization will be available very soon! For now, please review and refine the generated content 
@@ -2261,35 +2261,35 @@ export default function PremiumContentHub({
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 md:gap-8">
                   {/* Advanced Input Section */}
-                  <div className="xl:col-span-2 space-y-8">
+                  <div className="xl:col-span-2 space-y-6 md:space-y-8">
                     <div className="space-y-4">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-lg flex items-center justify-center">
-                          <div className="w-3 h-3 bg-white rounded-full"></div>
+                      <div className="flex items-center space-x-2 md:space-x-3">
+                        <div className="w-6 h-6 md:w-8 md:h-8 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-lg flex items-center justify-center">
+                          <div className="w-2 h-2 md:w-3 md:h-3 bg-white rounded-full"></div>
                         </div>
-                        <Label className="text-lg font-semibold text-slate-900">Step 1: Describe Your Vision</Label>
+                        <Label className="text-base md:text-lg font-semibold text-slate-900">Step 1: Describe Your Vision</Label>
                       </div>
                       <div className="space-y-4">
                         <Textarea
                           value={contentInput}
                           onChange={(e) => setContentInput(e.target.value)}
                           placeholder="🎯 What specific result do you want to achieve? For example: 'I want to create a viral post that teaches entrepreneurs how to scale from $0 to $1M in 12 months, with specific actionable steps, case studies, and psychological triggers that will make people take immediate action.'"
-                          className="min-h-[120px] border-slate-300 focus:border-blue-500 focus:ring-blue-500 rounded-xl text-slate-700 placeholder-slate-500 resize-none"
+                          className="min-h-[100px] md:min-h-[120px] border-slate-300 focus:border-blue-500 focus:ring-blue-500 rounded-lg md:rounded-xl text-slate-700 placeholder-slate-500 resize-none text-sm md:text-base"
                         />
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                          <div className="p-4 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl border border-blue-200">
-                            <h4 className="font-semibold text-blue-900 mb-2">🎯 Goal</h4>
-                            <p className="text-sm text-blue-700">What do you want to achieve with this content?</p>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
+                          <div className="p-3 md:p-4 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-lg md:rounded-xl border border-blue-200">
+                            <h4 className="font-semibold text-blue-900 mb-1 md:mb-2 text-sm md:text-base">🎯 Goal</h4>
+                            <p className="text-xs md:text-sm text-blue-700">What do you want to achieve with this content?</p>
                           </div>
-                          <div className="p-4 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border border-green-200">
-                            <h4 className="font-semibold text-green-900 mb-2">👥 Audience</h4>
-                            <p className="text-sm text-green-700">Who is your target audience?</p>
+                          <div className="p-3 md:p-4 bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg md:rounded-xl border border-green-200">
+                            <h4 className="font-semibold text-green-900 mb-1 md:mb-2 text-sm md:text-base">👥 Audience</h4>
+                            <p className="text-xs md:text-sm text-green-700">Who is your target audience?</p>
                           </div>
-                          <div className="p-4 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl border border-purple-200">
-                            <h4 className="font-semibold text-purple-900 mb-2">💡 Impact</h4>
-                            <p className="text-sm text-purple-700">What action should they take?</p>
+                          <div className="p-3 md:p-4 bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg md:rounded-xl border border-purple-200">
+                            <h4 className="font-semibold text-purple-900 mb-1 md:mb-2 text-sm md:text-base">💡 Impact</h4>
+                            <p className="text-xs md:text-sm text-purple-700">What action should they take?</p>
                           </div>
                         </div>
                       </div>
