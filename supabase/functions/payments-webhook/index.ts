@@ -730,48 +730,14 @@ async function handleSubscriptionCreated(supabaseClient: any, eventData: any) {
       return;
     }
 
-    // Step 2: Find the correct user using multiple strategies
-    console.log("🔍 No existing subscription found, finding correct user...");
+    // Step 2: SIMPLIFIED USER LOOKUP - Find user by customer email (MOST RELIABLE)
+    console.log("🔍 Finding user by customer email...");
     
     let userId = null;
     let planName = null;
     let billingCycle = null;
 
-    // Strategy 1: Look for recent checkout sessions (within 30 minutes) - MOST RELIABLE
-    const { data: checkoutSessions, error: checkoutError } = await supabaseClient
-      .from("checkout_sessions")
-      .select("*")
-      .in("status", ["pending", "completed"])
-      .order("created_at", { ascending: false })
-      .limit(50);
-
-    if (checkoutError) {
-      console.error("❌ Error fetching checkout sessions:", checkoutError);
-    } else {
-      console.log(`📋 Found ${checkoutSessions?.length || 0} recent checkout sessions`);
-      
-      if (checkoutSessions && checkoutSessions.length > 0) {
-        const thirtyMinutesAgo = new Date(Date.now() - 30 * 60 * 1000);
-        
-        for (const session of checkoutSessions) {
-          if (session.created_at && new Date(session.created_at) > thirtyMinutesAgo) {
-            // Check if this session has a user_id
-            if (session.user_id) {
-              userId = session.user_id;
-              planName = session.plan_name;
-              billingCycle = session.billing_cycle;
-              console.log("✅ Found recent checkout session with user_id:", session);
-              break;
-            }
-          }
-        }
-      }
-    }
-
-    // Strategy 2: If no checkout session, find user by customer email (VERY RELIABLE)
-    if (!userId && eventData.customer) {
-      console.log("🔍 No checkout session found, finding user by customer email...");
-      
+    if (eventData.customer) {
       try {
         const stripeResponse = await fetch(`https://api.stripe.com/v1/customers/${eventData.customer}`, {
           headers: {
@@ -787,7 +753,7 @@ async function handleSubscriptionCreated(supabaseClient: any, eventData: any) {
           if (customerEmail) {
             console.log("📧 Found customer email:", customerEmail);
             
-            // ALWAYS get the MOST RECENT user with this email
+            // Get the MOST RECENT user with this email
             const { data: users, error: userError } = await supabaseClient
               .from("users")
               .select("user_id, email, created_at, full_name")
@@ -797,7 +763,7 @@ async function handleSubscriptionCreated(supabaseClient: any, eventData: any) {
             
             if (!userError && users && users.length > 0) {
               userId = users[0].user_id;
-              console.log("✅ Found user by email (most recent):", users[0]);
+              console.log("✅ Found user by email:", users[0]);
             } else {
               console.log("❌ No user found with email:", customerEmail);
             }
@@ -808,48 +774,30 @@ async function handleSubscriptionCreated(supabaseClient: any, eventData: any) {
       }
     }
 
-    // Strategy 3: Look for any checkout session with this subscription ID in metadata
+    // Step 3: If no user found by email, try recent checkout sessions
     if (!userId) {
-      console.log("🔍 Looking for checkout session with subscription ID in metadata...");
+      console.log("🔍 No user found by email, trying recent checkout sessions...");
       
-      const { data: sessionsWithSub, error: subSessionError } = await supabaseClient
+      const { data: checkoutSessions, error: checkoutError } = await supabaseClient
         .from("checkout_sessions")
         .select("*")
-        .contains("metadata", { subscription_id: eventData.id })
-        .limit(1);
-      
-      if (!subSessionError && sessionsWithSub && sessionsWithSub.length > 0) {
-        userId = sessionsWithSub[0].user_id;
-        planName = sessionsWithSub[0].plan_name;
-        billingCycle = sessionsWithSub[0].billing_cycle;
-        console.log("✅ Found checkout session with subscription ID:", sessionsWithSub[0]);
-      }
-    }
-
-    // Strategy 4: Last resort - find most recent user (within last 10 minutes)
-    if (!userId) {
-      console.log("🔍 No user found by other methods, using most recent user as fallback...");
-      
-      const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000);
-      const { data: recentUsers, error: userError } = await supabaseClient
-        .from("users")
-        .select("user_id, email, created_at, full_name")
-        .gte("created_at", tenMinutesAgo.toISOString())
+        .in("status", ["pending", "completed"])
         .order("created_at", { ascending: false })
-        .limit(1);
+        .limit(10);
 
-      if (userError) {
-        console.error("❌ Error fetching recent users:", userError);
-        throw new Error("Failed to fetch recent users for fallback");
-      }
-
-      if (recentUsers && recentUsers.length > 0) {
-        userId = recentUsers[0].user_id;
-        console.log("✅ Using most recent user (within 10 minutes):", recentUsers[0]);
+      if (!checkoutError && checkoutSessions && checkoutSessions.length > 0) {
+        // Use the most recent checkout session
+        const recentSession = checkoutSessions[0];
+        if (recentSession.user_id) {
+          userId = recentSession.user_id;
+          planName = recentSession.plan_name;
+          billingCycle = recentSession.billing_cycle;
+          console.log("✅ Found user by recent checkout session:", recentSession);
+        }
       }
     }
 
-    // Step 3: Create subscription with found data
+    // Step 4: Create subscription with found data
     if (!userId) {
       console.error("❌ No user_id found for subscription, cannot proceed");
       console.error("Subscription data:", JSON.stringify(eventData, null, 2));
@@ -894,7 +842,6 @@ async function handleSubscriptionCreated(supabaseClient: any, eventData: any) {
         user_id: userId,
         plan_name: planName || "Influencer",
         billing_cycle: billingCycle || "monthly",
-        fallback_used: !planName,
         processed_at: new Date().toISOString(),
         source: "subscription_created",
         customer_id: eventData.customer,
@@ -919,7 +866,7 @@ async function handleSubscriptionCreated(supabaseClient: any, eventData: any) {
 
     console.log("✅ Subscription created successfully:", subscription);
 
-    // Step 4: Update user profile
+    // Step 5: Update user profile
     const userUpdateData = {
       plan: planName || "Influencer",
       plan_status: "active",
@@ -937,25 +884,6 @@ async function handleSubscriptionCreated(supabaseClient: any, eventData: any) {
       console.error("❌ Error updating user plan:", userUpdateError);
     } else {
       console.log("✅ User plan updated successfully for:", userId);
-    }
-
-    // Step 5: Update any related checkout sessions
-    if (checkoutSessions && checkoutSessions.length > 0) {
-      const recentSession = checkoutSessions.find(s => s.user_id === userId);
-      if (recentSession) {
-        await supabaseClient
-          .from("checkout_sessions")
-          .update({
-            status: "completed",
-            metadata: {
-              ...recentSession.metadata,
-              subscription_id: eventData.id,
-              completed_at: new Date().toISOString(),
-            },
-          })
-          .eq("session_id", recentSession.session_id);
-        console.log("✅ Updated checkout session with subscription ID");
-      }
     }
 
     console.log("🎉 Subscription created successfully - user has full access!");
