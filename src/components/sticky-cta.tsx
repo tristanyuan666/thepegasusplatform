@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Sparkles, ArrowRight, X } from "lucide-react";
+import { Sparkles, ArrowRight, X, LogOut } from "lucide-react";
 import { createClient } from "../../supabase/client";
+import { useRouter } from "next/navigation";
 
 export default function StickyCTA() {
   const [isVisible, setIsVisible] = useState(false);
@@ -12,6 +13,7 @@ export default function StickyCTA() {
   const [isLoading, setIsLoading] = useState(true);
 
   const supabase = createClient();
+  const router = useRouter();
 
   useEffect(() => {
     const checkUserStatus = async () => {
@@ -68,6 +70,15 @@ export default function StickyCTA() {
     setIsVisible(false);
   };
 
+  const handleSignOut = async () => {
+    try {
+      await supabase.auth.signOut();
+      router.push("/");
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
+
   const getDashboardHref = () => {
     if (isLoading) return "/pricing";
     
@@ -117,6 +128,19 @@ export default function StickyCTA() {
           <X className="w-4 h-4" />
         </button>
       </div>
+
+      {/* Sign Out Button - Mobile Only */}
+      {user && (
+        <div className="fixed bottom-20 left-1/2 transform -translate-x-1/2 z-50 animate-slide-up md:hidden">
+          <button
+            onClick={handleSignOut}
+            className="glass-card px-4 py-2 flex items-center gap-2 shadow-2xl hover-lift text-red-400 hover:text-red-300 transition-all duration-300"
+          >
+            <LogOut className="w-4 h-4" />
+            <span className="text-sm font-medium">Sign Out</span>
+          </button>
+        </div>
+      )}
     </div>
   );
 }
