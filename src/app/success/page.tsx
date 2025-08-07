@@ -66,6 +66,7 @@ export default function SuccessPage() {
   const [redirecting, setRedirecting] = useState(false);
   const [redirectCountdown, setRedirectCountdown] = useState(3);
   const [error, setError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
     checkUserAndSubscription();
@@ -81,6 +82,15 @@ export default function SuccessPage() {
       handleRedirect();
     }
   }, [redirecting, redirectCountdown]);
+
+  const retryVerification = () => {
+    setRetryCount(prev => prev + 1);
+    setError(null);
+    setLoading(true);
+    setTimeout(() => {
+      checkUserAndSubscription();
+    }, 2000); // Wait 2 seconds before retrying
+  };
 
   const checkUserAndSubscription = async () => {
     try {
@@ -107,17 +117,42 @@ export default function SuccessPage() {
         setUserProfile(profile);
       }
 
-      // Get subscription data
+      // Get subscription data - check for ANY subscription first, not just active ones
       const { data: subscriptionData, error: subError } = await supabase
         .from("subscriptions")
         .select("*")
         .eq("user_id", currentUser.id)
-        .eq("status", "active")
+        .order("created_at", { ascending: false })
+        .limit(1)
         .single();
 
       if (subError && subError.code !== "PGRST116") {
         console.error("Subscription error:", subError);
-        setError("Unable to load subscription details");
+        
+        // If no subscription found, check if there's a recent checkout session
+        const { data: checkoutSessions, error: checkoutError } = await supabase
+          .from("checkout_sessions")
+          .select("*")
+          .eq("user_id", currentUser.id)
+          .in("status", ["pending", "completed"])
+          .order("created_at", { ascending: false })
+          .limit(1);
+
+        if (!checkoutError && checkoutSessions && checkoutSessions.length > 0) {
+          console.log("Found checkout session, payment may still be processing");
+          // Show success message even if subscription isn't created yet
+          setSubscription({
+            id: "processing",
+            plan_name: checkoutSessions[0].plan_name || "Influencer",
+            status: "processing",
+            current_period_end: Math.floor(Date.now() / 1000) + (30 * 24 * 60 * 60),
+            billing_cycle: checkoutSessions[0].billing_cycle || "monthly",
+            amount: checkoutSessions[0].amount || 5999,
+            currency: checkoutSessions[0].currency || "usd"
+          });
+        } else {
+          setError("Unable to load subscription details. Please contact support if this persists.");
+        }
       } else {
         setSubscription(subscriptionData);
       }
@@ -228,11 +263,26 @@ export default function SuccessPage() {
             </div>
             <CardTitle className="text-xl">Payment Verification Failed</CardTitle>
             <CardDescription>{error}</CardDescription>
+            {retryCount > 0 && (
+              <p className="text-sm text-gray-500 mt-2">
+                Retry attempt {retryCount}/3
+              </p>
+            )}
           </CardHeader>
-          <CardContent className="text-center">
-            <Button asChild className="w-full">
+          <CardContent className="text-center space-y-3">
+            <Button 
+              onClick={retryVerification} 
+              className="w-full"
+              disabled={retryCount >= 3}
+            >
+              {retryCount >= 3 ? "Max Retries Reached" : "Retry Verification"}
+            </Button>
+            <Button asChild variant="outline" className="w-full">
               <Link href="/dashboard">Go to Dashboard</Link>
             </Button>
+            <p className="text-xs text-gray-500 mt-2">
+              If the issue persists, please contact support with your payment details.
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -249,10 +299,13 @@ export default function SuccessPage() {
               <CheckCircle className="w-10 h-10 text-green-600" />
             </div>
             <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              Payment Successful! 🎉
+              {subscription?.status === "processing" ? "Payment Processing! ⏳" : "Payment Successful! 🎉"}
             </h1>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Welcome to The Pegasus Platform! Your subscription is now active and you're ready to start creating viral content.
+              {subscription?.status === "processing" 
+                ? "Your payment is being processed. This usually takes a few moments. You'll have full access once processing is complete."
+                : "Welcome to The Pegasus Platform! Your subscription is now active and you're ready to start creating viral content."
+              }
             </p>
           </div>
 
@@ -274,8 +327,15 @@ export default function SuccessPage() {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Status:</span>
-                      <Badge variant="default" className="bg-green-100 text-green-800">
-                        Active
+                      <Badge 
+                        variant="default" 
+                        className={
+                          subscription.status === "processing" 
+                            ? "bg-yellow-100 text-yellow-800"
+                            : "bg-green-100 text-green-800"
+                        }
+                      >
+                        {subscription.status === "processing" ? "Processing" : "Active"}
                       </Badge>
                     </div>
                     <div className="flex justify-between">
