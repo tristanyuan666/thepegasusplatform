@@ -588,11 +588,23 @@ export default function SuccessPage() {
                         Create Content
                       </Link>
                     </Button>
-                    <Button asChild variant="outline">
-                      <Link href="/subscription">
-                        <Settings className="w-4 h-4 mr-2" />
-                        Manage Subscription
-                      </Link>
+                    <Button
+                      variant="outline"
+                      onClick={async () => {
+                        try {
+                          const { data, error } = await supabase.functions.invoke("create-portal-session", {
+                            body: { user_id: user?.id }
+                          });
+                          if (error) throw error;
+                          if (data?.url) window.location.href = data.url;
+                        } catch (error) {
+                          console.error("Error opening portal:", error);
+                          window.location.href = "/pricing";
+                        }
+                      }}
+                    >
+                      <Settings className="w-4 h-4 mr-2" />
+                      Manage Subscription
                     </Button>
                   </>
                 ) : (
