@@ -201,7 +201,7 @@ export default function SignInPage({ searchParams }: LoginProps) {
                 name="remember_me"
                 checked={rememberMe}
                 onChange={(e) => setRememberMe(e.target.checked)}
-                className="w-3 h-3 sm:w-4 sm:h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 hover-target interactive-element"
+                className="w-2.5 h-2.5 sm:w-4 sm:h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 hover-target interactive-element"
                 data-interactive="true"
               />
               <Label
