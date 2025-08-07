@@ -215,6 +215,20 @@ export default function SuccessPage() {
         setSubscription(subscriptionData);
       }
 
+      // If we still don't have a subscription but user has a plan, show success
+      if (!subscription && profile && (profile.plan || profile.plan_status === "active")) {
+        console.log("✅ User has active plan in profile, showing success");
+        setSubscription({
+          id: "active",
+          plan_name: profile.plan || "Influencer",
+          status: profile.plan_status || "active",
+          current_period_end: Math.floor(Date.now() / 1000) + (30 * 24 * 60 * 60),
+          billing_cycle: profile.plan_billing || "monthly",
+          amount: 5999,
+          currency: "usd"
+        });
+      }
+
       // Start redirect countdown
       setTimeout(() => {
         setRedirecting(true);
