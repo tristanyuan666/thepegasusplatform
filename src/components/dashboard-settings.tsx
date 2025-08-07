@@ -61,6 +61,7 @@ import {
   LogOut,
 } from "lucide-react";
 import { createClient } from "../../supabase/client";
+import { useSearchParams } from "next/navigation";
 
 interface UserProfile {
   id: string;
@@ -184,6 +185,7 @@ export default function DashboardSettings({
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("profile");
+  const searchParams = useSearchParams();
   const [deviceSessions, setDeviceSessions] = useState<DeviceSession[]>([]);
   const [notificationSettings, setNotificationSettings] = useState<NotificationSettings>({
     email_notifications: true,
@@ -219,7 +221,13 @@ export default function DashboardSettings({
   useEffect(() => {
     loadDeviceSessions();
     loadSettings();
-  }, []);
+    
+    // Check for section parameter to set active tab
+    const section = searchParams.get("section");
+    if (section === "billing") {
+      setActiveTab("billing");
+    }
+  }, [searchParams]);
 
   const loadDeviceSessions = async () => {
     if (!userProfile?.user_id) return;
