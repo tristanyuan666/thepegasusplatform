@@ -147,7 +147,39 @@ export default function OnboardingPage() {
     setError(null);
     
     try {
+      console.log("🔄 Starting onboarding completion for user:", user.id);
+      
+      // First, ensure user record exists
+      const { data: existingUser, error: userCheckError } = await supabase
+        .from("users")
+        .select("*")
+        .eq("user_id", user.id)
+        .maybeSingle();
 
+      if (userCheckError) {
+        console.error("Error checking user record:", userCheckError);
+        throw new Error("Failed to verify your account. Please try again.");
+      }
+
+      // If user record doesn't exist, create it first
+      if (!existingUser) {
+        console.log("📝 Creating user record for onboarding");
+        const { error: createError } = await supabase
+          .from("users")
+          .insert({
+            user_id: user.id,
+            email: user.email,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          });
+
+        if (createError) {
+          console.error("Error creating user record:", createError);
+          throw new Error("Failed to create your profile. Please try again.");
+        }
+      }
+
+      console.log("✅ User record verified, updating onboarding data");
       
       // Update user profile with onboarding data
       const { error: updateError } = await supabase
@@ -169,24 +201,32 @@ export default function OnboardingPage() {
         throw new Error("Failed to save your profile. Please try again.");
       }
 
-      // Create onboarding completion record
-      const { error: onboardingError } = await supabase
-        .from("user_onboarding")
-        .upsert({
-          user_id: user.id,
-          step_1_completed: true,
-          step_2_completed: true,
-          step_3_completed: true,
-          step_4_completed: true,
-          step_5_completed: true,
-          completed_at: new Date().toISOString(),
-        });
+      console.log("✅ Profile updated successfully");
 
-      if (onboardingError) {
-        console.error("Error creating onboarding record:", onboardingError);
-        // Don't throw error here as the main profile update succeeded
+      // Create onboarding completion record (optional)
+      try {
+        const { error: onboardingError } = await supabase
+          .from("user_onboarding")
+          .upsert({
+            user_id: user.id,
+            step_1_completed: true,
+            step_2_completed: true,
+            step_3_completed: true,
+            step_4_completed: true,
+            step_5_completed: true,
+            completed_at: new Date().toISOString(),
+          });
+
+        if (onboardingError) {
+          console.warn("Warning: Could not create onboarding record:", onboardingError);
+          // Don't fail the whole process for this
+        }
+      } catch (onboardingError) {
+        console.warn("Warning: Onboarding record creation failed:", onboardingError);
+        // Don't fail the whole process for this
       }
 
+      console.log("🎉 Onboarding completed successfully!");
       setSuccess("Onboarding completed successfully!");
       
       // Redirect to dashboard after a short delay
@@ -227,11 +267,11 @@ export default function OnboardingPage() {
     <>
       <Navbar />
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50">
-        <div className="max-w-4xl mx-auto px-4 py-8">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4 sm:py-8">
           {/* Progress Bar */}
-          <div className="mb-8">
-            <div className="flex items-center justify-between mb-4">
-              <h1 className="text-2xl font-bold text-gray-900">Complete Your Profile</h1>
+          <div className="mb-6 sm:mb-8">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2">
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Complete Your Profile</h1>
               <span className="text-sm text-gray-600">Step {currentStep} of 5</span>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2">
@@ -258,16 +298,16 @@ export default function OnboardingPage() {
           )}
 
           <Card className="shadow-lg">
-            <CardContent className="p-8">
+            <CardContent className="p-4 sm:p-8">
               {/* Step 1: Basic Information */}
               {currentStep === 1 && (
-                <div className="space-y-6">
-                  <div className="text-center mb-8">
-                    <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Users className="w-8 h-8 text-white" />
+                <div className="space-y-4 sm:space-y-6">
+                  <div className="text-center mb-6 sm:mb-8">
+                    <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                      <Users className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
                     </div>
-                    <h2 className="text-2xl font-bold text-gray-900 mb-2">Tell Us About Yourself</h2>
-                    <p className="text-gray-600">Let's start with your basic information</p>
+                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Tell Us About Yourself</h2>
+                    <p className="text-sm sm:text-base text-gray-600">Let's start with your basic information</p>
                   </div>
                   
                   <div className="space-y-4">
@@ -287,13 +327,13 @@ export default function OnboardingPage() {
 
               {/* Step 2: Content Preferences */}
               {currentStep === 2 && (
-                <div className="space-y-6">
-                  <div className="text-center mb-8">
-                    <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Target className="w-8 h-8 text-white" />
+                <div className="space-y-4 sm:space-y-6">
+                  <div className="text-center mb-6 sm:mb-8">
+                    <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-r from-purple-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                      <Target className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
                     </div>
-                    <h2 className="text-2xl font-bold text-gray-900 mb-2">Your Content Style</h2>
-                    <p className="text-gray-600">Help us understand your content preferences</p>
+                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Your Content Style</h2>
+                    <p className="text-sm sm:text-base text-gray-600">Help us understand your content preferences</p>
                   </div>
                   
                   <div className="space-y-4">
