@@ -968,8 +968,27 @@ async function handleSubscriptionCreated(supabaseClient: any, eventData: any) {
 
 async function handleSubscriptionUpdated(supabaseClient: any, eventData: any) {
   console.log("Handling subscription updated:", eventData.id);
+  
+  // First, get the existing subscription to find the user_id
+  const { data: existingSubscription, error: subError } = await supabaseClient
+    .from("subscriptions")
+    .select("user_id, plan_name, billing_cycle")
+    .eq("stripe_id", eventData.id)
+    .single();
+
+  if (subError) {
+    console.error("❌ Error finding existing subscription:", subError);
+    console.error("Subscription data:", JSON.stringify(eventData, null, 2));
+    return;
+  }
+
+  if (!existingSubscription?.user_id) {
+    console.error("❌ No user_id found for subscription:", eventData.id);
+    return;
+  }
+
   // Update subscription in database
-  await supabaseClient
+  const { error: updateError } = await supabaseClient
     .from("subscriptions")
     .update({
       status: eventData.status,
@@ -984,31 +1003,67 @@ async function handleSubscriptionUpdated(supabaseClient: any, eventData: any) {
     })
     .eq("stripe_id", eventData.id);
 
+  if (updateError) {
+    console.error("❌ Error updating subscription:", updateError);
+    return;
+  }
+
+  console.log("✅ Subscription updated successfully");
+
   // Update user profile/role/features
-  if (eventData.metadata?.user_id) {
-    const { data: user, error: userError } = await supabaseClient
-      .from("users")
-      .select("*")
-      .eq("user_id", eventData.metadata.user_id)
-      .maybeSingle();
-    if (!user || userError) {
-      console.error("User not found for subscription update webhook:", eventData.metadata.user_id, userError);
-    } else {
-      await supabaseClient
-        .from("users")
-        .update({
-          plan: eventData.metadata?.plan_name || "Unknown Plan",
-          plan_status: eventData.status,
-          plan_billing: eventData.metadata?.billing_cycle || "monthly",
-          plan_period_end: eventData.current_period_end,
-          is_active: eventData.status === "active",
-          updated_at: new Date().toISOString(),
-        })
-        .eq("user_id", eventData.metadata.user_id);
-      console.log("User plan updated for:", eventData.metadata.user_id, eventData.metadata?.plan_name, eventData.status);
+  const { data: user, error: userError } = await supabaseClient
+    .from("users")
+    .select("*")
+    .eq("user_id", existingSubscription.user_id)
+    .maybeSingle();
+    
+  if (!user || userError) {
+    console.error("❌ User not found for subscription update webhook:", existingSubscription.user_id, userError);
+    return;
+  }
+
+  // Determine plan name from Stripe if not available
+  let planName = existingSubscription.plan_name;
+  if (!planName && eventData.items && eventData.items.data && eventData.items.data.length > 0) {
+    const item = eventData.items.data[0];
+    if (item.price && item.price.nickname) {
+      planName = item.price.nickname;
+    } else if (item.price && item.price.product) {
+      // Try to get product name from Stripe
+      try {
+        const productResponse = await fetch(`https://api.stripe.com/v1/products/${item.price.product}`, {
+          headers: {
+            "Authorization": `Bearer ${Deno.env.get("STRIPE_SECRET_KEY")}`,
+            "Stripe-Version": "2024-12-18.acacia",
+          },
+        });
+        
+        if (productResponse.ok) {
+          const productData = await productResponse.json();
+          planName = productData.name || "Influencer";
+        }
+      } catch (productError) {
+        console.warn("Could not fetch product name from Stripe:", productError);
+      }
     }
+  }
+
+  const { error: userUpdateError } = await supabaseClient
+    .from("users")
+    .update({
+      plan: planName || existingSubscription.plan_name || "Influencer",
+      plan_status: eventData.status,
+      plan_billing: existingSubscription.billing_cycle || "monthly",
+      plan_period_end: eventData.current_period_end,
+      is_active: eventData.status === "active",
+      updated_at: new Date().toISOString(),
+    })
+    .eq("user_id", existingSubscription.user_id);
+
+  if (userUpdateError) {
+    console.error("❌ Error updating user plan:", userUpdateError);
   } else {
-    console.error("No user_id in subscription update metadata:", eventData);
+    console.log("✅ User plan updated successfully for:", existingSubscription.user_id, planName, eventData.status);
   }
 }
 
