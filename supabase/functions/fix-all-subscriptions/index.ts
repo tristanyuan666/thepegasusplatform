@@ -19,166 +19,207 @@ serve(async (req) => {
 
     console.log("🔧 Starting comprehensive subscription fix for ALL users...");
 
-    // Step 1: Find all subscriptions that might be broken
-    const { data: allSubscriptions, error: subError } = await supabaseClient
-      .from("subscriptions")
+    // Step 1: Find all users who have checkout sessions but no subscriptions
+    const { data: checkoutSessions, error: checkoutError } = await supabaseClient
+      .from("checkout_sessions")
       .select("*")
+      .in("status", ["pending", "completed"])
       .order("created_at", { ascending: false });
 
-    if (subError) {
-      console.error("❌ Error fetching subscriptions:", subError);
-      throw subError;
+    if (checkoutError) {
+      console.error("❌ Error fetching checkout sessions:", checkoutError);
+      throw checkoutError;
     }
 
-    console.log(`📋 Found ${allSubscriptions?.length || 0} total subscriptions`);
+    console.log(`📋 Found ${checkoutSessions?.length || 0} checkout sessions`);
 
-    const fixedSubscriptions = [];
+    const fixedUsers = [];
     const errors = [];
 
-    // Step 2: Process each subscription
-    for (const subscription of allSubscriptions || []) {
+    // Step 2: Process each checkout session
+    for (const session of checkoutSessions || []) {
       try {
-        console.log(`🔍 Processing subscription: ${subscription.stripe_id}`);
+        console.log(`🔍 Processing checkout session: ${session.session_id}`);
         
-        // Check if subscription has user_id
-        if (!subscription.user_id) {
-          console.log("⚠️ Subscription missing user_id, attempting to fix...");
-          
-          // Strategy 1: Look for checkout session
-          const { data: checkoutSessions } = await supabaseClient
-            .from("checkout_sessions")
-            .select("*")
-            .eq("session_id", subscription.metadata?.checkout_session_id || "")
-            .maybeSingle();
-
-          let userId = null;
-          let planName = null;
-          let billingCycle = null;
-
-          if (checkoutSessions) {
-            userId = checkoutSessions.user_id;
-            planName = checkoutSessions.plan_name;
-            billingCycle = checkoutSessions.billing_cycle;
-            console.log("✅ Found user from checkout session:", userId);
-          } else {
-            // Strategy 2: Find user by customer email from Stripe
-            if (subscription.metadata?.customer_email) {
-              const { data: users } = await supabaseClient
-                .from("users")
-                .select("user_id, email, created_at, full_name")
-                .eq("email", subscription.metadata.customer_email)
-                .order("created_at", { ascending: false })
-                .limit(1);
-
-              if (users && users.length > 0) {
-                userId = users[0].user_id;
-                console.log("✅ Found user by email:", users[0]);
-              }
-            }
-          }
-
-          // Strategy 3: Use subscription creation time to find recent user
-          if (!userId && subscription.created_at) {
-            const subscriptionTime = new Date(subscription.created_at);
-            const fiveMinutesBefore = new Date(subscriptionTime.getTime() - 5 * 60 * 1000);
-            const fiveMinutesAfter = new Date(subscriptionTime.getTime() + 5 * 60 * 1000);
-
-            const { data: recentUsers } = await supabaseClient
-              .from("users")
-              .select("user_id, email, created_at, full_name")
-              .gte("created_at", fiveMinutesBefore.toISOString())
-              .lte("created_at", fiveMinutesAfter.toISOString())
-              .order("created_at", { ascending: false })
-              .limit(1);
-
-            if (recentUsers && recentUsers.length > 0) {
-              userId = recentUsers[0].user_id;
-              console.log("✅ Found user by creation time proximity:", recentUsers[0]);
-            }
-          }
-
-          // Update subscription if we found a user
-          if (userId) {
-            const updateData = {
-              user_id: userId,
-              plan_name: planName || subscription.plan_name || "Influencer",
-              billing_cycle: billingCycle || subscription.billing_cycle || "monthly",
-              metadata: {
-                ...subscription.metadata,
-                user_id: userId,
-                plan_name: planName || subscription.plan_name || "Influencer",
-                billing_cycle: billingCycle || subscription.billing_cycle || "monthly",
-                fixed_at: new Date().toISOString(),
-                fix_method: "auto_fix_function",
-              },
-            };
-
-            const { error: updateError } = await supabaseClient
-              .from("subscriptions")
-              .update(updateData)
-              .eq("stripe_id", subscription.stripe_id);
-
-            if (updateError) {
-              console.error("❌ Error updating subscription:", updateError);
-              errors.push({ subscription_id: subscription.stripe_id, error: updateError.message });
-            } else {
-              console.log("✅ Subscription fixed successfully");
-              fixedSubscriptions.push({
-                subscription_id: subscription.stripe_id,
-                user_id: userId,
-                plan_name: updateData.plan_name,
-                billing_cycle: updateData.billing_cycle,
-              });
-
-              // Update user profile
-              const userUpdateData = {
-                plan: updateData.plan_name,
-                plan_status: "active",
-                plan_billing: updateData.billing_cycle,
-                is_active: true,
-                updated_at: new Date().toISOString(),
-              };
-
-              const { error: userUpdateError } = await supabaseClient
-                .from("users")
-                .update(userUpdateData)
-                .eq("user_id", userId);
-
-              if (userUpdateError) {
-                console.error("❌ Error updating user profile:", userUpdateError);
-              } else {
-                console.log("✅ User profile updated successfully");
-              }
-            }
-          } else {
-            console.log("❌ Could not find user for subscription:", subscription.stripe_id);
-            errors.push({ 
-              subscription_id: subscription.stripe_id, 
-              error: "Could not find matching user" 
-            });
-          }
-        } else {
-          console.log("✅ Subscription already has user_id, skipping");
+        if (!session.user_id) {
+          console.log("⚠️ Checkout session missing user_id, skipping");
+          continue;
         }
+
+        // Check if user already has a subscription
+        const { data: existingSubscription } = await supabaseClient
+          .from("subscriptions")
+          .select("*")
+          .eq("user_id", session.user_id)
+          .maybeSingle();
+
+        if (existingSubscription) {
+          console.log("✅ User already has subscription, skipping");
+          continue;
+        }
+
+        // Check if user profile has plan access
+        const { data: userProfile } = await supabaseClient
+          .from("users")
+          .select("*")
+          .eq("user_id", session.user_id)
+          .single();
+
+        if (userProfile && userProfile.plan && userProfile.plan_status === "active") {
+          console.log("✅ User already has plan access, skipping");
+          continue;
+        }
+
+        console.log("🔧 Creating subscription for user:", session.user_id);
+
+        // Create subscription based on checkout session
+        const subscriptionData = {
+          stripe_id: `manual_${session.session_id}_${Date.now()}`,
+          user_id: session.user_id,
+          plan_name: session.plan_name || "Influencer",
+          billing_cycle: session.billing_cycle || "monthly",
+          status: "active",
+          current_period_start: Math.floor(Date.now() / 1000),
+          current_period_end: Math.floor(Date.now() / 1000) + (30 * 24 * 60 * 60), // 30 days
+          cancel_at_period_end: false,
+          metadata: {
+            user_id: session.user_id,
+            plan_name: session.plan_name || "Influencer",
+            billing_cycle: session.billing_cycle || "monthly",
+            checkout_session_id: session.session_id,
+            created_at: new Date().toISOString(),
+            source: "manual_fix_function",
+          },
+        };
+
+        const { data: newSubscription, error: createError } = await supabaseClient
+          .from("subscriptions")
+          .insert(subscriptionData)
+          .select()
+          .single();
+
+        if (createError) {
+          console.error("❌ Error creating subscription:", createError);
+          errors.push({ 
+            user_id: session.user_id, 
+            session_id: session.session_id,
+            error: createError.message 
+          });
+          continue;
+        }
+
+        console.log("✅ Subscription created successfully");
+
+        // Update user profile with plan access
+        const userUpdateData = {
+          plan: session.plan_name || "Influencer",
+          plan_status: "active",
+          plan_billing: session.billing_cycle || "monthly",
+          is_active: true,
+          updated_at: new Date().toISOString(),
+        };
+
+        const { error: userUpdateError } = await supabaseClient
+          .from("users")
+          .update(userUpdateData)
+          .eq("user_id", session.user_id);
+
+        if (userUpdateError) {
+          console.error("❌ Error updating user profile:", userUpdateError);
+          errors.push({ 
+            user_id: session.user_id, 
+            session_id: session.session_id,
+            error: userUpdateError.message 
+          });
+        } else {
+          console.log("✅ User profile updated successfully");
+          fixedUsers.push({
+            user_id: session.user_id,
+            session_id: session.session_id,
+            plan_name: session.plan_name || "Influencer",
+            billing_cycle: session.billing_cycle || "monthly",
+            subscription_id: newSubscription.id,
+          });
+        }
+
       } catch (error) {
-        console.error("❌ Error processing subscription:", subscription.stripe_id, error);
+        console.error("❌ Error processing checkout session:", session.session_id, error);
         errors.push({ 
-          subscription_id: subscription.stripe_id, 
+          user_id: session.user_id, 
+          session_id: session.session_id,
           error: error.message 
         });
       }
     }
 
-    // Step 3: Return comprehensive results
+    // Step 3: Also fix existing subscriptions that might be broken
+    const { data: allSubscriptions, error: subError } = await supabaseClient
+      .from("subscriptions")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (!subError && allSubscriptions) {
+      console.log(`📋 Processing ${allSubscriptions.length} existing subscriptions`);
+      
+      for (const subscription of allSubscriptions) {
+        if (!subscription.user_id) {
+          console.log("⚠️ Found subscription without user_id:", subscription.stripe_id);
+          
+          // Try to find user by recent checkout sessions
+          const { data: recentSessions } = await supabaseClient
+            .from("checkout_sessions")
+            .select("*")
+            .in("status", ["pending", "completed"])
+            .order("created_at", { ascending: false })
+            .limit(1);
+
+          if (recentSessions && recentSessions.length > 0) {
+            const recentSession = recentSessions[0];
+            
+            const { error: updateError } = await supabaseClient
+              .from("subscriptions")
+              .update({
+                user_id: recentSession.user_id,
+                plan_name: recentSession.plan_name || subscription.plan_name || "Influencer",
+                billing_cycle: recentSession.billing_cycle || subscription.billing_cycle || "monthly",
+                metadata: {
+                  ...subscription.metadata,
+                  user_id: recentSession.user_id,
+                  fixed_at: new Date().toISOString(),
+                },
+              })
+              .eq("stripe_id", subscription.stripe_id);
+
+            if (!updateError) {
+              console.log("✅ Fixed subscription without user_id");
+              
+              // Update user profile
+              await supabaseClient
+                .from("users")
+                .update({
+                  plan: recentSession.plan_name || "Influencer",
+                  plan_status: "active",
+                  plan_billing: recentSession.billing_cycle || "monthly",
+                  is_active: true,
+                  updated_at: new Date().toISOString(),
+                })
+                .eq("user_id", recentSession.user_id);
+            }
+          }
+        }
+      }
+    }
+
+    // Step 4: Return comprehensive results
     const result = {
       success: true,
       message: "Comprehensive subscription fix completed",
       summary: {
-        total_subscriptions: allSubscriptions?.length || 0,
-        fixed_subscriptions: fixedSubscriptions.length,
+        total_checkout_sessions: checkoutSessions?.length || 0,
+        fixed_users: fixedUsers.length,
         errors: errors.length,
       },
-      fixed_subscriptions: fixedSubscriptions,
+      fixed_users: fixedUsers,
       errors: errors,
       timestamp: new Date().toISOString(),
     };
