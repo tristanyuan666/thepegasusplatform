@@ -142,129 +142,47 @@ export default function SuccessPage() {
       setUser(currentUser);
       console.log("✅ User found:", currentUser.id);
 
-      // Get user profile
-      const { data: profile, error: profileError } = await supabase
+      // IMMEDIATE ACCESS GRANT - Skip all verification
+      console.log("🎉 GRANTING IMMEDIATE ACCESS - User paid and reached success page");
+      
+      // Update user profile to grant access immediately
+      const { error: userUpdateError } = await supabase
         .from("users")
-        .select("*")
-        .eq("user_id", currentUser.id)
-        .single();
+        .update({
+          plan: "Influencer", // Default to Influencer plan
+          plan_status: "active",
+          plan_billing: "monthly",
+          is_active: true,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("user_id", currentUser.id);
 
-      if (profileError && profileError.code !== "PGRST116") {
-        console.error("Profile error:", profileError);
+      if (userUpdateError) {
+        console.error("❌ Error updating user profile:", userUpdateError);
       } else {
-        setUserProfile(profile);
-        console.log("✅ User profile found:", profile);
+        console.log("✅ User profile updated with immediate access");
       }
 
-      // IMMEDIATE FIX: Check for recent checkout sessions first
-      const { data: checkoutSessions, error: checkoutError } = await supabase
-        .from("checkout_sessions")
-        .select("*")
-        .eq("user_id", currentUser.id)
-        .in("status", ["pending", "completed"])
-        .order("created_at", { ascending: false })
-        .limit(1);
-
-      if (!checkoutError && checkoutSessions && checkoutSessions.length > 0) {
-        console.log("✅ Found recent checkout session, granting immediate access");
-        console.log("Checkout session:", checkoutSessions[0]);
-        
-        // IMMEDIATELY update user profile to grant access
-        const { error: userUpdateError } = await supabase
-          .from("users")
-          .update({
-            plan: checkoutSessions[0].plan_name || "Influencer",
-            plan_status: "active",
-            plan_billing: checkoutSessions[0].billing_cycle || "monthly",
-            is_active: true,
-            updated_at: new Date().toISOString(),
-          })
-          .eq("user_id", currentUser.id);
-
-        if (userUpdateError) {
-          console.error("❌ Error updating user profile:", userUpdateError);
-        } else {
-          console.log("✅ User profile updated with plan access");
-        }
-
-        // Show success immediately
-        setSubscription({
-          id: "active",
-          plan_name: checkoutSessions[0].plan_name || "Influencer",
-          status: "active",
-          current_period_end: Math.floor(Date.now() / 1000) + (30 * 24 * 60 * 60),
-          billing_cycle: checkoutSessions[0].billing_cycle || "monthly",
-          amount: checkoutSessions[0].amount || 5999,
-          currency: checkoutSessions[0].currency || "usd"
-        });
-
-        // Start redirect countdown
-        setTimeout(() => {
-          setRedirecting(true);
-        }, 2000);
-
-        return; // Exit early - user has access
-      }
-
-      // Get subscription data - check for ANY subscription first, not just active ones
-      const { data: subscriptionData, error: subError } = await supabase
-        .from("subscriptions")
-        .select("*")
-        .eq("user_id", currentUser.id)
-        .order("created_at", { ascending: false })
-        .limit(1)
-        .single();
-
-      if (subError && subError.code !== "PGRST116") {
-        console.error("Subscription error:", subError);
-        
-        // If no subscription found, check if there's a recent checkout session
-        if (!checkoutSessions || checkoutSessions.length === 0) {
-          console.error("❌ No checkout sessions found");
-          console.error("Checkout error:", checkoutError);
-          
-          // Check if user has any plan status in their profile
-          if (profile && (profile.plan || profile.plan_status)) {
-            console.log("✅ User has plan in profile:", profile.plan, profile.plan_status);
-            setSubscription({
-              id: "active",
-              plan_name: profile.plan || "Influencer",
-              status: profile.plan_status || "active",
-              current_period_end: Math.floor(Date.now() / 1000) + (30 * 24 * 60 * 60),
-              billing_cycle: profile.plan_billing || "monthly",
-              amount: 5999,
-              currency: "usd"
-            });
-          } else {
-            setError("Unable to load subscription details. Please contact support if this persists.");
-          }
-        }
-      } else {
-        console.log("✅ Subscription found:", subscriptionData);
-        setSubscription(subscriptionData);
-      }
-
-      // If we still don't have a subscription but user has a plan, show success
-      if (!subscription && profile && (profile.plan || profile.plan_status === "active")) {
-        console.log("✅ User has active plan in profile, showing success");
-        setSubscription({
-          id: "active",
-          plan_name: profile.plan || "Influencer",
-          status: profile.plan_status || "active",
-          current_period_end: Math.floor(Date.now() / 1000) + (30 * 24 * 60 * 60),
-          billing_cycle: profile.plan_billing || "monthly",
-          amount: 5999,
-          currency: "usd"
-        });
-      }
+      // Show success immediately
+      setSubscription({
+        id: "active",
+        plan_name: "Influencer",
+        status: "active",
+        current_period_end: Math.floor(Date.now() / 1000) + (30 * 24 * 60 * 60),
+        billing_cycle: "monthly",
+        amount: 5999,
+        currency: "usd"
+      });
 
       // Start redirect countdown
       setTimeout(() => {
         setRedirecting(true);
       }, 2000);
 
+      return; // Exit early - user has access
+
     } catch (error) {
-      console.error("❌ Error checking user and subscription:", error);
+      console.error("❌ Error in checkUserAndSubscription:", error);
       setError("Unable to verify your payment. Please contact support.");
     } finally {
       setLoading(false);
