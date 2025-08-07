@@ -198,7 +198,7 @@ const testimonials: Testimonial[] = [
 function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
   return (
     <div
-      className="bg-white rounded-xl p-2 sm:p-4 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 h-full flex flex-col aspect-[4/5] hover-target interactive-element card"
+      className="bg-white rounded-xl p-2 sm:p-4 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 h-full flex flex-col aspect-[3/4] hover-target interactive-element card"
       data-interactive="true"
       data-card="true"
       data-testimonial-card="true"

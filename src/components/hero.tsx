@@ -160,9 +160,9 @@ function AnimatedBackground({ isMounted }: { isMounted: boolean }) {
       <div className="absolute inset-0 bg-gradient-to-br from-white via-blue-50/30 to-white" />
 
       {/* Enhanced Blue Blur Gradient Circles with More Intensity */}
-      <div className="absolute top-10 left-5 w-[500px] h-[500px] bg-gradient-to-r from-blue-500/25 to-cyan-500/18 rounded-full blur-3xl animate-float" />
+      <div className="absolute top-10 left-5 w-[400px] h-[400px] bg-gradient-to-r from-blue-500/25 to-cyan-500/18 rounded-full blur-2xl animate-float" />
       <div
-        className="absolute top-28 right-10 w-[450px] h-[450px] bg-gradient-to-r from-cyan-400/25 to-cyan-500/18 rounded-full blur-3xl animate-float"
+        className="absolute top-28 right-10 w-[350px] h-[350px] bg-gradient-to-r from-cyan-400/25 to-cyan-500/18 rounded-full blur-2xl animate-float"
         style={{ animationDelay: "2s" }}
       />
 
@@ -209,7 +209,7 @@ function InteractiveDashboardDemo({ isMounted }: { isMounted: boolean }) {
   if (!isMounted || typeof window === "undefined") {
     return (
       <div className="relative max-w-full sm:max-w-6xl mx-auto mt-8 sm:mt-16 px-1 sm:px-0">
-        <div className="glass-premium p-1.5 sm:p-8 hover-lift transition-all duration-300">
+        <div className="glass-premium p-4 sm:p-8 hover-lift transition-all duration-300">
           <div className="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-3 sm:p-6 border border-gray-200">
             <div className="flex items-center justify-between mb-3 sm:mb-6">
               <div>
@@ -379,7 +379,7 @@ function InteractiveDashboardDemo({ isMounted }: { isMounted: boolean }) {
 
   return (
     <div className="relative max-w-full sm:max-w-6xl mx-auto mt-8 sm:mt-16 px-1 sm:px-0">
-      <div className="glass-premium p-1.5 sm:p-8 hover-lift transition-all duration-300">
+      <div className="glass-premium p-4 sm:p-8 hover-lift transition-all duration-300">
         <div className="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-3 sm:p-6 border border-gray-200">
           {/* Dashboard Header */}
           <div className="flex items-center justify-between mb-3 sm:mb-6">

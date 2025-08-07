@@ -569,7 +569,7 @@ export default function PricingPage({ searchParams }: PricingPageProps) {
               </span>
               <button
                 onClick={() => setIsYearly(!isYearly)}
-                className={`relative w-10 h-5 md:w-12 md:h-6 rounded-full transition-all duration-300 hover:scale-105 shadow-md hover-target interactive-element ${
+                className={`relative w-12 h-5 md:w-12 md:h-6 rounded-full transition-all duration-300 hover:scale-105 shadow-md hover-target interactive-element ${
                   isYearly ? "bg-blue-600" : "bg-gray-300"
                 }`}
                 data-interactive="true"
@@ -577,7 +577,7 @@ export default function PricingPage({ searchParams }: PricingPageProps) {
               >
                 <div
                   className={`absolute top-0.5 left-0.5 w-4 h-4 md:w-5 md:h-5 bg-white rounded-full transition-transform duration-300 shadow-lg ${
-                    isYearly ? "translate-x-5 md:translate-x-6" : "translate-x-0"
+                    isYearly ? "translate-x-7 md:translate-x-6" : "translate-x-0"
                   }`}
                 />
               </button>

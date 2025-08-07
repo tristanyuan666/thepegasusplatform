@@ -366,7 +366,7 @@ export default function PricingCard({
       {/* Popular badge */}
       {safePlan.popular && (
         <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
-          <div className="bg-gradient-to-r from-blue-600 to-cyan-500 text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg">
+          <div className="bg-gradient-to-r from-blue-600 to-cyan-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
             ⭐ Most Popular
           </div>
         </div>
@@ -395,7 +395,7 @@ export default function PricingCard({
         <div className="relative z-10">
           <div className="flex items-center gap-1 md:gap-4 mb-1.5 md:mb-6">
             <div
-              className={`p-0.5 md:p-3 rounded-md md:rounded-2xl bg-gradient-to-r ${safePlan.gradient} text-white group-hover:scale-110 transition-transform duration-300`}
+              className={`p-1 md:p-3 rounded-md md:rounded-2xl bg-gradient-to-r ${safePlan.gradient} text-white group-hover:scale-110 transition-transform duration-300`}
             >
               {safePlan.icon}
             </div>
@@ -403,7 +403,7 @@ export default function PricingCard({
               <h3 className="text-lg md:text-2xl font-bold text-gray-900 group-hover:text-blue-600 transition-all duration-300">
                 {safePlan.name}
               </h3>
-              <p className="text-gray-600 text-sm md:text-sm">{safePlan.description}</p>
+              <p className="text-gray-600 text-sm md:text-sm -mt-1">{safePlan.description}</p>
             </div>
           </div>
 
@@ -529,7 +529,7 @@ export default function PricingCard({
               <Button
                 onClick={handleCheckout}
                 disabled={isLoading || !!isCurrentPlan}
-                className={`w-full py-3 text-sm font-bold transition-all duration-300 magnetic interactive-element hover-target pricing-button checkout-button stripe-button button ${
+                className={`w-full py-2 sm:py-3 text-sm font-bold transition-all duration-300 magnetic interactive-element hover-target pricing-button checkout-button stripe-button button ${
                   safePlan.popular
                     ? `bg-gradient-to-r ${safePlan.gradient} hover:shadow-premium-lg text-white`
                     : "bg-gray-800 hover:bg-gray-700 text-white"
