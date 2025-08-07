@@ -479,6 +479,8 @@ function DashboardContent() {
       <MobileNavigation 
         activeTab={activeTab}
         hasFeatureAccess={hasFeatureAccess}
+        user={user}
+        userProfile={userProfile}
       />
     </div>
   );

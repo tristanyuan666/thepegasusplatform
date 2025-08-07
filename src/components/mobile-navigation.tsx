@@ -3,17 +3,31 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { createClient } from "../../supabase/client";
+import { useRouter } from "next/navigation";
 import {
   Home,
   BarChart3,
   DollarSign,
   Target,
   Settings,
+  User,
+  LogOut,
 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from "./ui/dropdown-menu";
+import { Button } from "./ui/button";
 
 interface MobileNavigationProps {
   activeTab: string;
   hasFeatureAccess: (feature: string) => boolean;
+  user?: any;
+  userProfile?: any;
 }
 
 const navigationItems = [
@@ -52,12 +66,27 @@ const navigationItems = [
 export default function MobileNavigation({
   activeTab,
   hasFeatureAccess,
+  user,
+  userProfile,
 }: MobileNavigationProps) {
   const pathname = usePathname();
+  const router = useRouter();
+  const supabase = createClient();
+
+  const handleSignOut = async () => {
+    try {
+      await supabase.auth.signOut();
+      if (typeof window !== "undefined") {
+        window.location.href = "/";
+      }
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
 
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-2 py-2 md:hidden z-50">
-      <div className="grid grid-cols-5 gap-1">
+      <div className="grid grid-cols-6 gap-1">
         {navigationItems.map((item) => {
           const isActive = activeTab === item.name.toLowerCase();
           const hasAccess = hasFeatureAccess(item.feature);
@@ -93,6 +122,44 @@ export default function MobileNavigation({
             </Link>
           );
         })}
+
+        {/* User Menu / Sign Out */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              className="flex flex-col items-center gap-1 p-2 h-auto rounded-lg transition-colors hover-target interactive-element text-gray-500 hover:text-gray-700 hover:bg-gray-50"
+              data-interactive="true"
+              data-mobile-nav="true"
+              data-nav-item="user"
+            >
+              <User className="w-5 h-5" />
+              <span className="text-xs font-medium leading-tight">Account</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="center" className="w-48">
+            <div className="px-2 py-1.5">
+              <p className="text-sm font-medium">{userProfile?.full_name || user?.email || 'User'}</p>
+              <p className="text-xs text-gray-500">{user?.email || 'No email'}</p>
+            </div>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <Link
+                href="/"
+                className="hover-target interactive-element"
+                data-interactive="true"
+              >
+                <Home className="h-4 w-4 mr-2" />
+                Back to Home
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={handleSignOut}>
+              <LogOut className="h-4 w-4 mr-2" />
+              Sign Out
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   );
