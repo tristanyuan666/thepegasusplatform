@@ -458,6 +458,23 @@ export default function SubscriptionManagement({
                 Upgrade Plan
               </Link>
             </Button>
+            <Button 
+              variant="destructive" 
+              onClick={handleCancelSubscription}
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <>
+                  <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                  Canceling...
+                </>
+              ) : (
+                <>
+                  <XCircle className="w-4 h-4 mr-2" />
+                  Cancel Subscription
+                </>
+              )}
+            </Button>
             </>
           ) : (
             <Button asChild className="bg-gradient-to-r from-blue-600 to-purple-600">
