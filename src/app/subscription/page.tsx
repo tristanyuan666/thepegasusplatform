@@ -7,6 +7,7 @@ import DashboardNavbar from "@/components/dashboard-navbar";
 import SubscriptionManagement from "@/components/subscription-management";
 import LoadingSpinner from "@/components/loading-spinner";
 import { SubscriptionData } from "@/utils/auth";
+import { getFeatureAccess } from "@/utils/feature-access";
 
 interface UserProfile {
   id: string;
@@ -197,15 +198,7 @@ export default function SubscriptionPage() {
             <SubscriptionManagement
               userId={user.id}
               subscription={subscription}
-              featureAccess={{
-                analytics: hasFeatureAccess("analytics"),
-                revenue: hasFeatureAccess("revenue"),
-                platforms: hasFeatureAccess("platforms"),
-                ai_content: hasFeatureAccess("ai_content"),
-                advanced_analytics: hasFeatureAccess("advanced_analytics"),
-                monetization: hasFeatureAccess("monetization"),
-                team_collaboration: hasFeatureAccess("team_collaboration"),
-              }}
+              featureAccess={getFeatureAccess(userProfile.plan, userProfile.plan_status)}
             />
           </div>
         </div>
