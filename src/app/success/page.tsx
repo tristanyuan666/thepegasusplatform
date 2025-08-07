@@ -156,6 +156,56 @@ export default function SuccessPage() {
         console.log("✅ User profile found:", profile);
       }
 
+      // IMMEDIATE FIX: Check for recent checkout sessions first
+      const { data: checkoutSessions, error: checkoutError } = await supabase
+        .from("checkout_sessions")
+        .select("*")
+        .eq("user_id", currentUser.id)
+        .in("status", ["pending", "completed"])
+        .order("created_at", { ascending: false })
+        .limit(1);
+
+      if (!checkoutError && checkoutSessions && checkoutSessions.length > 0) {
+        console.log("✅ Found recent checkout session, granting immediate access");
+        console.log("Checkout session:", checkoutSessions[0]);
+        
+        // IMMEDIATELY update user profile to grant access
+        const { error: userUpdateError } = await supabase
+          .from("users")
+          .update({
+            plan: checkoutSessions[0].plan_name || "Influencer",
+            plan_status: "active",
+            plan_billing: checkoutSessions[0].billing_cycle || "monthly",
+            is_active: true,
+            updated_at: new Date().toISOString(),
+          })
+          .eq("user_id", currentUser.id);
+
+        if (userUpdateError) {
+          console.error("❌ Error updating user profile:", userUpdateError);
+        } else {
+          console.log("✅ User profile updated with plan access");
+        }
+
+        // Show success immediately
+        setSubscription({
+          id: "active",
+          plan_name: checkoutSessions[0].plan_name || "Influencer",
+          status: "active",
+          current_period_end: Math.floor(Date.now() / 1000) + (30 * 24 * 60 * 60),
+          billing_cycle: checkoutSessions[0].billing_cycle || "monthly",
+          amount: checkoutSessions[0].amount || 5999,
+          currency: checkoutSessions[0].currency || "usd"
+        });
+
+        // Start redirect countdown
+        setTimeout(() => {
+          setRedirecting(true);
+        }, 2000);
+
+        return; // Exit early - user has access
+      }
+
       // Get subscription data - check for ANY subscription first, not just active ones
       const { data: subscriptionData, error: subError } = await supabase
         .from("subscriptions")
@@ -169,28 +219,7 @@ export default function SuccessPage() {
         console.error("Subscription error:", subError);
         
         // If no subscription found, check if there's a recent checkout session
-        const { data: checkoutSessions, error: checkoutError } = await supabase
-          .from("checkout_sessions")
-          .select("*")
-          .eq("user_id", currentUser.id)
-          .in("status", ["pending", "completed"])
-          .order("created_at", { ascending: false })
-          .limit(1);
-
-        if (!checkoutError && checkoutSessions && checkoutSessions.length > 0) {
-          console.log("✅ Found checkout session, payment may still be processing");
-          console.log("Checkout session:", checkoutSessions[0]);
-          // Show success message even if subscription isn't created yet
-          setSubscription({
-            id: "processing",
-            plan_name: checkoutSessions[0].plan_name || "Influencer",
-            status: "processing",
-            current_period_end: Math.floor(Date.now() / 1000) + (30 * 24 * 60 * 60),
-            billing_cycle: checkoutSessions[0].billing_cycle || "monthly",
-            amount: checkoutSessions[0].amount || 5999,
-            currency: checkoutSessions[0].currency || "usd"
-          });
-        } else {
+        if (!checkoutSessions || checkoutSessions.length === 0) {
           console.error("❌ No checkout sessions found");
           console.error("Checkout error:", checkoutError);
           
