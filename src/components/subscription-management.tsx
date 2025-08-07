@@ -144,7 +144,7 @@ export default function SubscriptionManagement({
       bgColor: "bg-blue-50",
       textColor: "text-blue-700",
       limits: { posts: 50, platforms: 2, storage: 5, aiGenerations: 100, viralPredictions: 25 },
-      price: { monthly: 39.99, yearly: 383.99 },
+      price: { monthly: 29.99, yearly: 287.99 },
       features: ["AI content generation", "2 platform connections", "Basic analytics", "Content scheduling"],
     },
     influencer: {

@@ -76,8 +76,33 @@ export default function SubscriptionPage() {
           .eq("status", "active")
           .maybeSingle();
 
-        if (!subscriptionError) {
-          setSubscription(subscriptionData);
+        if (!subscriptionError && subscriptionData) {
+          // Map the database subscription to SubscriptionData format
+          const mappedSubscription: SubscriptionData = {
+            id: subscriptionData.id,
+            user_id: subscriptionData.user_id,
+            stripe_id: subscriptionData.stripe_id,
+            customer_id: subscriptionData.stripe_customer_id,
+            price_id: subscriptionData.stripe_price_id,
+            status: subscriptionData.status,
+            current_period_start: subscriptionData.current_period_start,
+            current_period_end: subscriptionData.current_period_end,
+            cancel_at_period_end: subscriptionData.cancel_at_period_end,
+            amount: subscriptionData.amount,
+            currency: subscriptionData.currency,
+            interval: subscriptionData.billing_cycle,
+            plan_name: subscriptionData.plan_name,
+            billing_cycle: subscriptionData.billing_cycle,
+            features_used: subscriptionData.features_used,
+            usage_limits: subscriptionData.usage_limits,
+            billing_history: subscriptionData.billing_history,
+            stripe_subscription_id: subscriptionData.stripe_id,
+            stripe_customer_id: subscriptionData.stripe_customer_id,
+            stripe_payment_intent_id: null,
+            created_at: subscriptionData.created_at,
+            updated_at: subscriptionData.updated_at,
+          };
+          setSubscription(mappedSubscription);
         }
 
         setLoading(false);
