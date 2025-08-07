@@ -159,23 +159,32 @@ export default function SubscriptionPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <DashboardNavbar 
-        user={user} 
-        userProfile={{
-          user_id: userProfile.user_id,
-          full_name: userProfile.full_name || "",
-          email: userProfile.email || "",
-          plan: userProfile.plan || "",
-          plan_status: userProfile.plan_status || "",
-          plan_billing: userProfile.plan_billing || "",
-          is_active: userProfile.is_active,
-          created_at: userProfile.created_at,
-          updated_at: userProfile.updated_at || "",
-        }}
-        subscription={subscription}
-        activeTab="settings"
-        hasFeatureAccess={hasFeatureAccess}
-      />
+                   <DashboardNavbar
+               user={user}
+               userProfile={{
+                 user_id: userProfile.user_id,
+                 full_name: userProfile.full_name || "",
+                 email: userProfile.email || "",
+                 plan: userProfile.plan || "",
+                 plan_status: userProfile.plan_status || "",
+                 plan_billing: userProfile.plan_billing || "",
+                 is_active: userProfile.is_active,
+                 created_at: userProfile.created_at,
+                 updated_at: userProfile.updated_at || "",
+               }}
+               subscription={subscription ? {
+                 stripe_id: subscription.stripe_id || "",
+                 user_id: subscription.user_id,
+                 plan_name: subscription.plan_name || "",
+                 billing_cycle: subscription.billing_cycle || "",
+                 status: subscription.status,
+                 current_period_start: subscription.current_period_start || 0,
+                 current_period_end: subscription.current_period_end || 0,
+                 cancel_at_period_end: subscription.cancel_at_period_end || false,
+               } : null}
+               activeTab="settings"
+               hasFeatureAccess={hasFeatureAccess}
+             />
       
       <main className="pt-16 md:pt-20 pb-8">
         <div className="container mx-auto px-4 sm:px-6">
