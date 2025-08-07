@@ -92,6 +92,43 @@ export default function SuccessPage() {
     }, 2000); // Wait 2 seconds before retrying
   };
 
+  const manualRecovery = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      console.log("🔄 Attempting manual recovery...");
+      
+      // Call the webhook recovery endpoint
+      const response = await fetch('/api/platform-connections', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          action: 'recover_payment',
+          user_id: user?.id,
+        }),
+      });
+      
+      if (response.ok) {
+        console.log("✅ Manual recovery successful");
+        // Retry verification after recovery
+        setTimeout(() => {
+          checkUserAndSubscription();
+        }, 3000);
+      } else {
+        console.error("❌ Manual recovery failed");
+        setError("Manual recovery failed. Please contact support.");
+      }
+    } catch (error) {
+      console.error("❌ Manual recovery error:", error);
+      setError("Manual recovery failed. Please contact support.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const checkUserAndSubscription = async () => {
     try {
       setLoading(true);
@@ -103,6 +140,7 @@ export default function SuccessPage() {
       if (!currentUser) throw new Error("No user found");
 
       setUser(currentUser);
+      console.log("✅ User found:", currentUser.id);
 
       // Get user profile
       const { data: profile, error: profileError } = await supabase
@@ -115,6 +153,7 @@ export default function SuccessPage() {
         console.error("Profile error:", profileError);
       } else {
         setUserProfile(profile);
+        console.log("✅ User profile found:", profile);
       }
 
       // Get subscription data - check for ANY subscription first, not just active ones
@@ -139,7 +178,8 @@ export default function SuccessPage() {
           .limit(1);
 
         if (!checkoutError && checkoutSessions && checkoutSessions.length > 0) {
-          console.log("Found checkout session, payment may still be processing");
+          console.log("✅ Found checkout session, payment may still be processing");
+          console.log("Checkout session:", checkoutSessions[0]);
           // Show success message even if subscription isn't created yet
           setSubscription({
             id: "processing",
@@ -151,9 +191,27 @@ export default function SuccessPage() {
             currency: checkoutSessions[0].currency || "usd"
           });
         } else {
-          setError("Unable to load subscription details. Please contact support if this persists.");
+          console.error("❌ No checkout sessions found");
+          console.error("Checkout error:", checkoutError);
+          
+          // Check if user has any plan status in their profile
+          if (profile && (profile.plan || profile.plan_status)) {
+            console.log("✅ User has plan in profile:", profile.plan, profile.plan_status);
+            setSubscription({
+              id: "active",
+              plan_name: profile.plan || "Influencer",
+              status: profile.plan_status || "active",
+              current_period_end: Math.floor(Date.now() / 1000) + (30 * 24 * 60 * 60),
+              billing_cycle: profile.plan_billing || "monthly",
+              amount: 5999,
+              currency: "usd"
+            });
+          } else {
+            setError("Unable to load subscription details. Please contact support if this persists.");
+          }
         }
       } else {
+        console.log("✅ Subscription found:", subscriptionData);
         setSubscription(subscriptionData);
       }
 
@@ -163,7 +221,7 @@ export default function SuccessPage() {
       }, 2000);
 
     } catch (error) {
-      console.error("Error checking user and subscription:", error);
+      console.error("❌ Error checking user and subscription:", error);
       setError("Unable to verify your payment. Please contact support.");
     } finally {
       setLoading(false);
@@ -276,6 +334,14 @@ export default function SuccessPage() {
               disabled={retryCount >= 3}
             >
               {retryCount >= 3 ? "Max Retries Reached" : "Retry Verification"}
+            </Button>
+            <Button 
+              onClick={manualRecovery} 
+              variant="outline" 
+              className="w-full"
+              disabled={retryCount >= 3}
+            >
+              Manual Recovery
             </Button>
             <Button asChild variant="outline" className="w-full">
               <Link href="/dashboard">Go to Dashboard</Link>
