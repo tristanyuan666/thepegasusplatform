@@ -134,6 +134,17 @@ export async function GET(request: NextRequest) {
           ? new URL(redirect_to, currentDomain).searchParams.get("plan")
           : null;
 
+        // Handle password reset flow
+        if (type === "recovery") {
+          console.log("Password reset flow, redirecting to reset password page");
+          return NextResponse.redirect(
+            new URL(
+              `/reset-password?message=${encodeURIComponent("Please enter your new password.")}`,
+              currentDomain,
+            ),
+          );
+        }
+
         // Check if there's a specific redirect_to parameter
         if (redirect_to) {
           console.log("Redirecting to specified redirect_to:", redirect_to);

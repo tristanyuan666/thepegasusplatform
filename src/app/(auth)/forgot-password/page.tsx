@@ -58,7 +58,7 @@ export default async function ForgotPassword(props: {
             </div>
 
             <SubmitButton
-              formAction={async (formData) => { await forgotPasswordAction(formData); }}
+              formAction={forgotPasswordAction}
               pendingText="Sending reset link..."
               className="w-full hover-target interactive-element"
             >

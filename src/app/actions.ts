@@ -277,35 +277,54 @@ export const forgotPasswordAction = async (formData: FormData) => {
     return { error: "Email is required" };
   }
 
-  const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || "https://thepegasus.ca"}/auth/callback?type=recovery&redirect_to=/dashboard/reset-password`,
-  });
-
-  if (error) {
-    return { error: "Could not reset password" };
+  // Enhanced email validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return { error: "Please enter a valid email address" };
   }
 
-  if (callbackUrl) {
-    try {
-      redirect(callbackUrl);
-    } catch (error) {
-      // Check if this is a redirect error (which is expected)
-      if (
-        error &&
-        typeof error === "object" &&
-        "digest" in error &&
-        typeof error.digest === "string" &&
-        error.digest.includes("NEXT_REDIRECT")
-      ) {
-        // This is expected redirect behavior, re-throw it without logging as error
-        throw error;
+  try {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || "https://thepegasus.ca"}/auth/callback?type=recovery&redirect_to=/reset-password`,
+    });
+
+    if (error) {
+      console.error("Password reset error:", error);
+      
+      if (error.message.includes("User not found")) {
+        return { error: "No account found with this email address. Please sign up first." };
+      } else if (error.message.includes("rate limit")) {
+        return { error: "Too many requests. Please wait a few minutes before trying again." };
+      } else {
+        return { error: "Could not send reset email. Please try again." };
       }
-      console.error("Unexpected redirect error:", error);
     }
-    return;
-  }
 
-  return { success: "Check your email for a link to reset your password." };
+    if (callbackUrl) {
+      try {
+        redirect(callbackUrl);
+      } catch (error) {
+        // Check if this is a redirect error (which is expected)
+        if (
+          error &&
+          typeof error === "object" &&
+          "digest" in error &&
+          typeof error.digest === "string" &&
+          error.digest.includes("NEXT_REDIRECT")
+        ) {
+          // This is expected redirect behavior, re-throw it without logging as error
+          throw error;
+        }
+        console.error("Unexpected redirect error:", error);
+      }
+      return;
+    }
+
+    return { success: "Check your email for a link to reset your password." };
+  } catch (error) {
+    console.error("Unexpected password reset error:", error);
+    return { error: "An unexpected error occurred. Please try again." };
+  }
 };
 
 export const resetPasswordAction = async (formData: FormData) => {
