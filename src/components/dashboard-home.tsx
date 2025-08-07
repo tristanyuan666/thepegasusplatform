@@ -300,141 +300,141 @@ export default function DashboardHome({
       </Card>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-1 md:gap-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
         <Card>
-          <CardContent className="p-1.5 md:p-6">
+          <CardContent className="p-4 md:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[6px] md:text-sm text-gray-600">Total Followers</p>
-                <p className="text-[8px] md:text-2xl font-bold text-gray-900">
+                <p className="text-xs md:text-sm text-gray-600">Total Followers</p>
+                <p className="text-lg md:text-2xl font-bold text-gray-900">
                   {analyticsData ? formatNumber(analyticsData.total_followers) : "0"}
                 </p>
-                <div className="flex items-center gap-0.5 mt-0.5">
+                <div className="flex items-center gap-1 mt-1">
                   {analyticsData && getGrowthIcon(analyticsData.growth_rate)}
-                  <span className={`text-[5px] font-medium ${getGrowthColor(analyticsData?.growth_rate || 0)}`}>
+                  <span className={`text-xs font-medium ${getGrowthColor(analyticsData?.growth_rate || 0)}`}>
                     {analyticsData?.growth_rate || 0}% this month
                   </span>
                 </div>
               </div>
-              <Users className="w-2.5 h-2.5 md:w-8 md:h-8 text-blue-600" />
+              <Users className="w-5 h-5 md:w-8 md:h-8 text-blue-600" />
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="p-1.5 md:p-6">
+          <CardContent className="p-4 md:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[6px] md:text-sm text-gray-600">Total Views</p>
-                <p className="text-[8px] md:text-2xl font-bold text-gray-900">
+                <p className="text-xs md:text-sm text-gray-600">Total Views</p>
+                <p className="text-lg md:text-2xl font-bold text-gray-900">
                   {analyticsData ? formatNumber(analyticsData.total_views) : "0"}
                 </p>
-                <div className="flex items-center gap-0.5 mt-0.5">
-                  <Eye className="w-1 h-1 md:w-4 md:h-4 text-gray-400" />
-                  <span className="text-[5px] text-gray-600">lifetime views</span>
+                <div className="flex items-center gap-1 mt-1">
+                  <Eye className="w-3 h-3 md:w-4 md:h-4 text-gray-400" />
+                  <span className="text-xs text-gray-600">lifetime views</span>
                 </div>
               </div>
-              <Eye className="w-2.5 h-2.5 md:w-8 md:h-8 text-green-600" />
+              <Eye className="w-5 h-5 md:w-8 md:h-8 text-green-600" />
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="p-1.5 md:p-6">
+          <CardContent className="p-4 md:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[6px] md:text-sm text-gray-600">Engagement Rate</p>
-                <p className="text-[8px] md:text-2xl font-bold text-gray-900">
+                <p className="text-xs md:text-sm text-gray-600">Engagement Rate</p>
+                <p className="text-lg md:text-2xl font-bold text-gray-900">
                   {analyticsData ? analyticsData.engagement_rate.toFixed(1) : "0"}%
                 </p>
-                <div className="flex items-center gap-0.5 mt-0.5">
-                  <Heart className="w-4 h-4 text-red-400" />
-                  <span className="text-sm text-gray-600">avg engagement</span>
+                <div className="flex items-center gap-1 mt-1">
+                  <Heart className="w-3 h-3 md:w-4 md:h-4 text-red-400" />
+                  <span className="text-xs md:text-sm text-gray-600">avg engagement</span>
                 </div>
               </div>
-              <Heart className="w-8 h-8 text-red-600" />
+              <Heart className="w-5 h-5 md:w-8 md:h-8 text-red-600" />
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4 md:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Viral Score</p>
+                <p className="text-xs md:text-sm text-gray-600">Viral Score</p>
                 <div className="flex items-center gap-2">
-                  <p className={`text-2xl font-bold ${getViralScoreColor(analyticsData?.viral_score || 0)}`}>
+                  <p className={`text-lg md:text-2xl font-bold ${getViralScoreColor(analyticsData?.viral_score || 0)}`}>
                     {analyticsData?.viral_score || 0}%
                   </p>
                   {analyticsData && getViralScoreBadge(analyticsData.viral_score)}
                 </div>
                 <div className="flex items-center gap-1 mt-1">
-                  <Target className="w-4 h-4 text-blue-400" />
-                  <span className="text-sm text-gray-600">content potential</span>
+                  <Target className="w-3 h-3 md:w-4 md:h-4 text-blue-400" />
+                  <span className="text-xs md:text-sm text-gray-600">content potential</span>
                 </div>
               </div>
-              <Target className="w-8 h-8 text-blue-600" />
+              <Target className="w-5 h-5 md:w-8 md:h-8 text-blue-600" />
             </div>
           </CardContent>
         </Card>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-4 h-12 bg-gray-50 border border-gray-200 rounded-lg p-1">
+        <TabsList className="grid w-full grid-cols-4 h-10 md:h-12 bg-gray-50 border border-gray-200 rounded-lg p-1">
           <TabsTrigger 
             value="overview" 
-            className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 rounded-md transition-all duration-200"
+            className="flex items-center gap-1 md:gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 rounded-md transition-all duration-200 text-xs md:text-sm"
           >
-            <Activity className="w-4 h-4" />
+            <Activity className="w-3 h-3 md:w-4 md:h-4" />
             <span className="font-medium">Overview</span>
           </TabsTrigger>
           <TabsTrigger 
             value="content" 
-            className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 rounded-md transition-all duration-200"
+            className="flex items-center gap-1 md:gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 rounded-md transition-all duration-200 text-xs md:text-sm"
           >
-            <FileText className="w-4 h-4" />
+            <FileText className="w-3 h-3 md:w-4 md:h-4" />
             <span className="font-medium">Content</span>
           </TabsTrigger>
           <TabsTrigger 
             value="analytics" 
-            className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 rounded-md transition-all duration-200"
+            className="flex items-center gap-1 md:gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 rounded-md transition-all duration-200 text-xs md:text-sm"
           >
             <BarChart3 className="w-4 h-4" />
             <span className="font-medium">Analytics</span>
           </TabsTrigger>
           <TabsTrigger 
             value="platforms" 
-            className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 rounded-md transition-all duration-200"
+            className="flex items-center gap-1 md:gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 rounded-md transition-all duration-200 text-xs md:text-sm"
           >
-            <Globe className="w-4 h-4" />
+            <Globe className="w-3 h-3 md:w-4 md:h-4" />
             <span className="font-medium">Platforms</span>
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="overview" className="space-y-8 mt-8">
+        <TabsContent value="overview" className="space-y-6 md:space-y-8 mt-6 md:mt-8">
           {/* Quick Actions */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-gray-900">Quick Actions</h3>
-              <span className="text-sm text-gray-500">Get started with your content strategy</span>
+              <h3 className="text-base md:text-lg font-semibold text-gray-900">Quick Actions</h3>
+              <span className="text-xs md:text-sm text-gray-500">Get started with your content strategy</span>
             </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
               {getQuickActions().map((action, index) => (
                 <Card key={index} className="hover:shadow-lg transition-all duration-200 border border-gray-200">
                   <Link href={action.href}>
-                    <CardHeader className="pb-4">
-                      <CardTitle className="flex items-center gap-3 text-lg">
+                    <CardHeader className="pb-3 md:pb-4">
+                      <CardTitle className="flex items-center gap-2 md:gap-3 text-base md:text-lg">
                         <div className={`p-2 rounded-lg bg-gradient-to-r ${action.color}`}>
-                          <action.icon className="w-5 h-5 text-white" />
+                          <action.icon className="w-4 h-4 md:w-5 md:h-5 text-white" />
                         </div>
                         {action.title}
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="pt-0">
-                      <p className="text-sm text-gray-600 mb-4 leading-relaxed">
+                      <p className="text-xs md:text-sm text-gray-600 mb-3 md:mb-4 leading-relaxed">
                         {action.description}
                       </p>
-                      <Button className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800">
+                      <Button className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-xs md:text-sm">
                         Get Started
                       </Button>
                     </CardContent>
@@ -448,21 +448,21 @@ export default function DashboardHome({
           {hasConnectedPlatforms && (
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-gray-900">Recent Activity</h3>
-                <Button variant="ghost" size="sm" onClick={loadRecentContent} className="text-blue-600 hover:text-blue-700">
-                  <RefreshCw className="w-4 h-4 mr-2" />
+                <h3 className="text-base md:text-lg font-semibold text-gray-900">Recent Activity</h3>
+                <Button variant="ghost" size="sm" onClick={loadRecentContent} className="text-blue-600 hover:text-blue-700 text-xs md:text-sm">
+                  <RefreshCw className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
                   Refresh
                 </Button>
               </div>
               <Card className="border border-gray-200">
-                <CardContent className="p-6">
-                  <div className="space-y-4">
+                <CardContent className="p-4 md:p-6">
+                  <div className="space-y-3 md:space-y-4">
                     {analyticsData?.content_count ? (
-                      <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg border border-blue-200">
-                        <div className="flex items-center gap-4">
-                          <div className="w-3 h-3 bg-blue-600 rounded-full"></div>
+                      <div className="flex items-center justify-between p-3 md:p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <div className="flex items-center gap-3 md:gap-4">
+                          <div className="w-2 h-2 md:w-3 md:h-3 bg-blue-600 rounded-full"></div>
                           <div>
-                            <p className="text-sm font-medium text-gray-900">Content Performance</p>
+                            <p className="text-xs md:text-sm font-medium text-gray-900">Content Performance</p>
                             <p className="text-xs text-gray-600">
                               {analyticsData.content_count} posts published this month
                             </p>
@@ -475,17 +475,17 @@ export default function DashboardHome({
                     ) : null}
 
                     {recentContent.slice(0, 3).map((content) => (
-                      <div key={content.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                        <div className="flex items-center gap-4">
-                          <div className="w-3 h-3 bg-green-600 rounded-full"></div>
+                      <div key={content.id} className="flex items-center justify-between p-3 md:p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                        <div className="flex items-center gap-3 md:gap-4">
+                          <div className="w-2 h-2 md:w-3 md:h-3 bg-green-600 rounded-full"></div>
                           <div>
-                            <p className="text-sm font-medium text-gray-900">{content.title}</p>
+                            <p className="text-xs md:text-sm font-medium text-gray-900">{content.title}</p>
                             <p className="text-xs text-gray-600">
                               {content.platform} • {content.status}
                             </p>
                           </div>
                         </div>
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2 md:gap-3">
                           {getViralScoreBadge(content.viral_score)}
                           <span className="text-xs text-gray-500">
                             {content.viral_score}% viral

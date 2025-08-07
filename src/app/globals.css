@@ -224,6 +224,13 @@
     .pricing-page button[aria-label="Toggle billing period"] > div[style*="translate-x-4"] {
       transform: translateX(16px);
     }
+    
+    /* Ensure toggle looks like a capsule on mobile */
+    @media (max-width: 768px) {
+      .pricing-page button[aria-label="Toggle billing period"] {
+        border-radius: 8px !important;
+      }
+    }
 
     /* Mobile FAQ optimization */
     .faq-item {
@@ -374,6 +381,26 @@
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
       -ms-overflow-style: none;
+    }
+    
+    /* Mobile dashboard optimizations */
+    .dashboard-home {
+      padding: 1rem;
+      margin-bottom: 4rem;
+    }
+    
+    .dashboard-home .card {
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .dashboard-home .tabs-list {
+      border-radius: 8px;
+    }
+    
+    .dashboard-home .tabs-trigger {
+      font-size: 12px;
+      padding: 8px 12px;
     }
 
     .overflow-x-auto::-webkit-scrollbar {
