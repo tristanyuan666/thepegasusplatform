@@ -169,6 +169,7 @@ export default function OnboardingPage() {
           .insert({
             user_id: user.id,
             email: user.email,
+            token_identifier: user.id, // Required field
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
           });
@@ -198,7 +199,13 @@ export default function OnboardingPage() {
 
       if (updateError) {
         console.error("Error updating user profile:", updateError);
-        throw new Error("Failed to save your profile. Please try again.");
+        console.error("Update error details:", {
+          code: updateError.code,
+          message: updateError.message,
+          details: updateError.details,
+          hint: updateError.hint
+        });
+        throw new Error(`Failed to save your profile: ${updateError.message}`);
       }
 
       console.log("✅ Profile updated successfully");
