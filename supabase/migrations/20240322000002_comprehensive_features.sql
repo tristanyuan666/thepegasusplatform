@@ -130,17 +130,17 @@ ALTER PUBLICATION supabase_realtime ADD TABLE content_performance;
 ALTER PUBLICATION supabase_realtime ADD TABLE user_goals;
 ALTER PUBLICATION supabase_realtime ADD TABLE monetization_data;
 
--- Insert default subscription plans
+-- Insert default subscription plans with live price IDs
 INSERT INTO subscription_plans (name, stripe_price_id, price_monthly, price_yearly, features, limits) VALUES
-('starter', 'price_starter_monthly', 3900, 39000, 
+('creator', 'price_1RtPLJGD1jjgy8XwgAEntohZ', 3999, 39999, 
  '{"ai_content": true, "basic_analytics": true, "platforms": 2, "support": "email"}',
  '{"posts_per_month": 50, "platforms": 2, "storage_gb": 5}'
 ),
-('growth', 'price_growth_monthly', 5900, 59000,
+('influencer', 'price_1RtPMgGD1jjgy8Xwr9kyrte3', 5999, 59999,
  '{"ai_content": true, "advanced_analytics": true, "viral_predictor": true, "all_platforms": true, "priority_support": true, "auto_scheduling": true}',
  '{"posts_per_month": -1, "platforms": -1, "storage_gb": 50}'
 ),
-('empire', 'price_empire_monthly', 9900, 99000,
+('superstar', 'price_1RtPMzGD1jjgy8XwNjrcGVTq', 9999, 95999,
  '{"everything": true, "custom_branding": true, "api_access": true, "dedicated_manager": true, "custom_integrations": true, "white_label": true}',
  '{"posts_per_month": -1, "platforms": -1, "storage_gb": 500, "team_members": 10}'
 )

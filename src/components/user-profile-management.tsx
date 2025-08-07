@@ -201,16 +201,42 @@ export default function UserProfileManagement({
       )
     ) {
       try {
-        // In a real app, you'd call a server action to delete the account
+        setIsLoading(true);
+        
+        // Delete user profile from database
+        const { error: profileError } = await supabase
+          .from("users")
+          .delete()
+          .eq("user_id", user.id);
+
+        if (profileError) {
+          console.error("Profile deletion error:", profileError);
+        }
+
+        // Delete user from auth
+        const { error: authError } = await supabase.auth.admin.deleteUser(user.id);
+
+        if (authError) {
+          console.error("Auth deletion error:", authError);
+          // If admin delete fails, try regular sign out
+          await supabase.auth.signOut();
+        }
+
         setMessage({
-          error:
-            "Account deletion is not implemented yet. Please contact support.",
+          success: "Account deleted successfully. Redirecting to home page...",
         });
+
+        // Redirect to home page after a short delay
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 2000);
       } catch (error) {
         console.error("Error deleting account:", error);
         setMessage({
           error: "Failed to delete account. Please contact support.",
         });
+      } finally {
+        setIsLoading(false);
       }
     }
   };

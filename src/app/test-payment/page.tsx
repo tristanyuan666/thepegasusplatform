@@ -63,7 +63,7 @@ export default function PaymentTestPage() {
           user_id: user.id,
           email: user.email || "test@example.com",
           plan_name: "Creator",
-          variant_id: "price_1RgakoG8nQMivkW3R0JFwmJy", // Creator Monthly price ID
+          variant_id: "price_1RtPLJGD1jjgy8XwgAEntohZ", // Creator Monthly price ID
           billing_cycle: "monthly",
         });
       }

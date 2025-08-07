@@ -155,23 +155,16 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Handle test mode - return success without creating actual checkout
+    // Test mode disabled for production
     if (test_mode) {
-      console.log("Test mode detected - returning mock success response");
+      console.log("Test mode requested but disabled in production");
       return new Response(
         JSON.stringify({
-          success: true,
-          message: "Stripe Edge Function is working! Test mode enabled.",
-          test_mode: true,
-          timestamp: new Date().toISOString(),
-          environment_check: {
-            stripe_secret_key_exists: !!Deno.env.get("STRIPE_SECRET_KEY"),
-            supabase_url_exists: !!Deno.env.get("NEXT_PUBLIC_SUPABASE_URL"),
-            supabase_service_key_exists: !!Deno.env.get("SERVICE_ROLE_KEY"),
-          },
+          error: "Test mode is disabled in production",
+          success: false,
         }),
         {
-          status: 200,
+          status: 400,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         },
       );

@@ -124,16 +124,16 @@ const defaultPlans: PricingPlan[] = [
 // Define Stripe price IDs at component level
 const STRIPE_PRICE_IDS = {
   creator: {
-    monthly: "price_1RnBOY4Qsqtj5fxtmeZvp9hD", // Creator Monthly
-    yearly: "price_1RnBQl4Qsqtj5fxtlUBgr5DV", // Creator Annual
+    monthly: "price_1RtPLJGD1jjgy8XwgAEntohZ", // Creator Monthly
+    yearly: "price_1RtPPCGD1jjgy8XwDETBm2fy", // Creator Annual
   },
   influencer: {
-    monthly: "price_1RnBPS4Qsqtj5fxtbip0cUVO", // Influencer Monthly
-    yearly: "price_1RnBRW4Qsqtj5fxtCjfe7jRC", // Influencer Annual
+    monthly: "price_1RtPMgGD1jjgy8Xwr9kyrte3", // Influencer Monthly
+    yearly: "price_1RtPQEGD1jjgy8Xw3yValVVn", // Influencer Annual
   },
   superstar: {
-    monthly: "price_1RnBQ74Qsqtj5fxtQCMxGyjd", // Superstar Monthly
-    yearly: "price_1RnBRx4Qsqtj5fxt7pSn1ltF", // Superstar Annual
+    monthly: "price_1RtPMzGD1jjgy8XwNjrcGVTq", // Superstar Monthly
+    yearly: "price_1RtPS2GD1jjgy8XwUZef8Jsl", // Superstar Annual
   },
 };
 
