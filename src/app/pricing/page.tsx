@@ -599,7 +599,7 @@ export default function PricingPage({ searchParams }: PricingPageProps) {
           </div>
 
           {/* Pricing Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8 max-w-7xl mx-auto mb-8 md:mb-16 pricing-page px-4 sm:px-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-12 max-w-7xl mx-auto mb-8 md:mb-16 pricing-page px-4 sm:px-6">
             {defaultPlans.map((plan) => (
               <PricingCard key={plan.id} plan={plan} isYearly={isYearly} user={user} />
             ))}
