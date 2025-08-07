@@ -7,18 +7,80 @@ import { SmtpMessage } from "../smtp-message";
 import { forgotPasswordAction } from "@/app/actions";
 import Navbar from "@/components/navbar";
 
-export default async function ForgotPassword(props: {
-  searchParams: Promise<Message>;
-}) {
-  const searchParams = await props.searchParams;
+"use client";
 
-  if ("message" in searchParams) {
-    return (
-      <div className="flex h-screen w-full flex-1 items-center justify-center p-4 sm:max-w-md">
-        <FormMessage message={searchParams} />
-      </div>
-    );
-  }
+import { useState, useEffect } from "react";
+import { FormMessage, Message } from "@/components/form-message";
+import { SubmitButton } from "@/components/submit-button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import Link from "next/link";
+import { SmtpMessage } from "../smtp-message";
+import { forgotPasswordAction } from "@/app/actions";
+import Navbar from "@/components/navbar";
+
+interface ForgotPasswordProps {
+  searchParams: Promise<Message & { success?: string; error?: string }>;
+}
+
+export default function ForgotPasswordPage({ searchParams }: ForgotPasswordProps) {
+  const [message, setMessage] = useState<Message | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Handle URL parameters for success and error messages
+  useEffect(() => {
+    const getParams = async () => {
+      const params = await searchParams;
+      const urlMessage = params.error
+        ? { error: decodeURIComponent(params.error) }
+        : params.success
+          ? { success: decodeURIComponent(params.success) }
+          : params;
+
+      if (
+        "error" in urlMessage ||
+        "success" in urlMessage ||
+        "message" in urlMessage
+      ) {
+        setMessage(urlMessage);
+      }
+    };
+    getParams();
+  }, [searchParams]);
+
+  const handleSubmit = async (formData: FormData) => {
+    setIsLoading(true);
+    setMessage(null);
+
+    // Client-side validation
+    const email = formData.get("email") as string;
+    if (!email) {
+      setMessage({ error: "Email is required" });
+      setIsLoading(false);
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setMessage({ error: "Please enter a valid email address" });
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      const result = await forgotPasswordAction(formData);
+      if (result?.error) {
+        setMessage({ error: result.error });
+      } else if (result?.success) {
+        setMessage({ success: result.success });
+      }
+    } catch (error) {
+      console.error("Forgot password error:", error);
+      setMessage({ error: "An unexpected error occurred. Please try again." });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <>
@@ -40,7 +102,13 @@ export default async function ForgotPassword(props: {
             </p>
           </div>
 
-          <form className="flex flex-col space-y-6">
+          <form action={handleSubmit} className="flex flex-col space-y-6">
+            {message && (
+              <div className="space-y-2">
+                <FormMessage message={message} />
+              </div>
+            )}
+
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-sm font-medium">
@@ -52,20 +120,19 @@ export default async function ForgotPassword(props: {
                   type="email"
                   placeholder="you@example.com"
                   required
+                  disabled={isLoading}
                   className="w-full"
                 />
               </div>
             </div>
 
             <SubmitButton
-              formAction={async (formData) => { await forgotPasswordAction(formData); }}
               pendingText="Sending reset link..."
+              disabled={isLoading}
               className="w-full hover-target interactive-element"
             >
               Reset Password
             </SubmitButton>
-
-            <FormMessage message={searchParams} />
           </form>
         </div>
         <SmtpMessage />

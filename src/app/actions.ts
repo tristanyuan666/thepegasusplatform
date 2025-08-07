@@ -270,8 +270,6 @@ export const signInAction = async (formData: FormData) => {
 
 export const forgotPasswordAction = async (formData: FormData) => {
   const email = formData.get("email")?.toString();
-  const supabase = await createClient();
-  const callbackUrl = formData.get("callbackUrl")?.toString();
 
   if (!email) {
     return { error: "Email is required" };
@@ -284,6 +282,8 @@ export const forgotPasswordAction = async (formData: FormData) => {
   }
 
   try {
+    const supabase = await createClient();
+    
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || "https://thepegasus.ca"}/auth/callback?type=recovery&redirect_to=/reset-password`,
     });
@@ -298,26 +298,6 @@ export const forgotPasswordAction = async (formData: FormData) => {
       } else {
         return { error: "Could not send reset email. Please try again." };
       }
-    }
-
-    if (callbackUrl) {
-      try {
-        redirect(callbackUrl);
-      } catch (error) {
-        // Check if this is a redirect error (which is expected)
-        if (
-          error &&
-          typeof error === "object" &&
-          "digest" in error &&
-          typeof error.digest === "string" &&
-          error.digest.includes("NEXT_REDIRECT")
-        ) {
-          // This is expected redirect behavior, re-throw it without logging as error
-          throw error;
-        }
-        console.error("Unexpected redirect error:", error);
-      }
-      return;
     }
 
     return { success: "Check your email for a link to reset your password." };
