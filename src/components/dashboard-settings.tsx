@@ -481,7 +481,7 @@ export default function DashboardSettings({
 
   const getPlanPrice = (plan: string | null, billing: string | null) => {
     const prices = {
-      creator: { monthly: 29.99, yearly: 299.99 },
+      creator: { monthly: 39.99, yearly: 383.99 },
       influencer: { monthly: 59.99, yearly: 599.99 },
       superstar: { monthly: 99.99, yearly: 959.99 },
     };
