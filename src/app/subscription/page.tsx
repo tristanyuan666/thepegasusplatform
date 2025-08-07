@@ -174,10 +174,10 @@ export default function SubscriptionPage() {
                }}
                subscription={subscription ? {
                  stripe_id: subscription.stripe_id || "",
-                 user_id: subscription.user_id,
+                 user_id: subscription.user_id || "",
                  plan_name: subscription.plan_name || "",
                  billing_cycle: subscription.billing_cycle || "",
-                 status: subscription.status,
+                 status: subscription.status || "",
                  current_period_start: subscription.current_period_start || 0,
                  current_period_end: subscription.current_period_end || 0,
                  cancel_at_period_end: subscription.cancel_at_period_end || false,
