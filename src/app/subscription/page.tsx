@@ -30,12 +30,10 @@ interface UserProfile {
   updated_at: string | null;
 }
 
-interface Subscription extends SubscriptionData {}
-
 export default function SubscriptionPage() {
   const [user, setUser] = useState<User | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const [subscription, setSubscription] = useState<Subscription | null>(null);
+  const [subscription, setSubscription] = useState<SubscriptionData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
