@@ -210,28 +210,28 @@
     /* Mobile pricing toggle optimization - HIGH SPECIFICITY */
     @media (max-width: 768px) {
       .pricing-page button[aria-label="Toggle billing period"] {
-        width: 20px !important;
-        height: 10px !important;
-        border-radius: 5px !important;
-        min-width: 20px !important;
-        min-height: 10px !important;
-        max-width: 20px !important;
-        max-height: 10px !important;
+        width: 40px !important;
+        height: 20px !important;
+        border-radius: 10px !important;
+        min-width: 40px !important;
+        min-height: 20px !important;
+        max-width: 40px !important;
+        max-height: 20px !important;
       }
       
       .pricing-page button[aria-label="Toggle billing period"] > div {
-        width: 6px !important;
-        height: 6px !important;
+        width: 16px !important;
+        height: 16px !important;
         top: 2px !important;
         left: 2px !important;
-        min-width: 6px !important;
-        min-height: 6px !important;
-        max-width: 6px !important;
-        max-height: 6px !important;
+        min-width: 16px !important;
+        min-height: 16px !important;
+        max-width: 16px !important;
+        max-height: 16px !important;
       }
       
-      .pricing-page button[aria-label="Toggle billing period"] > div[style*="translate-x-2.5"] {
-        transform: translateX(10px) !important;
+      .pricing-page button[aria-label="Toggle billing period"] > div[style*="translate-x-5"] {
+        transform: translateX(20px) !important;
       }
       
       .pricing-page button[aria-label="Toggle billing period"] > div[style*="translate-x-0"] {
