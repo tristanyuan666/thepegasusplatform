@@ -403,7 +403,7 @@ export default function PricingCard({
               <h3 className="text-lg md:text-2xl font-bold text-gray-900 group-hover:text-blue-600 transition-all duration-300">
                 {safePlan.name}
               </h3>
-              <p className="text-gray-600 text-sm md:text-sm -mt-3">{safePlan.description}</p>
+              <p className="text-gray-600 text-sm md:text-sm -mt-3 md:-mt-1">{safePlan.description}</p>
             </div>
           </div>
 
