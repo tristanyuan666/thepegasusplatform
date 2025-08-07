@@ -689,7 +689,7 @@ export default function Navbar({ user = null }: NavbarProps) {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="lg:hidden mt-4 pb-4 border-t border-gray-200">
+          <div className="lg:hidden mt-4 pb-4 border-t border-gray-200 max-h-[70vh] overflow-y-auto">
             <div className="flex flex-col space-y-4 pt-4">
               {/* Mobile Features */}
               <div className="space-y-2">
