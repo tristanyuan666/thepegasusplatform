@@ -14,23 +14,41 @@ export default async function ContentHubPage() {
   
   console.log("Content hub: Auth check", { user: !!user, error: userError });
 
-  // For now, allow access even without user to fix navigation
-  // We'll handle authentication properly later
-  if (userError) {
-    console.log("Content hub: Auth error, but continuing");
+  // Check if user is authenticated
+  if (userError || !user) {
+    console.log("Content hub: No user, redirecting to sign-in");
+    redirect("/sign-in");
   }
 
-  if (!user) {
-    console.log("Content hub: No user, but continuing for now");
-    // Don't redirect - just continue with null user
+  // Check if user has active subscription
+  let hasActiveSubscription = false;
+  let subscriptionTier = "free";
+  
+  try {
+    const { data: subscription, error: subError } = await supabase
+      .from("subscriptions")
+      .select("*")
+      .eq("user_id", user.id)
+      .eq("status", "active")
+      .maybeSingle();
+
+    if (!subError && subscription) {
+      hasActiveSubscription = true;
+      subscriptionTier = subscription.plan_name?.toLowerCase() || "free";
+      console.log("Content hub: Active subscription found");
+    } else {
+      console.log("Content hub: No active subscription, redirecting to pricing");
+      redirect("/pricing");
+    }
+  } catch (error) {
+    console.log("Content hub: Subscription check error, redirecting to pricing");
+    redirect("/pricing");
   }
 
-  console.log("Content hub: User authenticated, loading page");
+  console.log("Content hub: User authenticated with subscription, loading page");
 
   // Initialize with enhanced fallback data for premium experience
   let userProfile: any = null;
-  let hasActiveSubscription = false;
-  let subscriptionTier = "free";
   let platformConnections: any[] = [];
   let contentAnalytics: any[] = [];
   let scheduledContent: any[] = [];
@@ -64,20 +82,6 @@ export default async function ContentHubPage() {
         console.log("Content hub: User profile loaded");
       } else {
         console.log("Content hub: No user profile, using fallback");
-      }
-
-      // Get subscription status with enhanced data
-      const { data: subscription, error: subError } = await supabase
-        .from("subscriptions")
-        .select("*")
-        .eq("user_id", user.id)
-        .eq("status", "active")
-        .maybeSingle();
-
-      if (!subError && subscription) {
-        hasActiveSubscription = true;
-        subscriptionTier = subscription.plan_name?.toLowerCase() || "free";
-        console.log("Content hub: Active subscription found");
       }
 
       // Get platform connections with enhanced metrics

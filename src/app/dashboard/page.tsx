@@ -222,6 +222,12 @@ function DashboardContent() {
       if (subError) throw subError;
       setSubscription(sub);
 
+      // Check if user has active subscription - if not, redirect to pricing
+      if (!sub) {
+        window.location.href = "/pricing";
+        return;
+      }
+
       // Get platform connections
       const { data: connections, error: connectionsError } = await supabase
         .from("platform_connections")

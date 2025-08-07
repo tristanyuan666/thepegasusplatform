@@ -49,7 +49,7 @@ export async function middleware(req: NextRequest) {
       error = authError;
     }
 
-    // Protected routes - require authentication
+    // Protected routes - require authentication AND active subscription
     const protectedRoutes = [
       "/dashboard",
       "/content-hub",
@@ -70,12 +70,52 @@ export async function middleware(req: NextRequest) {
       return NextResponse.redirect(new URL("/sign-in", req.url));
     }
 
+    // For protected routes, also check subscription status
+    if (isProtectedRoute && user) {
+      try {
+        const { data: subscription, error: subError } = await supabase
+          .from("subscriptions")
+          .select("status")
+          .eq("user_id", user.id)
+          .eq("status", "active")
+          .maybeSingle();
+
+        if (subError || !subscription) {
+          // User doesn't have active subscription, redirect to pricing
+          return NextResponse.redirect(new URL("/pricing", req.url));
+        }
+      } catch (subError) {
+        console.warn("Subscription check failed in middleware:", subError);
+        // If we can't check subscription, redirect to pricing to be safe
+        return NextResponse.redirect(new URL("/pricing", req.url));
+      }
+    }
+
     // Redirect authenticated users from auth pages to dashboard
     const authPages = ["/sign-in", "/sign-up"];
     const isAuthPage = authPages.includes(req.nextUrl.pathname);
 
     if (isAuthPage && !error && user) {
-      return NextResponse.redirect(new URL("/dashboard", req.url));
+      // Check if user has active subscription before redirecting to dashboard
+      try {
+        const { data: subscription, error: subError } = await supabase
+          .from("subscriptions")
+          .select("status")
+          .eq("user_id", user.id)
+          .eq("status", "active")
+          .maybeSingle();
+
+        if (!subError && subscription) {
+          return NextResponse.redirect(new URL("/dashboard", req.url));
+        } else {
+          // User doesn't have active subscription, redirect to pricing
+          return NextResponse.redirect(new URL("/pricing", req.url));
+        }
+      } catch (subError) {
+        console.warn("Subscription check failed in middleware:", subError);
+        // If we can't check subscription, redirect to pricing to be safe
+        return NextResponse.redirect(new URL("/pricing", req.url));
+      }
     }
   } catch (error) {
     console.warn("Middleware auth error:", error);

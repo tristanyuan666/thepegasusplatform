@@ -1,36 +1,82 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ArrowRight, X, Sparkles } from "lucide-react";
 import Link from "next/link";
+import { Sparkles, ArrowRight, X } from "lucide-react";
+import { createClient } from "../../supabase/client";
 
 export default function StickyCTA() {
   const [isVisible, setIsVisible] = useState(false);
-  const [isDismissed, setIsDismissed] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [hasSubscription, setHasSubscription] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const supabase = createClient();
+
+  useEffect(() => {
+    const checkUserStatus = async () => {
+      try {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        setUser(user);
+
+        if (user) {
+          // Check if user has active subscription
+          const { data: subscription } = await supabase
+            .from("subscriptions")
+            .select("*")
+            .eq("user_id", user.id)
+            .eq("status", "active")
+            .single();
+
+          setHasSubscription(!!subscription);
+        }
+      } catch (error) {
+        console.error("Error checking user status:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkUserStatus();
+  }, [supabase]);
 
   useEffect(() => {
     const handleScroll = () => {
-      const scrollPosition = window.scrollY;
+      const scrollY = window.scrollY;
       const windowHeight = window.innerHeight;
-
-      // Show CTA after scrolling past the hero section
-      if (scrollPosition > windowHeight * 0.8 && !isDismissed) {
+      const documentHeight = document.documentElement.scrollHeight;
+      
+      // Show CTA when user has scrolled 50% of the page
+      if (scrollY > (documentHeight - windowHeight) * 0.5) {
         setIsVisible(true);
-      } else if (scrollPosition <= windowHeight * 0.8) {
+      } else {
         setIsVisible(false);
       }
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [isDismissed]);
+  }, []);
 
   const handleDismiss = () => {
-    setIsDismissed(true);
     setIsVisible(false);
   };
 
-  if (!isVisible || isDismissed) return null;
+  const getDashboardHref = () => {
+    if (isLoading) return "/pricing";
+    
+    if (!user) {
+      return "/pricing";
+    } else if (hasSubscription) {
+      return "/dashboard";
+    } else {
+      return "/pricing";
+    }
+  };
+
+  if (!isVisible) return null;
 
   return (
     <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 animate-slide-up">
@@ -52,10 +98,10 @@ export default function StickyCTA() {
 
         {/* CTA Button */}
         <Link
-          href="/dashboard"
+          href={getDashboardHref()}
           className="group/btn bg-gradient-to-r from-neon-blue to-neon-purple text-white px-4 py-2 rounded-lg font-medium text-sm transition-all duration-300 hover:shadow-glow-blue flex items-center gap-2"
         >
-          <span>Start Now</span>
+          <span>{!user ? "Get Started" : hasSubscription ? "Go to Dashboard" : "Choose Plan"}</span>
           <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
         </Link>
 

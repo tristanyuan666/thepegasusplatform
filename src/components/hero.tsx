@@ -703,8 +703,8 @@ export default function Hero() {
       // User logged in with subscription: Take them to dashboard
       return "/dashboard";
     } else {
-      // User logged in without subscription: Take them to dashboard settings (subscription management)
-      return "/dashboard?tab=settings";
+      // User logged in without subscription: Take them to pricing page
+      return "/pricing";
     }
   };
 
@@ -718,8 +718,8 @@ export default function Hero() {
       // User logged in with subscription: Take them to dashboard
       return "/dashboard";
     } else {
-      // User logged in without subscription: Take them to dashboard settings (subscription management)
-      return "/dashboard?tab=settings";
+      // User logged in without subscription: Take them to pricing page
+      return "/pricing";
     }
   };
 

@@ -460,30 +460,55 @@ export default function SuccessPage() {
             </CardHeader>
             <CardContent>
               <div className="flex flex-wrap gap-3">
-                <Button asChild variant="outline">
-                  <Link href="/dashboard">
-                    <BarChart3 className="w-4 h-4 mr-2" />
-                    View Dashboard
-                  </Link>
-                </Button>
-                <Button asChild variant="outline">
-                  <Link href="/dashboard?tab=platforms">
-                    <Globe className="w-4 h-4 mr-2" />
-                    Manage Platforms
-                  </Link>
-                </Button>
-                <Button asChild variant="outline">
-                  <Link href="/features/ai-content">
-                    <Sparkles className="w-4 h-4 mr-2" />
-                    Create Content
-                  </Link>
-                </Button>
-                <Button asChild variant="outline">
-                  <Link href="/dashboard?tab=settings">
-                    <Settings className="w-4 h-4 mr-2" />
-                    Manage Subscription
-                  </Link>
-                </Button>
+                {subscription && subscription.status === "active" ? (
+                  <>
+                    <Button asChild variant="outline">
+                      <Link href="/dashboard">
+                        <BarChart3 className="w-4 h-4 mr-2" />
+                        View Dashboard
+                      </Link>
+                    </Button>
+                    <Button asChild variant="outline">
+                      <Link href="/dashboard?tab=platforms">
+                        <Globe className="w-4 h-4 mr-2" />
+                        Manage Platforms
+                      </Link>
+                    </Button>
+                    <Button asChild variant="outline">
+                      <Link href="/features/ai-content">
+                        <Sparkles className="w-4 h-4 mr-2" />
+                        Create Content
+                      </Link>
+                    </Button>
+                    <Button asChild variant="outline">
+                      <Link href="/dashboard?tab=settings">
+                        <Settings className="w-4 h-4 mr-2" />
+                        Manage Subscription
+                      </Link>
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button asChild variant="outline">
+                      <Link href="/pricing">
+                        <Crown className="w-4 h-4 mr-2" />
+                        Choose Your Plan
+                      </Link>
+                    </Button>
+                    <Button asChild variant="outline">
+                      <Link href="/features">
+                        <Sparkles className="w-4 h-4 mr-2" />
+                        Explore Features
+                      </Link>
+                    </Button>
+                    <Button asChild variant="outline">
+                      <Link href="/integrations">
+                        <Globe className="w-4 h-4 mr-2" />
+                        View Integrations
+                      </Link>
+                    </Button>
+                  </>
+                )}
               </div>
             </CardContent>
           </Card>
