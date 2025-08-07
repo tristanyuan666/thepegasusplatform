@@ -80,7 +80,13 @@ export async function middleware(req: NextRequest) {
           .eq("status", "active")
           .maybeSingle();
 
-        if (subError || !subscription) {
+        if (subError) {
+          console.warn("Subscription check failed in middleware:", subError);
+          // If we can't check subscription, redirect to pricing to be safe
+          return NextResponse.redirect(new URL("/pricing", req.url));
+        }
+
+        if (!subscription) {
           // User doesn't have active subscription, redirect to pricing
           return NextResponse.redirect(new URL("/pricing", req.url));
         }

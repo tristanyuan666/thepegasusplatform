@@ -219,11 +219,17 @@ function DashboardContent() {
         .eq("status", "active")
         .maybeSingle();
 
-      if (subError) throw subError;
-      setSubscription(sub);
+      if (subError) {
+        console.error("Subscription lookup error:", subError);
+        // Don't throw error, just set subscription to null
+        setSubscription(null);
+      } else {
+        setSubscription(sub);
+      }
 
       // Check if user has active subscription - if not, redirect to pricing
       if (!sub) {
+        console.log("No active subscription found, redirecting to pricing");
         window.location.href = "/pricing";
         return;
       }

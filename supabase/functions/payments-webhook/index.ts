@@ -701,6 +701,9 @@ async function handleCheckoutCompleted(supabaseClient: any, eventData: any) {
       }
 
       console.log("🎉 Checkout completed successfully - user has full access!");
+    } else if (eventData.subscription && !userId) {
+      // Handle case where subscription exists but no user_id in metadata
+      console.log("⚠️ Subscription exists but no user_id in metadata, will be handled by subscription.created event");
     } else {
       console.log("⚠️ No subscription in checkout session or missing user_id");
       console.log("Will wait for customer.subscription.created event");
@@ -730,14 +733,23 @@ async function handleSubscriptionCreated(supabaseClient: any, eventData: any) {
       return;
     }
 
-    // Step 2: SIMPLIFIED USER LOOKUP - Find user by customer email (MOST RELIABLE)
-    console.log("🔍 Finding user by customer email...");
+    // Step 2: ENHANCED USER LOOKUP - Multiple strategies
+    console.log("🔍 Enhanced user lookup...");
     
     let userId = null;
     let planName = null;
     let billingCycle = null;
 
-    if (eventData.customer) {
+    // Strategy 1: Check metadata first (most reliable for real payments)
+    if (eventData.metadata && eventData.metadata.user_id) {
+      userId = eventData.metadata.user_id;
+      planName = eventData.metadata.plan_name;
+      billingCycle = eventData.metadata.billing_cycle;
+      console.log("✅ Found user_id in metadata:", userId);
+    }
+
+    // Strategy 2: Find user by customer email from Stripe
+    if (!userId && eventData.customer) {
       try {
         const stripeResponse = await fetch(`https://api.stripe.com/v1/customers/${eventData.customer}`, {
           headers: {
@@ -774,7 +786,7 @@ async function handleSubscriptionCreated(supabaseClient: any, eventData: any) {
       }
     }
 
-    // Step 3: If no user found by email, try recent checkout sessions
+    // Strategy 3: Try recent checkout sessions
     if (!userId) {
       console.log("🔍 No user found by email, trying recent checkout sessions...");
       
@@ -797,11 +809,67 @@ async function handleSubscriptionCreated(supabaseClient: any, eventData: any) {
       }
     }
 
+    // Strategy 4: Try to find user by subscription ID in checkout sessions
+    if (!userId) {
+      console.log("🔍 Trying to find user by subscription ID in checkout sessions...");
+      
+      const { data: checkoutSessions, error: checkoutError } = await supabaseClient
+        .from("checkout_sessions")
+        .select("*")
+        .contains("metadata", { subscription_id: eventData.id })
+        .limit(1);
+
+      if (!checkoutError && checkoutSessions && checkoutSessions.length > 0) {
+        const session = checkoutSessions[0];
+        if (session.user_id) {
+          userId = session.user_id;
+          planName = session.plan_name;
+          billingCycle = session.billing_cycle;
+          console.log("✅ Found user by subscription ID in checkout session:", session);
+        }
+      }
+    }
+
     // Step 4: Create subscription with found data
     if (!userId) {
       console.error("❌ No user_id found for subscription, cannot proceed");
       console.error("Subscription data:", JSON.stringify(eventData, null, 2));
-      throw new Error("Missing user_id in subscription metadata");
+      
+      // Instead of throwing error, try to create a placeholder subscription
+      // that can be fixed later by the recovery endpoint
+      console.log("⚠️ Creating subscription without user_id for later recovery");
+      
+      const subscriptionData = {
+        stripe_id: eventData.id,
+        user_id: null, // Will be fixed by recovery
+        plan_name: "Influencer", // Default plan
+        billing_cycle: "monthly",
+        status: eventData.status || "active",
+        current_period_start: eventData.current_period_start,
+        current_period_end: eventData.current_period_end,
+        cancel_at_period_end: eventData.cancel_at_period_end || false,
+        metadata: {
+          customer_id: eventData.customer,
+          subscription_id: eventData.id,
+          needs_recovery: true,
+          created_at: new Date().toISOString(),
+          source: "subscription_created_no_user",
+        },
+      };
+
+      const { error: createError } = await supabaseClient
+        .from("subscriptions")
+        .upsert(subscriptionData, {
+          onConflict: "stripe_id"
+        });
+
+      if (createError) {
+        console.error("❌ Error creating subscription without user:", createError);
+      } else {
+        console.log("✅ Created subscription without user_id for later recovery");
+      }
+      
+      return;
     }
 
     // Determine plan name from Stripe if not found

@@ -32,14 +32,19 @@ export default async function ContentHubPage() {
       .eq("status", "active")
       .maybeSingle();
 
-    if (!subError && subscription) {
-      hasActiveSubscription = true;
-      subscriptionTier = subscription.plan_name?.toLowerCase() || "free";
-      console.log("Content hub: Active subscription found");
-    } else {
+    if (subError) {
+      console.log("Content hub: Subscription check error, redirecting to pricing");
+      redirect("/pricing");
+    }
+
+    if (!subscription) {
       console.log("Content hub: No active subscription, redirecting to pricing");
       redirect("/pricing");
     }
+
+    hasActiveSubscription = true;
+    subscriptionTier = subscription.plan_name?.toLowerCase() || "free";
+    console.log("Content hub: Active subscription found");
   } catch (error) {
     console.log("Content hub: Subscription check error, redirecting to pricing");
     redirect("/pricing");

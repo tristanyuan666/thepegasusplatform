@@ -674,14 +674,18 @@ export default function Hero() {
 
         if (user) {
           // Check if user has active subscription
-          const { data: subscription } = await supabase
+          const { data: subscription, error: subError } = await supabase
             .from("subscriptions")
             .select("*")
             .eq("user_id", user.id)
             .eq("status", "active")
-            .single();
+            .maybeSingle();
 
-          setHasSubscription(!!subscription);
+          if (!subError && subscription) {
+            setHasSubscription(true);
+          } else {
+            setHasSubscription(false);
+          }
         }
       } catch (error) {
         console.error("Error checking user status:", error);
