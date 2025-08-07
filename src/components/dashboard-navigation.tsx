@@ -132,8 +132,8 @@ export default function DashboardNavigation({
       <div
         className={cn("bg-white border-t border-gray-200 px-4 py-2", className)}
       >
-        <div className="grid grid-cols-4 gap-1">
-          {navigationItems.slice(0, 4).map((item) => {
+        <div className="grid grid-cols-5 gap-1">
+          {navigationItems.slice(0, 5).map((item) => {
             const isActive = pathname === item.href;
 
             return (
