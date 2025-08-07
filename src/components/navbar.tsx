@@ -29,6 +29,7 @@ import {
   Linkedin,
   ArrowRight,
   Lock,
+  LogOut,
 } from "lucide-react";
 import XIcon from "./x-icon";
 import { Badge } from "./ui/badge";
@@ -43,6 +44,7 @@ import {
 } from "./ui/dropdown-menu";
 import { useState, useEffect } from "react";
 import { createClient } from "../../supabase/client";
+import { useRouter } from "next/navigation";
 
 interface NavbarProps {
   user?: any;
@@ -51,6 +53,7 @@ interface NavbarProps {
 export default function Navbar({ user = null }: NavbarProps) {
   const [currentUser, setCurrentUser] = useState(user);
   const supabase = createClient();
+  const router = useRouter();
 
   useEffect(() => {
     if (!user) {
@@ -345,6 +348,16 @@ export default function Navbar({ user = null }: NavbarProps) {
   useEffect(() => {
     checkSubscription();
   }, [currentUser]);
+
+  const handleSignOut = async () => {
+    try {
+      await supabase.auth.signOut();
+      setIsMobileMenuOpen(false);
+      router.push("/");
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
 
   // Force refresh subscription status after payment or navigation
   useEffect(() => {
@@ -794,6 +807,16 @@ export default function Navbar({ user = null }: NavbarProps) {
                     <div className="px-3">
                       <UserProfile />
                     </div>
+                    {/* Sign Out Button - Mobile Only */}
+                    <Button
+                      variant="ghost"
+                      onClick={handleSignOut}
+                      className="w-full text-sm py-2 text-red-600 hover:text-red-700 hover:bg-red-50 hover-target interactive-element"
+                      data-interactive="true"
+                    >
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Sign Out
+                    </Button>
                   </>
                 ) : (
                   <>
