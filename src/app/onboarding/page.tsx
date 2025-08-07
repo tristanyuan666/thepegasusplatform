@@ -191,7 +191,7 @@ export default function OnboardingPage() {
           content_format: onboardingData.content_format.trim(),
           fame_goals: onboardingData.fame_goals.trim(),
           tone: onboardingData.tone.trim(),
-          follower_count: onboardingData.follower_count.trim(),
+          follower_count: parseInt(onboardingData.follower_count.split('-')[0]) || 0, // Convert "0-1000" to 0
           onboarding_completed: true,
           updated_at: new Date().toISOString(),
         })
