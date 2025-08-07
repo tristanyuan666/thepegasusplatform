@@ -209,39 +209,39 @@
 
     /* Mobile pricing toggle optimization */
     .pricing-page button[aria-label="Toggle billing period"] {
-      width: 32px;
-      height: 16px;
-      border-radius: 8px;
+      width: 24px;
+      height: 12px;
+      border-radius: 6px;
     }
     
     .pricing-page button[aria-label="Toggle billing period"] > div {
-      width: 12px;
-      height: 12px;
+      width: 8px;
+      height: 8px;
       top: 2px;
       left: 2px;
     }
     
-    .pricing-page button[aria-label="Toggle billing period"] > div[style*="translate-x-4"] {
-      transform: translateX(16px);
+    .pricing-page button[aria-label="Toggle billing period"] > div[style*="translate-x-3"] {
+      transform: translateX(12px);
     }
     
     /* Ensure toggle looks like a capsule on mobile */
     @media (max-width: 768px) {
       .pricing-page button[aria-label="Toggle billing period"] {
-        border-radius: 8px !important;
-        width: 32px !important;
-        height: 16px !important;
+        border-radius: 6px !important;
+        width: 24px !important;
+        height: 12px !important;
       }
       
       .pricing-page button[aria-label="Toggle billing period"] > div {
-        width: 12px !important;
-        height: 12px !important;
+        width: 8px !important;
+        height: 8px !important;
         top: 2px !important;
         left: 2px !important;
       }
       
-      .pricing-page button[aria-label="Toggle billing period"] > div[style*="translate-x-4"] {
-        transform: translateX(16px) !important;
+      .pricing-page button[aria-label="Toggle billing period"] > div[style*="translate-x-3"] {
+        transform: translateX(12px) !important;
       }
     }
 
