@@ -95,6 +95,19 @@ export default function StickyCTA() {
 
   return (
     <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 animate-slide-up">
+      {/* Sign Out Button - Mobile Only */}
+      {user && (
+        <div className="fixed bottom-20 left-1/2 transform -translate-x-1/2 z-50 animate-slide-up md:hidden mb-2">
+          <button
+            onClick={handleSignOut}
+            className="glass-card px-4 py-2 flex items-center gap-2 shadow-2xl hover-lift text-red-400 hover:text-red-300 transition-all duration-300"
+          >
+            <LogOut className="w-4 h-4" />
+            <span className="text-sm font-medium">Sign Out</span>
+          </button>
+        </div>
+      )}
+
       <div className="glass-card px-6 py-4 flex items-center gap-4 shadow-2xl hover-lift group">
         {/* Icon */}
         <div className="p-2 rounded-lg bg-gradient-to-r from-neon-blue to-neon-purple">
@@ -128,19 +141,6 @@ export default function StickyCTA() {
           <X className="w-4 h-4" />
         </button>
       </div>
-
-      {/* Sign Out Button - Mobile Only */}
-      {user && (
-        <div className="fixed bottom-20 left-1/2 transform -translate-x-1/2 z-50 animate-slide-up md:hidden">
-          <button
-            onClick={handleSignOut}
-            className="glass-card px-4 py-2 flex items-center gap-2 shadow-2xl hover-lift text-red-400 hover:text-red-300 transition-all duration-300"
-          >
-            <LogOut className="w-4 h-4" />
-            <span className="text-sm font-medium">Sign Out</span>
-          </button>
-        </div>
-      )}
     </div>
   );
 }
