@@ -227,6 +227,12 @@ export default function DashboardSettings({
     if (section === "billing") {
       setActiveTab("billing");
     }
+    
+    // Auto-open billing tab if open parameter is set
+    const openParam = searchParams.get("open");
+    if (openParam === "billing") {
+      setActiveTab("billing");
+    }
   }, [searchParams]);
 
   const loadDeviceSessions = async () => {

@@ -589,7 +589,7 @@ export default function SuccessPage() {
                       </Link>
                     </Button>
                     <Button asChild variant="outline">
-                      <Link href="/dashboard?tab=settings&section=billing">
+                      <Link href="/dashboard?tab=settings&open=billing">
                         <Settings className="w-4 h-4 mr-2" />
                         Manage Subscription
                       </Link>
