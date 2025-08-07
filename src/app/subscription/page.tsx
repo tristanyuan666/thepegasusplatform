@@ -6,6 +6,7 @@ import { User } from "@supabase/supabase-js";
 import DashboardNavbar from "@/components/dashboard-navbar";
 import SubscriptionManagement from "@/components/subscription-management";
 import LoadingSpinner from "@/components/loading-spinner";
+import { SubscriptionData } from "@/utils/auth";
 
 interface UserProfile {
   id: string;
@@ -29,16 +30,7 @@ interface UserProfile {
   updated_at: string | null;
 }
 
-interface Subscription {
-  stripe_id: string;
-  user_id: string;
-  plan_name: string;
-  billing_cycle: string;
-  status: string;
-  current_period_start: number;
-  current_period_end: number;
-  cancel_at_period_end: boolean;
-}
+interface Subscription extends SubscriptionData {}
 
 export default function SubscriptionPage() {
   const [user, setUser] = useState<User | null>(null);
@@ -130,11 +122,11 @@ export default function SubscriptionPage() {
 
   if (error || !user || !userProfile) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Access Denied</h1>
-          <p className="text-gray-600 mb-4">{error || "Please sign in to access subscription management."}</p>
-          <a href="/sign-in" className="text-blue-600 hover:text-blue-700">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+        <div className="text-center max-w-sm">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">Access Denied</h1>
+          <p className="text-sm sm:text-base text-gray-600 mb-4">{error || "Please sign in to access subscription management."}</p>
+          <a href="/sign-in" className="text-blue-600 hover:text-blue-700 text-sm sm:text-base">
             Sign In
           </a>
         </div>
@@ -163,11 +155,11 @@ export default function SubscriptionPage() {
       />
       
       <main className="pt-16 md:pt-20 pb-8">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 sm:px-6">
           <div className="max-w-4xl mx-auto">
-            <div className="mb-8">
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">Subscription Management</h1>
-              <p className="text-gray-600">Manage your subscription, billing, and plan details.</p>
+            <div className="mb-6 md:mb-8 px-2 sm:px-0">
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Subscription Management</h1>
+              <p className="text-sm sm:text-base text-gray-600">Manage your subscription, billing, and plan details.</p>
             </div>
             
             <SubscriptionManagement
