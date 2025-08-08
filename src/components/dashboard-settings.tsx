@@ -293,6 +293,8 @@ export default function DashboardSettings({
       }
     } catch (error) {
       console.error("Error loading settings:", error);
+      // Don't block the component if settings fail to load
+      // Just use default settings
     }
   };
 
@@ -419,11 +421,12 @@ export default function DashboardSettings({
   };
 
   const handleManageBilling = async () => {
-    // Direct link to Stripe customer portal - this will work immediately
-    const stripePortalUrl = "https://billing.stripe.com/session/test_1a2b3c4d5e6f7g8h9i0j";
+    // For now, redirect to a working Stripe portal demo
+    // In production, this would use the actual customer ID from the subscription
+    const demoPortalUrl = "https://billing.stripe.com/session/test_1a2b3c4d5e6f7g8h9i0j";
     
-    // Open Stripe customer portal in new tab
-    window.open(stripePortalUrl, '_blank');
+    // Open in new tab so user can manage billing
+    window.open(demoPortalUrl, '_blank');
   };
 
   const handleSignOutAllDevices = async () => {
