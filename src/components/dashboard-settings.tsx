@@ -96,6 +96,7 @@ interface Subscription {
   current_period_start: number;
   current_period_end: number;
   cancel_at_period_end: boolean;
+  stripe_customer_id?: string;
 }
 
 interface DashboardSettingsProps {
@@ -418,27 +419,19 @@ export default function DashboardSettings({
 
   const handleManageBilling = async () => {
     try {
-      const { data, error } = await supabase.functions.invoke("create-portal-session", {
-        body: { user_id: userProfile.user_id }
-      });
-
-      if (error) {
-        console.error("Billing portal error:", error);
-        // Fallback to dashboard settings
-        window.location.href = "/dashboard?tab=settings&open=billing";
-        return;
-      }
+      // Use the same approach as subscription-management component
+      const customerPortalUrl = `/api/create-portal-session?customer_id=${subscription?.stripe_customer_id}`;
       
-      if (data?.url) {
-        window.location.href = data.url;
+      if (customerPortalUrl) {
+        window.location.href = customerPortalUrl;
       } else {
-        // Fallback to dashboard settings
-        window.location.href = "/dashboard?tab=settings&open=billing";
+        // Fallback to pricing page
+        window.location.href = "/pricing";
       }
     } catch (error) {
-      console.error("Error creating billing portal:", error);
-      // Fallback to dashboard settings
-      window.location.href = "/dashboard?tab=settings&open=billing";
+      console.error("Error creating portal session:", error);
+      // Fallback to pricing page
+      window.location.href = "/pricing";
     }
   };
 
