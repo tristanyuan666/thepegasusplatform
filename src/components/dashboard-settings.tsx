@@ -97,6 +97,7 @@ interface Subscription {
   current_period_end: number;
   cancel_at_period_end: boolean;
   stripe_customer_id?: string;
+  customer_id?: string;
 }
 
 interface DashboardSettingsProps {
@@ -419,8 +420,11 @@ export default function DashboardSettings({
 
   const handleManageBilling = async () => {
     try {
-      // Check if we have a customer ID
-      const customerId = subscription?.stripe_customer_id;
+      // Check if we have a customer ID - try both fields
+      const customerId = subscription?.stripe_customer_id || subscription?.customer_id;
+      
+      console.log("Subscription data:", subscription);
+      console.log("Customer ID found:", customerId);
       
       if (!customerId) {
         console.error("No customer ID found in subscription:", subscription);
