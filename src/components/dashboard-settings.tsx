@@ -424,21 +424,21 @@ export default function DashboardSettings({
 
       if (error) {
         console.error("Billing portal error:", error);
-        // Fallback to pricing page
-        window.location.href = "/pricing";
+        // Fallback to dashboard settings
+        window.location.href = "/dashboard?tab=settings&open=billing";
         return;
       }
       
       if (data?.url) {
         window.location.href = data.url;
       } else {
-        // Fallback to pricing page
-        window.location.href = "/pricing";
+        // Fallback to dashboard settings
+        window.location.href = "/dashboard?tab=settings&open=billing";
       }
     } catch (error) {
       console.error("Error creating billing portal:", error);
-      // Fallback to pricing page instead of showing error
-      window.location.href = "/pricing";
+      // Fallback to dashboard settings
+      window.location.href = "/dashboard?tab=settings&open=billing";
     }
   };
 
