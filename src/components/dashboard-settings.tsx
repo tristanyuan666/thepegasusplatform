@@ -419,15 +419,20 @@ export default function DashboardSettings({
 
   const handleManageBilling = async () => {
     try {
-      // Use the same approach as subscription-management component
-      const customerPortalUrl = `/api/create-portal-session?customer_id=${subscription?.stripe_customer_id}`;
+      // Check if we have a customer ID
+      const customerId = subscription?.stripe_customer_id;
       
-      if (customerPortalUrl) {
-        window.location.href = customerPortalUrl;
-      } else {
+      if (!customerId) {
+        console.error("No customer ID found in subscription:", subscription);
         // Fallback to pricing page
         window.location.href = "/pricing";
+        return;
       }
+
+      console.log("Creating portal session for customer:", customerId);
+      const customerPortalUrl = `/api/create-portal-session?customer_id=${customerId}`;
+      
+      window.location.href = customerPortalUrl;
     } catch (error) {
       console.error("Error creating portal session:", error);
       // Fallback to pricing page
