@@ -54,10 +54,12 @@ serve(async (req) => {
     // Get user's subscription from the database
     const { data: subscription, error: subscriptionError } = await supabaseClient
       .from('subscriptions')
-      .select('stripe_id, stripe_customer_id')
+      .select('stripe_id, stripe_customer_id, customer_id, status')
       .eq('user_id', user_id)
       .eq('status', 'active')
       .single()
+
+    console.log('Subscription query result:', { subscription, subscriptionError, user_id })
 
     if (subscriptionError || !subscription) {
       // Return a fallback URL to dashboard settings
@@ -81,12 +83,22 @@ serve(async (req) => {
     // Create a customer portal session
     let portalUrl: string
     try {
+      // Use stripe_customer_id if available, otherwise fall back to customer_id
+      const customerId = subscription.stripe_customer_id || subscription.customer_id
+      
+      if (!customerId) {
+        throw new Error('No customer ID found in subscription')
+      }
+
+      console.log('Creating Stripe portal session for customer:', customerId)
+      
       const session = await stripe.billingPortal.sessions.create({
-        customer: subscription.stripe_customer_id,
+        customer: customerId,
         return_url: `${Deno.env.get('SITE_URL') || 'http://localhost:3000'}/dashboard?tab=settings&open=billing`,
       })
 
       portalUrl = session.url
+      console.log('Stripe portal session created:', portalUrl)
     } catch (stripeError) {
       console.error('Stripe API error:', stripeError)
       // Fallback to dashboard settings if Stripe fails
