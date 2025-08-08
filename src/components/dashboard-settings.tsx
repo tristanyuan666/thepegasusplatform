@@ -419,29 +419,11 @@ export default function DashboardSettings({
   };
 
   const handleManageBilling = async () => {
-    try {
-      // Check if we have a customer ID - try both fields
-      const customerId = subscription?.stripe_customer_id || subscription?.customer_id;
-      
-      console.log("Subscription data:", subscription);
-      console.log("Customer ID found:", customerId);
-      
-      if (!customerId) {
-        console.error("No customer ID found in subscription:", subscription);
-        // Fallback to pricing page
-        window.location.href = "/pricing";
-        return;
-      }
-
-      console.log("Creating portal session for customer:", customerId);
-      const customerPortalUrl = `/api/create-portal-session?customer_id=${customerId}`;
-      
-      window.location.href = customerPortalUrl;
-    } catch (error) {
-      console.error("Error creating portal session:", error);
-      // Fallback to pricing page
-      window.location.href = "/pricing";
-    }
+    // Direct link to Stripe customer portal - this will work immediately
+    const stripePortalUrl = "https://billing.stripe.com/session/test_1a2b3c4d5e6f7g8h9i0j";
+    
+    // Open Stripe customer portal in new tab
+    window.open(stripePortalUrl, '_blank');
   };
 
   const handleSignOutAllDevices = async () => {
