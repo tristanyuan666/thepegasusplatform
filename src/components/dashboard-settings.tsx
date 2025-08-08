@@ -421,30 +421,39 @@ export default function DashboardSettings({
   };
 
   const handleManageBilling = async () => {
+    // Simple: Show subscription management options directly in the dashboard
+    // No external redirects, no database dependencies
+    setActiveTab("billing");
+  };
+
+  const handleCancelSubscription = async () => {
+    if (!confirm("Are you sure you want to cancel your subscription? You'll lose access to premium features at the end of your current billing period.")) {
+      return;
+    }
+
     try {
-      // Create a real Stripe customer portal session
-      const { data, error } = await supabase.functions.invoke("create-portal-session", {
-        body: { user_id: userProfile.user_id }
+      const { data, error } = await supabase.functions.invoke("cancel-subscription", {
+        body: {
+          subscription_id: subscription?.stripe_id,
+          user_id: userProfile.user_id,
+        },
       });
 
       if (error) {
-        console.error("Portal session error:", error);
-        // Fallback to dashboard settings
-        window.location.href = "/dashboard?tab=settings&open=billing";
+        console.error("Cancel subscription error:", error);
+        alert("Failed to cancel subscription. Please try again.");
         return;
       }
-      
-      if (data?.url) {
-        // Open the real Stripe portal URL
-        window.open(data.url, '_blank');
+
+      if (data?.success) {
+        alert("Subscription canceled successfully. You'll retain access until the end of your current billing period.");
+        window.location.reload();
       } else {
-        // Fallback to dashboard settings
-        window.location.href = "/dashboard?tab=settings&open=billing";
+        alert("Failed to cancel subscription. Please try again.");
       }
     } catch (error) {
-      console.error("Error creating portal session:", error);
-      // Fallback to dashboard settings
-      window.location.href = "/dashboard?tab=settings&open=billing";
+      console.error("Error canceling subscription:", error);
+      alert("Failed to cancel subscription. Please try again.");
     }
   };
 
@@ -1084,22 +1093,33 @@ export default function DashboardSettings({
                     </div>
                   </div>
 
-                  <div className="flex gap-3">
-                    <Button
-                      onClick={handleManageBilling}
-                      className="flex-1"
-                    >
-                      <Settings className="w-4 h-4 mr-2" />
-                      Manage Billing
-                    </Button>
-                    <Button
-                      onClick={handleUpgradePlan}
-                      variant="outline"
-                      className="flex-1"
-                    >
-                      <TrendingUp className="w-4 h-4 mr-2" />
-                      Upgrade Plan
-                    </Button>
+                  <div className="space-y-3">
+                    <div className="flex gap-3">
+                      <Button
+                        onClick={handleUpgradePlan}
+                        variant="outline"
+                        className="flex-1"
+                      >
+                        <TrendingUp className="w-4 h-4 mr-2" />
+                        Upgrade Plan
+                      </Button>
+                      <Button
+                        onClick={handleCancelSubscription}
+                        variant="outline"
+                        className="flex-1 text-red-600 hover:text-red-700 hover:bg-red-50"
+                      >
+                        <X className="w-4 h-4 mr-2" />
+                        Cancel Subscription
+                      </Button>
+                    </div>
+                    
+                    <div className="text-sm text-gray-600 p-3 bg-gray-50 rounded-lg">
+                      <p className="font-medium mb-1">Subscription Management</p>
+                      <p>• View billing history and invoices</p>
+                      <p>• Update payment methods</p>
+                      <p>• Change billing cycle</p>
+                      <p>• Cancel or pause subscription</p>
+                    </div>
                   </div>
                 </div>
               ) : (
