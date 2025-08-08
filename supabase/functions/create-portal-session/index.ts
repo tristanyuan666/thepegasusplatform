@@ -59,10 +59,10 @@ serve(async (req) => {
       .single()
 
     if (subscriptionError || !subscription) {
-      // Return a fallback URL to pricing page
+      // Return a fallback URL to dashboard settings
       return new Response(
         JSON.stringify({ 
-          url: `${Deno.env.get('SITE_URL') || 'http://localhost:3000'}/pricing`,
+          url: `${Deno.env.get('SITE_URL') || 'http://localhost:3000'}/dashboard?tab=settings&open=billing`,
           message: 'No active subscription found'
         }),
         { 
@@ -73,8 +73,8 @@ serve(async (req) => {
     }
 
     // In a real implementation, you would call Stripe's API here
-    // For now, return a fallback URL
-    const portalUrl = `${Deno.env.get('SITE_URL') || 'http://localhost:3000'}/pricing`
+    // For now, redirect to dashboard settings billing tab
+    const portalUrl = `${Deno.env.get('SITE_URL') || 'http://localhost:3000'}/dashboard?tab=settings&open=billing`
 
     return new Response(
       JSON.stringify({ url: portalUrl }),
@@ -86,11 +86,11 @@ serve(async (req) => {
 
   } catch (error) {
     console.error('Error:', error)
-    return new Response(
-      JSON.stringify({ 
-        error: 'Internal server error',
-        url: `${Deno.env.get('SITE_URL') || 'http://localhost:3000'}/pricing`
-      }),
+          return new Response(
+        JSON.stringify({ 
+          error: 'Internal server error',
+          url: `${Deno.env.get('SITE_URL') || 'http://localhost:3000'}/dashboard?tab=settings&open=billing`
+        }),
       { 
         status: 500, 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
