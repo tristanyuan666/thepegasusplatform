@@ -421,12 +421,31 @@ export default function DashboardSettings({
   };
 
   const handleManageBilling = async () => {
-    // For now, redirect to a working Stripe portal demo
-    // In production, this would use the actual customer ID from the subscription
-    const demoPortalUrl = "https://billing.stripe.com/session/test_1a2b3c4d5e6f7g8h9i0j";
-    
-    // Open in new tab so user can manage billing
-    window.open(demoPortalUrl, '_blank');
+    try {
+      // Create a real Stripe customer portal session
+      const { data, error } = await supabase.functions.invoke("create-portal-session", {
+        body: { user_id: userProfile.user_id }
+      });
+
+      if (error) {
+        console.error("Portal session error:", error);
+        // Fallback to dashboard settings
+        window.location.href = "/dashboard?tab=settings&open=billing";
+        return;
+      }
+      
+      if (data?.url) {
+        // Open the real Stripe portal URL
+        window.open(data.url, '_blank');
+      } else {
+        // Fallback to dashboard settings
+        window.location.href = "/dashboard?tab=settings&open=billing";
+      }
+    } catch (error) {
+      console.error("Error creating portal session:", error);
+      // Fallback to dashboard settings
+      window.location.href = "/dashboard?tab=settings&open=billing";
+    }
   };
 
   const handleSignOutAllDevices = async () => {
