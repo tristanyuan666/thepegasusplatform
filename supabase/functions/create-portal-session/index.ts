@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import Stripe from 'https://esm.sh/stripe@14.21.0?target=deno'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -53,7 +54,7 @@ serve(async (req) => {
     // Get user's subscription from the database
     const { data: subscription, error: subscriptionError } = await supabaseClient
       .from('subscriptions')
-      .select('stripe_id')
+      .select('stripe_id, stripe_customer_id')
       .eq('user_id', user_id)
       .eq('status', 'active')
       .single()
@@ -72,9 +73,25 @@ serve(async (req) => {
       )
     }
 
-    // In a real implementation, you would call Stripe's API here
-    // For now, redirect to dashboard settings billing tab
-    const portalUrl = `${Deno.env.get('SITE_URL') || 'http://localhost:3000'}/dashboard?tab=settings&open=billing`
+    // Initialize Stripe with the secret key
+    const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY') || '', {
+      apiVersion: '2024-12-18.acacia',
+    })
+
+    // Create a customer portal session
+    let portalUrl: string
+    try {
+      const session = await stripe.billingPortal.sessions.create({
+        customer: subscription.stripe_customer_id,
+        return_url: `${Deno.env.get('SITE_URL') || 'http://localhost:3000'}/dashboard?tab=settings&open=billing`,
+      })
+
+      portalUrl = session.url
+    } catch (stripeError) {
+      console.error('Stripe API error:', stripeError)
+      // Fallback to dashboard settings if Stripe fails
+      portalUrl = `${Deno.env.get('SITE_URL') || 'http://localhost:3000'}/dashboard?tab=settings&open=billing`
+    }
 
     return new Response(
       JSON.stringify({ url: portalUrl }),
